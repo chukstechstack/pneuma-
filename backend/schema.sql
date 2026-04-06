@@ -1,13 +1,13 @@
-Blog APP SUpabase SChema
-CREATE EXTENSION IF NOT EXISTS "pgcrypto"
-User Schema
+
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
 CREATE TABLE profiles(
 id  SERIAL PRIMARY KEY,
 uuid UUID DEFAULT gen_random_uuid() UNIQUE,
 username text NOT NULL,
 password text null,
 first_name text NOT NULL,
-last_name text not null
+last_name text not null,
 country text  NULL,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 email text NOT NULL UNIQUE,

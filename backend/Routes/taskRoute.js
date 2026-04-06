@@ -1,11 +1,19 @@
 import express from "express";
-import { getTask, createTask, patchTask, deleteTask } from "../Controllers/taskControllers.js";
+import {
+  createTask,
+  getTask,
+  patchTask,
+  deleteTask,
+} from "../controllers/taskControllers.js";
+import { ensureAuthenticated } from "./authRoute.js"; // make sure to export it
 
-const  router = express.Router();
+const taskRouter = express.Router();
 
-router.get("/", getTask);//get
-router.post("/", createTask); //post
-router.patch("/:id", patchTask) //patch
-router.delete("/:id", deleteTask) //delete
+// Protect routes
 
-export default  router ;
+taskRouter.get("/", ensureAuthenticated, getTask);
+taskRouter.post("/", ensureAuthenticated, createTask);
+taskRouter.patch("/:uuid", ensureAuthenticated, patchTask);
+taskRouter.delete("/:uuid", ensureAuthenticated, deleteTask);
+
+export default taskRouter;
