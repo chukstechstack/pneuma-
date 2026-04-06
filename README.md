@@ -22,9 +22,9 @@ Personalized Dashboard: A custom space featuring user profiles, personal descrip
 Private Connectivity: An integrated chat-box for one-on-one encouragement and fellowship.
 
 # Pnuma
-Pnuma - Full-Stack Blog Application | React + Node.js + PostgreSQL + Supabase | In-progress
+Pnuma -  React + Node.js + PostgreSQL + Supabase | In-progress
 
-# Built with passion by Chukwunyely Kingsley Emmanuel.
+# Built with passion by Chukwunyely Kingsley Emmanuel
 
 
 
