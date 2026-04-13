@@ -3,7 +3,9 @@ import bcryptjs from "bcryptjs";
 import {
   findUserRegistration,
   registerNewUser,
-} from "../services/authService.js";
+} from "../services/auth/authService.js";
+import LoginError from "../utils/LoginError.js";
+import passport from "passport";
 
 const saltRound = 10;
 
@@ -39,7 +41,7 @@ const registerUser = async (req, res, next) => {
     // const userCountry = country || "unknown"
     const user = await findUserRegistration(email);
     if (user) {
-      return res.status(400).json({ msg: "user already exisit" });
+      return res.status(400).json({ message: "user already exisit" });
     }
 
     const hash = await bcryptjs.hash(password, saltRound);
@@ -74,53 +76,48 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-const loginUser = (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) return next(err);
+const loginUser =
+  ("/login",
+    (req, res, next) => {
+      passport.authenticate("local", (err, user, info) => {
+        if (err) return next(err);
 
-    if (!user) {
-      return res.status(401).json({ message: "invalid credentials" });
-    }
+        if (!user) throw new LoginError("user not found Register!!");
 
-    req.login(user, (err) => {
-      if (err) return res.status(500).json({ message: "Login failed" });
-      return res.json({
-        message: "Login successful",
+        req.login(user, (err) => {
+          if (err) throw new LoginError("login failed");
+          return res.json({
+            message: "Login successful",
+          });
+        });
+      })(req, res, next);
+    });
+
+const logoutUser =
+  ("/logout",
+    (req, res, next) => {
+      req.logout((err) => {
+        if (err) throw new LoginError("log out failed", 500);
+
+        req.session.destroy((err) => {
+          if (err) return next(err);
+        });
+
+        res.clearCookie("connect.sid");
+        res.json({ message: "logged out successfully" });
       });
     });
-  })(req, res, next);
-};
-
-const homeRedirect = (req, res) => {
-  if (!req.user) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-  res.json({ user: req.user });
-};
-
-const logoutUser = (req, res, next) => {
-  req.logout((err) => {
-    if (err) return next(err);
-
-    req.session.destroy((err) => {
-      if (err) return next(err);
-    });
-
-    res.clearCookie("connect.sid");
-    res.json({ message: "logged out successfully" });
-  });
-};
 
 const googleCallBack = (req, res, next) => {
   passport.authenticate("google", (err, user, info) => {
     if (err) return next(err);
-    if (!user) return res.redirect("/auth/login");
-
+    if (!user) return res.redirect("http://localhost:5173/auth/login");
     req.login(user, (err) => {
-      if (err) return next(err);
-      return res.redirect("/auth/home");
+      if (err)
+        return next(new LoginError("session creation failed", 500));
+      return res.redirect("http://localhost:5173/taskhome/home");
     });
   })(req, res, next);
 };
 
-export { registerUser, loginUser, homeRedirect, logoutUser, googleCallBack };
+export { registerUser, loginUser, logoutUser, googleCallBack };

@@ -7,10 +7,12 @@ import crypto from "crypto";
 import {
   findUserByEmail,
   findUserById,
-  findGoogleByEmail,
+  findGoogleUserByEmail,
+  findUserByGoogle_id,
   insertGoogleUser,
-} from "../services/passportService.js";
-
+  updateGoogleIdByEmail,
+} from "../services/auth/passportService.js";
+import LoginError from "../utils/LoginError.js";
 
 dotenv.config();
 
@@ -21,6 +23,8 @@ passport.use(
     { usernameField: "email", passwordField: "password" },
     async (email, password, done) => {
       try {
+        if (!email) throw new LoginError("email required", 400);
+        if (!password) throw new LoginError("password required");
         const user = await findUserByEmail(email);
 
         if (!user) {
@@ -45,17 +49,17 @@ passport.use(
 
 passport.serializeUser((user, done) => {
   console.log("Serializing user:", user);
-  done(null, user.id);
+  done(null, user.uuid);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (uuid, done) => {
   try {
-    console.log("Deserializing user id:", id);
+    console.log("Deserializing user id:", uuid);
 
-    const user = await findUserById(id);
+    const user = await findUserById(uuid);
 
     if (!user) {
-      console.log("No user found for id:", id);
+      console.log("No user found for id:", uuid);
       return done(null, false);
     }
 
@@ -65,10 +69,9 @@ passport.deserializeUser(async (id, done) => {
     done(null, user);
   } catch (err) {
     console.error("Error in deserializeUser:", err);
-    return done(err, null);
+    return done(err, null, { message: "error deserializing User" });
   }
 });
-
 
 // ------- GOOGLE STRATEGY  ---------
 
@@ -85,21 +88,25 @@ passport.use(
         const email = profile.emails[0].value;
         const google_id = profile.id;
         const [first_name, last_name] = profile.displayName.split(" ");
-
-        let user = await findGoogleByEmail(email);
-
+        console.log(profile);
+        let user = await findUserByGoogle_id(google_id);
         if (!user) {
-          const baseUsername = email.split("@")[0];
-          const uniqueSuffix = crypto.randomBytes(3).toString("hex");
-          const username = `${baseUsername}_${uniqueSuffix}`;
+          user = await findGoogleUserByEmail(email);
+          if (user) {
+            user = await updateGoogleIdByEmail(google_id, email);
+          } else {
+            const baseUsername = email.split("@")[0];
+            const uniqueSuffix = crypto.randomBytes(3).toString("hex");
+            const username = `${baseUsername}_${uniqueSuffix}`;
 
-          user = await insertGoogleUser({
-            username,
-            first_name,
-            last_name,
-            email,
-            google_id,
-          });
+            user = await insertGoogleUser({
+              username,
+              first_name,
+              last_name,
+              email,
+              google_id,
+            });
+          }
         }
 
         done(null, user);

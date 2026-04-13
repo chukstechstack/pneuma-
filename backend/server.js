@@ -31,8 +31,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 1000 * 60 * 60,
     },
   }),
@@ -45,12 +45,11 @@ const PORT = process.env.PORT || 3000;
 
 app.use("/auth", mainAuthRouter);
 app.use("/task", mainTaskRouter);
-
 app.use((err, req, res, next) => {
   console.error(err);
 
   res.status(err.statusCode || 500).json({
-    error: err.message || "something went wrong"
+    error: err.message || "something went wrong",
   });
 });
 

@@ -57,7 +57,7 @@ const createTask = [
 
       // Insert into Postgres
       await pool.query(
-        `INSERT INTO content(title, content, img, category, tags, user_id)
+        `INSERT INTO content(title, content, img, category, tags, user_id )
          VALUES($1, $2, $3, $4, $5, $6)`,
         [title, content, img_url, category, tagsArray, user_id],
       );
@@ -71,19 +71,119 @@ const createTask = [
 
 const getTask = async (req, res, next) => {
   try {
-    const result = await pool.query(`SELECT * FROM content`);
+    const result = await pool.query(
+      `SELECT * FROM content ORDER BY created_at DESC`,
+    );
     res.json({ tasks: result.rows });
   } catch (err) {
     next(err);
   }
 };
 
-const patchTask = (req, res) => {
-  res.send("patch task created");
+const deleteTask = async (req, res, next) => {
+  const { uuid } = req.params;
+  try {
+    await pool.query(`delete from content where uuid = $1`, [uuid]);
+    res.status(200).json({ message: "Deleted successfully" });
+  } catch (err) {
+    next(err);
+    console.log(err);
+  }
 };
 
-const deleteTask = (req, res) => {
-  res.send("delete task created");
+const getEditPage = async (req, res, next) => {
+  const uuid = req.params.uuid;
+  const userId = req.user.id;
+
+  try {
+    const result = await pool.query(
+      `select * from content where uuid = $1 AND user_id = $2`,
+      [uuid, userId],
+    );
+
+    if (result.rows.length === 0) throw new TaskInputError("Post not found");
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    next(err);
+  }
 };
 
-export { createTask, getTask, deleteTask, patchTask };
+const patchTask = [
+  upload.single("img"),
+  async (req, res, next) => {
+    const { uuid } = req.params;
+    const user_id = req.user.id;
+
+    try {
+      const updates = [];
+      const values = [];
+
+      if (req.body.title) {
+        updates.push(`title = $${updates.length + 1}`);
+        values.push(req.body.title);
+      }
+
+      if (req.body.content) {
+        updates.push(`content = $${updates.length + 1}`);
+        values.push(req.body.content);
+      }
+
+      if (req.body.category) {
+        updates.push(`category = $${updates.length + 1}`);
+        values.push(req.body.category);
+      }
+
+      if (req.body.tags) {
+        const tagsArray = req.body.tags.split(",").map((t) => t.trim());
+        updates.push(`tags = $${updates.length + 1}`);
+        values.push(tagsArray);
+      }
+
+      if (req.file) {
+        const { data, error } = await supabase.storage
+          .from("task-images")
+          .upload(
+            `tasks/${Date.now()}-${req.file.originalname}`,
+            req.file.buffer,
+            {
+              contentType: req.file.mimetype,
+            },
+          );
+
+        if (error) throw error;
+
+        const { data: publicData } = supabase.storage
+          .from("task-images")
+          .getPublicUrl(data.path);
+        updates.push(`img = $${updates.length + 1}`);
+        values.push(publicData.publicUrl);
+      }
+
+      if (updates.length === 0) {
+        return res.status(400).json({ message: "No field provided" });
+      }
+
+      values.push(uuid, user_id);
+      const query = `
+      UPDATE CONTENT SET ${updates.join(", ")}
+      WHERE uuid = $${values.length - 1} AND user_id = $${values.length}
+      RETURNING *;
+      `;
+
+      const result = await pool.query(query, values);
+      if (result.rowCount === 0) {
+        return res.status(404).json({ message: "Task not found" });
+      }
+
+      res.json({
+        message: "updated successfully",
+        updatedTask: result.rows[0],
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+];
+
+export { createTask, getTask, deleteTask, patchTask, getEditPage };

@@ -14,7 +14,15 @@ email text NOT NULL UNIQUE,
 google_id text, 
 avatar_url  text
 );
+// // src/api/axios.js
+// import axios from "axios";
 
+// const api = axios.create({
+//   baseURL: "http://localhost:3000",
+//   withCredentials: true,
+// });
+
+// export default api;
 CREATE TABLE content (
 id SERIAL PRIMARY KEY,
 uuid UUID DEFAULT gen_random_uuid() UNIQUE,

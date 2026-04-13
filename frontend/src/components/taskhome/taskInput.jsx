@@ -1,19 +1,24 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const Task = ({ title, content, img, category, tags, index }) => {
+const Task = ({ title, content, img, category, tags, deleteTask, uuid }) => {
   return (
     <div>
-      <div> {index}</div>
-      <div> {title}</div>
-      <div> {content}</div>
       <div>
-        <img src={img} alt={title} width="200" />
+        <div> {title}</div>
+        <div> {content}</div>
+        <div>
+          <img src={img} alt={title} width="200" />
+        </div>
+        <div>
+          <span>{category}</span> <br />
+          <span>{tags}</span>
+        </div>
+        <Link to={`/edittask/${uuid}`}> Edit </Link>
+        <button onClick={() => deleteTask(uuid)}> Delete </button>
+        <button> likes</button>
       </div>
-      <div> {category}</div>
-      <div> {tags}</div>
-      <button> Edit </button>
-      <button> Delete </button>
-      <button> likes</button>
+      <hr />
     </div>
   );
 };

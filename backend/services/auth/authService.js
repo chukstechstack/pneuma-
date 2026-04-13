@@ -1,4 +1,4 @@
-import pool from "../config/db.js";
+import pool from "../../config/db.js";
 
 
 
@@ -31,7 +31,7 @@ export const registerNewUser = async ({
   email,
   google_id, 
   avatar_url
-  ) values($1, $2, $3, $4, $5, $6, $7,$8) RETURNING id`,
+  ) values($1, $2, $3, $4, $5, $6, $7,$8) RETURNING id, uuid`,
     [
       username,
       password,

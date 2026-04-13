@@ -5,9 +5,9 @@ const AuthHome = () => {
   const navigate = useNavigate();
   return (
     <div>
-      <h1> Hello David </h1>
+      <h1> Register / Login </h1>
       <button onClick={() => navigate("/auth/login")}> Go to Login</button>
-          <button onClick={() => navigate("/auth/register")}>Go to Register</button>
+      <button onClick={() => navigate("/auth/register")}>Go to Register</button>
     </div>
   );
 };

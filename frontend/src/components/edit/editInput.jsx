@@ -1,43 +1,43 @@
+import React from "react";
+
 const TaskInput = ({
-  img,
-  submitTask,
   title,
+  handleChange,
   content,
   category,
   tags,
-  handleFormData,
+  img,
+  handleSubmit,
 }) => {
   return (
     <div>
-      <form onSubmit={submitTask}>
+      <form onSubmit={handleSubmit}>
         <input
-          type="text"
           name="title"
           value={title}
-          onChange={handleFormData}
-          placeholder="Title"
+          onChange={handleChange}
+          placeholder="title"
+          type="text"
         />
         <hr />
-
         <textarea
           name="content"
           value={content}
-          onChange={handleFormData}
-          placeholder="share your jouney with Christ"
+          onChange={handleChange}
+          placeholder="content"
+          type="text"
           rows="6"
         />
         <hr />
-
         <input
           type="file"
           name="img"
           accept="image/*"
-          onChange={handleFormData}
+          onChange={handleChange}
         />
         <hr />
-
         <label htmlFor="category-select"> Choose a category: </label>
-        <select name="category" value={category} onChange={handleFormData}>
+        <select name="category" value={category} onChange={handleChange}>
           <option value="" disabled>
             -- Please Choose an Option --
           </option>
@@ -45,34 +45,27 @@ const TaskInput = ({
           <option value="prayer"> Prayer Request </option>
           <option value="encouragement"> Encouragement </option>
         </select>
-
         <hr />
-
         <input
-          type="text"
           name="tags"
           value={tags}
-          onChange={handleFormData}
-          placeholder="Tags"
+          onChange={handleChange}
+          placeholder="tags"
+          type="text"
         />
         <hr />
-
-        <button type="submit"> Submit</button>
-      </form>
-
-      {img && (
-        <div>
-          <p> Selected image: {img.name}</p>
+        {img && (
           <img
-            src={URL.createObjectURL(img)}
-            alt="preview"
+            src={img instanceof File ? URL.createObjectURL(img) : img}
+            alt="Post Preview"
             width={200}
             style={{ marginTop: "10px" }}
           />
-        </div>
-      )}
+        )}
+        <hr />
+        <button type="submit"> Submit </button> <hr />
+      </form>
     </div>
   );
 };
-
 export default TaskInput;

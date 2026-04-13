@@ -1,16 +1,67 @@
-# React + Vite
+# Pnuma 🕊️
+> **A Mission-Driven Platform for Faith-Based Storytelling**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[![React](https://shields.io)](https://reactjs.org)
+[![NodeJS](https://shields.io)](https://nodejs.org)
+[![PostgreSQL](https://shields.io)](https://postgresql.org)
+[![Supabase](https://shields.io)](https://supabase.com)
 
-Currently, two official plugins are available:
+Pnuma is a specialized community platform designed to help believers document and share their personal journeys with Christ. By focusing on data integrity and secure community interactions, Pnuma serves as a digital archive of God’s faithfulness.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🔗 **Live Demo:** [Deploying to Render - Link Coming Soon!]  
+⚠️ **Project Status:** Active Development (V1 Prototype)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 📖 Vision
+To bridge the gap between faith and technology by:
+*   **Preserving Legacies:** Documenting personal testimonies as a lasting reminder of God's work.
+*   **Building Community:** Enabling believers to encourage one another through shared experiences.
+*   **Global Evangelism:** Providing a centralized, accessible platform for sharing the Gospel.
 
-## Expanding the ESLint configuration
+## 🛠️ Technical Highlights
+While the UI is currently in a functional prototype stage, the core focus has been on robust **Backend Architecture** and **Security**:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+*   **Secure Authentication:** Integrated **Passport.js** and **Google OAuth 2.0** to provide seamless, secure user onboarding.
+*   **Relational Data Modeling:** Architected a **PostgreSQL** schema to handle complex relationships between users, testimonies, and community interactions.
+*   **State Management:** Leveraging **React** to ensure an asynchronous, responsive "Create & Read" user experience.
+*   **Security First:** Implemented environment variable protection and secure session management.
+
+## 🚀 Roadmap & Features
+### **Core Functionalities (Completed)**
+- [x] Full-Stack CRUD operations for Testimonies
+- [x] Secure Google Authentication (Passport.js)
+- [x] Relational Database Integration (PostgreSQL/Supabase)
+
+### **Next Sprint (In Progress)**
+- [ ] **Interaction Engine:** Implementing Likes and Comments system
+- [ ] **Stateless Auth:** Transitioning to **JWT** for API security
+- [ ] **Dashboard:** Personalized user profile management
+- [ ] **UI/UX Overhaul:** Implementing a polished, modern design for better accessibility
+
+## ⚙️ Tech Stack
+*   **Frontend:** React, HTML5, CSS3 (Transitioning to Tailwind CSS)
+*   **Backend:** Node.js, Express.js
+*   **Database:** PostgreSQL, Supabase
+*   **Auth:** Passport.js, Google OAuth
+*   **Tools:** Git, GitHub, Postman, Vercel (Frontend), Render (Backend)
+
+---
+
+## 🏗️ Local Setup
+To run this project locally:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com
+Use code with caution.
+Install dependencies:
+bash
+npm install
+Use code with caution.
+Set up your .env variables (Google ID, Database URL).
+Start the development server:
+bash
+npm start
+Use code with caution.
+Developed by Chukwunyelu Kingsley Emmanuel

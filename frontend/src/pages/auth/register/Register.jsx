@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import RegisterInput from "./inputRegister.jsx";
-import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-
+import api from "../../../api/axios.js";
+import { Link } from "react-router-dom";
 
 const Register = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [register, setRegister] = useState({
     username: "",
     password: "",
@@ -28,11 +28,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-       const res = await axios.post(
-        "http://localhost:3000/auth/register",
-        register,
-        { withCredentials: true}
-      );
+      const res = await api.post("/auth/register", register);
       toast.success(res.data.message);
 
       setRegister({
@@ -46,13 +42,16 @@ const Register = () => {
 
       navigate("/taskhome/home");
     } catch (err) {
-      const message = err.response?.data?.error || err.message
-      toast.error(message)
-      console.error(err)
+      const message = err.response?.data?.error || err.message;
+      toast.error(message);
+      console.error(err);
     }
   };
   return (
     <div>
+      <div>
+        <Link to="/">Back</Link> <hr/> <br/>
+      </div>
       <RegisterInput
         handleChange={handleChange}
         username={username}

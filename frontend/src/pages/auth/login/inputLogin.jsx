@@ -1,26 +1,38 @@
 import React from "react";
 
-const LoginInput = ({ handleChange, password, email }) => {
+
+const LoginInput = ({
+ 
+  handleChange,
+  password,
+  email,
+  handleSubmit,
+}) => {
   return (
     <div>
-      <form onSubmit={() => handleChange}>
-        
-        <input
-          type="string"
-          name="password"
-          value={password}
-          onChange={handleChange}
-          placeHolder="password"
-        />
-        ,
+      <form onSubmit={handleSubmit}>
         <input
           type="email"
           name="email"
           value={email}
           onChange={handleChange}
-          placeHolder="email"
+          placeholder="email"
         />
-        ,<button type="submit"> Submit</button>
+        <hr />
+        <input
+          type="string"
+          name="password"
+          value={password}
+          onChange={handleChange}
+          placeholder="password"
+        />
+
+        <hr />
+        <button type="submit"> Submit</button>
+        <a href="http://localhost:3000/auth/google" className="google-btn">
+        
+          Sign in with Google
+        </a>
       </form>
     </div>
   );
