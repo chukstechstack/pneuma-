@@ -5,6 +5,7 @@ import {
   patchTask,
   deleteTask,
   getEditPage,
+  toggleLike
 } from "../controllers/taskControllers.js";
 import { ensureAuthenticated } from "./authRoute.js"; // make sure to export it
 
@@ -16,6 +17,7 @@ taskRouter.get("/", ensureAuthenticated, getTask);
 taskRouter.post("/", ensureAuthenticated, createTask);
 taskRouter.patch("/:uuid", ensureAuthenticated, patchTask);
 taskRouter.delete("/:uuid", ensureAuthenticated, deleteTask);
-taskRouter.get("/posts/:uuid", ensureAuthenticated, getEditPage);
+taskRouter.get("/:uuid/post", ensureAuthenticated, getEditPage);
+taskRouter.post("/:uuid/likes", ensureAuthenticated, toggleLike)
 
 export default taskRouter;

@@ -1,48 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import TaskInput from "./editInput.jsx";
+import TaskInput from "../components/EditInput.jsx";
 import { toast } from "react-toastify";
-import api from "../../api/axios.js";
+import api from "../api/axios.js";
+import TaskContext from "../context/TaskContext.jsx";
 
 const EditPost = () => {
   const navigate = useNavigate();
   const { uuid } = useParams();
+  const { tasks, updateTaskInState } = useContext(TaskContext);
+  const taskToEdit = tasks.find((t) => t.uuid === uuid);
+
   const [formData, setFormData] = useState({
-    title: "",
-    content: "",
-    img: "",
-    tags: "",
-    category: "",
+    title: taskToEdit?.title || "",
+    content: taskToEdit?.content || "",
+    img: taskToEdit?.img || "",
+    tags: Array.isArray(taskToEdit?.tags)
+      ? taskToEdit.tags.join(", ")
+      : taskToEdit.tags || "",
+    category: taskToEdit?.category || "",
   });
+
   const { title, content, img, tags, category } = formData;
-
+  const isInitialized = useRef(false);
   useEffect(() => {
-    api
-      .get(`/task/posts/${uuid}`)
-      .then((res) => {
-        setFormData({
-          title: res.data.title || "",
-          content: res.data.content || "",
-          img: res.data.img || "",
-          tags: Array.isArray(res.data.tags)
-            ? res.data.tags.join(", ")
-            : res.data.tags || "",
-          category: res.data.category || "",
-        });
-      })
-      .catch((err) => {
-        const message = err.response?.data?.error || err.message;
-        toast.error(message);
+    if (taskToEdit && !isInitialized.current) {
+      setFormData({
+        title: taskToEdit.title || "",
+        content: taskToEdit.content || "",
+        img: taskToEdit.img || "",
+        tags: Array.isArray(taskToEdit.tags) ? taskToEdit.tags.join(", ") : "",
+        category: taskToEdit.category || "",
       });
-  }, [uuid]);
-
+      isInitialized.current = true;
+    }
+  }, [taskToEdit]);
+  
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "img") {
-      setFormData((prev) => ({ ...prev, [name]: files[0] }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files && files.length > 0 ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -64,8 +63,9 @@ const EditPost = () => {
         tags: "",
         category: "",
       });
-      navigate("/taskhome/home");
+      updateTaskInState(res.data.updatedTask);
       toast.success(res.data.message);
+      navigate("/taskhome/home");
     } catch (err) {
       const message = err.response?.data?.error || "Update failed";
       toast.error(message);

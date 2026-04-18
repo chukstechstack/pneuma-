@@ -40,3 +40,10 @@ CREATE INDEX idx_content_user_id ON content(user_id);
 CREATE INDEX idx_content_uuid ON content(uuid);
 CREATE INDEX idx_content_tags ON content USING GIN(tags)
 
+CREATE TABLE likes (
+    id SERIAL PRIMARY KEY,
+    post_id INTEGER REFERENCES content(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES profiles(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(post_id, user_id)
+)

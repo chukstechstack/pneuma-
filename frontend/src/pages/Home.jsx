@@ -1,31 +1,13 @@
-import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Task from "./taskInput.jsx";
-import api from "../../api/axios.js";
-
+import TaskContext from "../context/TaskContext.jsx";
+import { useContext } from "react";
+import api from "../api/axios.js";
+import Task from "../components/HomeTaskInput.jsx";
+import LikeButton from "../components/LikeButton"
 const HomePage = () => {
-  const [tasks, setTask] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+  const { tasks, loading, deleteTaskFromState, currentUserId } = useContext(TaskContext);
   const navigate = useNavigate();
-
-  const getTasks = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await api.get("/task");
-      setTask(res.data.tasks);
-    } catch (err) {
-      const message = err.response?.data?.error || err.message;
-      toast.error(message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    getTasks();
-  }, [getTasks]);
 
   const logout = async () => {
     try {
@@ -45,7 +27,7 @@ const HomePage = () => {
       const res = await api.delete(`/task/${uuid}`);
 
       toast.success(res.data.message);
-      getTasks();
+      deleteTaskFromState(uuid);
     } catch (err) {
       const message = err?.response?.data?.error || err.message;
       toast.error(message);
@@ -69,21 +51,15 @@ const HomePage = () => {
       ) : (
         <div>
           {tasks.map((task) => {
-            return (
-              <Task
-                key={task.id}
-                uuid={task.uuid}
-                title={task.title}
-                content={task.content}
-                img={task.img}
-                category={task.category}
-                tags={task.tags}
-                deleteTask={deleteTask}
-              />
-            );
+            return <Task key={task.id} 
+            task={task}
+            deleteTask={deleteTask} 
+            isOwner={task.user_id === currentUserId}
+             />;
           })}
         </div>
       )}
+      
     </div>
   );
 };

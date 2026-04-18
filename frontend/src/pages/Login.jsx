@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-import LoginInput from "./inputLogin.jsx";
+import LoginInput from "../components/LoginInput.jsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import api from "../../../api/axios.js";
-import { Link } from "react-router-dom"
+import api from "../api/axios.js";
+import { Link } from "react-router-dom";
+import TaskContext from "../context/TaskContext.jsx";
+import { useContext } from "react";
 
 const Login = () => {
   const [login, setLogin] = useState({
     password: "",
     email: "",
   });
+  const { getTasks } = useContext(TaskContext);
   const navigate = useNavigate();
 
   const { email, password } = login;
@@ -20,7 +23,7 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     try {
       const res = await api.post("/auth/login", login);
       setLogin({
@@ -28,6 +31,7 @@ const Login = () => {
         password: "",
       });
       toast.success(res.data.message);
+      await getTasks();
       navigate("/taskhome/home");
       console.log(res);
     } catch (err) {
@@ -37,7 +41,8 @@ const Login = () => {
   };
   return (
     <div>
-      <Link to="/"> Back </Link> <hr /> <br/>
+      <h1> Login </h1>
+      <Link to="/"> Back </Link> <hr /> <br />
       <LoginInput
         handleChange={handleChange}
         email={email}

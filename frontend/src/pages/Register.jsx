@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import RegisterInput from "./inputRegister.jsx";
+import RegisterInput from "../components/RegisterInput.jsx";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
-import api from "../../../api/axios.js";
+import api from "../api/axios.js";
 import { Link } from "react-router-dom";
 
 const Register = () => {
@@ -50,7 +50,8 @@ const Register = () => {
   return (
     <div>
       <div>
-        <Link to="/">Back</Link> <hr/> <br/>
+        <h1> Register </h1>
+        <Link to="/">Back</Link> <hr /> <br />
       </div>
       <RegisterInput
         handleChange={handleChange}

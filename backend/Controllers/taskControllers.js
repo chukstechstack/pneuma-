@@ -56,13 +56,16 @@ const createTask = [
       }
 
       // Insert into Postgres
-      await pool.query(
+      const result = await pool.query(
         `INSERT INTO content(title, content, img, category, tags, user_id )
-         VALUES($1, $2, $3, $4, $5, $6)`,
+         VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
         [title, content, img_url, category, tagsArray, user_id],
       );
 
-      res.json({ message: "Content created successfully", img_url });
+      res.json({
+        message: "Content created successfully",
+        newTask: result.rows[0],
+      });
     } catch (err) {
       next(err);
     }
@@ -70,11 +73,17 @@ const createTask = [
 ];
 
 const getTask = async (req, res, next) => {
+  const user_id = req.user?.id; // Get current user ID from auth middleware
   try {
     const result = await pool.query(
-      `SELECT * FROM content ORDER BY created_at DESC`,
+      `SELECT c.*, 
+       (SELECT COUNT(*) FROM likes WHERE post_id = c.id) AS like_count,
+       EXISTS (SELECT 1 FROM likes WHERE post_id = c.id AND user_id = $1) AS is_liked
+       FROM content c 
+       ORDER BY c.created_at DESC`,
+      [user_id],
     );
-    res.json({ tasks: result.rows });
+    res.json({ tasks: result.rows, currentUserId: user_id });
   } catch (err) {
     next(err);
   }
@@ -82,8 +91,15 @@ const getTask = async (req, res, next) => {
 
 const deleteTask = async (req, res, next) => {
   const { uuid } = req.params;
+  const user_id = req.user.id;
   try {
-    await pool.query(`delete from content where uuid = $1`, [uuid]);
+    const result = await pool.query(
+      `delete from content where uuid = $1 AND user_id = $2`,
+      [uuid, user_id],
+    );
+    if (result.rowCount === 0) {
+      return res.status * (403).json({ error: "You are unauthorized" });
+    }
     res.status(200).json({ message: "Deleted successfully" });
   } catch (err) {
     next(err);
@@ -160,9 +176,7 @@ const patchTask = [
         values.push(publicData.publicUrl);
       }
 
-      if (updates.length === 0) {
-        return res.status(400).json({ message: "No field provided" });
-      }
+      if (updates.length === 0) throw new TaskInputError("Post not found");
 
       values.push(uuid, user_id);
       const query = `
@@ -172,10 +186,7 @@ const patchTask = [
       `;
 
       const result = await pool.query(query, values);
-      if (result.rowCount === 0) {
-        return res.status(404).json({ message: "Task not found" });
-      }
-
+      if (result.rowCount === 0) throw new TaskInputError("Post not found");
       res.json({
         message: "updated successfully",
         updatedTask: result.rows[0],
@@ -186,4 +197,37 @@ const patchTask = [
   },
 ];
 
-export { createTask, getTask, deleteTask, patchTask, getEditPage };
+const toggleLike = async (req, res, next) => {
+  const { uuid } = req.params;
+  const user_id = req.user.id;
+  try {
+    const postResult = await pool.query(
+      "SELECT id FROM content WHERE uuid =$1",
+      [uuid],
+    );
+
+    if (postResult.rowCount === 0) throw new TaskInputError("Post not found");
+    const post_id = postResult.rows[0].id;
+
+    const checkLike = await pool.query(
+      `SELECT * FROM likes WHERE post_id = $1 AND user_id = $2`,
+      [post_id, user_id],
+    );
+    if (checkLike.rowCount > 0) {
+      await pool.query(
+        `DELETE FROM likes WHERE post_id = $1 AND user_id = $2`,
+        [post_id, user_id],
+      );
+      res.json({ liked: false });
+    } else {
+      await pool.query("INSERT INTO likes (post_id, user_id) VALUES($1, $2)", [
+        post_id,
+        user_id,
+      ]);
+      res.json({ liked: true });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+export { createTask, getTask, deleteTask, patchTask, getEditPage, toggleLike };

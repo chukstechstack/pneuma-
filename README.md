@@ -65,3 +65,5 @@ bash
 npm start
 Use code with caution.
 Developed by Chukwunyelu Kingsley Emmanuel
+git config --global user.name "Your New Name"
+git config --global user.email "your-new-email@example.com"
