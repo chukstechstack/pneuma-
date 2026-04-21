@@ -1,4 +1,4 @@
-# Pnuma 🕊️
+# Pneuma 🕊️
 
 > **A Mission-Driven Platform for Faith-Based Storytelling**
 
@@ -7,7 +7,7 @@
 [![PostgreSQL](https://shields.io)](https://postgresql.org)
 [![Supabase](https://shields.io)](https://supabase.com)
 
-Pnuma is a specialized community platform designed to help believers document and share their personal journeys with Christ. By focusing on data integrity and secure community interactions, Pnuma serves as a digital archive of God’s faithfulness.
+Pneuma is a specialized community platform designed to help believers document and share their personal journeys with Christ. By focusing on data integrity and secure community interactions, Pnuma serves as a digital archive of God’s faithfulness.
 
 🔗 **Live Demo:** [Deploying to Render - Link Coming Soon!]  
 ⚠️ **Project Status:** Active Development (V1 Prototype)
@@ -58,8 +58,8 @@ While the UI is currently in a functional prototype stage, the core focus has be
   Personalized Dashboard: A custom space featuring user profiles, personal descriptions, and interest-based feed filtering.
   Private Connectivity: An integrated chat-box for one-on-one encouragement and fellowship.
 
-# Pnuma
+# Pneuma 
 
-Pnuma - React + Node.js + PostgreSQL + Supabase | In-progress
+Pneuma - React + Node.js + PostgreSQL + Supabase | In-progress
 
 # Built with passion by Chukwunyely Kingsley Emmanuel
