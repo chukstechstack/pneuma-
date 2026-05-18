@@ -1,13 +1,13 @@
 import React, { useState, useContext } from "react";
 import RegisterInput from "../components/RegisterInput.jsx";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
-import { Link } from "react-router-dom";
 import "../styles/Register.css";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 import TaskContext from "../context/TaskContext.jsx";
+
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,8 +22,7 @@ const Register = () => {
     email: "",
   });
 
-  const { username, password, first_name, last_name, country, email } =
-    register;
+  const { username, password, first_name, last_name, country, email } = register;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,7 +31,6 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setIsLoading(true);
       await api.post("/auth/register", register);
@@ -45,7 +43,6 @@ const Register = () => {
         country: "",
         email: "",
       });
-
       navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || err.message;
@@ -54,14 +51,26 @@ const Register = () => {
       setIsLoading(false);
     }
   };
-  return (
-    <div>
-      {isLoading && <FullPageLoader />}
-      <div className="input-body">
-        <div className="sign-up">
-          <h1> Sign up</h1>
-        </div>
 
+  return (
+    <main className="register-layout">
+      {/* Full screen loader target component */}
+      {isLoading && <FullPageLoader />}
+      
+      {/* Ambient background accent glow */}
+      <div className="register-ambient-glow"></div>
+
+      <section className="register-container">
+        
+        {/* Architectural Header Accent */}
+        <header className="register-header">
+          <Link to="/" className="register-brand-link">Pneuma</Link>
+          <h1 className="register-title">Begin Your Journey</h1>
+          <div className="register-divider"></div>
+          <p className="register-subtitle">Create your personal sanctuary workspace archive.</p>
+        </header>
+
+        {/* Form Grid Injection */}
         <RegisterInput
           handleChange={handleChange}
           username={username}
@@ -72,8 +81,20 @@ const Register = () => {
           email={email}
           handleSubmit={handleSubmit}
         />
-      </div>
-    </div>
+
+        {/* Lower Navigation Footer Alternative link */}
+        <footer className="register-footer">
+          <span>Already mapping your legacy?</span>
+          <span 
+            onClick={() => navigate("/login")} 
+            className="register-login-link"
+            style={{ cursor: "pointer" }}
+          >
+            Come On In
+          </span>
+        </footer>
+      </section>
+    </main>
   );
 };
 

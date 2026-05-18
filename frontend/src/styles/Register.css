@@ -1,131 +1,350 @@
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  overflow-x: hidden;
-  background-color: var(--cream-bg);
-}
+@import url("https://googleapis.com");
 
 :root {
-  --cream-bg: #faf9f6;
-  --dove-blue: #b2c8df;
-  --sunset-orange: #e8aa42;
-  --deep-earth: #443002;
-
+  --bg-main: #0c0d12;
+  --bg-surface: #13151d;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --text-main: #f4f4f6;
+  --text-muted: #8e92a2;
+  --accent-gold: #d4af37;
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Cinzel", serif;
 }
 
-.input-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* ==========================================
+   USE BODY RESET TO KILL SIDE LINES FORGOOD
+   ========================================== */
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: #0c0d12 !important; /* Locks background to deep midnight dark */
+}
+
+/* Also strip it from the root view container inside the body */
+body *, body::before, body::after {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Force the navbar and main layouts to drop their borders completely */
+.navbar, .register-layout, .register-container {
+  border: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Base structural layout container */
+.register-layout {
+  margin: 0;
+  padding: 2rem 1rem;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
   min-height: 100vh;
-
-  width: 100%;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow-x: hidden;
   box-sizing: border-box;
 }
 
+/* Golden background glow */
+.register-ambient-glow {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(212, 175, 55, 0.025) 0%,
+    transparent 70%
+  );
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* White form card layout box */
+.register-container {
+  position: relative;
+  z-index: 1;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 480px;
+  padding: 3.5rem 3rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.register-brand-link {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.register-title {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+}
+
+.register-divider {
+  width: 30px;
+  height: 1px;
+  background-color: var(--accent-gold);
+  margin: 0 auto 1.25rem auto;
+  opacity: 0.5;
+}
+
+.register-subtitle {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Form input elements styling overrides */
+.form-input-container {
+  width: 100%;
+}
 
 .form-wrapper {
-  width: 100%;
-  /* Allow it to fill the parent up to the max-width */
-  max-width: 400px;
-  /* Keeps the form from getting too wide on desktop */
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1.25rem;
 }
 
-
-input {
-  box-sizing: border-box;
-  outline: none;
-  border: 1.5px solid #ccc;
-  border-radius: 8px;
-  padding: 12px;
-  font-family: "Georgia", serif;
-}
-
-.register-button {
+.name-fields-row {
+  display: flex;
+  gap: 1rem;
   width: 100%;
-  text-decoration: none;
-  background-color: rgb(50, 63, 10);
-  color: #f6f4ef;
-  border: none;
-  border-radius: 50px;
-  padding: 12px 0;
-  font-weight: 900;
-  text-align: center;
-  transition: transform 0.2s ease;
 }
 
-.register-button:hover {
-  transform: translateY(3px);
-  filter: brightness(1.06);
+.name-fields-row input {
+  flex: 1;
+  min-width: 0;
 }
 
-input,
-.register-button {
+.form-wrapper input {
   width: 100%;
   box-sizing: border-box;
-  padding: 16px;
-  font-size: 1.2rem;
-  
+  background-color: rgba(12, 13, 18, 0.5) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 4px !important;
+  padding: 0.95rem 1.25rem !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
 }
 
-.sign-up {
-  color: #4d3207;
-  font-family: "Playfair Display", "Georgia", serif;
-  letter-spacing: 1px;
-  text-transform: capitalize;
+.form-wrapper input:focus,
+.register-form-wrapper input:focus {
+  color: #ffffff !important; /* Ensures text remains crisp white when clicked */
+  opacity: 1 !important; /* Prevents any faded or semi-transparent behavior */
 }
-
-.other-login {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-
-
-.login {
-  font-weight: 1000;
-  font-family: "Georgia", serif;
-  color: rgb(94, 90, 82);
-  margin-top: -9%;
-  font-size: 90%
-}
-
-.login-link {
-  cursor: pointer;
-  color: #ff7236;
-  padding-left: 10px
-}
-
-.google{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: -10%
-
-}
-
-
-.google-btn {
+/* Continue Primary Submit Button */
+.register-submit-btn {
   width: 100%;
-  text-decoration: none;
-  background-color: black;
-  color: #fcf7f7;
-  border: none;
-  border-radius: 50px;
-  padding: 12px 0;
-  font-weight: 900;
-  text-align: center;
-  transition: transform 0.2s ease;
+  font-family: var(--font-sans) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  padding: 1.1rem 2rem !important;
+  border-radius: 4px !important;
+  background-color: var(--text-main) !important;
+  color: #656c84 !important;
+  border: 1px solid var(--text-main) !important;
+  cursor: pointer !important;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease !important;
 }
 
-.google-btn:hover {
-  transform: translateY(3px);
-  filter: brightness(1.06);
+.register-submit-btn:hover {
+  background-color: transparent !important;
+  border-color: var(--accent-gold) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Horizontal text separator splits */
+.auth-divider-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem 0;
+  gap: 1rem;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-subtle);
+}
+
+.divider-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Premium Google Anchor integration layout */
+.google-oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 1rem 2rem;
+  color: #ffffff !important;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.google-oauth-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--text-muted);
+}
+
+.google-svg-icon {
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}
+
+.google-oauth-btn:hover .google-svg-icon {
+  color: var(--accent-gold);
+}
+
+.register-footer {
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.register-login-link {
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+.register-login-link:hover {
+  text-decoration: underline;
+}
+
+/* Responsive constraints screen micro configurations */
+@media (max-width: 480px) {
+  .register-layout {
+    padding: 1rem 0.5rem;
+  }
+  .register-container {
+    padding: 2.5rem 1.5rem;
+  }
+  .register-title {
+    font-size: 1.65rem;
+  }
+  .name-fields-row {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .register-container {
+    padding: 2rem 1rem;
+  }
+  .register-title {
+    font-size: 1.45rem;
+  }
+  .register-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* ==========================================
+   9. DESKTOP & PC LAYOUT COMPACTION (>= 1024px)
+   ========================================== */
+@media (min-width: 1024px) {
+  /* Smash the vertical height of the main hero section */
+  .hero-section {
+    min-height: auto !important; 
+    height: auto !important;
+    padding: 6.5rem 2rem 2rem 2rem !important; /* Tiny top and bottom padding */
+  }
+
+  /* Smash the vertical padding BETWEEN all subsections */
+  .pneuma-sub-section {
+    padding: 2rem 8% 6rem 8% !important; /* Cut top/bottom spacing down to a thin sliver */
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  /* Pull headings closer to their content card boxes */
+  .section-main-heading {
+    font-size: 2rem !important;
+    margin-bottom: 1.5rem !important; /* Cut heading gap in half */
+  }
+
+  /* Compact the spacing within the feature grid */
+  .features-grid-system {
+    gap: 1.25rem !important; 
+  }
+
+  .feature-item-card {
+    padding: 1.75rem 1.5rem !important; /* Thin out inner card vertical spacing */
+  }
+
+  /* Tighten up the Our Mission segment */
+  .mission-inner-container {
+    padding: 0.5rem 0 !important; 
+    margin-top: -1rem !important; /* Pulls section content upward */
+  }
+
+  /* Tighten up the final CTA sign-up box vertical footprint */
+  .action-cta-card {
+    padding: 2.5rem 3rem !important; /* Narrow vertical box padding */
+    margin-top: -1rem !important;
+  }
+
+  .action-cta-card p {
+    margin-bottom: 1.5rem !important; /* Closes gap before button */
+  }
+
+  .cta-action-btn {
+    margin-bottom: 1rem !important; /* Pulls footer up tightly */
+  }
 }

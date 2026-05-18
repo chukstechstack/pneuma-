@@ -3,15 +3,12 @@ import TaskContext from "../context/TaskContext.jsx";
 import { useContext } from "react";
 import api from "../api/axios.js";
 import Task from "../components/HomeTaskInput.jsx";
-import LikeButton from "../components/LikeButton";
 import NavBar from "../components/NavBar";
 import "../styles/Home.css";
 import DevBanner from "../components/DevBanner";
 
 const HomePage = () => {
   const { tasks, deleteTaskFromState, currentUserId } = useContext(TaskContext);
-
-  
 
   const deleteTask = async (uuid) => {
     try {
@@ -22,52 +19,53 @@ const HomePage = () => {
       console.log(message);
     }
   };
+
   return (
-    <div className="homePageBody">
+    <div className="home-layout">
       <DevBanner />
       <NavBar />
 
-      <div className="homebody">
-        {/* ---  Profile badge SIDEBAR SECTION (Left) --- */}
-        <div className="profileBody">
-          <div className="profileBackground">
-            {/* Blue Banner */}
-            <div className="profileBanner" />
-
-            {/* Profile Pic */}
-            <img
-              src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg"
-              alt="profile"
-              className=" profileBannerImage"
-            />
-
-            {/* Profile Name */}
-            <div className="profileNameBody">
-              <h3 className="profileName">Chukwunyelu Ki...</h3>
+      <div className="dashboard-grid">
+        {/* PROFILE SIDEBAR SECTION (Left - Desktop Only) */}
+        <aside className="profile-sidebar-wrapper">
+          <div className="profile-sanctuary-card">
+            <div className="profile-card-banner" />
+            
+            <div className="profile-image-container">
+              <img
+                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
+                alt="profile"
+                className="profile-avatar-img"
+              />
             </div>
 
-            <div className="profileViewBackground">
-              <Link to="/profile" className="profileView">
+            <div className="profile-info-block">
+              <h3 className="profile-display-name">Chukwunyelu Ki...</h3>
+              <p className="profile-app-role">Sanctuary Keeper</p>
+            </div>
+
+            <div className="profile-action-footer">
+              <Link to="/profile" className="profile-view-link-btn">
                 View Profile
               </Link>
             </div>
           </div>
-        </div>
+        </aside>
 
-        {/* --- Feed Card  --- */}
-        {/* Moved this OUTSIDE of the sidebar div */}
-        <div className="feedCardBodyWidth">
-          <div className="taskCardBody">
-            <div className="feedCardBackground">
-              <img
-                src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?cs=srgb&dl=pexels-pixabay-220453.jpg&fm=jpg"
-                alt="profile"
-                className="feedImage"
-              />
-              <Link to="/createtask" className="shareTestimonyButton">
-                Share a testimony...
-              </Link>
-            </div>
+        {/* TIMELINE FEED SYSTEM (Right) */}
+        <main className="timeline-feed-wrapper">
+          <div className="create-testimony-trigger-panel">
+            <img
+              src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250"
+              alt="profile"
+              className="feed-avatar-thumbnail"
+            />
+            <Link to="/createtask" className="share-testimony-input-placeholder">
+              Share a testimony or insight...
+            </Link>
+          </div>
+
+          <div className="timeline-posts-container">
             {tasks.map((task) => (
               <Task
                 key={task.id}
@@ -77,7 +75,7 @@ const HomePage = () => {
               />
             ))}
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

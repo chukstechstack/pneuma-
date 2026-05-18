@@ -1,819 +1,805 @@
-.homePageBody {
-  background-color: #f6f2f2;
-  display: flex;
-  flex-direction: column;
+@import url('https://googleapis.com');
+
+:root {
+  --bg-main: #0c0d12;
+  --bg-surface: #13151d;
+  --panel-glass: rgba(19, 21, 29, 0.8);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-bright: rgba(212, 175, 55, 0.15);
+  --text-main: #f4f4f6;
+  --text-muted: #8e92a2;
+  --accent-gold: #d4af37;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cinzel', serif;
+}
+
+/* ==========================================
+   1. MAIN CORE CONTAINER SYSTEM
+   ========================================== */
+.home-layout {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
   min-height: 100vh;
-  align-items: flex-start;
-  padding-top: 0px;
-  font-family:
-    -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell,
-    "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-    "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-.homebody {
-  display: flex;
-  width: 100%;
-  max-width: 1100px;
-  padding: 0 10px;
-  gap: 30px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  margin: 0 auto;
-}
-
-.profileBody {
-  width: 230px;
-  position: sticky;
-  top: 90px;
-  flex-shrink: 0;
-}
-
-.profileBackground {
-  background-color: white;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  box-shadow: none;
-  transition: box-shadow 0.2s ease;
-}
-
-.profileBanner {
-  width: 100%;
-  height: 60px;
-  background-color: #061a83;
-}
-
-.profileBannerImage {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 3px solid white;
-  margin-top: -25px;
-  object-fit: cover;
-}
-
-.profileNameBody {
-  padding: 15px;
-  text-align: center;
-}
-
-.profileName {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.9);
-  line-height: 1.5;
-}
-
-.profileName:hover {
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-.profileViewBackground {
-  width: 100%;
-  border-top: 1px solid #eee;
-  padding: 12px;
-  text-align: center;
-}
-
-.profileView {
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: bold;
-  color: #0a66c2;
-}
-
-.profileView:hover {
-  text-decoration: underline;
-  color: #004182;
-}
-
-.feedCardBodyWidth {
-  flex: 0 1 550px; /* GROW: 0, SHRINK: 1, BASIS: 550px */
-  max-width: 100%;
-  min-width: 0;
-}
-
-.feedCardBackground {
-  background-color: white;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  margin-bottom: 0px;
-  gap: 10px;
-  min-height: 70px;
-  width: 100%;
-
   box-sizing: border-box;
 }
 
-.feedImage {
-  width: 20px;
-  height: 20px;
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 6.5rem 2rem 3rem 2rem; /* Clean clearance below fixed header */
+}
+
+/* ==========================================
+   2. DESKTOP PERMANENT NAVIGATION SYSTEM
+   ========================================== */
+.desktop-master-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--panel-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 1000;
+}
+
+.desktop-nav-inner-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0.85rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.desktop-nav-left-wing {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.desktop-nav-brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.desktop-search-input-box-wrapper {
+  position: relative;
+  width: 260px;
+}
+
+.desktop-search-svg-magnifier {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-muted);
+}
+
+.desktop-search-input-field {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.desktop-search-input-field:focus {
+  outline: none;
+  border-color: var(--border-bright);
+}
+
+.desktop-nav-right-navigation-menu {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.desktop-menu-item-anchor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  gap: 4px;
+  transition: color 0.2s ease;
+}
+
+.desktop-menu-item-anchor:hover,
+.desktop-menu-item-anchor.active {
+  color: var(--text-main);
+}
+
+.menu-svg-vector-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.75;
+}
+
+.menu-anchor-text-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Red & Gold Alert Notification Badges */
+.desktop-badge-relative-wrapper {
+  position: relative;
+}
+
+.desktop-badge-counter-flag {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 10px;
+}
+.notification-red { background-color: #ef4444; }
+.notification-gold { background-color: var(--accent-gold); color: #11131a; }
+
+.desktop-menu-profile-avatar-anchor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  gap: 4px;
+}
+
+.desktop-menu-avatar-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-subtle);
+}
+
+/* ==========================================
+   3. LEFT PROFILE SIDEBAR PANEL
+   ========================================== */
+.profile-sidebar-wrapper {
+  position: sticky;
+  top: 6.5rem;
+  height: fit-content;
+}
+
+.profile-sanctuary-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.profile-card-banner {
+  height: 60px;
+  background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(0,0,0,0));
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.profile-image-container {
+  margin-top: -30px;
+  display: inline-block;
+}
+
+.profile-avatar-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bg-surface);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.profile-info-block {
+  padding: 1.25rem 1rem;
+}
+
+.profile-display-name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+}
+
+.profile-app-role {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profile-action-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 1rem;
+  background-color: rgba(0,0,0,0.1);
+}
+
+.profile-view-link-btn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.profile-view-link-btn:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================
+   4. MIDDLE FEED TIMELINE POST CARDS
+   ========================================== */
+.timeline-feed-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Share Testimony Box Trigger Component */
+.create-testimony-trigger-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.feed-avatar-thumbnail {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.feedCardBackground .shareTestimonyButton {
-  background-color: #ffffff !important;
-  color: #666 !important;
-  border: 1px solid #1c1b1b !important;
+.share-testimony-input-placeholder {
   flex: 1;
-  height: 48px;
+  background-color: rgba(0,0,0,0.2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 25px;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
   text-align: left;
-  padding-left: 16px;
-  border-radius: 35px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  outline: none !important;
-  min-width: 0;
-  text-overflow: ellipsis;
-  transition: none !important;
-  box-shadow: none !important;
-  transform: none !important;
-  margin: 0 !important;
-  position: relative;
-}
-
-.feedCardBackground .shareTestimonyButton:active {
-  background-color: #e2e1df !important;
-}
-
-.taskCardBody {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-/* --- Home Input Styling --- */
-.menuEditButtonStyle,
-.menuDeleteButtonStyle {
-  width: 100%;
-  padding: 12px 16px; /* Roomy padding for fat fingers on mobile */
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Space for an icon if you add one later */
   transition: background-color 0.2s ease;
-  border: none;
 }
 
-/* Edit Style */
-.menuEditButtonStyle {
-  color: rgba(0, 0, 0, 0.7);
+.share-testimony-input-placeholder:hover {
+  background-color: rgba(255,255,255,0.02);
+  border-color: var(--border-bright);
 }
 
-.menuEditButtonStyle:hover {
-  background-color: #f3f3f3;
-  color: rgba(0, 0, 0, 0.9);
-}
-
-/* Delete Style */
-.menuDeleteButtonStyle {
-  color: #cc1016; /* Professional red */
-  border-top: 1px solid #eee; /* Divider line */
-}
-
-.menuDeleteButtonStyle:hover {
-  background-color: #fff5f5;
-}
-
-/* --- Task Card Styles --- */
-
+/* Individual Log Cards Layout */
 .taskInputCardBody {
-  background-color: white !important;
-  border: 1px solid #ddd;
-  box-shadow: none !important;
-  border-radius: 0px;
-  padding: 16px;
-  margin-bottom: 0px;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  position: relative;
-  cursor: default !important;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.75rem;
 }
 
 .taskAvatarCardBody {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-}
-
-.taskAvatarcardBackground {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex: 1;
-  min-width: 0;
-}
-
-.taskAvatarcardBackground > div {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
 }
 
 .taskAvatarImage {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 2px solid #bb8811;
   object-fit: cover;
 }
 
 .taskAuthorName {
-  font-size: 14px;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: rgba(0, 0, 0, 0.9);
-  line-height: 1.2;
-  display: block;
-}
-
-.taskAuthorName:hover {
-  color: #0a66c2;
-  /* Turns blue on hover */
-  text-decoration: underline;
-  cursor: pointer;
+  color: #ffffff;
 }
 
 .taskCardTestimonyText {
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
-  /* Lighter grey for subtext */
-  font-weight: 400;
-  margin-top: -2px;
-  /* Pulls it closer to the name */
-  line-height: 1.2;
+  font-size: 0.8rem;
+  color: var(--accent-gold);
+  letter-spacing: 0.5px;
 }
 
+/* Three-Dot Menu Options Settings */
 .taskDotButton {
-  background: transparent !important;
-  border: none !important;
-  cursor: pointer !important;
-  font-size: 22px !important;
-  color: #666 !important;
-  box-shadow: none !important;
-  outline: none !important;
-  margin-right: 8px;
-  -webkit-tap-highlight-color: transparent !important;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 4px;
 }
 
-/* Container styling */
-.menu-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 2000; 
-  background: transparent;
-}
 .dotMenuDisplay {
   position: absolute;
-  right: 16px;
-  top: 40px;
-  background-color: white;
-  border-radius: 8px;
-  z-index: 100;
-  width: 160px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-}
-
-/* Base style for both Link and Button */
-.menuEditButtonStyle {
-  width: 100%;
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: left;
-  text-decoration: none; /* Removes underline from Link */
-  display: block;
-  border: none; /* Removes default button border */
-  background: white; /* Ensures background is solid */
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  box-sizing: border-box; /* Crucial for padding to work correctly */
-}
-
-/* Edit Post - Subtle Grey */
-.menuEditButtonStyle {
-  color: rgba(29, 48, 66, 0.7);
-}
-
-.menuEditButtonStyle:hover {
-  background-color: #bab5b5;
-}
-
-/* Delete Post - Professional Red */
-.menuDeleteButtonStyle {
-  width: 100%;
-  /* Pushing the text in: 12px top/bottom, 24px left (pushed right), 16px right */
-  padding: 10px 16px 10px 24px !important;
-
-  /* Making it smaller and cleaner */
-  font-size: 13px !important;
-  font-weight: 600; /* Medium weight looks cleaner than bold at small sizes */
-
-  color: #cc1016 !important;
-  background-color: white;
-  border: none;
-  border-top: 1px solid #f0f0f0;
-  text-align: left;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  border-radius: none !important;
-  border-radius: 0 !important; /* Removes any default rounding */
-  -webkit-appearance: none;
-}
-
-.menuDeleteButtonStyle:hover {
-  background-color: #bab5b5;
-}
-
-.postTextContent {
-  text-align: left;
-  /* NEVER use justify for LinkedIn style */
-  font-size: 14px;
-  line-height: 1.42857;
-  /* Very specific LinkedIn line height */
-  color: rgba(0, 0, 0, 0.9);
-  margin-top: 8px;
-  padding: 0 4px;
-  line-height: 1.5em;
-  /* Slight horizontal breathing room */
-}
-
-.clamp-wrapper {
-  max-height: 3em; /* Exact math: line-height (1.5) * 2 lines = 3em */
-  overflow: hidden;
-  position: relative;
-}
-
-.clamp-wrapper::after {
-  content: "";
-  text-align: right;
-  position: absolute;
-  bottom: 0;
   right: 0;
-  width: 30%;
-  height: 1.5em;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
+  top: 100%;
+  background-color: #1a1c26;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  width: 140px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  z-index: 10;
+  overflow: hidden;
 }
 
-/* Target only buttons inside your feed column */
-.feedCardBodyWidth button {
-  background: none;
+.menuEditButtonStyle, .menuDeleteButtonStyle {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
   border: none;
-  box-shadow: none !important;
-  transition: none !important;
-  transform: none !important;
-  padding: 0;
-  margin: 0;
-  outline: none;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-main);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menuEditButtonStyle:hover { background-color: rgba(255,255,255,0.05); }
+.menuDeleteButtonStyle:hover { background-color: #ef4444; color: #ffffff; }
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+}
+
+/* Post Contents Spacing */
+.postTextContent {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e5e7eb;
+  margin-bottom: 1.25rem;
+  white-space: pre-wrap;
 }
 
 .showMoreText {
-  background: none !important;
+  background: transparent;
   border: none;
-  color: #0a66c2 !important;
+  color: var(--accent-gold);
+  font-size: 0.85rem;
   cursor: pointer;
-  font-weight: 600;
-
-  font-size: 14px;
   padding: 0;
+  margin-left: 4px;
 }
 
-.showMoreText:hover {
-  text-decoration: underline;
+.taskImageWrapper {
+  margin-bottom: 1.25rem;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
 }
+
 .taskContentImageCard {
-  width: calc(100% + 32px) !important;
-  margin-left: -16px !important;
-  margin-right: -16px !important;
-  height: 450px !important;
-  max-height: 500px;
-  object-fit: cover;
+  width: 100%;
   display: block;
-  margin-top: 12px;
-  border: none;
+  max-height: 450px;
+  object-fit: cover;
 }
 
+/* Action Trigger Bars Layout */
 .taskActionButtonBar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  border-top: 1px solid #e0e0e0;
-  width: 100%;
-  box-sizing: border-box;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1rem;
 }
 
 .action-buttons-left {
   display: flex;
-  gap: 12px;
+  gap: 1.5rem;
 }
 
 .actionButton {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  color: rgba(0, 0, 0, 0.6);
-  font-size: 10px;
-  gap: 4px;
-}
-
-.actionButton:hover {
-  background-color: rgba(0, 0, 0, 0.08);
-  color: rgba(0, 0, 0, 0.9);
-}
-
-.actionButton svg {
-  width: 20px;
-  height: 24px;
-}
-
-.total-likes-count {
-  font-size: 12px;
-  color: #666666;
-}
-
-.mobile-top-nav {
-  display: none;
-}
-
-/* UNIFIED MOBILE & TABLET LAYOUT (LinkedIn Vanilla Style) */
-
-@media (max-width: 700px) {
-  .homePageBody {
-    padding-top: 85px !important;
-  }
-}
-
-.homebody {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0;
-  max-width: 100%;
-  margin: 0 auto;
-  gap: 0;
-}
-
-.profileBody {
-  display: none !important;
-}
-
-.feedCardBodyWidth {
-  width: 100%;
-  max-width: 600px;
-  flex: none;
-}
-
-/* 2. TOP STICKY NAV */
-.mobile-top-nav {
-  display: flex;
-  position: fixed;
-  top: 35px;
-  width: 100%;
-  height: 50px;
-  background: white;
-  border-bottom: 1px solid #e0e0e0;
-  z-index: 1000;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  box-sizing: border-box;
-}
-
-.mobile-search-trigger {
-  background: #eef3f8;
-  border-radius: 4px;
-  flex: 1;
-  margin: 0 15px;
-  padding: 7px 12px;
+  background: transparent;
+  border: none;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #666;
-  font-size: 14px;
-}
-
-.taskAvatarCardBody {
-  display: flex !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  padding: 0 16px !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-.taskAvatarcardBackground {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-.mobile-avatar {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid #e0e0e0;
-}
-
-/* 3. BOTTOM STICKY NAV */
-.mobile-bottom-nav {
-  display: flex;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 56px;
-  background: white;
-  border-top: 1px solid #e0e0e0;
-  z-index: 1000;
-  justify-content: space-around;
-  align-items: center;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.nav-item {
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #666;
-  font-size: 10px;
-  gap: 2px;
-}
-
-.nav-item svg {
-  stroke: currentColor;
-  width: 24px;
-  height: 24px;
-  stroke-width: 2;
-}
-
-.nav-item.active {
-  color: #000000;
-  font-weight: 600;
-}
-
-.postTextContent {
-  padding: 8px 16px !important;
-  box-sizing: border-box;
-}
-.feedCardBackground {
-  margin-top: 0px !important;
-  border-top: 1px solid #e0e0e0 !important;
-}
-
-.feedCardBackground {
-  margin: 0 0 8px 0 !important;
-  width: 100% !important;
-  border-radius: 0 !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-top: none !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-}
-
-.taskInputCardBody {
-  background: #ffffff;
-  border-radius: 12px !important;
-  padding: 30px 16px !important;
-  margin: 14px 12px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-  border: 1px solid #e0e0e0 !important;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.taskCardBody {
-  gap: 0px !important;
-}
-
-.taskActionButtonBar {
-  box-sizing: border-box;
-  padding: 8px 16px;
-}
-
-.actionButton {
-  flex-direction: column;
-  font-size: 11px;
-  gap: 4px;
-  color: rgba(0, 0, 0, 0.6) !important;
-}
-
-.taskAuthorName {
-  font-size: 15px;
-}
-.badge {
-  position: absolute;
-  top: -5px;
-  right: -8px;
-  background: #cc1016;
-  color: white;
-  font-size: 10px;
-  border-radius: 10px;
-  padding: 1px 5px;
-}
-
-.main-nav {
-  display: none !important;
-}
-.taskInputCardBody:hover {
-  background-color: #f9f9f9;
-  border-color: #ddd !important;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
   cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
 }
 
-.taskContentImageCard {
-  width: calc(100% + 32px) !important;
-  margin-left: -16px !important;
-  margin-right: -16px !important;
-  max-width: none !important;
-  height: auto !important;
-  display: block;
-  object-fit: cover;
-  border-radius: 0 !important;
+.actionButton:hover {
+  color: var(--text-main);
 }
 
-/* ==========================================================================
-   1. MOBILE & TABLET RESPONSIVE ENGINE (1024px and Down)
-   ========================================================================== */
-@media (max-width: 1024px) {
-  
-  /* Main Layout Containers */
-  .homePageBody {
-    padding-top: 95px !important;
-    width: 100%;
-    margin: 0;
-  }
-  
-  .homebody {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
-    /* 📱 Cushion space so the sticky bottom navigation never covers your layout cards */
-    padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important;
+.total-likes-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================
+   5. MOBILE LAYER SYSTEMS OVERRIDES
+   ========================================== */
+.mobile-top-nav, .mobile-bottom-nav {
+  display: none; /* Invisible on standard widescreen PC displays */
+}
+
+@media (max-width: 1023px) {
+  .desktop-master-nav, .profile-sidebar-wrapper {
+    display: none !important; /* Shuts out desktop artifacts cleanly */
   }
 
-  .feedCardBodyWidth {
-    flex: 1 1 100%;
-    width: 100%;
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Formats single card layout system tracking */
+    padding: 5rem 1rem 6rem 1rem;
   }
 
-  /* Structural View Elements */
-  .feedCardBackground {
-    display: none !important;
-  }
-
-  .profileBody {
-    display: none !important;
-  }
-
-  /* Fixed Mobile Component Navigation Bars */
+  /* Mobile Header Top Navigation Rules */
   .mobile-top-nav {
     display: flex;
     position: fixed;
-    top: 35px;
-    width: 100%;
-    height: 50px;
-    background: white;
-    border-bottom: 1px solid #e0e0e0;
-    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--panel-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.75rem 1rem;
     align-items: center;
-    padding: 0 12px;
-    box-sizing: border-box;
+    justify-content: space-between;
+    z-index: 1000;
   }
 
+  .mobile-search-trigger-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .mobile-nav-badge-icon {
+    position: relative;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+  }
+
+  .badge-counter-alert {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    background-color: var(--accent-gold);
+    color: #11131a;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 4px;
+    border-radius: 10px;
+  }
+  .counter-red { background-color: #ef4444; color: #ffffff; }
+
+  /* ==========================================
+     MOBILE BOTTOM FIXED PANEL STYLES (NEW THUMB SYSTEM)
+     ========================================== */
   .mobile-bottom-nav {
     display: flex;
     position: fixed;
     bottom: 0;
-    width: 100%;
-    height: 56px;
-    background: white;
-    border-top: 1px solid #e0e0e0;
-    z-index: 1000;
+    left: 0;
+    right: 0;
+    background-color: rgba(19, 21, 29, 0.92);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-top: 1px solid var(--border-subtle);
+    padding: 0.6rem 0.5rem;
     justify-content: space-around;
-    padding-bottom: env(safe-area-inset-bottom);
-    box-sizing: content-box; 
+    align-items: center;
+    z-index: 1000;
   }
 
-  /* Card Layout Alignment Adjustments */
-  .taskInputCardBody {
-    overflow: visible;
-    border-radius: 0 !important;
-    border-left: none !important;
-    border-right: none !important;
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-muted);
+    gap: 3px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
   }
 
-  /* 🖼️ Centers feed images uniformly across small device viewports */
-   .taskContentImageCard {
-    width: calc(100% + 32px) !important;
-    margin: 10px -16px !important;
-    max-width: none !important;
-    border-radius: 0 !important;
-    height: auto !important; /* ✨ Changed from 320px to auto */
-    display: block !important;
-    object-fit: contain !important; /* ✨ Changed to contain so nothing gets cut off */
+  .nav-item.active {
+    color: var(--accent-gold);
   }
 
-  /* ⚓ Forces 'See More' to anchor left and resist centering gravity rules */
-  .showMoreText {
-    display: block !important;
-    text-align: left !important;
-    margin-top: 6px !important;
+  .mobile-post-accent-btn {
+    color: var(--text-main);
+  }
+
+  .mobile-badge-container-wrapper {
+    position: relative;
+  }
+
+  /* REPOSITIONED MOBILE AVATAR SHAPE STYLING IN BOTTOM CORNER RIGHT */
+  .mobile-avatar-frame-bottom {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    transition: border-color 0.2s ease;
+  }
+
+  .nav-item.active .mobile-avatar-frame-bottom {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+  }
+
+  .mobile-avatar-img-bottom {
     width: 100%;
-  }
-
-  /* Dropdown Settings Drop menus */
-  .dotMenuDisplay {
-    right: 12px !important; 
-  }
-
-  .taskDotButton {
-    padding-right: 8px !important; 
-    margin-right: 18px !important; 
+    height: 100%;
+    object-fit: cover;
   }
 }
 
-/* ==========================================================================
-   2. DESKTOP RESTORE (1025px and Up)
-   ========================================================================== */
-@media (min-width: 1025px) {
-  .homebody {
-    display: flex !important;
-    flex-direction: row !important;
-    align-items: flex-start !important;
-    justify-content: center !important;
-    gap: 24px !important;
-    max-width: 1128px;
-    margin: 0 auto !important;
-    padding-top: 80px !important;
-    padding-bottom: 60px !important; 
-  }
 
-  .profileBody {
-    display: block !important;
-    width: 225px !important;
-    flex-shrink: 0;
-    position: sticky;
-    top: 80px;
-  }
 
-  .feedCardBodyWidth {
-    width: 555px !important;
-  }
 
-  .main-nav {
-    display: flex !important;
-  }
 
-  /* Cleanly hide layout blocks reserved for small viewports */
-  .mobile-top-nav,
-  .mobile-bottom-nav {
-    display: none !important;
-  }
 
-  .homePageBody {
-    padding-top: 0 !important;
-  }
-
-  .taskDotButton {
-    padding-right: 10px !important; 
-    margin-right: 10px !important; 
-  }
-
-  .dotMenuDisplay {
-    right: 12px !important; 
-  }
+/* ==========================================
+   6. CREATE TESTIMONY LANDING MODULES
+   ========================================== */
+.create-task-layout {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 4rem 1.5rem;
+  box-sizing: border-box;
+  overflow: hidden;
 }
+
+/* Background brand aura glow */
+.create-task-ambient-glow {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.03) 0%, transparent 70%);
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Base form panel card box */
+.create-task-container {
+  position: relative;
+  z-index: 1;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+}
+
+/* Header Text elements styling */
+.create-task-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.create-task-back-link {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  transition: color 0.2s ease;
+}
+
+.create-task-back-link:hover {
+  color: var(--accent-gold);
+}
+
+.create-task-title {
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0 0 0.85rem 0;
+  color: #ffffff;
+}
+
+.create-task-divider {
+  width: 40px;
+  height: 1px;
+  background-color: var(--accent-gold);
+  margin: 0 auto 1rem auto;
+  opacity: 0.5;
+}
+
+.create-task-subtitle {
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ==========================================
+   7. TIMELINE TESTIMONY FIELD INPUTS
+   ========================================== */
+.testimony-form-container {
+  width: 100%;
+}
+
+.testimony-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Textarea sanctuary frame context */
+.testimony-textarea-field {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(12, 13, 18, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1.25rem;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 150px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimony-textarea-field:focus {
+  outline: none;
+  border-color: var(--border-bright);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.02);
+}
+
+/* Elegant Image Preview Card module */
+.testimony-preview-image-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.testimony-preview-label-badge {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+  font-family: var(--font-sans);
+}
+
+.testimony-preview-frame {
+  border-radius: 4px;
+  overflow: hidden;
+  max-height: 250px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.testimony-preview-actual-img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Action Hover Row Control bar */
+.testimony-form-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1.25rem;
+}
+
+/* Custom Add Image upload button icon hook */
+.testimony-custom-file-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-subtle);
+  background-color: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.testimony-custom-file-upload-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text-main);
+}
+
+.testimony-hidden-file-input {
+  display: none !important; /* Blasts away ugly stock browser file selector */
+}
+
+/* Publish Primary Submit Button */
+.testimony-submit-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.85rem 2rem;
+  border-radius: 4px;
+  border: 1px solid var(--text-main);
+  background-color: var(--text-main);
+  color: #11131a;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.testimony-submit-action-btn:hover {
+  background-color: transparent;
+  color: var(--text-main);
+  border-color: var(--accent-gold);
+  transform: translateY(-2px);
+}
+
+/* ==========================================
+   8. MOBILE SCALING BOUNDS (312px down)
+   ========================================== */
+@media (max-width: 480px) {
+  .create-task-layout { padding: 2rem 0.75rem; }
+  .create-task-container { padding: 2rem 1.25rem; }
+  .create-task-title { font-size: 1.5rem; }
+  .testimony-form-actions-row { flex-direction: column; gap: 1rem; }
+  .testimony-custom-file-upload-btn, .testimony-submit-action-btn { width: 100%; justify-content: center; }
+}
+

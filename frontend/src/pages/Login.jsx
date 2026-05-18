@@ -1,16 +1,16 @@
-import React, { useState,  useContext } from "react";
+import React, { useState, useContext } from "react";
 import LoginInput from "../components/LoginInput.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
-import "../styles/Login.css";
+import "../styles/Register.css"; // Reuses your fixed master style sheet
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 
 const Login = () => {
   const [login, setLogin] = useState({
-    password: "",
     email: "",
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const { getTasks } = useContext(TaskContext);
@@ -25,7 +25,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       setIsLoading(true);
       const res = await api.post("/auth/login", login);
@@ -43,21 +42,44 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
   return (
-    <div>
+    <main className="register-layout">
       {isLoading && <FullPageLoader />}
-      <div className="login-body">
-        <div className="login-text">
-          <h1> Welcome Back </h1>
-        </div>
+      
+      {/* Decorative background aura blur */}
+      <div className="register-ambient-glow"></div>
+
+      <section className="register-container">
+        {/* Architectural Header Accent */}
+        <header className="register-header">
+          <Link to="/" className="register-brand-link">Pneuma</Link>
+          <h1 className="register-title">Welcome Back</h1>
+          <div className="register-divider"></div>
+          <p className="register-subtitle">Enter your sanctuary to document your journey.</p>
+        </header>
+
+        {/* Input Wrapper Target */}
         <LoginInput
           handleChange={handleChange}
           email={email}
           password={password}
           handleSubmit={handleSubmit}
         />
-      </div>
-    </div>
+
+        {/* Direct Link Alternative Action */}
+        <footer className="register-footer">
+          <span>New to the archive?</span>
+          <span 
+            onClick={() => navigate("/register")} 
+            className="register-login-link"
+            style={{ cursor: "pointer" }}
+          >
+            Join Us
+          </span>
+        </footer>
+      </section>
+    </main>
   );
 };
 

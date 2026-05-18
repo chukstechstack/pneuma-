@@ -1,0 +1,73 @@
+[33m36a1aee[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Updated my UI
+[33m66f5a1b[m Changed my Dev Banner text to work on share and likes button
+[33m09a4c70[m fixed my Landing Page UI and Updated Nav Features on HomePage
+[33m22b948f[m updated registration
+[33ma07362c[m override git case caching and align strict linux paths
+[33m99822de[m force git case-sensitivity for linux deployment
+[33m6dd8035[m fix strict file extensions and lowercase import casing loops
+[33m7fce15c[m updated frontend url
+[33m90e1561[m renamed my authcallback file
+[33m32de968[m fixed my registration redirect with display
+[33m5b88b3d[m refactor: restucture backend into modular layered architectureSeparated task controllers into individual domain filesExtracted database queries out of controllers into standalone servicesMoved auth validation middleware to a dedicated directory
+[33mcf4682f[m Merge branch 'main' of https://github.com/chukstechstack/pneuma-
+[33m6ae11f5[m updated cors globally
+[33m99e7c4a[m Update README.md
+[33mb4b89e0[m updated my label
+[33m1959274[m Integrated Redis to cacheData
+[33md4fe23d[m optimized sharp and Aws for storage
+[33m0f1acaf[m updated my next development flag which is optimization
+[33m69bdef2[m finished my Basic UI design diving into optimization
+[33mcdbabf2[m updated my mobile and PC UI design
+[33m1a5f958[m updated mobile view
+[33m4e767b6[m updated my mobile view layout design
+[33m0ea98f2[m updated my cors
+[33mc8966f3[m fix: updated CORS whitelist and fixed path-to-regexp crash
+[33m4f61b0e[m fix: updated CORS whitelist and fixed path-to-regexp crash
+[33m84a7778[m updated cors
+[33mbe62d91[m changed my axios baseURL to see my localhost first
+[33m2b051dd[m updated my cors
+[33mab0a70f[m changed my cors
+[33m0865336[m fix update cors for localhost
+[33m373dd78[m updated my install connect-pg-simple
+[33mbdf821d[m fixed session and cors
+[33m91e611f[m updated my supabase URL and google scope
+[33m0d4e6b6[m updated enabled app for proxy
+[33mdde4ec9[m updated render vite
+[33m5ea654e[m Standardizing ALL utils and imports to lowercase
+[33m7b7d12e[m Fixing case-sensitivity in taskRouter import
+[33mba49fe5[m 🚀 Complete sync: Standardized all files to lowercase
+[33m68bf7ec[m Standardizing all backend folders to lowercase
+[33mfadee73[m changed my mainauthroute name to lowercase
+[33m013122c[m changed my npm start and dev
+[33mc6c5da1[m deploying to render
+[33m1bd68c6[m finished basic design
+[33m2031147[m i worked on my testimony text and card
+[33mb11c76c[m designed my navbar and my card
+[33m3b21ed5[m updated my landing page and my sign-up page
+[33m45e459c[m updated my app from a testimony app to a journal app
+[33m7c49d34[m Merge branch 'main' of https://github.com/chukstechstack/zoe
+[33m72163ef[m Updated my first Landing Page Design
+[33m811b31d[m Updated Pneuma
+[33mc959924[m Changed the App name to Pneuma
+[33m6a9db99[m clean up README and resolve merge
+[33ma3e3f85[m updated my likes and edit
+[33m6922325[m Update README with pro version and mission statement edited my readMe
+[33m7313095[m edited my readMe
+[33m53168bc[m Update functionality working
+[33m5bca12f[m Update README.md
+[33m8c64ba5[m Update README.md
+[33m15e214f[m edited my readme
+[33m1e342a8[m Changed my App name and purpose on Read.me
+[33m2168551[m Merge branch 'recover-c8a263009fa5de55f9d435be757616532a3b8343'
+[33m6be196d[m Merge branch 'recover-13ddc186348a8a36ad8e858baaf8594dc2db76d9' Merge branch 'main' into recover-lost-work# Lines starting with '#' will be ignored, and an empty message aborts
+[33m3f20efe[m i cd back
+[33md32d6c1[m Removed localHostPem and key from committed
+[33m13ddc18[m[33m ([m[1;32mrecover-lost-work[m[33m, [m[1;32mrecover-13ddc186348a8a36ad8e858baaf8594dc2db76d9[m[33m)[m WIP on main: 98d0681 Updated my passport routes
+[33m9f0eefd[m index on main: 98d0681 Updated my passport routes
+[33m98d0681[m Updated my passport routes
+[33m2404e53[m Add new frontend
+[33md4ace91[m my first push
+[33mc8a2630[m[33m ([m[1;32mrecover-c8a263009fa5de55f9d435be757616532a3b8343[m[33m)[m WIP on main: 21ceaaa Add initial README for zoe project
+[33m40f3667[m index on main: 21ceaaa Add initial README for zoe project
+[33m21ceaaa[m Add initial README for zoe project
+[33m14a67e0[m Initial commit

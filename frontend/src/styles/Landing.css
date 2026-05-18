@@ -1,324 +1,735 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-}
+@import url('https://googleapis.com');
 
 :root {
-  --cream-bg: #f9f8f5; /* Soft Off-White/Cream */
-  --dove-blue: #b2c8df; /* Peaceful Accent Blue */
-  --sunset-orange: #e8aa42; /* Warm Glow Orange */
-  --deep-earth: #443002; /* Your current dark brown */
-}
-
-.body {
-  background-color: #faf9f6;
-  flex: 1;
-  margin: 0;
-  padding: 4rem 1.5rem; /* Upgraded padding to let content breathe */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center; /* Forces total horizontal centering */
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
+  --bg-main: #0c0d12;
+  --bg-surface: #13151d;
+  --panel-glass: rgba(19, 21, 29, 0.75);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-bright: rgba(212, 175, 55, 0.2);
+  --text-main: #f4f4f6;
+  --text-muted: #8e92a2;
+  --accent-gold: #d4af37; /* Soft metallic luxury gold */
+  --accent-warm-white: #e5e5e0;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cinzel', serif;
 }
 
 /* ==========================================
-   NAVBAR SECTION
+   1. GLOBAL SYSTEM RESETS
+   ========================================== */
+.landing-layout {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Elegant radial vignette across the page backdrop */
+.landing-layout::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ==========================================
+   2. REFINED NAVIGATION BAR
    ========================================== */
 .navbar {
-  background-color: rgb(68, 48, 2);
-  min-height: 5vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
-  padding: 0.5rem 1.5rem;
-  border-bottom: 3px solid var(--sunset-orange);
   align-items: center;
-  position: relative;
-  z-index: 100;
+  padding: 1.5rem 8%;
+  background: var(--panel-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 1000;
 }
 
 .nav-logo {
-  letter-spacing: 1px;
-  text-transform: capitalize;
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: rgb(241, 238, 235);
-  font-family: "Georgia", serif;
-  font-weight: 900;
+  gap: 14px;
   cursor: pointer;
 }
 
 .nav-logo-img {
-  width: 35px;
-  height: auto;
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: var(--accent-gold);
+  stroke-width: 1.25;
+  filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.15));
 }
 
-.nav-logo-img path {
-  fill: white;
+.nav-logo-text {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent-warm-white);
 }
 
 .nav-links {
   display: flex;
-  justify-content: center;
-  gap: 0.6rem;
   align-items: center;
+  gap: 1.5rem;
 }
 
-.nav-links a {
-  color: rgb(241, 238, 235);
-  border-radius: 50px; /* Aligned with your button shape rule */
-  padding: 0.5rem 1.5rem;
-  font-size: 90%;
-  font-family: "Georgia", serif;
-  font-weight: 900;
-  background-color: rgb(62, 46, 4);
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.nav-links a:hover {
-  transform: translateY(-3px);
-  background-color: #191b17;
-  color: #f9f7f2;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-}
-
-/* ==========================================
-   HERO / MAIN TEXT CONTENT SECTION
-   ========================================== */
-.testimony-heading {
-  font-family: "Playfair Display", "Georgia", serif;
-  letter-spacing: 1px;
-  text-transform: capitalize;
-  color: rgb(178, 98, 1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  text-align: center;
-  width: 100%;
-}
-
-#testimony-head {
-  font-weight: 900;
-  margin-bottom: 0px;
-  font-size: clamp(2.5rem, 8vw, 4.5rem); /* Perfectly scales huge on PC, fits on phone */
-  text-shadow: 0 0 15px rgba(232, 170, 66, 0.2);
-}
-
-.dividing-line {
-  width: 120px;
-  height: 2px;
-  background: linear-gradient(to right, transparent, #E8AA42, transparent);
-  margin: 1.5rem 0;
-}
-
-#testimony-subhead {
-  font-weight: 900;
-  color: rgba(178, 98, 1, 0.8);
-  margin-top: 0px;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-size: clamp(1.3rem, 4vw, 2.2rem);
-  max-width: 800px;
-  line-height: 1.4;
-}
-
-.app-description {
-  position: relative;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
-  padding: 1.5rem 1rem;
-  color: #5d4a3e;
-  max-width: 750px; /* Widened for beautiful reading layouts on PC */
-  margin: 1rem auto 0 auto;
-  line-height: 1.7;
-  text-align: center;
-  font-weight: 400;
-  font-family: "Lora", "Georgia", serif;
-  font-style: italic;
-  letter-spacing: 0.7px;
-}
-
-/* ==========================================
-   BUTTON GENERICS
-   ========================================== */
-.button {
-  display: flex;
-  gap: 1.2rem;
-  padding-top: 2rem;
-  justify-content: center;
-  width: 100%;
-}
-
-button {
-  color: #eecbb3;
-  background-color: var(--deep-earth);
+.nav-scroll-btn {
+  background: transparent;
   border: none;
-  border-radius: 50px; /* Fully circles edges beautifully */
-  font-size: 100%;
-  padding: 0.8rem 2.2rem;
-  font-family: "Georgia", serif;
-  font-weight: 900;
-  transition: transform 0.2s ease-in-out, filter 0.2s ease;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
   cursor: pointer;
+  padding: 0.5rem 1rem;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
-button:first-child {
-  background-color: black; 
-  color: #faf1d5;
-}
-
-button:last-child {
-  background-color: #755011;
-  color: #ebe8e1; 
-  box-shadow: 0 4px 12px rgba(232, 170, 66, 0.3);
-}
-
-button:hover {
-  transform: translateY(-2px) rotate(1deg);
-  filter: brightness(1.1);
+.nav-scroll-btn:hover {
+  color: var(--accent-gold);
+  transform: translateY(-1px);
 }
 
 /* ==========================================
-   MOBILE & BURGER ENGINE
+   3. HAMBURGER MECHANICS
    ========================================== */
 .hamburger {
-  display: none;
-  cursor: pointer;
+  display: none; /* Desktop hidden setting */
+  background: transparent;
+  border: none;
   flex-direction: column;
-  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  z-index: 2500; /* Stacking rule sits cleanly higher than absolute menu drawers */
+  position: relative;
 }
 
 .bar {
+  width: 22px;
+  height: 1.5px;
+  background-color: var(--text-main);
   display: block;
-  width: 24px;
-  height: 3px;
-  background-color: white;
-  transition: all 0.3s ease; 
-}
-
-.hamburger .bar.open:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
-
-.hamburger .bar.open:nth-child(2) {
-  opacity: 0;
-}
-
-.hamburger .bar.open:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 /* ==========================================
-   FOOTER STRUCTURE
+   4. MINIMALIST HERO ELEMENT
    ========================================== */
-.footer {
-  padding: 3rem 1rem;
-  background-color: #ffffff;
-  color: rgba(61, 43, 31, 0.6);
-  letter-spacing: 0.6px;
-  font-size: 0.85rem;
+.hero-section {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10rem 2rem 6rem 2rem;
   text-align: center;
-  border-top: 1px solid #f0eae1;
+  box-sizing: border-box;
+}
+
+.hero-content {
+  max-width: 840px;
+  margin-bottom: 4rem;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: 5.5rem;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.glow-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--accent-gold);
+  margin: 2rem auto;
+  opacity: 0.6;
+}
+
+.hero-subtitle {
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--accent-warm-white);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 3rem auto;
+  letter-spacing: 0.5px;
+}
+
+.hero-quote {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin: 0 auto;
+  padding: 0 3rem;
+  max-width: 680px;
+  border-left: 1px solid var(--border-subtle);
+  border-right: 1px solid var(--border-subtle);
+}
+
+.hero-quote cite {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: normal;
+  font-size: 0.8rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-gold);
+  margin-top: 1.25rem;
+}
+
+/* STRUCTURAL CONTROLS & ACTIONS */
+.hero-actions {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.btn {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 1.1rem 3rem;
+  border-radius: 4px; /* Crisp square profile edges replace standard pills */
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.btn-primary {
+  background: var(--accent-gold);
+  color: #0c0d12 !important; /* High contrast against gold */
+  border: 1px solid var(--accent-gold);
+  font-weight: 600;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15); /* Soft gold aura */
+}
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--accent-gold) !important;
+  border-color: var(--accent-gold);
+  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
+}
+
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.btn-secondary:hover {
+  color: var(--text-main);
+  border-color: var(--text-main);
+  transform: translateY(-2px);
 }
 
 /* ==========================================
-   STRICT RESPONSIVE SCREEN ADJUSTMENTS
+   5. EXTENDED ARCHITECTURE SUB-SECTIONS
    ========================================== */
-/* 💻 Laptop & Desktop Mode */
-@media screen and (min-width: 769px) {
-  /* 1. Constrain height and padding so the next section climbs into view */
-  .body {
-    padding-top: 0.5rem;
-    padding-bottom: 2vh; /* Reduced from 5vh */
-    min-height: auto;
-    max-height: 80vh; /* Limits vertical span to force content visibility below */
-    justify-content: center;
-  }
-
-  /* 2. Bring the heading elements very close together */
-  .testimony-heading {
-    margin-top: 0;
-  }
-
-  /* 3. Streamline description block boundaries */
-  .app-description {
-    border-left: 2px solid var(--dove-blue);
-    padding-left: 30px;
-    padding-right: 30px;
-    margin-top: 0.2rem; /* Minor gap adjustment */
-    max-width: 720px;
-  }
-
-  /* 4. Keep dividing accent close */
-  .dividing-line {
-    margin: 0.5rem 0;
-  }
-
-  /* 5. Pull buttons tight against quote with zero extra bottom lag */
-  .button {
-    padding-top: 0.8rem;
-    margin-bottom: 0;
-  }
+.extended-layout-wrapper {
+  position: relative;
+  z-index: 1;
 }
 
-/* 📱 Mobile Mode Override */
-@media screen and (max-width: 768px) {
-  .body {
-    padding: 2.5rem 1rem;
-  }
+.pneuma-sub-section {
+  padding: 5rem 8% 4rem 8%; /* Reduced from 10rem top to 5rem */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+}
 
-  .hamburger {
+
+.section-main-heading {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 4.5rem;
+  color: var(--accent-warm-white);
+}
+
+/* Minimalist Feature Cards Grid Layout */
+.features-grid-system {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1140px;
+}
+
+.feature-item-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 3rem 2.5rem;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.feature-item-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-4px);
+}
+
+.feature-emoji {
+  font-size: 1.75rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.8;
+}
+
+.feature-item-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+}
+
+.feature-item-card p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Mission Architectural Centerpiece */
+.mission-inner-container {
+  max-width: 760px;
+  padding: 2rem 0;
+}
+
+.mission-descriptive-text {
+  font-size: 1.25rem;
+  line-height: 2;
+  font-weight: 300;
+  color: var(--accent-warm-white);
+  margin: 0;
+}
+
+/* Call to Action Box layout */
+.action-cta-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  padding: 6rem 3rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 900px;
+  box-sizing: border-box;
+}
+
+.action-cta-card h2 {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin: 0 0 1.25rem 0;
+}
+
+.action-cta-card p {
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  font-weight: 300;
+  margin: 0 0 3rem 0;
+}
+
+.cta-action-btn {
+  display: inline-block;
+  width: auto !important;
+  max-width: max-content;
+  margin-bottom: 4.5rem;
+}
+
+.support-contact-footer {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 2.5rem;
+  letter-spacing: 0.5px;
+}
+
+.email-hyperlink {
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.email-hyperlink:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+.bar {
+  width: 22px;
+  height: 1.5px;
+  background-color: var(--text-main); /* 👈 THIS IS IT */
+  display: block;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* ==========================================
+   6. RESPONSIVE QUERY OVERLAYS
+ 
+/* ==========================================
+   6. RESPONSIVE QUERY OVERLAYS (FIXED MOBILE)
+   ========================================== */
+@media (max-width: 768px) {
+  /* Fix: Lower hamburger layer bounds */
+  .hamburger { 
     display: flex; 
   }
+  
+  /* Smooth transform to 'X' */
+  .hamburger.open .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); background-color: var(--accent-gold); }
+  .hamburger.open .bar:nth-child(2) { opacity: 0; }
+  .hamburger.open .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background-color: var(--accent-gold); }
 
+  /* Navigation Links Mobile Container */
   .nav-links {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     left: 0;
-    width: 100%;
-    background-color: var(--deep-earth);
-    padding: 1.5rem 0;
-    gap: 1rem;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    background: var(--bg-main);
+    flex-direction: column;
+    justify-content: center;
+    padding: 2rem;
+    gap: 2rem;
+    opacity: 0;
+    transform: translateY(-15px);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 2000;
   }
 
   .nav-links.active {
-    display: flex; 
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
-  .nav-links a {
-    width: 80%;
-    text-align: center;
-    padding: 0.8rem 0;
-  }
-
-  .app-description {
-    max-width: 100%; /* Spans gracefully without block clipping */
-    font-size: 1.05rem;
-  }
-
-  .button {
-    flex-direction: column; /* Stack login/register keys cleanly on narrow mobile dimensions */
-    align-items: center;
+  .nav-scroll-btn {
+    font-size: 1.25rem;
+    font-family: var(--font-serif);
+    letter-spacing: 2px;
     width: 100%;
-    gap: 0.8rem;
   }
 
-  button {
-    width: 85%; /* Extends touch target space perfectly */
-    text-align: center;
+  /* ==========================================
+     MOBILE SPACING & LAYOUT CORRECTIONS
+     ========================================== */
+  
+  /* Fix 1: Stop viewport layout locking and ease padding */
+  .hero-section { 
+    min-height: auto; /* Drops rigid full-screen requirement so elements don't overflow */
+    padding: 10rem 1.25rem 3.5rem 1.25rem; /* Compact padding pushes content up tightly */
   }
+
+  .hero-content {
+    margin-bottom: 2rem; /* Closes gap between quote and actions */
+  }
+
+  .hero-title { 
+    font-size: 3.2rem; 
+    letter-spacing: 2px; 
+  }
+  
+  .glow-divider {
+    margin: 1.25rem auto; /* Tightens divider border gaps */
+  }
+
+  .hero-subtitle { 
+    font-size: 1.15rem; 
+    line-height: 1.5;
+    margin-bottom: 2rem;
+  }
+  
+  .hero-quote { 
+    padding: 0 1rem; 
+    font-size: 0.95rem; 
+    line-height: 1.6;
+  }
+
+  /* Fix 2: Clean stacking grid system for action triggers */
+  .hero-actions { 
+    flex-direction: column; /* Force clean, vertical button layout stack */
+    width: 100%; 
+    max-width: 280px; 
+    gap: 0.85rem; /* Even, balanced spacing between the stacked buttons */
+    margin: 0 auto;
+  }
+  
+  /* Fix 3: Full width tap targets */
+  .btn { 
+    width: 100%; 
+    box-sizing: border-box;
+    padding: 1rem 2rem; 
+    font-size: 0.8rem;
+  }
+  
+  /* Fix 4: Compress huge sub-section spacing blocks */
+  .pneuma-sub-section { 
+    padding: 3.5rem 6% 3rem 6%; /* Dramatically drops top padding so scrolling feels cohesive */
+  }
+  
+  .section-main-heading { 
+    font-size: 1.75rem; 
+    margin-bottom: 2.25rem; 
+    letter-spacing: 2px;
+  }
+  
+  /* Feature Grid Tightening */
+  .features-grid-system {
+    gap: 1.25rem; /* Tightens gap between feature text blocks */
+  }
+
+  .feature-item-card { 
+    padding: 2rem 1.5rem; 
+    text-align: center; 
+  }
+  
+  .mission-inner-container { 
+    padding: 2.5rem 1.25rem; 
+  }
+  
+  .mission-descriptive-text { 
+    font-size: 1rem; 
+    line-height: 1.7; 
+  }
+  
+  /* CTA Layout Box Adjustment */
+  .action-cta-card { 
+    padding: 3.5rem 1.25rem; 
+  }
+  
+  .action-cta-card h2 { 
+    font-size: 1.65rem; 
+  }
+  
+  .action-cta-card p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* ==========================================
+   7. FOOTER CONTROL
+   ========================================== */
+.footer {
+  padding: 4rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  position: relative;
+  z-index: 1;
+}
+
+.footer p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+/* ==========================================
+   8. ULTRA-SMALL SCREEN ACCESSIBILITY (<= 320px)
+   ========================================== */
+@media (max-width: 330px) {
+  /* Tighten navbar footprints */
+  .navbar {
+    padding: 1rem 4%;
+  }
+  
+  .nav-logo-text {
+    font-size: 1.15rem;
+    letter-spacing: 1.5px;
+  }
+
+  /* Structural breathing room adjustments */
+  .hero-section {
+    padding: 7rem 0.75rem 2.5rem 0.75rem; /* Compact side margins */
+  }
+
+  /* Prevent text overlapping by shrinking font sizes */
+  .hero-title {
+    font-size: 2.35rem; /* Drastically scaled down so it stays on 1-2 lines maximum */
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-quote {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    padding: 0 0.5rem; /* Give text maximum viewport breathing room */
+  }
+
+  /* Micro Button Layout Fixes */
+  .hero-actions {
+    max-width: 100%; /* Spans the full width of the screen safely */
+    gap: 0.65rem;
+  }
+
+  .btn {
+    padding: 0.85rem 1.25rem; /* Thinner height padding stops offscreen push */
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+  }
+
+  /* Tighten subsections downward */
+  .pneuma-sub-section {
+    padding: 3rem 4% 2.5rem 4%;
+  }
+
+  .section-main-heading {
+    font-size: 1.45rem;
+    letter-spacing: 1px;
+    margin-bottom: 1.75rem;
+  }
+
+  /* Grid component overrides */
+  .features-grid-system {
+    gap: 1rem;
+  }
+
+  .feature-item-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .feature-item-card h3 {
+    font-size: 1.1rem;
+  }
+
+  /* Mission layout scale down */
+  .mission-inner-container {
+    padding: 1.75rem 1rem;
+  }
+
+  .mission-descriptive-text {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* CTA Workspace Panel tweaks */
+  .action-cta-card {
+    padding: 2.5rem 1rem;
+  }
+
+  .action-cta-card h2 {
+    font-size: 1.35rem;
+  }
+
+  .action-cta-card p {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .support-contact-footer {
+    font-size: 0.8rem;
+    padding-top: 1.5rem;
+    display: flex;
+    flex-direction: column; /* Stacks label and email links vertically */
+    gap: 0.35rem;
+  }
+}
+
+
+/* ==========================================
+   PRODUCTION HAMBURGER INJECTION FIX
+   ========================================== */
+
+/* The main outer button container */
+.hamburger {
+  display: flex !important;
+  background: transparent !important;
+  border: none !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  width: 40px !important;
+  height: 40px !important;
+  z-index: 2500 !important; /* Keeps it on top of the menu overlay */
+  position: relative !important;
+}
+
+/* Hidden by default on widescreen monitors */
+@media (min-width: 769px) {
+  .hamburger {
+    display: none !important;
+  }
+}
+
+/* The three inner tracking bars */
+.hamburger .bar {
+  width: 24px !important;
+  height: 2px !important;
+  background-color: #ffffff !important; /* Forces solid bright white when menu is closed */
+  display: block !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+/* --- CLICKED / OPEN STATE ANIMATIONS --- */
+
+/* Top line rotates 45 degrees into a cross line */
+.hamburger.open .bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg) !important;
+  background-color: #d4af37 !important; /* Glow gold signature color */
+}
+
+/* Middle line dissolves outward */
+.hamburger.open .bar:nth-child(2) {
+  opacity: 0 !important;
+  transform: translateX(-10px) !important;
+}
+
+/* Bottom line rotates -45 degrees to close the cross shape */
+.hamburger.open .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg) !important;
+  background-color: #d4af37 !important; /* Glow gold signature color */
 }
