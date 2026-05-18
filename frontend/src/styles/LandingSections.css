@@ -1,0 +1,214 @@
+/* Inherits and matches navigation styles from your main navbar links */
+.nav-scroll-btn {
+  color: rgb(241, 238, 235);
+  border-radius: 50px;
+  padding: 0.9rem 2rem;
+  font-size: 90%;
+  font-family: "Georgia", serif;
+  font-weight: 900;
+  background-color: rgb(62, 46, 4);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.nav-scroll-btn:hover {
+  transform: translateY(-3px);
+  background-color: #191b17;
+  color: #f9f7f2;
+}
+
+/* Structural Base Scaffolding */
+.pneuma-sub-section {
+  padding: 100px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.section-main-heading {
+  font-family: "Georgia", serif;
+  color: rgb(68, 48, 2);
+  font-weight: 900;
+  text-align: center;
+  margin-top: -20px;
+}
+
+/* Discover / Grid Modules */
+.discover-bg {
+  background-color: #f5f3ee; /* Soft complementary cream split */
+}
+
+.features-grid-system {
+  display: grid;
+  gap: 30px;
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 20px;
+}
+
+.feature-item-card {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(68, 48, 2, 0.03);
+  border: 1px solid rgba(68, 48, 2, 0.05);
+  text-align: center;
+}
+
+.feature-emoji {
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+}
+
+.feature-item-card h3 {
+  font-family: "Georgia", serif;
+  color: rgb(68, 48, 2);
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+}
+
+.feature-item-card p {
+  color: #5d4a3e;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* Mission Layout */
+.mission-bg {
+  background-color: #ffffff;
+}
+
+.mission-inner-container {
+  max-width: 800px;
+  text-align: center;
+}
+
+.mission-descriptive-text {
+  font-family: "Georgia", serif;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #443002;
+}
+
+/* Contact / Action Form Banner */
+.contact-bg {
+  background-color: #faf9f6;
+  padding-bottom: 120px;
+}
+
+.action-cta-card {
+  background-color: rgb(68, 48, 2);
+  color: #ffffff;
+  padding: 60px 40px;
+  border-radius: 24px;
+  max-width: 900px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(68, 48, 2, 0.1);
+  border-bottom: 3px solid #e8aa42;
+  box-sizing: border-box;
+}
+
+.action-cta-card h2 {
+  font-family: "Georgia", serif;
+  font-size: 2.2rem;
+  margin-top: 0;
+}
+
+.cta-action-btn {
+  background-color: #e8aa42;
+  color: #ffffff;
+  border-radius: 50px;
+  border: none;
+  font-family: "Georgia", serif;
+  font-weight: 900;
+  padding: 1rem 3rem;
+  font-size: 1.1rem;
+  margin-top: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(232, 170, 66, 0.3);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.cta-action-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.support-contact-footer {
+  margin-top: 40px;
+  font-size: 0.9rem;
+  color: rgba(241, 238, 235, 0.7);
+}
+
+.email-hyperlink {
+  color: #e8aa42;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   🎯 RESPONSIVE PROTECTION QUERIES
+   ========================================================================== */
+
+/* 💻 LAPTOPS & MONITOR DISPLAYS (769px and Up) */
+@media screen and (min-width: 769px) {
+  .section-main-heading {
+    font-size: 2.8rem;
+    margin-bottom: 0px;
+    
+  }
+  
+  .features-grid-system {
+    grid-template-columns: repeat(3, 1fr); /* Forms perfect horizontal 3-column rows */
+  }
+
+  .feature-item-card {
+    text-align: left; /* Elegant left layout for large layouts */
+  }
+}
+
+/* 📱 MOBILE PHONES & SMALL SCREENS (768px and Down) */
+@media screen and (max-width: 768px) {
+  .pneuma-sub-section {
+    padding: 60px 16px;
+  }
+
+  .section-main-heading {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    
+  }
+
+  .features-grid-system {
+    grid-template-columns: 1fr; /* Stacks column boxes perfectly vertically */
+    gap: 20px;
+  }
+
+  .feature-item-card {
+    padding: 30px 20px;
+  }
+
+  .mission-descriptive-text {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    text-align: justify; /* Aligns text borders to fit narrow mobile viewports perfectly */
+  }
+
+  .action-cta-card {
+    padding: 40px 20px;
+  }
+
+  .action-cta-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .cta-action-btn {
+    width: 100%; /* Expands tap target width safely on small touch displays */
+    padding: 1rem 0;
+  }
+}
