@@ -803,3 +803,38 @@
   .testimony-custom-file-upload-btn, .testimony-submit-action-btn { width: 100%; justify-content: center; }
 }
 
+
+
+/* ==========================================
+   9. TASK FEED RESPONSIVE BUTTON COMPACTOR
+   ========================================== */
+@media (max-width: 540px) {
+  /* Hide the text labels ("Like", "Comment", "Repost", "Send") on small viewports */
+  .actionButton .action-label {
+    display: none !important;
+  }
+
+  /* Distribute the bare icon/counter setups evenly across the card */
+  .taskActionButtonBar {
+    justify-content: space-between !important;
+    padding-top: 0.85rem;
+  }
+
+  .action-buttons-left {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0 !important; /* Let space-between handle it */
+  }
+
+  .actionButton {
+    padding: 6px 10px !important;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 20px; /* Pillow-capsule look for easier tapping */
+  }
+
+  /* Make counter digits stick closer to their icons */
+  .inline-action-counter {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+}
