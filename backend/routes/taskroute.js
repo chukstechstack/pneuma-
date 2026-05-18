@@ -11,13 +11,9 @@ import { toggleLike } from "../controllers/task/toggleLike.js";
 
 const taskRoute = express.Router();
 
-// 1. Protected Static Feed Read Route
+
 taskRoute.get("/", ensureAuthenticated, getTask);
-
-// 2. Protected Multi-part Media Creation Route (Inject Multer Here)
 taskRoute.post("/", ensureAuthenticated, upload.single("img"), createTask);
-
-// 3. Protected Dynamic Resource Parameter Routes
 taskRoute.patch("/:uuid", ensureAuthenticated, upload.single("img"), patchTask);
 taskRoute.delete("/:uuid", ensureAuthenticated, deleteTask);
 taskRoute.get("/:uuid/post", ensureAuthenticated, getEditPage);

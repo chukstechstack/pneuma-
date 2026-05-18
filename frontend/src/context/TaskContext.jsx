@@ -8,7 +8,7 @@ export const TaskProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
 
-   const getTasks = useCallback(async () => {
+  const getTasks = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api.get("/task");
@@ -17,7 +17,9 @@ export const TaskProvider = ({ children }) => {
     } catch (err) {
       // If it's a 401, don't crash or print complex logs—it just means they haven't logged in yet!
       if (err.response?.status === 401) {
-        console.log("👤 User is currently a guest. Waiting for login/register...");
+        console.log(
+          "👤 User is currently a guest. Waiting for login/register...",
+        );
       } else {
         console.error(err.response?.data?.error || err.message);
       }
@@ -25,7 +27,6 @@ export const TaskProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
-
 
   const addTaskToState = (newTask) => {
     setTasks((prevTasks) => [newTask, ...prevTasks]);
@@ -35,14 +36,13 @@ export const TaskProvider = ({ children }) => {
     getTasks();
   }, [getTasks]);
 
-const updateTaskInState = (updatedTask) => {
-  setTasks((prevTasks) =>
-    prevTasks.map((task) =>
-      task.uuid === updatedTask.uuid ? updatedTask : task
-    )
-  );
-};
-
+  const updateTaskInState = (updatedTask) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.uuid === updatedTask.uuid ? updatedTask : task,
+      ),
+    );
+  };
 
   const deleteTaskFromState = (uuid) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.uuid !== uuid));
@@ -64,16 +64,16 @@ const updateTaskInState = (updatedTask) => {
     );
   };
 
-//   export const useTasks = () => {
-//   const context = useContext(TaskContext);
-  
-//   // Guard clause to catch configuration errors instantly
-//   if (!context) {
-//     throw new Error("useTasks must be used within a TaskProvider");
-//   }
-  
-//   return context;
-// };
+  //   export const useTasks = () => {
+  //   const context = useContext(TaskContext);
+
+  //   // Guard clause to catch configuration errors instantly
+  //   if (!context) {
+  //     throw new Error("useTasks must be used within a TaskProvider");
+  //   }
+
+  //   return context;
+  // };
 
   return (
     <TaskContext.Provider

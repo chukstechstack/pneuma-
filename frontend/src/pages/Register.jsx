@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import RegisterInput from "../components/RegisterInput.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 import "../styles/Register.css";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
+import TaskContext from "../context/TaskContext.jsx";
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { getTasks } = useContext(TaskContext);
   const [register, setRegister] = useState({
     username: "",
     password: "",
@@ -34,7 +36,7 @@ const Register = () => {
     try {
       setIsLoading(true);
       await api.post("/auth/register", register);
-
+      await getTasks();
       setRegister({
         username: "",
         password: "",
