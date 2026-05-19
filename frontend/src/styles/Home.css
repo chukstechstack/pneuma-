@@ -838,3 +838,33 @@
     color: var(--text-muted);
   }
 }
+
+/* ==========================================
+   10. MOBILE IMAGE FEED OPTIMIZATION (Wall-to-Wall)
+   ========================================== */
+@media (max-width: 540px) {
+  /* Pull the wrapper outward to break past parent card padding */
+  .taskImageWrapper {
+    width: calc(100% + 2.4rem) !important; /* 💡 Balanced perfectly to match 1.2rem + 1.2rem */
+    margin-left: -1.2rem !important;       /* Left edge stays exactly where you want it */
+    margin-right: -1.2rem !important;      /* Pulls right edge to hit the other side smoothly */
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;        
+  }
+
+
+
+  /* Force full width and increase the height */
+   /* Force full width and increase the height */
+  .taskContentImageCard {
+    width: 100% !important;
+    min-height: 300px !important;       /* 💡 Increase this to make it taller at minimum */
+    max-height: 400px !important;       /* 💡 Increase this so tall pictures aren't chopped too short */
+    height: 450px !important;           /* 💡 Increase this to your main desired mobile height */
+    object-fit: cover !important;       
+    border-radius: 0 !important;
+  }
+
+}

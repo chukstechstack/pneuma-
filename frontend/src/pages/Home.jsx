@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import TaskContext from "../context/TaskContext.jsx";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import api from "../api/axios.js";
 import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
@@ -8,21 +8,25 @@ import "../styles/Home.css";
 import DevBanner from "../components/DevBanner";
 import FullPageLoader from "../components/Loader.jsx";
 
-
 const HomePage = () => {
-  const { tasks, deleteTaskFromState, currentUserId, loading } = useContext(TaskContext);
+  const { tasks, deleteTaskFromState, currentUserId, loading: contextLoading } =
+    useContext(TaskContext);
+  const [isDeleting, seIsDeleting] = useState(false);
 
   const deleteTask = async (uuid) => {
     try {
+      seIsDeleting(true);
       await api.delete(`/task/${uuid}`);
       deleteTaskFromState(uuid);
     } catch (err) {
       const message = err?.response?.data?.error || err.message;
       console.log(message);
+    } finally {
+      seIsDeleting(false);
     }
   };
 
-    if (loading) {
+  if (contextLoading || isDeleting) {
     return <FullPageLoader />;
   }
 
@@ -36,7 +40,7 @@ const HomePage = () => {
         <aside className="profile-sidebar-wrapper">
           <div className="profile-sanctuary-card">
             <div className="profile-card-banner" />
-            
+
             <div className="profile-image-container">
               <img
                 src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg"
@@ -66,7 +70,10 @@ const HomePage = () => {
               alt="profile"
               className="feed-avatar-thumbnail"
             />
-            <Link to="/createtask" className="share-testimony-input-placeholder">
+            <Link
+              to="/createtask"
+              className="share-testimony-input-placeholder"
+            >
               Share a testimony or insight...
             </Link>
           </div>
@@ -78,6 +85,7 @@ const HomePage = () => {
                 task={task}
                 deleteTask={deleteTask}
                 isOwner={task.user_id === currentUserId}
+                isDeleting={isDeleting}
               />
             ))}
           </div>
