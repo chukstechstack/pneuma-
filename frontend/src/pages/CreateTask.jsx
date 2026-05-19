@@ -3,12 +3,13 @@ import TaskInput from "../components/CreateTaskInput";
 import { useNavigate, Link } from "react-router-dom";
 import TaskContext from "../context/TaskContext.jsx";
 import api from "../api/axios.js";
-import "../styles/Home.css"; 
+import "../styles/Home.css";
 import FullPageLoader from "../components/Loader.jsx"; /* 👈 1. ADD LOADER IMPORT */
-import "../styles/Loader.css";                          /* 👈 2. ADD LOADER STYLES */
+import "../styles/Loader.css"; /* 👈 2. ADD LOADER STYLES */
 
 const CreateTask = () => {
-  const [isLoading, setIsLoading] = useState(false);    /* 👈 3. ADD INITIAL LOADING STATE */
+  const [isLoading, setIsLoading] =
+    useState(false); /* 👈 3. ADD INITIAL LOADING STATE */
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -24,7 +25,10 @@ const CreateTask = () => {
 
   const handleFormData = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: files ? files[0] : value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files && files.length > 0 ? files[0] : value,
+    }));
   };
 
   const submitTask = async (e) => {
@@ -69,7 +73,7 @@ const CreateTask = () => {
     <main className="create-task-layout">
       {/* 👈 6. INJECT SPINNER TARGET IF ACTIVE */}
       {isLoading && <FullPageLoader />}
-      
+
       <div className="create-task-ambient-glow"></div>
 
       <section className="create-task-container">
@@ -80,7 +84,8 @@ const CreateTask = () => {
           <h1 className="create-task-title">Document a Testimony</h1>
           <div className="create-task-divider"></div>
           <p className="create-task-subtitle">
-            Write your personal insights, struggles, or record an unshakeable milestone of faith.
+            Write your personal insights, struggles, or record an unshakeable
+            milestone of faith.
           </p>
         </header>
 
