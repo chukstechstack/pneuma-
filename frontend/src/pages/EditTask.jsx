@@ -4,23 +4,21 @@ import TaskInput from "../components/EditInput.jsx";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
 import FullPageLoader from "../components/Loader.jsx";
-import "../styles/Home.css"; 
+import "../styles/Home.css";
 
 const EditPost = () => {
   const navigate = useNavigate();
   const { uuid } = useParams();
   const { tasks, updateTaskInState, loading } = useContext(TaskContext);
   const taskToEdit = tasks.find((t) => t.uuid === uuid);
-
-  // Initialize form state
+  const [prevUuid, setPrevUuid] = useState(uuid);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
     content: taskToEdit?.content || "",
     img: taskToEdit?.img || "",
   });
 
   // Keep track of the current task URL ID
-  const [prevUuid, setPrevUuid] = useState(uuid);
-
   if (taskToEdit && (uuid !== prevUuid || !formData.content)) {
     setPrevUuid(uuid);
     setFormData({
@@ -43,13 +41,11 @@ const EditPost = () => {
     e.preventDefault();
     const data = new FormData();
     if (content) data.append("content", content);
-    
-    // Send image to backend only if a fresh file was selected
     if (img instanceof File) {
       data.append("img", img);
     }
-    
     try {
+      setIsUpdating(true);
       const res = await api.patch(`/task/${uuid}`, data);
       setFormData({
         content: "",
@@ -60,6 +56,8 @@ const EditPost = () => {
     } catch (err) {
       const message = err.response?.data?.error || "Update failed";
       console.log(message);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -72,7 +70,7 @@ const EditPost = () => {
     };
   }, [img]);
 
-  if (loading) {
+  if (loading || isUpdating) {
     return <FullPageLoader />;
   }
 
@@ -88,7 +86,8 @@ const EditPost = () => {
           <h1 className="create-task-title">Modify Testimony</h1>
           <div className="create-task-divider"></div>
           <p className="create-task-subtitle">
-            Refine your personal insights, adjust details, or keep your record of faith current.
+            Refine your personal insights, adjust details, or keep your record
+            of faith current.
           </p>
         </header>
 

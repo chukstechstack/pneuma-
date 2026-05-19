@@ -4,12 +4,12 @@ import { useNavigate, Link } from "react-router-dom";
 import TaskContext from "../context/TaskContext.jsx";
 import api from "../api/axios.js";
 import "../styles/Home.css";
-import FullPageLoader from "../components/Loader.jsx"; /* 👈 1. ADD LOADER IMPORT */
-import "../styles/Loader.css"; /* 👈 2. ADD LOADER STYLES */
+import FullPageLoader from "../components/Loader.jsx"; /*  1. ADD LOADER IMPORT */
+import "../styles/Loader.css"; /*  2. ADD LOADER STYLES */
 
 const CreateTask = () => {
   const [isLoading, setIsLoading] =
-    useState(false); /* 👈 3. ADD INITIAL LOADING STATE */
+    useState(false); /*  3. ADD INITIAL LOADING STATE */
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -38,7 +38,7 @@ const CreateTask = () => {
       data.append(key, value);
     });
     try {
-      setIsLoading(true); /* 👈 4. TRIGGER SPINNER ON START */
+      setIsLoading(true); /*  4. TRIGGER SPINNER ON START */
       const res = await api.post("/task", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -57,7 +57,7 @@ const CreateTask = () => {
       const message = err.response?.data?.error || err.message;
       console.error(message);
     } finally {
-      setIsLoading(false); /* 👈 5. TURN OFF SPINNER WHEN DONE/FAILED */
+      setIsLoading(false); /*  5. TURN OFF SPINNER WHEN DONE/FAILED */
     }
   };
 
@@ -71,7 +71,7 @@ const CreateTask = () => {
 
   return (
     <main className="create-task-layout">
-      {/* 👈 6. INJECT SPINNER TARGET IF ACTIVE */}
+      {/*  6. INJECT SPINNER TARGET IF ACTIVE */}
       {isLoading && <FullPageLoader />}
 
       <div className="create-task-ambient-glow"></div>
