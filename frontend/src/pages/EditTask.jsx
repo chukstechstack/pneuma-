@@ -15,7 +15,7 @@ const EditPost = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
     content: taskToEdit?.content || "",
-    img: taskToEdit?.img || "",
+    img: taskToEdit?.img || null,
   });
 
   // Keep track of the current task URL ID
@@ -23,7 +23,7 @@ const EditPost = () => {
     setPrevUuid(uuid);
     setFormData({
       content: taskToEdit.content || "",
-      img: taskToEdit.img || "",
+      img: taskToEdit.img || null,
     });
   }
 
@@ -49,13 +49,13 @@ const EditPost = () => {
       const res = await api.patch(`/task/${uuid}`, data);
       setFormData({
         content: "",
-        img: "",
+        img: null,
       });
       updateTaskInState(res.data.updatedTask);
       navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || "Update failed";
-      console.log(message);
+      console.error(message);
     } finally {
       setIsUpdating(false);
     }
@@ -64,7 +64,7 @@ const EditPost = () => {
   // Clean up memory leaks from local preview URLs
   useEffect(() => {
     return () => {
-      if (img && typeof img === "string" && img.startsWith("blob:")) {
+      if (img && typeof img === "string") {
         URL.revokeObjectURL(img);
       }
     };
