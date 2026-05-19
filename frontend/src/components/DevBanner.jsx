@@ -1,7 +1,7 @@
 import React from "react";
 const DevBanner = () => {
   const currentFocus =
-    "Message feature Frontend: React + Socket.io-client. || Backend: Node.js + Socket.io + Redis (for scaling) + Postgres (for history). ";
+    "Working on shares and Likes Functionality";
 
   return (
     <div

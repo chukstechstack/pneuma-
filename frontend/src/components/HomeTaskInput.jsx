@@ -34,7 +34,7 @@ const Task = ({ task, deleteTask, isOwner }) => {
             <div className="taskAuthorName">
               {author_name || "Unknown User"}
             </div>
-            <div className="taskCardTestimonyText">Testimony</div>
+            <div className="taskCardTestimonyText">May 14 2026</div>
           </div>
         </div>
 
@@ -59,13 +59,13 @@ const Task = ({ task, deleteTask, isOwner }) => {
                     to={`/edittask/${uuid}`}
                     className="menuEditButtonStyle"
                   >
-                    Edit Post
+                    Updated Story
                   </Link>
                   <button
                     onClick={() => deleteTask(uuid)}
                     className="menuDeleteButtonStyle"
                   >
-                    Delete Post
+                    Remove
                   </button>
                 </div>
               </>

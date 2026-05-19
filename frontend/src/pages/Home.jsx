@@ -6,9 +6,11 @@ import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
 import "../styles/Home.css";
 import DevBanner from "../components/DevBanner";
+import FullPageLoader from "../components/Loader.jsx";
+
 
 const HomePage = () => {
-  const { tasks, deleteTaskFromState, currentUserId } = useContext(TaskContext);
+  const { tasks, deleteTaskFromState, currentUserId, loading } = useContext(TaskContext);
 
   const deleteTask = async (uuid) => {
     try {
@@ -19,6 +21,10 @@ const HomePage = () => {
       console.log(message);
     }
   };
+
+    if (loading) {
+    return <FullPageLoader />;
+  }
 
   return (
     <div className="home-layout">
