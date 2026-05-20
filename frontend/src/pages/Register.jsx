@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 // Change this line from Register.css to inputs.css
-import "../styles/inputs.css";
+import "../styles/Inputs.css";
 
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";

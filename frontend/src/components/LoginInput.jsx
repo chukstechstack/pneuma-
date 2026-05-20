@@ -1,6 +1,6 @@
 import React from "react";
 // Change this line from Register.css to inputs.css
-import "../styles/inputs.css"; 
+import "../styles/Inputs.css"; 
 // Points cleanly to our fixed master style sheet
 
 const LoginInput = ({ handleChange, password, email, handleSubmit }) => {

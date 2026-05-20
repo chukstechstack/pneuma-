@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
 // Change this line from Register.css to inputs.css
-import "../styles/inputs.css"; 
+import "../styles/Inputs.css"; 
 // Reuses your fixed master style sheet
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
