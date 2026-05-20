@@ -1,8 +1,10 @@
 import pool from "../../config/supaseConfig.js";
 
 // 1. Insert raw text content and image link into content table
-export const insertNewTask = async (content, img_url, user_id) => {
-  const result = await pool.query(
+// ADDED: client parameter (defaults to pool if not provided)
+export const insertNewTask = async (content, img_url, user_id, client = pool) => {
+  // CHANGED: Uses client instead of pool
+  const result = await client.query(
     `INSERT INTO content(content, img, user_id) VALUES($1, $2, $3) RETURNING *`,
     [content, img_url, user_id]
   );
@@ -10,8 +12,10 @@ export const insertNewTask = async (content, img_url, user_id) => {
 };
 
 // 2. Query data with author profile mappings for real-time frontend integration
-export const fetchHydratedTaskById = async (newPostId) => {
-  const result = await pool.query(
+// ADDED: client parameter (defaults to pool if not provided)
+export const fetchHydratedTaskById = async (newPostId, client = pool) => {
+  // CHANGED: Uses client instead of pool
+  const result = await client.query(
     `SELECT c.*,
             c.user_id,
             CONCAT(p.first_name, ' ', p.last_name) AS author_name,

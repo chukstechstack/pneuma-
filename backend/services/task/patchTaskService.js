@@ -1,6 +1,5 @@
 import pool from "../../config/supaseConfig.js";
 
-// 1. Fetches the old target task to inspect its existing asset state for storage cleanup
 export const fetchOldTaskImage = async (uuid, user_id) => {
   const result = await pool.query(
     "SELECT img FROM content WHERE uuid = $1 AND user_id = $2",
@@ -9,8 +8,8 @@ export const fetchOldTaskImage = async (uuid, user_id) => {
   return result.rows[0] || null;
 };
 
-// 2. Dynamically structures and runs the SQL update command based on modified parameters
-export const executeDynamicTaskUpdate = async (uuid, user_id, contentUpdate, imgUpdate) => {
+// ADDED: client parameter at the very end
+export const executeDynamicTaskUpdate = async (uuid, user_id, contentUpdate, imgUpdate, client = pool) => {
   const updates = [];
   const values = [];
 
@@ -26,7 +25,6 @@ export const executeDynamicTaskUpdate = async (uuid, user_id, contentUpdate, img
 
   if (updates.length === 0) return null;
 
-  // Append safe verification constraints to the values array list
   values.push(uuid, user_id);
 
   const queryStr = `UPDATE content 
@@ -34,6 +32,7 @@ export const executeDynamicTaskUpdate = async (uuid, user_id, contentUpdate, img
                     WHERE uuid = $${values.length - 1} AND user_id = $${values.length} 
                     RETURNING *`;
 
-  const finalUpdateResult = await pool.query(queryStr, values);
+  // CHANGED: Uses the passed transaction client instead of the global pool
+  const finalUpdateResult = await client.query(queryStr, values);
   return finalUpdateResult;
 };
