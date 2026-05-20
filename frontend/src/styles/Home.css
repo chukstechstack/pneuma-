@@ -30,7 +30,7 @@
   gap: 2rem;
   max-width: 1140px;
   margin: 0 auto;
-  padding: 6.5rem 2rem 3rem 2rem; /* Clean clearance below fixed header */
+  padding: 6.5rem 2rem 3rem 2rem;
 }
 
 /* ==========================================
@@ -138,7 +138,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Red & Gold Alert Notification Badges */
 .desktop-badge-relative-wrapper {
   position: relative;
 }
@@ -249,15 +248,14 @@
 }
 
 /* ==========================================
-   4. MIDDLE FEED TIMELINE POST CARDS
+   4. MIDDLE FEED TIMELINE POST CARDS (PREMIUM HUB)
    ========================================== */
 .timeline-feed-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.75rem;
 }
 
-/* Share Testimony Box Trigger Component */
 .create-testimony-trigger-panel {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
@@ -293,12 +291,30 @@
   border-color: var(--border-bright);
 }
 
-/* Individual Log Cards Layout */
+/* Premium Hub Architecture Layout Transformation */
 .taskInputCardBody {
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
+  background: linear-gradient(145deg, #151722, #0f1016);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 2.5px solid var(--accent-gold); /* Architectural styling boundary edge line */
+  
+  /* Modern Sharp-top, Wide Curved Bottom system */
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-left-radius: 24px !important;
+  border-bottom-right-radius: 24px !important;
+  
   padding: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+}
+
+.taskInputCardBody:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.04);
 }
 
 .taskAvatarCardBody {
@@ -313,21 +329,25 @@
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .taskAuthorName {
   font-size: 0.95rem;
   font-weight: 600;
   color: #ffffff;
+  letter-spacing: 0.2px;
 }
 
 .taskCardTestimonyText {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--accent-gold);
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 1px;
 }
 
-/* Three-Dot Menu Options Settings */
 .taskDotButton {
   background: transparent;
   border: none;
@@ -335,17 +355,19 @@
   font-size: 1.25rem;
   cursor: pointer;
   padding: 0 4px;
+  transition: color 0.2s ease;
 }
+.taskDotButton:hover { color: #ffffff; }
 
 .dotMenuDisplay {
   position: absolute;
   right: 0;
   top: 100%;
-  background-color: #1a1c26;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
+  background-color: #181a24;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   width: 140px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
   z-index: 10;
   overflow: hidden;
 }
@@ -356,13 +378,14 @@
   box-sizing: border-box;
   background: transparent;
   border: none;
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1rem;
   text-align: left;
   font-family: var(--font-sans);
   font-size: 0.85rem;
   color: var(--text-main);
   text-decoration: none;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .menuEditButtonStyle:hover { background-color: rgba(255,255,255,0.05); }
@@ -374,11 +397,10 @@
   z-index: 5;
 }
 
-/* Post Contents Spacing */
 .postTextContent {
   font-size: 0.95rem;
-  line-height: 1.6;
-  color: #e5e7eb;
+  line-height: 1.65;
+  color: #e2e5f0;
   margin-bottom: 1.25rem;
   white-space: pre-wrap;
 }
@@ -391,23 +413,43 @@
   cursor: pointer;
   padding: 0;
   margin-left: 4px;
+  font-weight: 500;
 }
+.showMoreText:hover { text-decoration: underline; }
 
+/* Glossy Glass Facebook-Style Asset Rendering Engine */
 .taskImageWrapper {
-  margin-bottom: 1.25rem;
-  border-radius: 6px;
+  position: relative;
+  margin-bottom: 1.5rem;
+  border-radius: 14px;
   overflow: hidden;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: #07080a;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
 .taskContentImageCard {
   width: 100%;
   display: block;
-  max-height: 450px;
+  max-height: 460px;
   object-fit: cover;
+  filter: contrast(1.08) brightness(1.02) saturate(1.05); /* Resolves paleness, increases color depth */
 }
 
-/* Action Trigger Bars Layout */
+/* High-contrast camera gloss sheen layer */
+.taskImageWrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.12) 0%, 
+    rgba(255, 255, 255, 0.03) 30%, 
+    rgba(255, 255, 255, 0) 60%
+  );
+}
+
 .taskActionButtonBar {
   display: flex;
   justify-content: space-between;
@@ -431,37 +473,37 @@
   font-family: var(--font-sans);
   font-size: 0.85rem;
   cursor: pointer;
-  padding: 4px 8px;
-  transition: color 0.2s ease;
+  padding: 6px 10px;
+  transition: all 0.2s ease;
 }
 
 .actionButton:hover {
   color: var(--text-main);
 }
 
-.total-likes-count {
+.inline-action-counter {
   font-size: 0.8rem;
   color: var(--text-muted);
+  font-weight: 500;
 }
 
 /* ==========================================
    5. MOBILE LAYER SYSTEMS OVERRIDES
    ========================================== */
 .mobile-top-nav, .mobile-bottom-nav {
-  display: none; /* Invisible on standard widescreen PC displays */
+  display: none;
 }
 
 @media (max-width: 1023px) {
   .desktop-master-nav, .profile-sidebar-wrapper {
-    display: none !important; /* Shuts out desktop artifacts cleanly */
+    display: none !important;
   }
 
   .dashboard-grid {
-    grid-template-columns: 1fr; /* Formats single card layout system tracking */
+    grid-template-columns: 1fr;
     padding: 5rem 1rem 6rem 1rem;
   }
 
-  /* Mobile Header Top Navigation Rules */
   .mobile-top-nav {
     display: flex;
     position: fixed;
@@ -510,9 +552,6 @@
   }
   .counter-red { background-color: #ef4444; color: #ffffff; }
 
-  /* ==========================================
-     MOBILE BOTTOM FIXED PANEL STYLES (NEW THUMB SYSTEM)
-     ========================================== */
   .mobile-bottom-nav {
     display: flex;
     position: fixed;
@@ -541,28 +580,14 @@
     transition: color 0.2s ease;
   }
 
-  .nav-item.active {
-    color: var(--accent-gold);
-  }
-
-  .mobile-post-accent-btn {
-    color: var(--text-main);
-  }
-
-  .mobile-badge-container-wrapper {
-    position: relative;
-  }
-
-  /* REPOSITIONED MOBILE AVATAR SHAPE STYLING IN BOTTOM CORNER RIGHT */
+  .nav-item.active { color: var(--accent-gold); }
   .mobile-avatar-frame-bottom {
     width: 24px;
     height: 24px;
     border-radius: 50%;
     overflow: hidden;
     border: 1px solid var(--border-subtle);
-    transition: border-color 0.2s ease;
   }
-
   .nav-item.active .mobile-avatar-frame-bottom {
     border-color: var(--accent-gold);
     box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
@@ -575,10 +600,50 @@
   }
 }
 
+/* Responsive Touchpad Compactor Layout rules */
+@media (max-width: 540px) {
+  .actionButton .action-label {
+    display: none !important;
+  }
 
+  .taskActionButtonBar {
+    justify-content: space-between !important;
+    padding-top: 0.85rem;
+  }
 
+  .action-buttons-left {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0 !important;
+  }
 
+  .actionButton {
+    padding: 6px 12px !important;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+  }
 
+  /* Full Bleed Mobile wall-to-wall image transformation layout adjustment */
+  .taskImageWrapper {
+    width: calc(100% + 3.5rem) !important;
+    margin-left: -1.75rem !important;
+    margin-right: -1.75rem !important;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .taskContentImageCard {
+    width: 100% !important;
+    height: 450px !important;
+    min-height: 300px !important;
+    max-height: 400px !important;
+    object-fit: cover !important;
+    border-radius: 0 !important;
+  }
+}
 
 /* ==========================================
    6. CREATE TESTIMONY LANDING MODULES
@@ -595,7 +660,6 @@
   overflow: hidden;
 }
 
-/* Background brand aura glow */
 .create-task-ambient-glow {
   position: absolute;
   width: 400px;
@@ -609,7 +673,6 @@
   pointer-events: none;
 }
 
-/* Base form panel card box */
 .create-task-container {
   position: relative;
   z-index: 1;
@@ -623,7 +686,6 @@
   box-sizing: border-box;
 }
 
-/* Header Text elements styling */
 .create-task-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -637,10 +699,7 @@
   margin-bottom: 1.25rem;
   transition: color 0.2s ease;
 }
-
-.create-task-back-link:hover {
-  color: var(--accent-gold);
-}
+.create-task-back-link:hover { color: var(--accent-gold); }
 
 .create-task-title {
   font-family: var(--font-serif);
@@ -670,17 +729,9 @@
 /* ==========================================
    7. TIMELINE TESTIMONY FIELD INPUTS
    ========================================== */
-.testimony-form-container {
-  width: 100%;
-}
+.testimony-form-container { width: 100%; }
+.testimony-form-wrapper { display: flex; flex-direction: column; gap: 1.5rem; }
 
-.testimony-form-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Textarea sanctuary frame context */
 .testimony-textarea-field {
   width: 100%;
   box-sizing: border-box;
@@ -696,14 +747,12 @@
   min-height: 150px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
 .testimony-textarea-field:focus {
   outline: none;
   border-color: var(--border-bright);
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.02);
 }
 
-/* Elegant Image Preview Card module */
 .testimony-preview-image-card {
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
@@ -726,13 +775,7 @@
   border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.testimony-preview-actual-img {
-  width: 100%;
-  display: block;
-  object-fit: cover;
-}
-
-/* Action Hover Row Control bar */
+.testimony-preview-actual-img { width: 100%; display: block; object-fit: cover; }
 .testimony-form-actions-row {
   display: flex;
   justify-content: space-between;
@@ -741,7 +784,6 @@
   padding-top: 1.25rem;
 }
 
-/* Custom Add Image upload button icon hook */
 .testimony-custom-file-upload-btn {
   display: inline-flex;
   align-items: center;
@@ -756,17 +798,9 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+.testimony-custom-file-upload-btn:hover { border-color: var(--text-muted); color: var(--text-main); }
+.testimony-hidden-file-input { display: none !important; }
 
-.testimony-custom-file-upload-btn:hover {
-  border-color: var(--text-muted);
-  color: var(--text-main);
-}
-
-.testimony-hidden-file-input {
-  display: none !important; /* Blasts away ugly stock browser file selector */
-}
-
-/* Publish Primary Submit Button */
 .testimony-submit-action-btn {
   display: inline-flex;
   align-items: center;
@@ -784,7 +818,6 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .testimony-submit-action-btn:hover {
   background-color: transparent;
   color: var(--text-main);
@@ -793,8 +826,156 @@
 }
 
 /* ==========================================
-   8. MOBILE SCALING BOUNDS (312px down)
+   CONTEMPORARY INTERACTION ACTION BAR (INSTANT VIBRANCY)
    ========================================== */
+.taskActionButtonBar { 
+  border-top: 1px solid rgba(255,255,255,0.04); 
+  padding: 1.25rem 0; 
+  display: flex; 
+  align-items: center; 
+}
+
+.taskInputCardBody:not(:has(.taskImageWrapper)) { padding-bottom: 1.5rem !important; }
+.taskInputCardBody:not(:has(.taskImageWrapper)) .taskActionButtonBar { border-top: 1px solid rgba(255,255,255,0.04); margin-top: 1rem; }
+
+.action-buttons-left { 
+  display: flex; 
+  gap: 1.25rem; 
+  width: 100%; 
+}
+
+/* Base Pill Layout - Elevated Resting Visibility */
+.actionButton {
+  background: rgba(255, 255, 255, 0.04); 
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  font-family: var(--font-sans);
+  font-size: 0.85rem; 
+  font-weight: 700; /* Extra bold text for instant readability */
+  cursor: pointer;
+  padding: 8px 16px; 
+  border-radius: 25px; 
+  position: relative;
+  overflow: hidden; 
+  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.inline-action-counter { 
+  font-size: 0.8rem; 
+  font-weight: 700; 
+}
+
+/* ------------------------------------------
+   HIGH-VISIBILITY DESIGNATING RESTING COLORS
+   ------------------------------------------ */
+
+/* 1. RESONATE (LIKE): Soft Ruby Coral */
+.actionButton.like-btn {
+  color: #ff656a;
+  border-color: rgba(255, 101, 106, 0.25);
+  box-shadow: 0 2px 10px rgba(255, 101, 106, 0.05);
+}
+.actionButton.like-btn svg { stroke: #ff656a; filter: drop-shadow(0 0 4px rgba(255, 101, 106, 0.4)); }
+.actionButton.like-btn .inline-action-counter { color: #ff888c; }
+
+/* 2. ECHO (COMMENT): Radiant Aura Cyan */
+.actionButton.comment-btn {
+  color: #00f0ff;
+  border-color: rgba(0, 240, 255, 0.25);
+  box-shadow: 0 2px 10px rgba(0, 240, 255, 0.05);
+}
+.actionButton.comment-btn svg { stroke: #00f0ff; filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.4)); }
+.actionButton.comment-btn .inline-action-counter { color: #5effff; }
+
+/* 3. TRANSMIT (REPOST): Glowing Mint Emerald */
+.actionButton.repost-btn {
+  color: #00ffaa;
+  border-color: rgba(0, 255, 170, 0.25);
+  box-shadow: 0 2px 10px rgba(0, 255, 170, 0.05);
+}
+.actionButton.repost-btn svg { stroke: #00ffaa; filter: drop-shadow(0 0 4px rgba(0, 255, 170, 0.4)); }
+.actionButton.repost-btn .inline-action-counter { color: #61ffc9; }
+
+/* 4. PROPAGATE (SEND): Pure Spectral White */
+.actionButton.send-btn {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
+}
+.actionButton.send-btn svg { stroke: #ffffff; filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4)); }
+
+
+/* ------------------------------------------
+   THE HOVER ACTIONS (SOLID FILL SHIFT)
+   ------------------------------------------ */
+.actionButton:hover {
+  transform: translateY(-1.5px);
+}
+
+.actionButton.like-btn:hover {
+  background-color: #ff656a;
+  border-color: #ff656a;
+  color: #0c0d12; /* Dark text inside filled button looks premium */
+  box-shadow: 0 6px 20px rgba(255, 101, 106, 0.4);
+}
+.actionButton.like-btn:hover svg { stroke: #0c0d12; filter: none; }
+.actionButton.like-btn:hover .inline-action-counter { color: #0c0d12; }
+
+.actionButton.comment-btn:hover {
+  background-color: #00f0ff;
+  border-color: #00f0ff;
+  color: #0c0d12;
+  box-shadow: 0 6px 20px rgba(0, 240, 255, 0.4);
+}
+.actionButton.comment-btn:hover svg { stroke: #0c0d12; filter: none; }
+.actionButton.comment-btn:hover .inline-action-counter { color: #0c0d12; }
+
+.actionButton.repost-btn:hover {
+  background-color: #00ffaa;
+  border-color: #00ffaa;
+  color: #0c0d12;
+  box-shadow: 0 6px 20px rgba(0, 255, 170, 0.4);
+}
+.actionButton.repost-btn:hover svg { stroke: #0c0d12; filter: none; }
+.actionButton.repost-btn:hover .inline-action-counter { color: #0c0d12; }
+
+.actionButton.send-btn:hover {
+  background-color: #ffffff;
+  border-color: #ffffff;
+  color: #0c0d12;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+}
+.actionButton.send-btn:hover svg { stroke: #0c0d12; filter: none; }
+
+
+/* THE HOVER GLOSS SHEEN FLASH */
+.actionButton::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -70%;
+  width: 35%; height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+.actionButton:hover::after {
+  left: 140%;
+  transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Mobile Setup scaling overrides */
+@media (max-width: 540px) {
+  .actionButton { padding: 8px 14px !important; border-radius: 20px; }
+}
+
+
 @media (max-width: 480px) {
   .create-task-layout { padding: 2rem 0.75rem; }
   .create-task-container { padding: 2rem 1.25rem; }
@@ -803,68 +984,40 @@
   .testimony-custom-file-upload-btn, .testimony-submit-action-btn { width: 100%; justify-content: center; }
 }
 
-
-
 /* ==========================================
-   9. TASK FEED RESPONSIVE BUTTON COMPACTOR
+   10. MOBILE IMAGE FEED OPTIMIZATION (Wall-to-Wall + Curved Lock)
    ========================================== */
 @media (max-width: 540px) {
-  /* Hide the text labels ("Like", "Comment", "Repost", "Send") on small viewports */
-  .actionButton .action-label {
-    display: none !important;
+  .taskInputCardBody { 
+    padding: 1.25rem 1.25rem 0 1.25rem !important; 
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important; 
   }
 
-  /* Distribute the bare icon/counter setups evenly across the card */
-  .taskActionButtonBar {
-    justify-content: space-between !important;
-    padding-top: 0.85rem;
-  }
-
-  .action-buttons-left {
-    width: 100%;
-    justify-content: space-between;
-    gap: 0 !important; /* Let space-between handle it */
-  }
-
-  .actionButton {
-    padding: 6px 10px !important;
-    background-color: rgba(255, 255, 255, 0.02);
-    border-radius: 20px; /* Pillow-capsule look for easier tapping */
-  }
-
-  /* Make counter digits stick closer to their icons */
-  .inline-action-counter {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-  }
-}
-
-/* ==========================================
-   10. MOBILE IMAGE FEED OPTIMIZATION (Wall-to-Wall)
-   ========================================== */
-@media (max-width: 540px) {
-  /* Pull the wrapper outward to break past parent card padding */
   .taskImageWrapper {
-    width: calc(100% + 2.4rem) !important; /* 💡 Balanced perfectly to match 1.2rem + 1.2rem */
-    margin-left: -1.2rem !important;       /* Left edge stays exactly where you want it */
-    margin-right: -1.2rem !important;      /* Pulls right edge to hit the other side smoothly */
+    width: calc(100% + 2.5rem) !important; 
+    margin-left: -1.25rem !important;       
+    margin-right: -1.25rem !important;      
     margin-top: 1rem !important;
-    margin-bottom: 1rem !important;
+    margin-bottom: 0px !important; /* Locks directly flush to card base */
     overflow: hidden !important;
-    border-radius: 0 !important;        
+    
+    /* FIX: Force the image container to curve on mobile screens */
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important;        
   }
 
-
-
-  /* Force full width and increase the height */
-   /* Force full width and increase the height */
   .taskContentImageCard {
     width: 100% !important;
-    min-height: 300px !important;       /* 💡 Increase this to make it taller at minimum */
-    max-height: 400px !important;       /* 💡 Increase this so tall pictures aren't chopped too short */
-    height: 450px !important;           /* 💡 Increase this to your main desired mobile height */
+    height: 380px !important;           
     object-fit: cover !important;       
-    border-radius: 0 !important;
+    
+    /* FIX: Force the actual image asset to inherit the exact corner curves */
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important; 
   }
-
 }

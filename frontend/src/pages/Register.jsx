@@ -3,11 +3,12 @@ import RegisterInput from "../components/RegisterInput.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
-import "../styles/NavBar.css";
+// Change this line from Register.css to inputs.css
+import "../styles/inputs.css";
+
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 import TaskContext from "../context/TaskContext.jsx";
-
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +23,8 @@ const Register = () => {
     email: "",
   });
 
-  const { username, password, first_name, last_name, country, email } = register;
+  const { username, password, first_name, last_name, country, email } =
+    register;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,8 +47,8 @@ const Register = () => {
       });
       navigate("/home");
     } catch (err) {
-      const message = err.response?.data?.error || err.message;
-      console.error(message);
+      const message = err?.response?.data?.error || err.message;
+      alert(`Failed to delete: ${message}`);
     } finally {
       setIsLoading(false);
     }
@@ -56,18 +58,21 @@ const Register = () => {
     <main className="register-layout">
       {/* Full screen loader target component */}
       {isLoading && <FullPageLoader />}
-      
+
       {/* Ambient background accent glow */}
       <div className="register-ambient-glow"></div>
 
       <section className="register-container">
-        
         {/* Architectural Header Accent */}
         <header className="register-header">
-          <Link to="/" className="register-brand-link">Pneuma</Link>
+          <Link to="/" className="register-brand-link">
+            Pneuma
+          </Link>
           <h1 className="register-title">Begin Your Journey</h1>
           <div className="register-divider"></div>
-          <p className="register-subtitle">Create your personal sanctuary workspace archive.</p>
+          <p className="register-subtitle">
+            Create your personal sanctuary workspace archive.
+          </p>
         </header>
 
         {/* Form Grid Injection */}
@@ -85,8 +90,8 @@ const Register = () => {
         {/* Lower Navigation Footer Alternative link */}
         <footer className="register-footer">
           <span>Already mapping your legacy?</span>
-          <span 
-            onClick={() => navigate("/login")} 
+          <span
+            onClick={() => navigate("/login")}
             className="register-login-link"
             style={{ cursor: "pointer" }}
           >

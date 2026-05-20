@@ -1,5 +1,7 @@
 import React from "react";
-import "../styles/NavBar.css"; // Points cleanly to our fixed master style sheet
+// Change this line from Register.css to inputs.css
+import "../styles/inputs.css"; 
+// Points cleanly to our fixed master style sheet
 
 const LoginInput = ({ handleChange, password, email, handleSubmit }) => {
   return (

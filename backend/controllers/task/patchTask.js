@@ -2,7 +2,7 @@ import sharp from "sharp";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import s3 from "../../config/AwsS3ClientConfig.js";
 import redisClient from "../../config/redisCreateClient.js";
-import pool from "../../config/supaseConfig.js"; // Import your pool to manage connections
+import pool from "../../config/supabaseConfig.js";
 import { fetchOldTaskImage, executeDynamicTaskUpdate } from "../../services/task/patchTaskService.js";
 
 export const patchTask = async (req, res, next) => {
@@ -10,7 +10,7 @@ export const patchTask = async (req, res, next) => {
   const user_id = req.user.id;
 
   let newUrl = null;
-  let uploadedFileName = null; // Track file name for S3 emergency rollback
+  let uploadedFileName = null;
   const dbClient = await pool.connect(); // Checkout a single database client connection
 
   try {
@@ -18,7 +18,8 @@ export const patchTask = async (req, res, next) => {
     await dbClient.query("BEGIN");
 
     if (req.file) {
-      const oldImgRecord = await fetchOldTaskImage(uuid, user_id);
+      // FIX 1: Pass dbClient into fetchOldTaskImage so it runs inside the transaction
+      const oldImgRecord = await fetchOldTaskImage(uuid, user_id, dbClient);
       const oldImgUrl = oldImgRecord?.img;
       const operations = [];
 
@@ -36,14 +37,19 @@ export const patchTask = async (req, res, next) => {
         }
       }
 
+      // Optimize image buffer
       const optimizePromise = sharp(req.file.buffer)
         .resize({ width: 800, withoutEnlargement: true })
         .webp({ quality: 80 })
         .toBuffer();
 
       operations.push(optimizePromise);
-      await Promise.all(operations);
-      const optimizedBuffer = await optimizePromise;
+
+      // FIX 2: Safely handle concurrent operations without processing double records
+      const completedOps = await Promise.all(operations);
+
+      // The optimized image buffer will always be the last element in your operations array
+      const optimizedBuffer = completedOps[completedOps.length - 1];
 
       // Track the name before uploading so the catch block can see it
       uploadedFileName = `tasks/${Date.now()}-optimized.webp`;
@@ -63,16 +69,19 @@ export const patchTask = async (req, res, next) => {
 
     if (!finalUpdateResult) {
       await dbClient.query("ROLLBACK");
+      dbClient.release(); // Explicitly release right before returning
       return res.status(400).json({ error: "No fields provided for update" });
     }
 
     if (finalUpdateResult.rowCount === 0) {
       await dbClient.query("ROLLBACK");
+      dbClient.release(); // Explicitly release right before returning
       return res.status(404).json({ error: "Task not found or unauthorized" });
     }
 
+
     // Flush cache
-    await redisClient.del(`tasks_feed:${user_id}`);
+    await redisClient.del(`tasks_feed:${user_id}`).catch(err => console.error("Redis clear error:", err));
 
     // If everything up to this point succeeds, permanently commit the database data
     await dbClient.query("COMMIT");
@@ -84,10 +93,13 @@ export const patchTask = async (req, res, next) => {
 
   } catch (err) {
     // EMERGENCY ROLLBACK BLOCK
-    // 1. Undo any database queries executed during this request
-    await dbClient.query("ROLLBACK");
+    try {
+      await dbClient.query("ROLLBACK");
+    } catch (rollbackErr) {
+      // Quietly ignore if transaction wasn't active
+    }
 
-    // 2. If we uploaded a new file to S3 but the DB failed, delete it immediately
+    // If we uploaded a new file to S3 but the DB failed, delete it immediately
     if (uploadedFileName) {
       try {
         await s3.send(new DeleteObjectCommand({

@@ -1,4 +1,4 @@
-import pool from "../../config/supaseConfig.js";
+import pool from "../../config/supabaseConfig.js";
 
 // 1. Insert raw text content and image link into content table
 // ADDED: client parameter (defaults to pool if not provided)

@@ -1,12 +1,13 @@
-import pool from "../../config/supaseConfig.js";
+import pool from "../../config/supabaseConfig.js";
 
-export const fetchOldTaskImage = async (uuid, user_id) => {
-  const result = await pool.query(
-    "SELECT img FROM content WHERE uuid = $1 AND user_id = $2",
+export const fetchOldTaskImage = async (uuid, user_id, client = pool) => {
+  const result = await client.query(
+    "SELECT img FROM content WHERE uuid = $1 AND user_id = $2 FOR UPDATE", // Added FOR UPDATE
     [uuid, user_id]
   );
   return result.rows[0] || null;
 };
+
 
 // ADDED: client parameter at the very end
 export const executeDynamicTaskUpdate = async (uuid, user_id, contentUpdate, imgUpdate, client = pool) => {

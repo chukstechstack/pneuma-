@@ -3,7 +3,7 @@ import sharp from "sharp";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"; // Added DeleteObjectCommand for rollback
 import s3 from "../../config/AwsS3ClientConfig.js";
 import redisClient from "../../config/redisCreateClient.js";
-import pool from "../../config/supaseConfig.js"; // Imported the pool to manage connections
+import pool from "../../config/supabaseConfig.js"; // Imported the pool to manage connections
 
 // Import your newly created database service workers
 import { insertNewTask, fetchHydratedTaskById } from "../../services/task/createTaskService.js";

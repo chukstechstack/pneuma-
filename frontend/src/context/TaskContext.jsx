@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback } from "react";
+import { createContext, useState, useEffect, useCallback} from "react";
 import api from "../api/axios.js";
 
 const TaskContext = createContext();
@@ -15,7 +15,6 @@ export const TaskProvider = ({ children }) => {
       setTasks(res.data.tasks);
       setCurrentUserId(res.data.currentUserId);
     } catch (err) {
-      // If it's a 401, don't crash or print complex logs—it just means they haven't logged in yet!
       if (err.response?.status === 401) {
         console.log(
           "👤 User is currently a guest. Waiting for login/register...",
@@ -30,6 +29,15 @@ export const TaskProvider = ({ children }) => {
 
   const addTaskToState = (newTask) => {
     setTasks((prevTasks) => [newTask, ...prevTasks]);
+  };
+
+  const restoreTaskToState = (restoredTask, originalIndex) => {
+    setTasks((prevTasks) => {
+      const updated = [...prevTasks];
+      // Insert the task at its original index without deleting anything (0)
+      updated.splice(originalIndex, 0, restoredTask);
+      return updated;
+    });
   };
 
   useEffect(() => {
@@ -48,33 +56,6 @@ export const TaskProvider = ({ children }) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.uuid !== uuid));
   };
 
-  const toggleLikeInState = (uuid, liked) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.uuid === uuid) {
-          const currentCount = Number(task.like_count) || 0;
-          return {
-            ...task,
-            is_liked: liked,
-            like_count: liked ? currentCount + 1 : currentCount - 1,
-          };
-        }
-        return task;
-      }),
-    );
-  };
-
-  //   export const useTasks = () => {
-  //   const context = useContext(TaskContext);
-
-  //   // Guard clause to catch configuration errors instantly
-  //   if (!context) {
-  //     throw new Error("useTasks must be used within a TaskProvider");
-  //   }
-
-  //   return context;
-  // };
-
   return (
     <TaskContext.Provider
       value={{
@@ -82,9 +63,9 @@ export const TaskProvider = ({ children }) => {
         loading,
         updateTaskInState,
         deleteTaskFromState,
+        restoreTaskToState,
         getTasks,
         addTaskToState,
-        toggleLikeInState,
         currentUserId,
       }}
     >
@@ -92,6 +73,6 @@ export const TaskProvider = ({ children }) => {
     </TaskContext.Provider>
   );
 };
-// In TaskContext.jsx
+
 
 export default TaskContext;

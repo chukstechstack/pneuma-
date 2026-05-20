@@ -3,7 +3,9 @@ import LoginInput from "../components/LoginInput.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
-import "../styles/NavBar.css"; // Reuses your fixed master style sheet
+// Change this line from Register.css to inputs.css
+import "../styles/inputs.css"; 
+// Reuses your fixed master style sheet
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 
@@ -38,6 +40,7 @@ const Login = () => {
     } catch (err) {
       const message = err?.response?.data?.error || err.message;
       console.log(message);
+      
     } finally {
       setIsLoading(false);
     }
@@ -46,17 +49,21 @@ const Login = () => {
   return (
     <main className="register-layout">
       {isLoading && <FullPageLoader />}
-      
+
       {/* Decorative background aura blur */}
       <div className="register-ambient-glow"></div>
 
       <section className="register-container">
         {/* Architectural Header Accent */}
         <header className="register-header">
-          <Link to="/" className="register-brand-link">Pneuma</Link>
+          <Link to="/" className="register-brand-link">
+            Pneuma
+          </Link>
           <h1 className="register-title">Welcome Back</h1>
           <div className="register-divider"></div>
-          <p className="register-subtitle">Enter your sanctuary to document your journey.</p>
+          <p className="register-subtitle">
+            Enter your sanctuary to document your journey.
+          </p>
         </header>
 
         {/* Input Wrapper Target */}
@@ -70,8 +77,8 @@ const Login = () => {
         {/* Direct Link Alternative Action */}
         <footer className="register-footer">
           <span>New to the archive?</span>
-          <span 
-            onClick={() => navigate("/register")} 
+          <span
+            onClick={() => navigate("/register")}
             className="register-login-link"
             style={{ cursor: "pointer" }}
           >

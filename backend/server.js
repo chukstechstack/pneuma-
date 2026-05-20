@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import pool from "./config/supaseConfig.js";
+import pool from "./config/supabaseConfig.js";
 import mainAuthRoute from "./routes/main/mainauthrouter.js";
 // Change this line inside your server.js:
 import passport from "./config/passport/serialize_deserialize.js";

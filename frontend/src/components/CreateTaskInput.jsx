@@ -1,6 +1,8 @@
 import React from "react";
 import "../styles/Home.css"; // Links safely to your master consolidated stylesheet hub
 import { ImagePlus, CheckSquare } from 'lucide-react';
+// Change this line from Register.css to inputs.css
+import "../styles/inputs.css"; 
 
 const TaskInput = ({
   img,

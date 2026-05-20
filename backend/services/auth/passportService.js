@@ -1,4 +1,4 @@
-import pool from "../../config/supaseConfig.js";
+import pool from "../../config/supabaseConfig.js";
 
 export const findUserByEmail = async (email) => {
   const result = await pool.query(

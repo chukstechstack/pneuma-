@@ -1,4 +1,4 @@
-import pool from "../../config/supaseConfig.js";
+import pool from "../../config/supabaseConfig.js";
 
 // Fetches the global reverse-chronological feed with aggregate profile and like metrics
 export const fetchGlobalTasksFeed = async (user_uuid) => {
@@ -25,6 +25,6 @@ export const fetchGlobalTasksFeed = async (user_uuid) => {
      ORDER BY c.created_at DESC`,
     [numericUserId], // Safe numeric fallback (null if guest/new user has no likes yet)
   );
-  
+
   return result.rows;
 };

@@ -1,284 +1,5 @@
-/* Desktop Styles (Default) */
-.main-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 15px 15px;
-  background-color: white;
-  border-bottom: 2px solid #e0e0e0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-/* Hide mobile navs by default (PC view) */
-.mobile-top-nav,
-.mobile-bottom-nav {
-  display: none !important;
-}
+@import url('https://googleapis.com');
 
-.nav-container {
-  width: 100%;
-  max-width: 1100px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-  margin-left: 16rem;
-}
-
-.nav-logo-section {
-  flex: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 15px;
-}
-
-.nav-dove-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1.5;
-}
-.dove-logo-svg {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1.5;
-  width: 25px;
-  height: 25px;
-  fill: #19191a;
-  stroke: none;
-  margin-bottom: -5px;
-}
-
-.pneuma-text {
-  font-weight: bold;
-  font-size: 14px;
-  font-family: "Playfair Display", Georgia, serif;
-  color: rgb(113, 81, 6);
-  letter-spacing: 1px;
-}
-
-.search-input-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: #f3f3f7;
-  border-radius: 20px;
-  padding: 0 10px;
-  height: 34px;
-  width: clamp(120px, 15vw, 220px);
-}
-
-.search-placeholder-text {
-  position: absolute;
-  left: 40px;
-  color: #424345;
-  font-size: 15px;
-  pointer-events: none;
-}
-.search-input:focus {
-  border-color: #bb8811;
-  background-color: white;
-  box-shadow: 0 0 0 1px #bb8811;
-  width: 280px;
-}
-.search-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  width: 100%;
-  padding-left: 50px;
-}
-
-.svg-styling {
-  position: absolute;
-  left: 10px;
-  color: #777879;
-}
-
-.nav-home-icons-container {
-  display: flex;
-  gap: clamp(12px, 3vw, 40px);
-  align-items: center;
-}
-
-.home-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-}
-
-.home-font-size {
-  font-size: 12px;
-}
-
-.nav-message-icons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-}
-
-.message-font-size {
-  font-size: 12px;
-}
-
-.notification-icon-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  position: relative;
-}
-
-.message-red-bar {
-  position: absolute;
-  top: -2px;
-  right: 7px;
-  background-color: #cc0000;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  font-size: 10px;
-}
-.notification-font-size {
-  font-size: 12px;
-}
-
-.notification-red-bar {
-  position: absolute;
-  top: -2px;
-  right: 12px;
-  background-color: #cc0000;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  font-size: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-}
-
-.profile-bar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.profile-link-styling {
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.profile-image-styling {
-  width: 32px; /* Slightly larger */
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2.5px solid #bb8811; /* Heavy brand border */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease;
-}
-
-.profile-image-styling:hover {
-  transform: scale(1.1); /* Tactile feedback on desktop hover */
-}
-
-.me-profile-text-me {
-  font-size: 12px;
-  color: black;
-  margin-top: 2px;
-}
-
-.search-svg-icon {
-  width: 18px;
-  height: 18px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  color: #444;
-}
-
-.home-svg-icon {
-  width: 25px;
-  height: 25px;
-  fill: #bb8811;
-  stroke: #bb8811;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.messaging-svg-icon {
-  width: 24px;
-  height: 24px;
-  fill: #bb8811;
-  stroke: #bb8811;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.notification-svg-styling {
-  width: 24px;
-  height: 24px;
-  fill: #bb8811;
-  stroke: #bb8811;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Apply to all clickable nav items */
-.home-container,
-.nav-message-icons,
-.notification-icon-container,
-.profile-link-styling,
-.nav-dove-container {
-  transition:
-    transform 0.1s ease,
-    opacity 0.1s ease;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.home-container:active,
-.nav-message-icons:active,
-.notification-icon-container:active,
-.profile-link-styling:active,
-.nav-dove-container:active {
-  transform: scale(0.92);
-  opacity: 0.7;
-}
-
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2; /* ADD THIS LINE: Satisfies the standard property requirement */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-/* Mobile  */
-/* --- GLOBAL THEME RESET --- */
 :root {
   --li-vanilla: #f3f2ef;
   --li-border: #e0e0e0;
@@ -286,33 +7,570 @@
   --brand-gold: #bb8811;
   --text-main: rgba(0, 0, 0, 0.9);
   --text-grey: rgba(0, 0, 0, 0.6);
+  --bg-main: #0c0d12;
+  --bg-surface: #13151d;
+  --panel-glass: rgba(19, 21, 29, 0.8);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-bright: rgba(212, 175, 55, 0.15);
+  --accent-gold: #d4af37;
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cinzel', serif;
 }
 
-/* --- UNIFIED MOBILE & TABLET VIEW (Up to 1024px) --- */
+/* ==========================================
+   1. MAIN CORE CONTAINER SYSTEM
+   ========================================== */
+.home-layout {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 6.5rem 2rem 3rem 2rem;
+}
+
+/* ==========================================
+   2. DESKTOP PERMANENT NAVIGATION SYSTEM
+   ========================================== */
+.desktop-master-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--panel-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Scroll Hide Hooks */
+.desktop-master-nav.nav-hidden {
+  transform: translateY(-100%);
+}
+
+.desktop-nav-inner-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0.85rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.desktop-nav-left-wing {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.desktop-nav-brand-title {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.desktop-search-input-box-wrapper {
+  position: relative;
+  width: 260px;
+}
+
+.desktop-search-svg-magnifier {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  stroke: var(--text-muted);
+}
+
+.desktop-search-input-field {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.desktop-search-input-field:focus {
+  outline: none;
+  border-color: var(--border-bright);
+}
+
+.desktop-nav-right-navigation-menu {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.desktop-menu-item-anchor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  gap: 4px;
+  transition: color 0.2s ease;
+}
+
+.desktop-menu-item-anchor:hover,
+.desktop-menu-item-anchor.active {
+  color: var(--text-main);
+}
+
+.menu-svg-vector-icon {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.75;
+}
+
+.menu-anchor-text-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.desktop-badge-relative-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* UNIFIED POSITIONING LOCK FOR NOTIFICATION BADGES */
+.desktop-badge-counter-flag {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #ffffff;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--bg-surface);
+  z-index: 2;
+}
+.notification-red { background-color: #ef4444; }
+.notification-gold { background-color: var(--accent-gold); color: #11131a; }
+
+.desktop-menu-profile-avatar-anchor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-muted);
+  gap: 4px;
+}
+
+.desktop-menu-avatar-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-subtle);
+}
+
+/* ==========================================
+   3. LEFT PROFILE SIDEBAR PANEL
+   ========================================== */
+.profile-sidebar-wrapper {
+  position: sticky;
+  top: 6.5rem;
+  height: fit-content;
+}
+
+.profile-sanctuary-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.profile-card-banner {
+  height: 60px;
+  background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(0,0,0,0));
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.profile-image-container {
+  margin-top: -30px;
+  display: inline-block;
+}
+
+.profile-avatar-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bg-surface);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+
+.profile-info-block {
+  padding: 1.25rem 1rem;
+}
+
+.profile-display-name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin: 0 0 4px 0;
+  color: #ffffff;
+}
+
+.profile-app-role {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profile-action-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 1rem;
+  background-color: rgba(0,0,0,0.1);
+}
+
+.profile-view-link-btn {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-gold);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.profile-view-link-btn:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================
+   4. MIDDLE FEED TIMELINE POST CARDS (PREMIUM HUB)
+   ========================================== */
+.timeline-feed-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.create-testimony-trigger-panel {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.feed-avatar-thumbnail {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.share-testimony-input-placeholder {
+  flex: 1;
+  background-color: rgba(0,0,0,0.2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 25px;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  text-align: left;
+  transition: background-color 0.2s ease;
+}
+
+.share-testimony-input-placeholder:hover {
+  background-color: rgba(255,255,255,0.02);
+  border-color: var(--border-bright);
+}
+
+/* Premium Hub Architecture Layout Transformation */
+.taskInputCardBody {
+  background: linear-gradient(145deg, #151722, #0f1016);
+  border-left: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-top: 2.5px solid var(--accent-gold); 
+  
+  border-top-left-radius: 0px !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-left-radius: 32px !important;
+  border-bottom-right-radius: 32px !important;
+  
+  padding: 1.75rem 1.75rem 0 1.75rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+}
+
+.taskInputCardBody:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.04);
+}
+
+.taskInputCardBody:not(:has(.taskImageWrapper)) {
+  padding-bottom: 1.5rem !important;
+}
+
+.taskAvatarCardBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Pinned horizontally on same line */
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+.taskAvatarcardBackground {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.taskAvatarImage {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.taskAuthorName {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+}
+
+.taskCardTestimonyText {
+  font-size: 0.75rem;
+  color: var(--accent-gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+/* ANCHORED STABLE DOT BUTTON WRAPPER */
+.TaskDotMenuPosition {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+}
+
+.taskDotButton {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+.taskDotButton:hover { color: #ffffff; }
+
+.dotMenuDisplay {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: #181a24;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  width: 140px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.menuEditButtonStyle, .menuDeleteButtonStyle {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--text-main);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menuEditButtonStyle:hover { background-color: rgba(255,255,255,0.05); }
+.menuDeleteButtonStyle:hover { background-color: #ef4444; color: #ffffff; }
+
+.menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+}
+
+/* Post Contents Spacing */
+.postTextContent {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e5e7eb;
+  margin-bottom: 1.25rem;
+  white-space: pre-wrap;
+}
+
+.showMoreText {
+  background: transparent;
+  border: none;
+  color: var(--accent-gold);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+}
+
+/* ==========================================
+   PORTAL IMAGE BLENDING CORE (GLOSSY FACEBOOK)
+   ========================================== */
+.taskImageWrapper {
+  position: relative; 
+  width: calc(100% + 3.5rem); 
+  margin-left: -1.75rem; 
+  margin-right: -1.75rem;
+  margin-top: 1.25rem;
+  background-color: #08090d;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  border-bottom-left-radius: 32px !important;
+  border-bottom-right-radius: 32px !important;
+}
+
+.taskContentImageCard {
+  width: 100%;
+  display: block;
+  max-height: 460px;
+  object-fit: cover;
+  filter: contrast(1.06) brightness(1.02) saturate(1.06);
+  border-bottom-left-radius: 32px !important;
+  border-bottom-right-radius: 32px !important;
+}
+
+.taskImageWrapper::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    130deg,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0.02) 30%,
+    transparent 60%
+  );
+}
+
+/* Action Trigger Bars Layout */
+.taskActionButtonBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding: 1rem 0;
+}
+
+.action-buttons-left {
+  display: flex;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.actionButton {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.actionButton:hover { color: var(--text-main); }
+.actionButton:hover svg {
+  color: var(--accent-gold);
+  filter: drop-shadow(0 0 6px var(--accent-gold));
+}
+
+.total-likes-count {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================
+   5. MOBILE LAYER SYSTEMS OVERRIDES
+   ========================================== */
+.mobile-top-nav, .mobile-bottom-nav {
+  display: none; 
+}
+
 @media (max-width: 1024px) {
-  .main-nav {
-    display: none !important;
+  .desktop-master-nav, .profile-sidebar-wrapper {
+    display: none !important; 
   }
 
-  .homePageBody {
-    background-color: var(--li-vanilla);
-    padding-top: 0 !important;
+  .dashboard-grid {
+    grid-template-columns: 1fr; 
+    padding: 5rem 1rem 6rem 1rem;
   }
-
-  /* 3. SHARP TOP NAV (Profile, Search, Message Icon) */
 
   .mobile-top-nav {
     display: flex !important;
-    position: relative !important;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    background: white;
+    position: fixed !important; /* Locks layout down to tracking calculations */
+    top: 0; left: 0; right: 0;
+    background-color: white;
     border-bottom: 1px solid var(--li-border);
+    padding: 0.75rem 1rem;
+    align-items: center;
+    justify-content: space-between;
     z-index: 1000;
-    justify-content: center;
-    padding: 15px 12px;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Scroll Hidden Engine Assignments */
+  .mobile-top-nav.nav-hidden {
+    transform: translateY(-100%);
   }
 
   .mobile-nav-content-wrap {
@@ -323,6 +581,7 @@
     justify-content: space-between;
     gap: 20px;
   }
+
   .mobile-nav-left {
     display: flex;
     flex-direction: row;
@@ -347,17 +606,21 @@
   .mobile-bottom-nav {
     display: flex !important;
     position: fixed;
-    bottom: 0;
+    bottom: 0; left: 0; right: 0;
     width: 100%;
-    height: 40px !important;
+    height: 50px !important;
     background: white;
     border-top: 1px solid var(--li-border);
     z-index: 1000;
     justify-content: space-around;
     align-items: center;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 10px) !important;
-    padding-top: 10px !important;
-    align-items: flex-start !important;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5px) !important;
+    padding-top: 5px !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mobile-bottom-nav.nav-hidden {
+    transform: translateY(100%);
   }
 
   .nav-item {
@@ -370,75 +633,79 @@
     gap: 2px;
   }
 
-  .nav-item.active {
-    color: var(--text-main);
-    font-weight: 600;
-  }
-
-  .homebody {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0;
-  }
-
-  .feedCardBodyWidth {
-    width: 100%;
-    max-width: 600px;
-  }
-
-  .feedCardBackground,
-  .taskInputCardBody {
-    width: 100% !important;
-    border-radius: 0 !important;
-    margin: 8px 0 !important;
-    border-left: none !important;
-    border-right: none !important;
-    box-shadow: none !important;
-    border-top: 1px solid var(--li-border);
-    border-bottom: 1px solid var(--li-border);
-    background: white;
-  }
-
-  /* 7. MESSAGE BOX DOCK */
-  .messaging-dock-mobile {
-    display: flex !important;
-    position: fixed;
-    bottom: 56px;
-    width: 100%;
-    max-width: 600px;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 46px;
-    background: white;
+  .nav-item.active { color: var(--brand-gold); font-weight: 600; }
+  .mobile-avatar-frame-bottom {
+    width: 24px; height: 24px;
+    border-radius: 50%; overflow: hidden;
     border: 1px solid var(--li-border);
-    border-bottom: none;
-    border-radius: 8px 8px 0 0;
   }
 
-  .icon-badge-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .mobile-avatar-img-bottom { width: 100%; height: 100%; object-fit: cover; }
+}
+
+/* ==========================================
+   9. TASK FEED RESPONSIVE BUTTON COMPACTOR
+   ========================================== */
+@media (max-width: 540px) {
+  .actionButton .action-label {
+    display: none !important;
   }
 
-  .badge {
-    position: absolute;
-    top: -10px;
-    right: -9px;
+  .taskActionButtonBar {
+    justify-content: space-between !important;
+    padding-top: 0.85rem;
+  }
 
-    background-color: #cc1016;
-    color: white;
-    font-size: 10px;
-    font-weight: bold;
-    border-radius: 50%;
-    min-width: 10px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1.5px solid white;
-    z-index: 10;
+  .action-buttons-left {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0 !important;
+  }
+
+  .actionButton {
+    padding: 6px 10px !important;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 20px; 
+  }
+
+  .inline-action-counter {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+}
+
+/* ==========================================
+   10. MOBILE IMAGE FEED OPTIMIZATION (Wall-to-Wall + Curved Lock)
+   ========================================== */
+@media (max-width: 540px) {
+  .taskInputCardBody { 
+    padding: 1.25rem 1.25rem 0 1.25rem !important; 
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important; 
+  }
+
+  .taskImageWrapper {
+    width: calc(100% + 2.5rem) !important; 
+    margin-left: -1.25rem !important;       
+    margin-right: -1.25rem !important;      
+    margin-top: 1rem !important;
+    margin-bottom: 0px !important; 
+    overflow: hidden !important;
+    
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important;        
+  }
+
+  .taskContentImageCard {
+    width: 100% !important;
+    height: 380px !important;           
+    object-fit: cover !important;       
+    
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important; 
   }
 }
