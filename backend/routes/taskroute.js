@@ -6,8 +6,6 @@ import { getTask } from "../controllers/task/getTask.js";
 import { createTask } from "../controllers/task/createTask.js"; // Pulls both function and upload middleware
 import { patchTask } from "../controllers/task/patchTask.js";
 import { deleteTask } from "../controllers/task/deleteTask.js";
-import { getEditPage } from "../controllers/task/fetchEditTask.js";
-import { toggleLike } from "../controllers/task/toggleLike.js";
 import { upload } from "../config/multerConfig.js"
 const taskRoute = express.Router();
 

@@ -3,7 +3,7 @@ import RegisterInput from "../components/RegisterInput.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
-import "../styles/Register.css";
+import "../styles/NavBar.css";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 import TaskContext from "../context/TaskContext.jsx";

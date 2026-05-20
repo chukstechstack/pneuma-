@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/Register.css";
+import "../styles/NavBar.css";
 
 const RegisterInput = ({
   handleChange,

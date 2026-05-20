@@ -3,7 +3,7 @@ import LoginInput from "../components/LoginInput.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
-import "../styles/Register.css"; // Reuses your fixed master style sheet
+import "../styles/NavBar.css"; // Reuses your fixed master style sheet
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 
