@@ -272,9 +272,13 @@
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2; /* ADD THIS LINE: Satisfies the standard property requirement */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+
+
 
 /* Mobile  */
 /* --- GLOBAL THEME RESET --- */
