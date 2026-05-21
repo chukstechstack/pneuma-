@@ -15,7 +15,7 @@ Pneuma is a personal journal for believers to document their daily journey with 
 
 The Goal: To turn your daily walk into a library of wisdom that others can learn from, fostering a community of transparent, growing believers.
 
-🔗 **Live Demo:** [Deploying to Render - Link Coming Soon!]  
+🔗 **Live Demo:** https://pneuma-frontend-oijl.onrender.com 
 ⚠️ **Project Status:** Active Development (V1 Prototype)
 
 ---
