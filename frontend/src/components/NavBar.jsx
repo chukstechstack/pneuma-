@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import "../styles/Home.css";
+import doveLogoUrl from "../assets/pneuma.png";
 
 const NavBar = () => {
   const location = useLocation();
@@ -127,6 +128,13 @@ const NavBar = () => {
         <div className="desktop-nav-inner-container">
           <div className="desktop-nav-left-wing">
             <Link to="/home" className="desktop-nav-brand-title">
+              <span>
+                <img
+                  src={doveLogoUrl}
+                  className="nav-logo-img"
+                  alt="Pneuma Logo"
+                />
+              </span>
               Pneuma
             </Link>
             <div className="desktop-search-input-box-wrapper">

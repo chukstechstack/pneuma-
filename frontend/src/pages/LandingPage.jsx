@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Landing.css";
-import DoveLogo from "../assets/dove-svgrepo-com.svg?react";
+import doveLogoUrl from "../assets/pneuma.png";
+
 
 const AuthHome = () => {
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ const AuthHome = () => {
       {/* ==================== NAVIGATION ==================== */}
       <nav className="navbar">
         <div className="nav-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <DoveLogo className="nav-logo-img" />
+         <img src={doveLogoUrl} className="nav-logo-img" alt="Pneuma Logo" />
+
           <span className="nav-logo-text">Pneuma</span>
         </div>
 

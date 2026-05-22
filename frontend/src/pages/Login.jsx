@@ -3,11 +3,10 @@ import LoginInput from "../components/LoginInput.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
-// Change this line from Register.css to inputs.css
-import "../styles/Inputs.css"; 
-// Reuses your fixed master style sheet
+import "../styles/Inputs.css";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
+import doveLogoUrl from "../assets/pneuma.png";
 
 const Login = () => {
   const [login, setLogin] = useState({
@@ -40,7 +39,6 @@ const Login = () => {
     } catch (err) {
       const message = err?.response?.data?.error || err.message;
       console.log(message);
-      
     } finally {
       setIsLoading(false);
     }
@@ -57,6 +55,13 @@ const Login = () => {
         {/* Architectural Header Accent */}
         <header className="register-header">
           <Link to="/" className="register-brand-link">
+            <span>
+              <img
+                src={doveLogoUrl}
+                className="nav-logo-img"
+                alt="Pneuma Logo"
+              />
+            </span>
             Pneuma
           </Link>
           <h1 className="register-title">Welcome Back</h1>

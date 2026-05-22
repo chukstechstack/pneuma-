@@ -3,7 +3,7 @@ import RegisterInput from "../components/RegisterInput.jsx";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
-// Change this line from Register.css to inputs.css
+import doveLogoUrl from "../assets/pneuma.png";
 import "../styles/Inputs.css";
 
 import FullPageLoader from "../components/Loader.jsx";
@@ -66,6 +66,14 @@ const Register = () => {
         {/* Architectural Header Accent */}
         <header className="register-header">
           <Link to="/" className="register-brand-link">
+            <span>
+              
+              <img
+                src={doveLogoUrl}
+                className="nav-logo-img"
+                alt="Pneuma Logo"
+              />
+            </span>
             Pneuma
           </Link>
           <h1 className="register-title">Begin Your Journey</h1>
