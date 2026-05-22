@@ -1,0 +1,58 @@
+/* ==========================================
+   MATURE PREMIUM ACTION BUTTONS (PURE WHITE SYSTEM)
+   ========================================== */
+
+/* Base State - Crisp Muted Silver-White */
+.actionButton.like-btn,
+.actionButton.comment-btn,
+.actionButton.repost-btn,
+.actionButton.send-btn {
+  color: #e2e5f0;
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Ensure all vector icons match the crisp white look */
+.actionButton.like-btn svg,
+.actionButton.comment-btn svg,
+.actionButton.repost-btn svg,
+.actionButton.send-btn svg {
+  stroke: #e2e5f0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.actionButton.like-btn .inline-action-counter,
+.actionButton.comment-btn .inline-action-counter,
+.actionButton.repost-btn .inline-action-counter {
+  color: #8e92a2; /* Muted numbers keep it looking clean */
+}
+
+/* ------------------------------------------
+   THE HOVER ACTIONS (SOLID PURE WHITE SHIFT)
+   ------------------------------------------ */
+.actionButton.like-btn:hover,
+.actionButton.comment-btn:hover,
+.actionButton.repost-btn:hover,
+.actionButton.send-btn:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #0c0d12 !important; /* Dark text inside filled white looks incredibly sharp */
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+}
+
+/* Invert icon colors to dark when hovering the filled button */
+.actionButton.like-btn:hover svg,
+.actionButton.comment-btn:hover svg,
+.actionButton.repost-btn:hover svg,
+.actionButton.send-btn:hover svg {
+  stroke: #0c0d12 !important;
+  filter: none !important;
+}
+
+/* Invert counter numbers on hover */
+.actionButton.like-btn:hover .inline-action-counter,
+.actionButton.comment-btn:hover .inline-action-counter,
+.actionButton.repost-btn:hover .inline-action-counter {
+  color: #0c0d12 !important;
+}

@@ -1,0 +1,33 @@
+/* Ensure the main header container stays perfectly centered vertically */
+.taskAvatarCardBody {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Locks items on the same horizontal line */
+  margin-bottom: 1.25rem;
+  width: 100%;
+}
+
+/* Force the three-dot button container to stay perfectly aligned */
+.TaskDotMenuPosition {
+  position: relative;
+  display: inline-flex;
+  align-items: center;    /* Vertically centers the dots */
+  justify-content: center; /* Horizontally centers the dots */
+  height: 44px;           /* Matches the height of your avatar image */
+  align-self: center;     /* Guardrail: forces alignment regardless of layout changes */
+}
+
+/* Add a touch target size boost for mobile users */
+.taskDotButton {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 8px;           /* Extra padding makes it easier to press on mobile */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: color 0.2s ease;
+}

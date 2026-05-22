@@ -1,12 +1,14 @@
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import TaskContext from "../context/TaskContext.jsx";
-import { useContext } from "react";
 import api from "../api/axios.js";
 import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
-import "../styles/Home.css";
 import DevBanner from "../components/DevBanner";
 import FullPageLoader from "../components/Loader.jsx";
+
+// Import your unified styles framework
+import "../styles/home-file/main.css";
 
 const HomePage = () => {
   const { 
@@ -18,31 +20,26 @@ const HomePage = () => {
   } = useContext(TaskContext);
 
   const deleteTask = async (uuid) => {
-    // 1. Back up the task and its list position
     const originalIndex = tasks.findIndex((task) => task.uuid === uuid);
     const taskToRestore = tasks[originalIndex];
 
     if (originalIndex === -1) return;
-
-    // 2. Optimistic Update: Instantly clear it from the user screen
     deleteTaskFromState(uuid);
 
     try {
-      // 3. Silently request the deletion on the backend transaction route
       await api.delete(`/task/${uuid}`);
     } catch (err) {
-      // 4. Rollback: Drop it back in place if something breaks
       restoreTaskToState(taskToRestore, originalIndex);
-      
       const message = err?.response?.data?.error || err.message;
       alert(`Failed to delete: ${message}`);
     }
   };
 
-  // Only lock the page for the initial bulk data download
   if (contextLoading) {
     return <FullPageLoader />;
   }
+
+  const defaultProfileImg = "https://dev.to";
 
   return (
     <div className="home-layout">
@@ -57,8 +54,8 @@ const HomePage = () => {
 
             <div className="profile-image-container">
               <img
-                src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250"className="mobile-avatar-img-bottom" alt="Me Profile" 
-                alt="profile"
+                src={defaultProfileImg}
+                alt="Profile avatar"
                 className="profile-avatar-img"
               />
             </div>
@@ -80,14 +77,11 @@ const HomePage = () => {
         <main className="timeline-feed-wrapper">
           <div className="create-testimony-trigger-panel">
             <img
-              src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250"className="mobile-avatar-img-bottom"
-              alt="profile"
+              src={defaultProfileImg}
+              alt="Feed avatar thumbnail"
               className="feed-avatar-thumbnail"
             />
-            <Link
-              to="/createtask"
-              className="share-testimony-input-placeholder"
-            >
+            <Link to="/createtask" className="share-testimony-input-placeholder">
               Share a testimony or insight...
             </Link>
           </div>

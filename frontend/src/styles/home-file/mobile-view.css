@@ -1,0 +1,74 @@
+@media (max-width: 1023px) {
+  .desktop-master-nav, .profile-sidebar-wrapper {
+    display: none !important;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    padding: 5rem 1rem 6rem 1rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .actionButton .action-label {
+    display: none !important;
+  }
+
+  .taskActionButtonBar {
+    justify-content: space-between !important;
+    padding-top: 0.85rem;
+  }
+
+  .action-buttons-left {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0 !important;
+  }
+
+  .actionButton {
+    padding: 8px 14px !important;
+    border-radius: 20px;
+  }
+
+  /* Fixed Mobile Image Scaling Rules (Stops the shaking screen loop) */
+  
+  /* FIX: Force the mobile header container to align all items perfectly in the center line */
+  .taskAvatarCardBody {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important; /* Forces the vertical center alignment line on mobile */
+    width: 100% !important;
+  }
+
+  /* FIX: Ensure the dot container balances out perfectly with the avatar image height */
+  .TaskDotMenuPosition {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: center !important;
+    margin-top: 0 !important; /* Removes any weird spacing pushing it down */
+  }
+
+  .taskImageWrapper {
+    width: calc(100% + 2.5rem) !important; 
+    margin-left: -1.25rem !important;       
+    margin-right: -1.25rem !important;      
+    margin-top: 1rem !important;
+    margin-bottom: 0px !important;
+    overflow: hidden !important;
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important;        
+  }
+
+  .taskContentImageCard {
+    width: 100% !important;
+    height: 380px !important;           
+    object-fit: cover !important;       
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-left-radius: 28px !important; 
+    border-bottom-right-radius: 28px !important; 
+  }
+}
