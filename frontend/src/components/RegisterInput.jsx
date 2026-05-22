@@ -66,7 +66,7 @@ const RegisterInput = ({
         </div>
 
         {/* Google Authentication Button */}
-        <a href="https://onrender.com" className="google-oauth-btn">
+        <a href="https://pneuma-api-0bvr.onrender.com/auth/google" className="google-oauth-btn">
           <svg
             className="google-svg-icon"
             viewBox="0 0 24 24"

@@ -45,7 +45,7 @@ const AuthHome = () => {
       {/* ==================== HERO SECTION ==================== */}
       <main className="hero-section">
         <header className="hero-content">
-          <h1 className="hero-title">Pneuma</h1>
+          <h1 className="hero-title">Koinonia</h1>
           <div className="glow-divider"></div>
           <p className="hero-subtitle">
             Document your daily journey with God and share the light you find along the way.
