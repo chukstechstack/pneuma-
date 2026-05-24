@@ -11,13 +11,32 @@ import FullPageLoader from "../components/Loader.jsx";
 import "../styles/home-file/main.css";
 
 const HomePage = () => {
-  const { 
-    tasks, 
-    deleteTaskFromState, 
-    restoreTaskToState, 
-    currentUserId, 
-    loading: contextLoading 
+  const {
+    tasks,
+    deleteTaskFromState,
+    restoreTaskToState,
+    currentUserId,
+    loading: contextLoading,
+    updateSingleTaskInState,
+    toggleInteractionInState,
   } = useContext(TaskContext);
+
+  const handleInteraction = async (taskUuid, type) => {
+    const originalTask = tasks.find((t) => t.id === taskUuid);
+    if (!originalTask) return;
+
+    toggleInteractionInState(taskUuid, type);
+    try {
+      const res = await api.post(`/task/engage/${taskUuid}`, { type });
+
+      const updatedPost = res.data.updatedPost;
+      updateSingleTaskInState(updatedPost, type);
+    } catch (err) {
+      console.error("Backend failed, rolling back UI change:", err);
+      toggleInteractionInState(taskUuid, type);
+      alert("Connection failed. Unable to save your response");
+    }
+  };
 
   const deleteTask = async (uuid) => {
     const originalIndex = tasks.findIndex((task) => task.uuid === uuid);
@@ -39,7 +58,8 @@ const HomePage = () => {
     return <FullPageLoader />;
   }
 
-  const defaultProfileImg = "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250";
+  const defaultProfileImg =
+    "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250";
 
   return (
     <div className="home-layout">
@@ -81,7 +101,10 @@ const HomePage = () => {
               alt="Feed avatar thumbnail"
               className="feed-avatar-thumbnail"
             />
-            <Link to="/createtask" className="share-testimony-input-placeholder">
+            <Link
+              to="/createtask"
+              className="share-testimony-input-placeholder"
+            >
               Share a testimony or insight...
             </Link>
           </div>
@@ -93,6 +116,7 @@ const HomePage = () => {
                 task={task}
                 deleteTask={deleteTask}
                 isOwner={task.user_id === currentUserId}
+                handleInteraction={handleInteraction}
               />
             ))}
           </div>

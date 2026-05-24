@@ -10,7 +10,8 @@ import { insertNewTask, fetchHydratedTaskById } from "../../services/task/create
 
 export const createTask = async (req, res, next) => {
   const { content } = req.body;
-  const user_id = req.user.id;
+  const user_uuid = req.user?.uuid;
+  const user_id = req.user?.id;
 
   let img_url = null;
   let uploadedFileName = null; // Track file name for S3 emergency rollback
@@ -50,7 +51,7 @@ export const createTask = async (req, res, next) => {
     const resultWithUser = await fetchHydratedTaskById(savedTaskData.id, dbClient);
 
     // Cache clearing execution
-    await redisClient.del(`tasks_feed:${user_id}`);
+    await redisClient.del(`tasks_feed:${user_uuid}`);
     console.log(`🗑️ Cache busted for user: ${user_id}`);
 
     // If everything up to this point succeeds, permanently commit the database data

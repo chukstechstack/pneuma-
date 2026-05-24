@@ -1,29 +1,45 @@
 import pool from "../../config/supabaseConfig.js";
 
-// Fetches the global reverse-chronological feed with aggregate profile and like metrics
 export const fetchGlobalTasksFeed = async (user_uuid) => {
   let numericUserId = null;
 
-  // 1. If we have a UUID string, look up the matching numeric ID from the profiles table
+  // 1. Look up the matching numeric ID for the logged-in user
   if (user_uuid) {
     const userRes = await pool.query("SELECT id FROM profiles WHERE uuid = $1", [user_uuid]);
     if (userRes.rows.length > 0) {
-      numericUserId = userRes.rows[0].id; // Pull the raw number out safely
+      numericUserId = userRes.rows[0].id;
     }
   }
 
-  // 2. Run the main query using the numeric ID column (user_id)
+  // 2. Run the new query using our super-fast counters!
   const result = await pool.query(
     `SELECT 
-      c.*, 
+      c.id,
+      c.uuid,
+      c.title,
+      c.content,
+      c.img,
+      c.created_at,
+      c.likes_count,    -- Grabs the pre-calculated number instantly!
+      c.reposts_count,  -- Grabs the pre-calculated number instantly!
+      c.shares_count,   -- Grabs the pre-calculated number instantly!
       CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
       p.avatar_url,
-      (SELECT COUNT(*) FROM likes WHERE post_id = c.id) AS like_count,
-      EXISTS (SELECT 1 FROM likes WHERE post_id = c.id AND user_id = $1) AS is_liked
+      c.user_id,
+      -- Checks our interactions table to see if THIS user liked it
+      EXISTS (
+        SELECT 1 FROM interactions 
+        WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like'
+      ) AS is_liked,
+      -- Checks our interactions table to see if THIS user reposted it
+      EXISTS (
+        SELECT 1 FROM interactions 
+        WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost'
+      ) AS is_reposted
      FROM content c 
      LEFT JOIN profiles p ON c.user_id = p.id 
      ORDER BY c.created_at DESC`,
-    [numericUserId], // Safe numeric fallback (null if guest/new user has no likes yet)
+    [numericUserId]
   );
 
   return result.rows;

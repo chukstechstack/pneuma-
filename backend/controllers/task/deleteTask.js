@@ -8,7 +8,9 @@ import { findTaskImageForCleanup, executeTaskDeletion } from "../../services/tas
 
 export const deleteTask = async (req, res, next) => {
   const { uuid } = req.params;
-  const user_id = req.user.id;
+  const user_id = req.user?.id;
+const user_uuid = req.user?.uuid; 
+
 
   // 2. Checkout a single isolated client connection from the pool
   const dbClient = await pool.connect();
@@ -56,7 +58,7 @@ export const deleteTask = async (req, res, next) => {
     }
 
     // 6. Redis Cache Invalidation Pipeline
-    const cacheKey = `tasks_feed:${user_id}`;
+    const cacheKey = `tasks_feed:${user_uuid}`;
     await redisClient.del(cacheKey).catch(err => console.error("Redis clear error:", err));
     console.log("🗑️ Redis Cache cleared for user:", user_id);
 

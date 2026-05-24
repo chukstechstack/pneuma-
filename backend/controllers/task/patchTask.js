@@ -7,7 +7,8 @@ import { fetchOldTaskImage, executeDynamicTaskUpdate } from "../../services/task
 
 export const patchTask = async (req, res, next) => {
   const { uuid } = req.params;
-  const user_id = req.user.id;
+  const user_id = req.user?.id;
+  const user_uuid = req.user?.uuid;
 
   let newUrl = null;
   let uploadedFileName = null;
@@ -81,7 +82,7 @@ export const patchTask = async (req, res, next) => {
 
 
     // Flush cache
-    await redisClient.del(`tasks_feed:${user_id}`).catch(err => console.error("Redis clear error:", err));
+    await redisClient.del(`tasks_feed:${user_uuid}`).catch(err => console.error("Redis clear error:", err));
 
     // If everything up to this point succeeds, permanently commit the database data
     await dbClient.query("COMMIT");

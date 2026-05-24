@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useCallback} from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import api from "../api/axios.js";
 
 const TaskContext = createContext();
@@ -34,7 +34,6 @@ export const TaskProvider = ({ children }) => {
   const restoreTaskToState = (restoredTask, originalIndex) => {
     setTasks((prevTasks) => {
       const updated = [...prevTasks];
-      // Insert the task at its original index without deleting anything (0)
       updated.splice(originalIndex, 0, restoredTask);
       return updated;
     });
@@ -56,6 +55,45 @@ export const TaskProvider = ({ children }) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.uuid !== uuid));
   };
 
+  // 🌟 FUNCTION 1: THE DATABASE SYNC OPERATOR (THE TRUTH)
+  const updateSingleTaskInState = (updatedPost, type) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id !== updatedPost.id) return task;
+
+        const isField = type === "like" ? "is_liked" : "is_reposted";
+
+        return {
+          ...task,
+          likes_count: updatedPost.likes_count,
+          reposts_count: updatedPost.reposts_count,
+          shares_count: updatedPost.shares_count,
+          [isField]: task[isField] // Keep the active state matched to user action
+        };
+      })
+    );
+  };
+
+  // 🌟 FUNCTION 2: THE INSTANT ENGINE (OUR SNAP GUESSTIMATE)
+  const toggleInteractionInState = (taskId, type) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id !== taskId) return task;
+
+        const luminaField = type === "like" ? "is_liked" : "is_reposted";
+        const countField = type === "like" ? "likes_count" : "reposts_count";
+        
+        const currentlyActive = task[luminaField];
+
+        return {
+          ...task,
+          [luminaField]: !currentlyActive,
+          [countField]: currentlyActive ? (task[countField] || 1) - 1 : (task[countField] || 0) + 1,
+        };
+      })
+    );
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -67,12 +105,13 @@ export const TaskProvider = ({ children }) => {
         getTasks,
         addTaskToState,
         currentUserId,
+        updateSingleTaskInState,   // For sealing the database truth
+        toggleInteractionInState, // For running the blazing fast instant guess!
       }}
     >
       {children}
     </TaskContext.Provider>
   );
 };
-
 
 export default TaskContext;

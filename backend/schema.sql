@@ -34,13 +34,7 @@ CREATE INDEX idx_content_user_id ON content(user_id);
 CREATE INDEX idx_content_uuid ON content(uuid);
 CREATE INDEX idx_content_tags ON content USING GIN(tags)
 
-CREATE TABLE likes (
-    id SERIAL PRIMARY KEY,
-    post_id INTEGER REFERENCES content(id) ON DELETE CASCADE,
-    user_id INTEGER REFERENCES profiles(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(post_id, user_id)
-)
+
 
 CREATE TABLE "session" (
   "sid" varchar NOT NULL COLLATE "default",
@@ -52,3 +46,29 @@ WITH (OIDS=FALSE);
 ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
+
+-- 1. Tell the database the 3 types of actions allowed
+CREATE TYPE interaction_type_enum AS ENUM ('like', 'repost', 'share');
+
+-- 2. Create the big table to hold all actions
+CREATE TABLE interactions (
+    id SERIAL PRIMARY KEY,
+    uuid UUID DEFAULT gen_random_uuid() UNIQUE,
+    user_id INT REFERENCES profiles(id) ON DELETE CASCADE,
+    content_id INT REFERENCES content(id) ON DELETE CASCADE,
+    interaction_type interaction_type_enum NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    
+    -- This stops a user from liking the same post twice
+    UNIQUE(user_id, content_id, interaction_type)
+);
+
+-- 3. Add shortcuts so the database can find data fast
+CREATE INDEX idx_interactions_user_id ON interactions(user_id);
+CREATE INDEX idx_interactions_content_id ON interactions(content_id);
+
+
+ALTER TABLE content 
+ADD COLUMN likes_count INT DEFAULT 0,
+ADD COLUMN reposts_count INT DEFAULT 0,
+ADD COLUMN shares_count INT DEFAULT 0;
