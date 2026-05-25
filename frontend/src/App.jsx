@@ -9,7 +9,7 @@ import CreateTask from "./pages/CreateTask.jsx";
 import EditPost from "./pages/EditTask.jsx";
 import { TaskProvider } from "./context/TaskContext.jsx"; // Added .jsx extension just in case
 import ProfilePageLog from "./pages/Profile.jsx"; //  Renamed import variable to prevent compilation confusion
-import JournalPage from "./pages/journalFeed.jsx";
+import JournalPage from "./pages/JournalFeed.jsx";
 const App = () => {
   return (
     <TaskProvider>
