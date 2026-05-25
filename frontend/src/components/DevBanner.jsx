@@ -1,6 +1,6 @@
 import React from "react";
 const DevBanner = () => {
-  const currentFocus = "Share and Comment";
+  const currentFocus = "engagements";
 
   return (
     <div
