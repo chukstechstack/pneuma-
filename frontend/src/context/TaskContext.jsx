@@ -7,6 +7,11 @@ export const TaskProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentUserUuid, setCurrentUserUuid] = useState(null);
+
+  // 🔽 1. ADD NEW JOURNAL FEED STATES
+  const [journalTasks, setJournalTasks] = useState([]); 
+  const [journalLoading, setJournalLoading] = useState(false); 
 
   const getTasks = useCallback(async () => {
     setLoading(true);
@@ -14,6 +19,7 @@ export const TaskProvider = ({ children }) => {
       const res = await api.get("/task");
       setTasks(res.data.tasks);
       setCurrentUserId(res.data.currentUserId);
+      setCurrentUserUuid(res.data.currentUserUuid);
     } catch (err) {
       if (err.response?.status === 401) {
         console.log(
@@ -24,6 +30,20 @@ export const TaskProvider = ({ children }) => {
       }
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  // 🔽 2. ADD THE DETAILED JOURNAL DATA FETCH PIPELINE
+  const getJournalFeed = useCallback(async (journalOwnerUuid) => {
+    setJournalLoading(true); // Turn spinner ON instantly!
+    try {
+      const res = await api.get(`/task/journalfeed/${journalOwnerUuid}`);
+      setJournalTasks(res.data.tasks); // Automatically saves posts array on arrival!
+    } catch (err) {
+      console.error("❌ Failed to fetch your sanctuary journal profile:", err);
+      setJournalTasks([]); // Safe fallback on error
+    } finally {
+      setJournalLoading(false); // Turn spinner OFF automatically when done!
     }
   }, []);
 
@@ -68,7 +88,7 @@ export const TaskProvider = ({ children }) => {
           likes_count: updatedPost.likes_count,
           reposts_count: updatedPost.reposts_count,
           shares_count: updatedPost.shares_count,
-          [isField]: task[isField], // Keep the active state matched to user action
+          [isField]: task[isField], 
         };
       }),
     );
@@ -96,6 +116,22 @@ export const TaskProvider = ({ children }) => {
     );
   };
 
+  // 🌟 FUNCTION 3: THE INSTANT FOLLOW ENGINE (OUR OPTIMISTIC SNAP SWAP)
+  const toggleFollowInState = (authorProfileUuid) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.author_profile_uuid !== authorProfileUuid) return task;
+
+        const currentlyFollowing = task.is_following;
+
+        return {
+          ...task,
+          is_following: !currentlyFollowing, 
+        };
+      })
+    );
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -107,8 +143,14 @@ export const TaskProvider = ({ children }) => {
         getTasks,
         addTaskToState,
         currentUserId,
-        updateSingleTaskInState, // For sealing the database truth
-        toggleInteractionInState, // For running the blazing fast instant guess!
+        updateSingleTaskInState, 
+        toggleInteractionInState, 
+        currentUserUuid,
+        toggleFollowInState,
+        // 🔽 3. EXPORT THE NEW STATE DATA VARIABLES AND FETCH LOGIC HOOKS
+        journalTasks,
+        journalLoading,
+        getJournalFeed
       }}
     >
       {children}

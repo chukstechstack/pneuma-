@@ -42,13 +42,13 @@ CREATE TABLE "session" (
   "expire" timestamp(6) NOT NULL
 )
 WITH (OIDS=FALSE);
-
 ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
-
 CREATE INDEX "IDX_session_expire" ON "session" ("expire");
-
 -- 1. Tell the database the 3 types of actions allowed
 CREATE TYPE interaction_type_enum AS ENUM ('like', 'repost', 'share');
+
+
+
 
 -- 2. Create the big table to hold all actions
 CREATE TABLE interactions (
@@ -72,3 +72,22 @@ ALTER TABLE content
 ADD COLUMN likes_count INT DEFAULT 0,
 ADD COLUMN reposts_count INT DEFAULT 0,
 ADD COLUMN shares_count INT DEFAULT 0;
+
+
+
+
+
+-- 1. Create the small vertical table to link users together
+CREATE TABLE follows (
+    id SERIAL PRIMARY KEY,
+    follower_id INT REFERENCES profiles(id) ON DELETE CASCADE,  -- The person who clicked "+ Follow"
+    following_id INT REFERENCES profiles(id) ON DELETE CASCADE, -- The person who wrote the post
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    -- This stops a user from following the same person twice
+    UNIQUE(follower_id, following_id)
+);
+
+-- 2. Add the quick tracking counters to your existing profiles table
+ALTER TABLE profiles ADD COLUMN followers_count INT DEFAULT 0;
+ALTER TABLE profiles ADD COLUMN following_count INT DEFAULT 0;

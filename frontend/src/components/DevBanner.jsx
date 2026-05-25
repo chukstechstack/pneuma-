@@ -1,7 +1,6 @@
 import React from "react";
 const DevBanner = () => {
-  const currentFocus =
-    "Working on shares and Likes Functionality";
+  const currentFocus = "Share and Comment";
 
   return (
     <div

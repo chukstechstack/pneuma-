@@ -16,42 +16,60 @@ const HomePage = () => {
     deleteTaskFromState,
     restoreTaskToState,
     currentUserId,
+    currentUserUuid,
     loading: contextLoading,
     updateSingleTaskInState,
     toggleInteractionInState,
+    toggleFollowInState,
   } = useContext(TaskContext);
 
- const handleInteraction = async (taskUuid, type) => {
-  console.log("1. Click triggered for UUID:", taskUuid, "Type:", type); 
-  
-  // 🔽 FIXED: Added .toLowerCase() to both sides to prevent casing bugs!
-  const originalTask = tasks.find(
-    (t) => t.uuid?.toLowerCase() === taskUuid?.toLowerCase()
-  );
-  
-  if (!originalTask) {
-    console.log("❌ Stopped: Could not find matching UUID in tasks array!");
-    return;
-  }
+  const handleFollow = async (targetAuthorUuid) => {
+    // 🧠 SAFETY GATES: Stop the click early if a user tries to follow themselves!
+    if (currentUserUuid === targetAuthorUuid) {
+      alert("You cannot follow your own sanctuary profile.");
+      return;
+    }
 
-  console.log("2. Task found! Sending to backend..."); 
-  
-  // 🔽 Pass the actual task.uuid from the array to keep things perfectly safe
-  const stableUuid = originalTask.uuid;
-
-  toggleInteractionInState(stableUuid, type);
-  
-  try {
-    const res = await api.post(`/task/interaction/${stableUuid}`, { type });
-    const updatedPost = res.data.updatedPost;
-    updateSingleTaskInState(updatedPost, type);
-  } catch (err) {
-    console.error("Backend failed, rolling back UI change:", err);
+    toggleFollowInState(targetAuthorUuid);
+    try {
+      const res = await api.post(`/task/profile/follow/${targetAuthorUuid}`);
+      const isFollowingServerTruth = res.data.isFollowing;
+      console.log(
+        `✅ [FOLLOW SYNCED]: Follow status changed to ${isFollowingServerTruth}`,
+      );
+    } catch (err) {
+      console.error("❌ Follow action failed on network level:", err);
+      alert(
+        "Unable to update follow connection. Please check your internet connection.",
+      );
+      toggleFollowInState(targetAuthorUuid);
+    }
+  };
+  const handleInteraction = async (taskUuid, type) => {
+    console.log("1. Click triggered for UUID:", taskUuid, "Type:", type);
+    // 🔽 FIXED: Added .toLowerCase() to both sides to prevent casing bugs!
+    const originalTask = tasks.find(
+      (t) => t.uuid?.toLowerCase() === taskUuid?.toLowerCase(),
+    );
+    if (!originalTask) {
+      console.log("❌ Stopped: Could not find matching UUID in tasks array!");
+      return;
+    }
+    console.log("2. Task found! Sending to backend...");
+    // 🔽 Pass the actual task.uuid from the array to keep things perfectly safe
+    const stableUuid = originalTask.uuid;
     toggleInteractionInState(stableUuid, type);
-    alert("Connection failed. Unable to save your response");
-  }
-};
 
+    try {
+      const res = await api.post(`/task/interaction/${stableUuid}`, { type });
+      const updatedPost = res.data.updatedPost;
+      updateSingleTaskInState(updatedPost, type);
+    } catch (err) {
+      console.error("Backend failed, rolling back UI change:", err);
+      toggleInteractionInState(stableUuid, type);
+      alert("Connection failed. Unable to save your response");
+    }
+  };
 
   const deleteTask = async (uuid) => {
     const originalIndex = tasks.findIndex((task) => task.uuid === uuid);
@@ -100,6 +118,15 @@ const HomePage = () => {
               <p className="profile-app-role">Sanctuary Keeper</p>
             </div>
 
+            <div className="sidebar-journal-nav-wrapper">
+              <Link
+                to={`/journalfeed/${currentUserUuid}`}
+                className="sidebar-journal-nav-btn"
+              >
+                📖 My Personal Journal
+              </Link>
+            </div>
+
             <div className="profile-action-footer">
               <Link to="/profile" className="profile-view-link-btn">
                 View Profile
@@ -132,6 +159,8 @@ const HomePage = () => {
                 deleteTask={deleteTask}
                 isOwner={task.user_id === currentUserId}
                 handleInteraction={handleInteraction}
+                handleFollow={handleFollow}
+                currentUserUuid={currentUserUuid}
               />
             ))}
           </div>

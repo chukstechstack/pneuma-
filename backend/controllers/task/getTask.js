@@ -25,7 +25,8 @@ export const getTask = async (req, res, next) => {
     // 5. Send back currentUserId as the numeric ID so your frontend context doesn't break!
     const responseData = { 
       tasks: tasksFeed, 
-      currentUserId: user_numeric_id 
+      currentUserId: user_numeric_id,
+      currentUserUuid: user_uuid
     };
 
     // 6. Save to Redis cache
