@@ -21,22 +21,37 @@ const HomePage = () => {
     toggleInteractionInState,
   } = useContext(TaskContext);
 
-  const handleInteraction = async (taskUuid, type) => {
-    const originalTask = tasks.find((t) => t.id === taskUuid);
-    if (!originalTask) return;
+ const handleInteraction = async (taskUuid, type) => {
+  console.log("1. Click triggered for UUID:", taskUuid, "Type:", type); 
+  
+  // 🔽 FIXED: Added .toLowerCase() to both sides to prevent casing bugs!
+  const originalTask = tasks.find(
+    (t) => t.uuid?.toLowerCase() === taskUuid?.toLowerCase()
+  );
+  
+  if (!originalTask) {
+    console.log("❌ Stopped: Could not find matching UUID in tasks array!");
+    return;
+  }
 
-    toggleInteractionInState(taskUuid, type);
-    try {
-      const res = await api.post(`/task/engage/${taskUuid}`, { type });
+  console.log("2. Task found! Sending to backend..."); 
+  
+  // 🔽 Pass the actual task.uuid from the array to keep things perfectly safe
+  const stableUuid = originalTask.uuid;
 
-      const updatedPost = res.data.updatedPost;
-      updateSingleTaskInState(updatedPost, type);
-    } catch (err) {
-      console.error("Backend failed, rolling back UI change:", err);
-      toggleInteractionInState(taskUuid, type);
-      alert("Connection failed. Unable to save your response");
-    }
-  };
+  toggleInteractionInState(stableUuid, type);
+  
+  try {
+    const res = await api.post(`/task/interaction/${stableUuid}`, { type });
+    const updatedPost = res.data.updatedPost;
+    updateSingleTaskInState(updatedPost, type);
+  } catch (err) {
+    console.error("Backend failed, rolling back UI change:", err);
+    toggleInteractionInState(stableUuid, type);
+    alert("Connection failed. Unable to save your response");
+  }
+};
+
 
   const deleteTask = async (uuid) => {
     const originalIndex = tasks.findIndex((task) => task.uuid === uuid);

@@ -123,7 +123,7 @@ const Task = ({ task, deleteTask, isOwner, handleInteraction }) => {
               strokeWidth={2}
               className={task.is_liked ? "icon-active" : ""}
             />
-            <span className="action-label">Resonate</span>
+            <span className="action-label">Like</span>
             <span className="inline-action-counter">
               {task.likes_count || 0}
             </span>
@@ -131,7 +131,7 @@ const Task = ({ task, deleteTask, isOwner, handleInteraction }) => {
 
           <button className="actionButton comment-btn">
             <MessageSquare size={16} strokeWidth={2} />
-            <span className="action-label">Echo</span>
+            <span className="action-label">Comment</span>
             <span className="inline-action-counter">0</span>
           </button>
 
@@ -144,7 +144,7 @@ const Task = ({ task, deleteTask, isOwner, handleInteraction }) => {
               strokeWidth={2}
               className={task.is_reposted ? "icon-active" : ""}
             />
-            <span className="action-label">Transmit</span>
+            <span className="action-label">Repost</span>
             <span className="inline-action-counter">
               {" "}
               {task.reposts_count || 0}
@@ -153,7 +153,7 @@ const Task = ({ task, deleteTask, isOwner, handleInteraction }) => {
 
           <button className="actionButton send-btn">
             <Send size={16} strokeWidth={2} />
-            <span className="action-label">Propagate</span>
+            <span className="action-label">Share</span>
           </button>
         </div>
       </div>

@@ -59,7 +59,7 @@ export const TaskProvider = ({ children }) => {
   const updateSingleTaskInState = (updatedPost, type) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
-        if (task.id !== updatedPost.id) return task;
+        if (task.uuid !== updatedPost.uuid) return task;
 
         const isField = type === "like" ? "is_liked" : "is_reposted";
 
@@ -68,9 +68,9 @@ export const TaskProvider = ({ children }) => {
           likes_count: updatedPost.likes_count,
           reposts_count: updatedPost.reposts_count,
           shares_count: updatedPost.shares_count,
-          [isField]: task[isField] // Keep the active state matched to user action
+          [isField]: task[isField], // Keep the active state matched to user action
         };
-      })
+      }),
     );
   };
 
@@ -78,19 +78,21 @@ export const TaskProvider = ({ children }) => {
   const toggleInteractionInState = (taskId, type) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
-        if (task.id !== taskId) return task;
+        if (task.uuid !== taskId) return task;
 
         const luminaField = type === "like" ? "is_liked" : "is_reposted";
         const countField = type === "like" ? "likes_count" : "reposts_count";
-        
+
         const currentlyActive = task[luminaField];
 
         return {
           ...task,
           [luminaField]: !currentlyActive,
-          [countField]: currentlyActive ? (task[countField] || 1) - 1 : (task[countField] || 0) + 1,
+          [countField]: currentlyActive
+            ? Math.max(0, (Number(task[countField]) || 1) - 1)
+            : (Number(task[countField]) || 0) + 1,
         };
-      })
+      }),
     );
   };
 
@@ -105,7 +107,7 @@ export const TaskProvider = ({ children }) => {
         getTasks,
         addTaskToState,
         currentUserId,
-        updateSingleTaskInState,   // For sealing the database truth
+        updateSingleTaskInState, // For sealing the database truth
         toggleInteractionInState, // For running the blazing fast instant guess!
       }}
     >

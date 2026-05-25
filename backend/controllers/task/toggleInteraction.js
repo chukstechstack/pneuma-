@@ -1,3 +1,6 @@
+import pool from "../../config/supabaseConfig.js"; 
+import redisClient from "../../config/redisCreateClient.js";
+
 export const toggleInteraction = async (req, res, next) => {
   const user_numeric_id = req.user?.id; 
   const user_uuid = req.user?.uuid;
@@ -72,6 +75,9 @@ export const toggleInteraction = async (req, res, next) => {
     const cacheKey = `tasks_feed:${user_uuid || 'guest'}`;
     await redisClient.del(cacheKey);
 
+        // 🔽 ADD THIS SUCCESS LOG FOR YOUR BACKEND TERMINAL
+    console.log(`💾 [DB SAVED]: User (ID: ${user_numeric_id}) successfully performed "${type}" on Post (UUID: ${contentUuid}). Action: ${alreadyExists ? "Removed" : "Added"}`);
+
     return res.json({
       message: "Interaction updated successfully",
       action: alreadyExists ? "removed" : "added",
@@ -80,6 +86,7 @@ export const toggleInteraction = async (req, res, next) => {
 
   } catch (err) {
     await dbClient.query("ROLLBACK");
+     console.error("❌ DATABASE CRASH DETAILS:", err.message);
     next(err);
   } finally {
     dbClient.release();

@@ -1,5 +1,9 @@
+/* ==========================================================================
+   MATURE PREMIUM ACTION BAR SYSTEM (WITH VIVID ACTIVE STATES)
+   ========================================================================== */
+
 .taskActionButtonBar {
-  border-top: 1px solid rgba(255,255,255,0.04);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
   padding: 1.25rem 0;
   display: flex;
   align-items: center;
@@ -11,9 +15,11 @@
   width: 100%;
 }
 
+/* Base Button Style - Muted Silver-White Look */
 .actionButton {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e2e5f0;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -25,18 +31,45 @@
   border-radius: 25px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
+/* Base SVGs outline color matching text */
+.actionButton svg {
+  stroke: #e2e5f0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: all 0.2s ease;
+}
+
+/* Muted numbers keep base layout looking clean */
 .inline-action-counter {
   font-size: 0.8rem;
   font-weight: 700;
+  color: #8e92a2;
 }
 
+/* ──────────────────────────────────────────────────────────────────────────
+   THE HOVER ACTIONS (SOLID PURE WHITE SHIFT + TRANSITION POP)
+   ────────────────────────────────────────────────────────────────────────── */
 .actionButton:hover { 
   transform: translateY(-1.5px); 
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #0c0d12 !important; /* Dark text inside filled white looks incredibly sharp */
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
 }
 
+.actionButton:hover svg {
+  stroke: #0c0d12 !important;
+  filter: none !important;
+}
+
+.actionButton:hover .inline-action-counter {
+  color: #0c0d12 !important;
+}
+
+/* Elegant Glint Reflection Animation */
 .actionButton::after {
   content: ""; position: absolute; top: 0; left: -70%; width: 35%; height: 100%;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
@@ -46,4 +79,58 @@
 .actionButton:hover::after { 
   left: 140%; 
   transition: left 0.5s cubic-bezier(0.16, 1, 0.3, 1); 
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   THE ACTIVE CLICKED STATES (PREMIUM COLOR POP)
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* ── 1. ACTIVE LIKE BUTTON (ROYAL BLUE) ── */
+.actionButton.like-btn.active {
+  color: #3b82f6 !important; 
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  background: rgba(59, 130, 246, 0.08) !important; /* Soft blue glow tint */
+}
+
+.actionButton.like-btn.active svg.icon-active {
+  stroke: #3b82f6 !important; 
+  fill: #3b82f6 !important; /* Fills icon with solid blue */
+}
+
+.actionButton.like-btn.active .inline-action-counter {
+  color: #3b82f6 !important; 
+}
+
+/* ── 2. ACTIVE REPOST BUTTON (EMERALD GREEN) ── */
+.actionButton.repost-btn.active {
+  color: #10b981 !important; 
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  background: rgba(16, 185, 129, 0.08) !important; /* Soft green glow tint */
+}
+
+.actionButton.repost-btn.active svg.icon-active {
+  stroke: #10b981 !important; 
+}
+
+.actionButton.repost-btn.active .inline-action-counter {
+  color: #10b981 !important; 
+}
+
+/* ── 3. MAINTAIN PURE WHITE IMPACT EVEN ON ACTIVE HOVERS ── */
+.actionButton.like-btn.active:hover,
+.actionButton.repost-btn.active:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #0c0d12 !important;
+}
+
+.actionButton.like-btn.active:hover svg,
+.actionButton.repost-btn.active:hover svg {
+  stroke: #0c0d12 !important;
+  fill: none !important; /* Resets fill on white background hover for visual clarity */
+}
+
+.actionButton.like-btn.active:hover .inline-action-counter,
+.actionButton.repost-btn.active:hover .inline-action-counter {
+  color: #0c0d12 !important;
 }
