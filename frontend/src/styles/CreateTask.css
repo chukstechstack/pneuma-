@@ -1,0 +1,243 @@
+/* ==========================================================================
+   THE MODERN DARK INSIGHTS & CREATION FORM SYSTEM (ISOLATION LAYER)
+   ========================================================================== */
+
+/* Main Layout Wrapper Box */
+.create-task-layout {
+  background-color: #0c0d12;
+  min-height: 100vh;
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background Ambient Blur Graphic Glow */
+.create-task-ambient-glow {
+  position: absolute;
+  top: -10%; left: 50%;
+  transform: translateX(-50%);
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Central Alignment Shell Holder */
+.create-task-container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 6.5rem 1.5rem 4rem 1.5rem;
+  position: relative;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+/* Title Header Elements Spacing */
+.create-task-header {
+  margin-bottom: 2rem;
+}
+
+.create-task-back-link {
+  font-size: 0.85rem;
+  color: #8e92a2;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+.create-task-back-link:hover { color: #d4af37; }
+
+.create-task-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.75rem;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 1px;
+}
+
+.create-task-divider {
+  width: 40px; height: 2px;
+  background-color: #d4af37;
+  margin-bottom: 1rem;
+}
+
+.create-task-subtitle {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #8e92a2;
+  margin: 0;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   THE DEDICATED INPUT FIELDS STYLING BLOCK
+   ────────────────────────────────────────────────────────────────────────── */
+.testimony-form-container {
+  background: linear-gradient(145deg, #151722, #0f1016);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.testimony-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* The Big Text Input Area Box */
+.testimony-textarea-field {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 1rem;
+  color: #e5e7eb;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+.testimony-textarea-field:focus {
+  border-color: rgba(212, 175, 55, 0.3);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   LIVE PHOTO PREVIEW INTERFACE CARDS
+   ────────────────────────────────────────────────────────────────────────── */
+.testimony-preview-image-card {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #08090d;
+  border-radius: 8px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.testimony-preview-label-badge {
+  font-size: 0.75rem;
+  color: #d4af37;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.testimony-preview-frame {
+  width: 100%;
+  max-height: 300px;
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: #000;
+}
+
+.testimony-preview-actual-img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   LOWER BUTTON INTERFACE ACTIONS ROW (RE-ALIGNED & MATTE FLAT COLORS)
+   ────────────────────────────────────────────────────────────────────────── */
+.testimony-form-actions-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  box-sizing: border-box;
+}
+
+/* 🛠️ FIXED: Add Image button layout completely matches the sizing of the Publish block */
+.testimony-custom-file-upload-btn {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #e2e5f0 !important;
+  padding: 10px 24px !important; /* Perfect height matching */
+  border-radius: 2px !important;  /* Sharp edges to line up perfectly */
+  font-family: var(--font-sans);
+  font-size: 0.85rem !important;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px; /* Locked alignment baseline height */
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .testimony-custom-file-upload-btn:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+.testimony-hidden-file-input {
+  display: none !important;
+}
+
+/* 🛠️ FIXED: Submit Publish Button (Natural, flat matte gold style with zero glare/shadow blocks) */
+.testimony-submit-action-btn {
+  background: #d4af37 !important; /* Matte natural deep gold tone instead of electric neon yellow */
+  border: 1px solid #d4af37 !important;
+  color: #0c0d12 !important; 
+  padding: 10px 24px !important;
+  border-radius: 2px !important; /* Sharp edges */
+  font-family: var(--font-sans);
+  font-size: 0.85rem !important;
+  font-weight: 700; 
+  text-transform: uppercase; 
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px; /* Matches layout baseline exactly */
+  box-shadow: none !important; /* Killed all fancy glowing effects */
+  box-sizing: border-box;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+  .testimony-submit-action-btn:hover {
+    background: #bfa030 !important; /* Simple flat darkening change on mouseover */
+    border-color: #bfa030 !important;
+  }
+}
+
+.testimony-submit-action-btn:focus,
+.testimony-submit-action-btn:active {
+  background: #d4af37 !important;
+  border-color: #d4af37 !important;
+  outline: none !important;
+}
+
+/* Responsive adjustments for tiny phones */
+@media (max-width: 480px) {
+  .create-task-container {
+    padding-top: 5.5rem;
+  }
+  .testimony-form-actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .testimony-custom-file-upload-btn,
+  .testimony-submit-action-btn {
+    width: 100% !important;
+  }
+}

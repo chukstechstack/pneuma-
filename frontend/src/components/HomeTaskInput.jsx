@@ -85,14 +85,7 @@ const Task = ({
               justifyContent: "center",
             }}
           >
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              onTouchEnd={(e) => e.currentTarget.blur()}
-              onMouseLeave={(e) => e.currentTarget.blur()}
-              className="taskDotButton"
-            >
-              ⋮
-            </button>
+            <button className="taskDotButton">⋮</button>
 
             {showMenu && (
               <>
@@ -105,15 +98,13 @@ const Task = ({
                     to={`/edittask/${uuid}`}
                     className="menuEditButtonStyle"
                   >
-                    Amend Chronicle
+                    Modify
                   </Link>
                   <button
                     onClick={() => deleteTask(uuid)}
-                    onTouchEnd={(e) => e.currentTarget.blur()}
-                    onMouseLeave={(e) => e.currentTarget.blur()}
                     className="menuDeleteButtonStyle"
                   >
-                    Evaporate Trace
+                    Remove
                   </button>
                 </div>
               </>
@@ -164,7 +155,7 @@ const Task = ({
           </button>
 
           {/* COMMENT BUTTON */}
-          <button 
+          <button
             className="actionButton comment-btn"
             onTouchEnd={(e) => e.currentTarget.blur()}
             onMouseLeave={(e) => e.currentTarget.blur()}
@@ -193,7 +184,7 @@ const Task = ({
           </button>
 
           {/* SEND BUTTON */}
-          <button 
+          <button
             className="actionButton send-btn"
             onTouchEnd={(e) => e.currentTarget.blur()}
             onMouseLeave={(e) => e.currentTarget.blur()}

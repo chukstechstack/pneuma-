@@ -72,3 +72,13 @@
     border-bottom-right-radius: 28px !important; 
   }
 }
+
+
+@media (max-width: 1024px) {
+  /* ... your other existing mobile rules ... */
+
+  /* 🌌 HIDES THE SHARE TESTIMONY ROW ON MOBILE PHONES */
+  .create-testimony-trigger-panel {
+    display: none !important;
+  }
+}

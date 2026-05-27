@@ -5,8 +5,7 @@ import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
 import FullPageLoader from "../components/Loader.jsx";
 // Change this line from Register.css to inputs.css
-import "../styles/Inputs.css"; 
-
+import "../styles/CreateTask.css";
 
 const EditPost = () => {
   const navigate = useNavigate();
