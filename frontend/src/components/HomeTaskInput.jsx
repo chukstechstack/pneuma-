@@ -85,7 +85,12 @@ const Task = ({
               justifyContent: "center",
             }}
           >
-            <button className="taskDotButton">⋮</button>
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="taskDotButton"
+            >
+              ⋮
+            </button>
 
             {showMenu && (
               <>

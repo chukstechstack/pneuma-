@@ -59,13 +59,13 @@ const TaskInput = ({
               className="testimony-hidden-file-input"
             />
             <ImagePlus size={18} strokeWidth={1.5} />
-            <span>Change Image</span>
+            <span>Image</span>
           </label>
 
           {/* Primary Form Submission Action Trigger */}
           <button type="submit" className="testimony-submit-action-btn">
             <CheckSquare size={16} strokeWidth={2} />
-            <span>Save Updates</span>
+            <span>Publish</span>
           </button>
 
         </div>
