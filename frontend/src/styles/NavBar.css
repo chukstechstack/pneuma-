@@ -709,3 +709,215 @@
     border-bottom-right-radius: 28px !important; 
   }
 }
+
+@media (max-width: 1024px) {
+  /* ... your other layout rules ... */
+
+  /* 🌌 TOP MOBILE BAR: Changed from white to your premium dark background */
+  .mobile-top-nav {
+    display: flex !important;
+    position: fixed !important;
+    top: 0; left: 0; right: 0;
+    background-color: #13151d !important; /* Premium dark background */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important; /* Dark subtle line */
+    padding: 0.75rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+  }
+
+  /* 🌌 BOTTOM TAB BAR: Changed from white to matching dark background */
+  .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    height: 50px !important;
+    background-color: #13151d !important; /* Premium dark background */
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important; /* Dark subtle line */
+    z-index: 1000;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5px) !important;
+    padding-top: 5px !important;
+  }
+
+  /* 🌌 NAV ITEMS TEXT & ICONS: Ensure they stay visible on dark background */
+  .nav-item {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #8e92a2 !important; /* Muted silver-grey text */
+    font-size: 11px;
+    gap: 2px;
+  }
+
+  .nav-item.active {
+    color: #d4af37 !important; /* Active gold accent color */
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 1024px) {
+  /* ... your existing mobile top nav bar rules ... */
+
+  /* 🌌 MOBILE SEARCH BAR HOUSING: Matches the PC look completely */
+  .mobile-search-trigger-bar {
+    position: relative;
+    width: 100%;
+    max-width: 260px; /* Limits width just like the desktop layout */
+    background-color: rgba(0, 0, 0, 0.4) !important; /* Deep dark input background */
+    border: 1px solid rgba(255, 255, 255, 0.05) !important; /* Muted subtle border */
+    border-radius: 6px !important; /* Sharp premium edges instead of round pill shapes */
+    padding: 0.6rem 1rem 0.6rem 2.5rem !important; /* Perfect inner spacing to hold icon */
+    color: #f4f4f6 !important; /* Crisp silver-white text color */
+    font-family: var(--font-sans);
+    font-size: 0.85rem !important;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+
+  /* 🌌 SEARCH MAGNIFIER SVG ICON: Floating cleanly on the left side */
+  .search-mini-icon {
+    position: absolute !important;
+    left: 1rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 16px !important;
+    height: 16px !important;
+    stroke: #8e92a2 !important; /* Silver-grey icon outline tint */
+  }
+}
+
+@media (max-width: 1024px) {
+  /* ... your existing mobile styles ... */
+
+  /* 📬 MOBILE MESSAGING CONTAINER BUTTON */
+  .mobile-nav-badge-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 50% !important; /* Elegant circular button frame */
+    color: #e2e5f0 !important; /* Silver-white icon color */
+    text-decoration: none;
+    transition: all 0.25s ease;
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none !important;
+  }
+
+  /* Force the SVG icon to remain clear and clean */
+  .mobile-nav-badge-icon svg {
+    stroke: #e2e5f0 !important;
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Safe tap state reset to block sticky white hovers */
+  .mobile-nav-badge-icon:focus,
+  .mobile-nav-badge-icon:active {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: #e2e5f0 !important;
+  }
+
+  /* 🚨 GLOWING RED NOTIFICATION BADGE ALERT */
+  .mobile-nav-badge-icon .badge-counter-alert.counter-red {
+    position: absolute !important;
+    top: -4px !important;
+    right: -4px !important;
+    background-color: #ef4444 !important; /* Vivid ruby crimson */
+    color: #ffffff !important;
+    font-size: 0.65rem !important;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #13151d !important; /* Dark boundary ring splits layout lines */
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    z-index: 2;
+  }
+}
+
+/* ==========================================================================
+   THE NOTIFICATION SYSTEM LAYER OVERRIDES (DARK LUXURY ECOSYSTEM)
+   ========================================================================== */
+
+/* 🔔 THE ALERTS LINK BASE HOUSING WRAPPER */
+.mobile-badge-container-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 🚨 UNIFIED MOBILE RED NOTIFICATION ALERT DOTS BUTTONS */
+.mobile-nav-badge-icon .badge-counter-alert.counter-red,
+.mobile-badge-container-wrapper .badge-counter-alert {
+  position: absolute !important;
+  top: -5px !important;
+  right: -6px !important;
+  background-color: #ef4444 !important; /* Vivid ruby crimson color pop */
+  color: #ffffff !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  min-width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid #13151d !important; /* Premium dark background ring edge */
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  z-index: 5;
+}
+
+/* Custom specific placement alignment logic for the top messages bar ring */
+.mobile-nav-badge-icon .badge-counter-alert.counter-red {
+  top: -4px !important;
+  right: -4px !important;
+}
+
+
+@media (max-width: 1024px) {
+  /* ... your other rules ... */
+
+  .mobile-bottom-nav {
+    display: flex !important;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    height: 50px !important;
+    background-color: #13151d !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    z-index: 1000;
+    justify-content: space-around;
+    align-items: center;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5px) !important;
+    padding-top: 5px !important;
+    
+    /* 🚀 PREMIUM LINKEDIN SPRINGY TRANSITION EFFECT */
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1) !important;
+    
+    /* 🚀 HARDWARE ACCELERATION: Forces phone GPU to make rendering silky smooth */
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateY(0);
+  }
+
+  /* Smoothly slides the bar out of view */
+  .mobile-bottom-nav.nav-hidden {
+    transform: translateY(calc(100% + env(safe-area-inset-bottom) + 10px)) !important;
+  }
+}

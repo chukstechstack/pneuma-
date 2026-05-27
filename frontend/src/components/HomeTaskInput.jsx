@@ -59,6 +59,8 @@ const Task = ({
               {currentUserUuid !== author_profile_uuid && (
                 <button
                   onClick={() => handleFollow(author_profile_uuid)}
+                  onTouchEnd={(e) => e.currentTarget.blur()}
+                  onMouseLeave={(e) => e.currentTarget.blur()}
                   className={`taskFollowInlineButton ${is_following ? "following-active" : ""}`}
                 >
                   {is_following ? "✓ Following" : "+ Follow"}
@@ -85,6 +87,8 @@ const Task = ({
           >
             <button
               onClick={() => setShowMenu(!showMenu)}
+              onTouchEnd={(e) => e.currentTarget.blur()}
+              onMouseLeave={(e) => e.currentTarget.blur()}
               className="taskDotButton"
             >
               ⋮
@@ -105,6 +109,8 @@ const Task = ({
                   </Link>
                   <button
                     onClick={() => deleteTask(uuid)}
+                    onTouchEnd={(e) => e.currentTarget.blur()}
+                    onMouseLeave={(e) => e.currentTarget.blur()}
                     className="menuDeleteButtonStyle"
                   >
                     Evaporate Trace
@@ -126,6 +132,8 @@ const Task = ({
           {shouldShowMore && !isExpanded && (
             <button
               onClick={() => setIsExpanded(true)}
+              onTouchEnd={(e) => e.currentTarget.blur()}
+              onMouseLeave={(e) => e.currentTarget.blur()}
               className="showMoreText"
             >
               expand
@@ -137,8 +145,11 @@ const Task = ({
       {/* ==================== 3. LUMINARY ACTION BAR ==================== */}
       <div className="taskActionButtonBar">
         <div className="action-buttons-left">
+          {/* LIKE BUTTON */}
           <button
             onClick={() => handleInteraction(uuid, "like")}
+            onTouchEnd={(e) => e.currentTarget.blur()}
+            onMouseLeave={(e) => e.currentTarget.blur()}
             className={`actionButton like-btn ${task.is_liked ? "active" : ""}`}
           >
             <ThumbsUp
@@ -152,14 +163,22 @@ const Task = ({
             </span>
           </button>
 
-          <button className="actionButton comment-btn">
+          {/* COMMENT BUTTON */}
+          <button 
+            className="actionButton comment-btn"
+            onTouchEnd={(e) => e.currentTarget.blur()}
+            onMouseLeave={(e) => e.currentTarget.blur()}
+          >
             <MessageSquare size={16} strokeWidth={2} />
             <span className="action-label">Reply</span>
             <span className="inline-action-counter">0</span>
           </button>
 
+          {/* REPOST BUTTON */}
           <button
             onClick={() => handleInteraction(uuid, "repost")}
+            onTouchEnd={(e) => e.currentTarget.blur()}
+            onMouseLeave={(e) => e.currentTarget.blur()}
             className={`actionButton repost-btn ${task.is_reposted ? "active" : ""}`}
           >
             <Repeat2
@@ -169,12 +188,16 @@ const Task = ({
             />
             <span className="action-label">Forward</span>
             <span className="inline-action-counter">
-              {" "}
               {task.reposts_count || 0}
             </span>
           </button>
 
-          <button className="actionButton send-btn">
+          {/* SEND BUTTON */}
+          <button 
+            className="actionButton send-btn"
+            onTouchEnd={(e) => e.currentTarget.blur()}
+            onMouseLeave={(e) => e.currentTarget.blur()}
+          >
             <Send size={16} strokeWidth={2} />
             <span className="action-label">Send</span>
           </button>

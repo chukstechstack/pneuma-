@@ -1,7 +1,7 @@
 /* 1. FORCE VITE TO TRACE ABSOLUTE PATHS FROM THE APP ROOT */
 @import url("https://googleapis.com");
 
-@import "/src/styles/home-file/home-body.css";
+/* REMOVED home-body.css to stop the white leak */
 @import "/src/styles/home-file/dev-banner.css";
 @import "/src/styles/home-file/profile-side.css";
 @import "/src/styles/home-file/mobile-view.css";
@@ -10,8 +10,10 @@
 @import "/src/styles/home-file/feed-panel.css";
 @import "/src/styles/home-file/task-card.css";
 @import "/src/styles/home-file/dropdown-menu.css";
-@import "/src/styles/home-file/action-bar.css";
+
+/* ⚡ THE FIXED ORDER: Palettes load first, Action Bar layout rules get the final say ⚡ */
 @import "/src/styles/home-file/color-palettes.css";
+@import "/src/styles/home-file/action-bar.css";
 
 /* 2. DESIGN VARIABLES SYSTEM GOES UNDER THE IMPORTS */
 :root {

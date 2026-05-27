@@ -5,7 +5,7 @@ import TaskContext from "../context/TaskContext.jsx";
 import api from "../api/axios.js";
 // Change this line from Register.css to inputs.css
 import "../styles/Inputs.css";
-
+import "../styles/home-file/main.css";
 import FullPageLoader from "../components/Loader.jsx"; /*  1. ADD LOADER IMPORT */
 import "../styles/Loader.css"; /*  2. ADD LOADER STYLES */
 

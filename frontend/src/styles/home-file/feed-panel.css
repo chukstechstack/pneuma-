@@ -32,11 +32,28 @@
   text-decoration: none;
   text-align: left;
   transition: background-color 0.2s ease;
+  
+  /* Blocks native mobile click highlight colors */
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
 }
 
-.share-testimony-input-placeholder:hover {
-  background-color: rgba(255,255,255,0.02);
-  border-color: var(--border-bright);
+/* ──────────────────────────────────────────────────────────────────────────
+   THE HOVER ACTIONS (ONLY FOR DESKTOP COMPUTERS WITH A MOUSE)
+   ────────────────────────────────────────────────────────────────────────── */
+@media (hover: hover) {
+  .share-testimony-input-placeholder:hover {
+    background-color: rgba(255,255,255,0.02);
+    border-color: var(--border-bright);
+  }
+}
+
+/* Safe Mobile Tap State - Prevents stuck bright colors when clicked */
+.share-testimony-input-placeholder:focus,
+.share-testimony-input-placeholder:active {
+  background-color: rgba(0,0,0,0.2) !important;
+  border-color: var(--border-subtle) !important;
+  outline: none !important;
 }
 
 .timeline-posts-container {

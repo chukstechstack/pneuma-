@@ -97,8 +97,8 @@ const HomePage = () => {
   return (
     <div className="home-layout">
       <DevBanner />
-      <NavBar />
-
+      // Find this line inside your HomePage return block and update it:
+      <NavBar currentUserUuid={currentUserUuid} />
       <div className="dashboard-grid">
         {/* PROFILE SIDEBAR SECTION */}
         <aside className="profile-sidebar-wrapper">

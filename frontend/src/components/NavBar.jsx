@@ -1,12 +1,41 @@
 import { Link, useLocation } from "react-router-dom";
-import "../styles/Home.css";
+import React, { useState, useEffect } from "react";
+import "../styles/NavBar.css";
 import doveLogoUrl from "../assets/pneuma.png";
 
-const NavBar = () => {
+const NavBar = ({ currentUserUuid }) => {
   const location = useLocation();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
 
+  // Checks if the user is currently on the home or journal paths to highlight tabs
   const isActive = (path) =>
-    location.pathname === path ? "nav-item active" : "nav-item";
+    location.pathname.startsWith(path) ? "nav-item active" : "nav-item";
+
+  const mobileProfilePic = "https://dev.to";
+
+  // 🚀 OPTIMIZED LINKEDIN SCROLL ENGINE
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollDifference = Math.abs(currentScrollY - lastScrollY);
+
+      if (currentScrollY < 20) {
+        setIsVisible(true);
+      } else if (scrollDifference > 8) {
+        if (currentScrollY > lastScrollY) {
+          setIsVisible(false); // Scrolling down
+        } else {
+          setIsVisible(true);  // Scrolling up
+        }
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   return (
     <>
@@ -35,6 +64,7 @@ const NavBar = () => {
         <Link
           to="/messages"
           className="mobile-nav-badge-icon"
+          onTouchEnd={(e) => e.currentTarget.blur()}
           style={{ marginLeft: "12px" }}
         >
           <svg
@@ -53,9 +83,14 @@ const NavBar = () => {
         </Link>
       </nav>
 
-      {/* ==================== 2. MOBILE BOTTOM FIXED NAVIGATION (AVATAR AT BOTTOM RIGHT) ==================== */}
-      <nav className="mobile-bottom-nav">
-        <Link to="/home" className={isActive("/home")}>
+      {/* ==================== 2. MOBILE BOTTOM FIXED NAVIGATION ==================== */}
+      <nav className={`mobile-bottom-nav ${!isVisible ? "nav-hidden" : ""}`}>
+        {/* TAB 1: HOME */}
+        <Link 
+          to="/home" 
+          className={isActive("/home")}
+          onTouchEnd={(e) => e.currentTarget.blur()}
+        >
           <svg
             width="22"
             height="22"
@@ -72,7 +107,34 @@ const NavBar = () => {
           <span>Home</span>
         </Link>
 
-        <Link to="/createtask" className="nav-item mobile-post-accent-btn">
+        {/* TAB 2: MY PERSONAL JOURNAL (Mapped directly to your dynamic router path!) */}
+        <Link 
+          to={`/journalfeed/${currentUserUuid || "sanctuary"}`} 
+          className={isActive("/journalfeed")}
+          onTouchEnd={(e) => e.currentTarget.blur()}
+        >
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+            <path d="M6 6h10M6 10h10M6 14h10" />
+          </svg>
+          <span>Journal</span>
+        </Link>
+
+        {/* TAB 3: POST ACCENT BUTTON (Perfectly Centered) */}
+        <Link 
+          to="/createtask" 
+          className="nav-item mobile-post-accent-btn"
+          onTouchEnd={(e) => e.currentTarget.blur()}
+        >
           <svg
             width="22"
             height="22"
@@ -90,7 +152,12 @@ const NavBar = () => {
           <span>Post</span>
         </Link>
 
-        <Link to="/notifications" className={isActive("/notifications")}>
+        {/* TAB 4: ALERTS / NOTIFICATIONS */}
+        <Link 
+          to="/notifications" 
+          className={isActive("/notifications")}
+          onTouchEnd={(e) => e.currentTarget.blur()}
+        >
           <div className="mobile-badge-container-wrapper">
             <svg
               width="22"
@@ -110,11 +177,11 @@ const NavBar = () => {
           <span>Alerts</span>
         </Link>
 
-        {/* PROFILE PICTURE LINK SHIFTED DOWNWARD TO THE BOTTOM RIGHT CORNER FOR PERFECT THUMB ACCESSIBILITY */}
+        {/* TAB 5: PROFILE PICTURE LINK */}
         <Link to="/profile" className={isActive("/profile")}>
           <div className="mobile-avatar-frame-bottom">
             <img
-              src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250"
+              src={mobileProfilePic}
               className="mobile-avatar-img-bottom"
               alt="Me Profile"
             />
