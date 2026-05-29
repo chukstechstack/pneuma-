@@ -20,6 +20,7 @@ const LoginInput = ({ handleChange, password, email, handleSubmit }) => {
         {/* Password Input Field */}
         <input
           type="password"
+          id="password"
           name="password"
           value={password}
           onChange={handleChange}

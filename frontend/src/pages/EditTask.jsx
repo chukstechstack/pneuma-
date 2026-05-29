@@ -12,21 +12,21 @@ const EditPost = () => {
   const { uuid } = useParams();
   const { tasks, updateTaskInState, loading } = useContext(TaskContext);
   const taskToEdit = tasks.find((t) => t.uuid === uuid);
-  const [prevUuid, setPrevUuid] = useState(uuid);
   const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
     content: taskToEdit?.content || "",
     img: taskToEdit?.img || null,
   });
 
-  // Keep track of the current task URL ID
-  if (taskToEdit && (uuid !== prevUuid || !formData.content)) {
-    setPrevUuid(uuid);
-    setFormData({
-      content: taskToEdit.content || "",
-      img: taskToEdit.img || null,
-    });
-  }
+  //  ADD THIS BLOCK (Only updates state when the actual task switches)
+  useEffect(() => {
+    if (taskToEdit) {
+      setFormData({
+        content: taskToEdit.content || "",
+        img: taskToEdit.img || null,
+      });
+    }
+  }, [uuid, taskToEdit]);
 
   const { content, img } = formData;
 
@@ -40,6 +40,8 @@ const EditPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+
     const data = new FormData();
     if (content) data.append("content", content);
     if (img instanceof File) {

@@ -50,8 +50,11 @@ export const createTask = async (req, res, next) => {
     // Execution Layer 2: Run the profile mapping hydration service worker (passing dbClient)
     const resultWithUser = await fetchHydratedTaskById(savedTaskData.id, dbClient);
 
-    // Cache clearing execution
     await redisClient.del(`tasks_feed:${user_uuid}`);
+    await redisClient.del(`journal_feed:${user_uuid}`); // 👈 Add this clean line here!
+    
+    console.log(`🗑️ Cache busted everywhere for user: ${user_id}`);
+
     console.log(`🗑️ Cache busted for user: ${user_id}`);
 
     // If everything up to this point succeeds, permanently commit the database data

@@ -10,13 +10,16 @@ export const TaskProvider = ({ children }) => {
   const [currentUserUuid, setCurrentUserUuid] = useState(null);
 
   // 🔽 1. ADD NEW JOURNAL FEED STATES
-  const [journalTasks, setJournalTasks] = useState([]); 
-  const [journalLoading, setJournalLoading] = useState(false); 
+  const [journalTasks, setJournalTasks] = useState([]);
+  const [journalLoading, setJournalLoading] = useState(false);
 
   const getTasks = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api.get("/task");
+
+      console.log("Backend keys:", Object.keys(res.data));
+      console.log("Backend values:", res.data);
       setTasks(res.data.tasks);
       setCurrentUserId(res.data.currentUserId);
       setCurrentUserUuid(res.data.currentUserUuid);
@@ -33,19 +36,33 @@ export const TaskProvider = ({ children }) => {
     }
   }, []);
 
+  useEffect(() => {
+    getTasks();
+  }, [getTasks]);
+
   // 🔽 2. ADD THE DETAILED JOURNAL DATA FETCH PIPELINE
-  const getJournalFeed = useCallback(async (journalOwnerUuid) => {
-    setJournalLoading(true); // Turn spinner ON instantly!
-    try {
-      const res = await api.get(`/task/journalfeed/${journalOwnerUuid}`);
-      setJournalTasks(res.data.tasks); // Automatically saves posts array on arrival!
-    } catch (err) {
-      console.error("❌ Failed to fetch your sanctuary journal profile:", err);
-      setJournalTasks([]); // Safe fallback on error
-    } finally {
-      setJournalLoading(false); // Turn spinner OFF automatically when done!
-    }
-  }, []);
+  const getJournalFeed = useCallback(
+    async (journalOwnerUuid) => {
+      // ⚡ FIX: Do NOT turn the spinner ON if we already have journal tasks loaded!
+      if (journalTasks.length === 0) {
+        setJournalLoading(true);
+      }
+
+      try {
+        const res = await api.get(`/task/journalfeed/${journalOwnerUuid}`);
+        setJournalTasks(res.data.tasks);
+      } catch (err) {
+        console.error(
+          "❌ Failed to fetch your sanctuary journal profile:",
+          err,
+        );
+        if (journalTasks.length === 0) setJournalTasks([]);
+      } finally {
+        setJournalLoading(false);
+      }
+    },
+    [journalTasks.length],
+  ); // 👈 Added this dependency line
 
   const addTaskToState = (newTask) => {
     setTasks((prevTasks) => [newTask, ...prevTasks]);
@@ -59,20 +76,29 @@ export const TaskProvider = ({ children }) => {
     });
   };
 
-  useEffect(() => {
-    getTasks();
-  }, [getTasks]);
-
   const updateTaskInState = (updatedTask) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
-        task.uuid === updatedTask.uuid ? updatedTask : task,
+        task.uuid === updatedTask.uuid
+          ? { ...task, ...updatedTask } // 👈 Merges new changes into the old task data!
+          : task,
+      ),
+    );
+
+    setJournalTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.uuid === updatedTask.uuid
+          ? { ...task, ...updatedTask } // 👈 Merges new changes into the old task data!
+          : task,
       ),
     );
   };
 
   const deleteTaskFromState = (uuid) => {
     setTasks((prevTasks) => prevTasks.filter((task) => task.uuid !== uuid));
+    setJournalTasks((prevJournalTasks) =>
+      prevJournalTasks.filter((task) => task.uuid !== uuid),
+    );
   };
 
   // 🌟 FUNCTION 1: THE DATABASE SYNC OPERATOR (THE TRUTH)
@@ -88,7 +114,7 @@ export const TaskProvider = ({ children }) => {
           likes_count: updatedPost.likes_count,
           reposts_count: updatedPost.reposts_count,
           shares_count: updatedPost.shares_count,
-          [isField]: task[isField], 
+          [isField]: task[isField],
         };
       }),
     );
@@ -126,9 +152,9 @@ export const TaskProvider = ({ children }) => {
 
         return {
           ...task,
-          is_following: !currentlyFollowing, 
+          is_following: !currentlyFollowing,
         };
-      })
+      }),
     );
   };
 
@@ -143,14 +169,14 @@ export const TaskProvider = ({ children }) => {
         getTasks,
         addTaskToState,
         currentUserId,
-        updateSingleTaskInState, 
-        toggleInteractionInState, 
+        updateSingleTaskInState,
+        toggleInteractionInState,
         currentUserUuid,
         toggleFollowInState,
         // 🔽 3. EXPORT THE NEW STATE DATA VARIABLES AND FETCH LOGIC HOOKS
         journalTasks,
         journalLoading,
-        getJournalFeed
+        getJournalFeed,
       }}
     >
       {children}

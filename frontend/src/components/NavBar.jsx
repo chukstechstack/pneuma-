@@ -26,10 +26,10 @@ const NavBar = ({ currentUserUuid }) => {
         if (currentScrollY > lastScrollY) {
           setIsVisible(false); // Scrolling down
         } else {
-          setIsVisible(true);  // Scrolling up
+          setIsVisible(true); // Scrolling up
         }
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
@@ -40,9 +40,21 @@ const NavBar = ({ currentUserUuid }) => {
   return (
     <>
       {/* ==================== 1. MOBILE TOP ACTION BAR ==================== */}
-      <nav className="mobile-top-nav">
-        <div className="mobile-nav-left" style={{ width: "100%" }}>
-          <div className="mobile-search-trigger-bar" style={{ flexGrow: 1 }}>
+      <nav
+        className={`mobile-top-nav ${!isVisible ? "nav-hidden" : ""}`}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          paddingLeft:  "16px" /* 🛡️ SAFETY GATE: Keeps search away from left glass edge */,
+          paddingRight: "16px" /* 🛡️ SAFETY GATE: Pulls message icon safely inside right glass edge */,
+          boxSizing:"border-box" /* Prevents padding from causing horizontal overflow bugs */,
+        }}
+      >
+        {/* LEFT CONTAINER */}
+        <div className="mobile-nav-left" style={{ flexGrow: 1 }}>
+          <div className="mobile-search-trigger-bar" style={{ width: "100%" }}>
             <svg
               width="16"
               height="16"
@@ -61,11 +73,18 @@ const NavBar = ({ currentUserUuid }) => {
           </div>
         </div>
 
+        {/* RIGHT CONTAINER */}
         <Link
           to="/messages"
           className="mobile-nav-badge-icon"
           onTouchEnd={(e) => e.currentTarget.blur()}
-          style={{ marginLeft: "12px" }}
+          style={{
+            marginLeft:
+              "16px" /* 🚀 REPLACED 'AUTO': Creates a firm, safe gap right after search bar */,
+            display: "flex",
+            alignItems: "center",
+            flexShrink: 0 /* Prevents the icon from squishing on tiny devices */,
+          }}
         >
           <svg
             width="22"
@@ -82,12 +101,11 @@ const NavBar = ({ currentUserUuid }) => {
           <span className="badge-counter-alert counter-red">9</span>
         </Link>
       </nav>
-
       {/* ==================== 2. MOBILE BOTTOM FIXED NAVIGATION ==================== */}
       <nav className={`mobile-bottom-nav ${!isVisible ? "nav-hidden" : ""}`}>
         {/* TAB 1: HOME */}
-        <Link 
-          to="/home" 
+        <Link
+          to="/home"
           className={isActive("/home")}
           onTouchEnd={(e) => e.currentTarget.blur()}
         >
@@ -108,8 +126,8 @@ const NavBar = ({ currentUserUuid }) => {
         </Link>
 
         {/* TAB 2: MY PERSONAL JOURNAL (Mapped directly to your dynamic router path!) */}
-        <Link 
-          to={`/journalfeed/${currentUserUuid || "sanctuary"}`} 
+        <Link
+          to={`/journalfeed/${currentUserUuid || "sanctuary"}`}
           className={isActive("/journalfeed")}
           onTouchEnd={(e) => e.currentTarget.blur()}
         >
@@ -130,8 +148,8 @@ const NavBar = ({ currentUserUuid }) => {
         </Link>
 
         {/* TAB 3: POST ACCENT BUTTON (Perfectly Centered) */}
-        <Link 
-          to="/createtask" 
+        <Link
+          to="/createtask"
           className="nav-item mobile-post-accent-btn"
           onTouchEnd={(e) => e.currentTarget.blur()}
         >
@@ -153,8 +171,8 @@ const NavBar = ({ currentUserUuid }) => {
         </Link>
 
         {/* TAB 4: ALERTS / NOTIFICATIONS */}
-        <Link 
-          to="/notifications" 
+        <Link
+          to="/notifications"
           className={isActive("/notifications")}
           onTouchEnd={(e) => e.currentTarget.blur()}
         >
@@ -189,7 +207,6 @@ const NavBar = ({ currentUserUuid }) => {
           <span>Profile</span>
         </Link>
       </nav>
-
       {/* ==================== 3. DESKTOP GLASS HEADER BAR ==================== */}
       <nav className="desktop-master-nav">
         <div className="desktop-nav-inner-container">
@@ -216,6 +233,8 @@ const NavBar = ({ currentUserUuid }) => {
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
               </svg>
               <input
+                id="desktop-search"
+                name="desktop-search"
                 type="text"
                 placeholder="Search archive insights..."
                 className="desktop-search-input-field"

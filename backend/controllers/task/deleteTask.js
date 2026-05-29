@@ -9,7 +9,7 @@ import { findTaskImageForCleanup, executeTaskDeletion } from "../../services/tas
 export const deleteTask = async (req, res, next) => {
   const { uuid } = req.params;
   const user_id = req.user?.id;
-const user_uuid = req.user?.uuid; 
+  const user_uuid = req.user?.uuid;
 
 
   // 2. Checkout a single isolated client connection from the pool
@@ -35,7 +35,7 @@ const user_uuid = req.user?.uuid;
 
     // 4. Permanently seal database updates and immediately return connection to pool
     await dbClient.query("COMMIT");
- 
+
 
     // 5. ASYNC BACKGROUND CLEANUP LAYER (Using your clean native URL Web API approach)
     const imgUrl = taskRecord.img;
@@ -50,17 +50,29 @@ const user_uuid = req.user?.uuid;
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: filePath
           })).then(() => console.log(`AWS S3 cleanup success: ${filePath}`))
-             .catch(err => console.error(`⚠️ S3 background cleanup failed for ${filePath}:`, err));
+            .catch(err => console.error(`⚠️ S3 background cleanup failed for ${filePath}:`, err));
         }
       } catch (urlError) {
         console.error("⚠️ Malformed image URL found during cleanup phase:", urlError.message);
       }
     }
+    // =================================================================
+    // 6. REDIS CACHE INVALIDATION PIPELINE (HOME FEED + JOURNAL CORES)
+    // =================================================================
+    try {
+      // ── A. Clear your personal homepage timeline feed cache ──
+      const homeCacheKey = `tasks_feed:${user_uuid}`;
+      await redisClient.del(homeCacheKey);
+      console.log(`🗑️ [CACHE RESET]: Home timeline feed busted for user: ${user_id}`);
 
-    // 6. Redis Cache Invalidation Pipeline
-    const cacheKey = `tasks_feed:${user_uuid}`;
-    await redisClient.del(cacheKey).catch(err => console.error("Redis clear error:", err));
-    console.log("🗑️ Redis Cache cleared for user:", user_id);
+      // ── B. Clear your clean, single private journal page cache ──
+      const journalCacheKey = `journal_feed:${user_uuid}`;
+      await redisClient.del(journalCacheKey);
+      console.log(`🗑️ [CACHE RESET]: Private journal feed busted cleanly for user: ${user_id}`);
+
+    } catch (cacheErr) {
+      console.error("⚠️ Non-critical Error in cache-busting invalidation process:", cacheErr.message);
+    }
 
     return res.status(200).json({ message: "Deleted successfully" });
 

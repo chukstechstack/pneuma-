@@ -7,7 +7,7 @@ import DevBanner from "../components/DevBanner";
 import FullPageLoader from "../components/Loader.jsx";
 
 // Reuses your main workspace layout architecture
-import "../styles/home-file/main.css";
+
 
 const JournalPage = () => {
   const { journalUuid } = useParams();
@@ -41,7 +41,7 @@ const JournalPage = () => {
 
   return (
     <div className="home-layout">
-      <DevBanner />
+      {/* <DevBanner /> */}
       <NavBar />
 
       <div className="dashboard-grid">

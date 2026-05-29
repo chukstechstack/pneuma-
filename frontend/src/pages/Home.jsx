@@ -8,7 +8,6 @@ import DevBanner from "../components/DevBanner";
 import FullPageLoader from "../components/Loader.jsx";
 
 // Import your unified styles framework
-import "../styles/home-file/main.css";
 
 const HomePage = () => {
   const {
@@ -95,13 +94,12 @@ const HomePage = () => {
     "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250";
 
   return (
-    <div className="home-layout">
-      <DevBanner />
-      // Find this line inside your HomePage return block and update it:
-      <NavBar currentUserUuid={currentUserUuid} />
-      <div className="dashboard-grid">
+    /* 🚀 RENEWED BRAND NEW STRUCTURAL WRAPPERS */
+    <div className="pneuma-app-shell">
+    <NavBar currentUserUuid={currentUserUuid} />
+      <div className="pneuma-main-stage">
         {/* PROFILE SIDEBAR SECTION */}
-        <aside className="profile-sidebar-wrapper">
+        <aside className="pneuma-left-wing-sidebar">
           <div className="profile-sanctuary-card">
             <div className="profile-card-banner" />
 
@@ -136,7 +134,7 @@ const HomePage = () => {
         </aside>
 
         {/* TIMELINE FEED SYSTEM */}
-        <main className="timeline-feed-wrapper">
+        <main className="pneuma-central-feed">
           <div className="create-testimony-trigger-panel">
             <img
               src={defaultProfileImg}
@@ -151,7 +149,7 @@ const HomePage = () => {
             </Link>
           </div>
 
-          <div className="timeline-posts-container">
+          <div className="pneuma-stream-wrapper">
             {tasks.map((task) => (
               <Task
                 key={task.uuid || task.id}

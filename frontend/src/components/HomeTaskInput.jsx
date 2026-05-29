@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ThumbsUp, MessageSquare, Repeat2, Send } from "lucide-react";
+import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react";
 
 const Task = ({
   task,
@@ -11,80 +11,69 @@ const Task = ({
   currentUserUuid,
 }) => {
   const {
-    title,
     content,
     img,
     uuid,
     author_name,
     author_profile_uuid,
     is_following,
+    created_at,
   } = task;
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const textLimit = 123;
-  const shouldShowMore = content.length > textLimit;
+  const shouldShowMore = content?.length > textLimit;
+
+  // 🧠 DATE FORMATTER ENGINE: Converts raw timestamps into a beautiful "Month Day" string
+  const formatTaskDate = (rawDateString) => {
+    if (!rawDateString) return "May 20";
+    const dateObj = new Date(rawDateString);
+    return dateObj.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  };
 
   return (
-    <div className="taskInputCardBody">
+    /* 🚀 RENEWED TARGET CONTAINER CLASS */
+    <div className="pneuma-post-card-root">
       {/* ==================== 1. BRANDED HUB HEADER ==================== */}
-      <div
-        className="taskAvatarCardBody"
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
-        }}
-      >
-        <div
-          className="taskHeaderLeft"
-          style={{ display: "flex", alignItems: "center", gap: "12px" }}
-        >
+      <div className="pneuma-post-header-row">
+        <div className="pneuma-post-author-group">
           <img
             src={fallbackUserAvatar}
             alt="profile snippet"
-            className="taskAvatarImage"
+            className="pneuma-post-avatar-element"
           />
-          <div
-            className="taskMetaBlock"
-            style={{ display: "flex", flexDirection: "column" }}
-          >
-            {/* 🧠 THE ALIGNMENT LAYERS: Smashes name and follow button on one line */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div className="taskAuthorName">
-                {author_name || "Enlightened Luminary"}
-              </div>
+          <div className="pneuma-post-meta-column">
+            {/* 1. TOP LINE: Just the Author Name */}
+            <div className="pneuma-post-author-name">
+              {author_name || "Enlightened Luminary"}
+            </div>
 
-              {/* 🌟 THE FOLLOW BUTTON: Only shows if it is NOT your own post card! */}
+            {/* 2. BOTTOM LINE: Calendar Icon, Real Date, and Follow Button sitting side-by-side */}
+            <div className="pneuma-post-timestamp-row">
+              <Calendar size={12} style={{ opacity: 0.7 }} />
+              <span>{formatTaskDate(created_at)}</span>
+
+              {/* 🌟 MOVED INLINE FOLLOW BUTTON: Sits perfectly right after the date string */}
               {currentUserUuid !== author_profile_uuid && (
                 <button
                   onClick={() => handleFollow(author_profile_uuid)}
-                  onTouchEnd={(e) => e.currentTarget.blur()}
-                  onMouseLeave={(e) => e.currentTarget.blur()}
                   className={`taskFollowInlineButton ${is_following ? "following-active" : ""}`}
+                  style={{ margin: 0, padding: "2px 6px", fontSize: "11px" }}
                 >
                   {is_following ? "✓ Following" : "+ Follow"}
                 </button>
               )}
-            </div>
-
-            <div className="taskCardTestimonyText">
-              {title || "Spiritual Decree"} • May 20
             </div>
           </div>
         </div>
 
         {/* THREE DOT MANAGEMENT DROPDOWN */}
         {isOwner && (
-          <div
-            className="TaskDotMenuPosition"
-            style={{
-              position: "relative",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="pneuma-post-dropdown-anchor">
             <button
               onClick={() => setShowMenu(!showMenu)}
               className="taskDotButton"
@@ -119,33 +108,31 @@ const Task = ({
       </div>
 
       {/* ==================== 2. DESCRIPTION INSIGHT TEXT ==================== */}
-      <div className="postTextContent">
+      <div className="pneuma-post-body-text">
         <div>
           {!isExpanded && shouldShowMore
             ? `${content.substring(0, textLimit)}...`
             : content}
 
-          {shouldShowMore && !isExpanded && (
+          {/* 🔄 FIXED TOGGLE BUTTON: Stays visible to let users collapse text too */}
+          {shouldShowMore && (
             <button
-              onClick={() => setIsExpanded(true)}
-              onTouchEnd={(e) => e.currentTarget.blur()}
-              onMouseLeave={(e) => e.currentTarget.blur()}
+              onClick={() => setIsExpanded(!isExpanded)}
+              style={{ marginLeft: "6px", cursor: "pointer" }}
               className="showMoreText"
             >
-              expand
+              {isExpanded ? "Show Less" : "expand"}
             </button>
           )}
         </div>
       </div>
 
       {/* ==================== 3. LUMINARY ACTION BAR ==================== */}
-      <div className="taskActionButtonBar">
+      <div className="pneuma-post-action-dock">
         <div className="action-buttons-left">
           {/* LIKE BUTTON */}
           <button
             onClick={() => handleInteraction(uuid, "like")}
-            onTouchEnd={(e) => e.currentTarget.blur()}
-            onMouseLeave={(e) => e.currentTarget.blur()}
             className={`actionButton like-btn ${task.is_liked ? "active" : ""}`}
           >
             <ThumbsUp
@@ -160,11 +147,7 @@ const Task = ({
           </button>
 
           {/* COMMENT BUTTON */}
-          <button
-            className="actionButton comment-btn"
-            onTouchEnd={(e) => e.currentTarget.blur()}
-            onMouseLeave={(e) => e.currentTarget.blur()}
-          >
+          <button className="actionButton comment-btn">
             <MessageSquare size={16} strokeWidth={2} />
             <span className="action-label">Reply</span>
             <span className="inline-action-counter">0</span>
@@ -173,15 +156,13 @@ const Task = ({
           {/* REPOST BUTTON */}
           <button
             onClick={() => handleInteraction(uuid, "repost")}
-            onTouchEnd={(e) => e.currentTarget.blur()}
-            onMouseLeave={(e) => e.currentTarget.blur()}
             className={`actionButton repost-btn ${task.is_reposted ? "active" : ""}`}
           >
             <Repeat2
               size={16}
               strokeWidth={2}
               className={task.is_reposted ? "icon-active" : ""}
-            />
+                />
             <span className="action-label">Forward</span>
             <span className="inline-action-counter">
               {task.reposts_count || 0}
@@ -189,11 +170,7 @@ const Task = ({
           </button>
 
           {/* SEND BUTTON */}
-          <button
-            className="actionButton send-btn"
-            onTouchEnd={(e) => e.currentTarget.blur()}
-            onMouseLeave={(e) => e.currentTarget.blur()}
-          >
+          <button className="actionButton send-btn">
             <Send size={16} strokeWidth={2} />
             <span className="action-label">Send</span>
           </button>
@@ -205,7 +182,7 @@ const Task = ({
         <div className="taskImageWrapper">
           <img
             src={img}
-            alt={title || "Luminary asset"}
+            alt="Luminary asset"
             className="taskContentImageCard"
           />
         </div>
@@ -214,7 +191,6 @@ const Task = ({
   );
 };
 
-// Real safety placeholder image vector string to prevent file loading crashes
 const fallbackUserAvatar =
   "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20762%20762%22%20fill%3D%22none%22%3E%3Ccircle%20cx%3D%22381%22%20cy%3D%22381%22%20r%3D%22381%22%20fill%3D%22%231e2030%22%2F%3E%3Ccircle%20cx%3D%22381%22%20cy%3D%22300%22%20r%3D%22120%22%20fill%3D%22%238e92a2%22%2F%3E%3Cpath%20d%3D%22M181%20600c0-110%2090-200%20200-200s200%2090%20200%20200%22%20stroke%3D%22%238e92a2%22%20stroke-width%3D%2240%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E";
 

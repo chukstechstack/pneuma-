@@ -81,9 +81,20 @@ export const patchTask = async (req, res, next) => {
     }
 
 
-    // Flush cache
-    await redisClient.del(`tasks_feed:${user_uuid}`).catch(err => console.error("Redis clear error:", err));
+    try {
+      // ── A. Clear your personal homepage timeline feed cache ──
+      const homeCacheKey = `tasks_feed:${user_uuid}`;
+      await redisClient.del(homeCacheKey);
+      console.log(`🗑️ [CACHE RESET]: Home timeline feed busted for user: ${user_id}`);
 
+      // ── B. Clear your clean, single private journal page cache ──
+      const journalCacheKey = `journal_feed:${user_uuid}`;
+      await redisClient.del(journalCacheKey);
+      console.log(`🗑️ [CACHE RESET]: Private journal feed busted cleanly for user: ${user_id}`);
+
+    } catch (cacheErr) {
+      console.error("⚠️ Non-critical Error in cache-busting invalidation process:", cacheErr.message);
+    }
     // If everything up to this point succeeds, permanently commit the database data
     await dbClient.query("COMMIT");
 
