@@ -27,8 +27,8 @@
   text-transform: uppercase;
   color: #ffffff;
   text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.5),
-    0 0 15px rgba(212, 175, 55, 0.1);
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(87, 68, 5, 0.8);
 }
 
 .glow-divider {
@@ -77,8 +77,8 @@
 
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 50rem; /* Drops rigid full-screen requirement so elements don't overflow */
-    margin-bottom: 2rem;
+    min-height: 48rem; /* Drops rigid full-screen requirement so elements don't overflow */
+    margin-bottom: -0.9rem;
   }
 
   .hero-content {
@@ -92,14 +92,14 @@
 
   .glow-divider {
     margin: 1.25rem auto; /* Tightens divider border gaps */
-    margin-bottom: 2rem;
+    margin-bottom: 1.2rem;
   }
 
   .hero-subtitle {
     font-size: 1.2rem;
     line-height: 1.5;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
+    margin-bottom: 1.8rem;
+    padding: 0 1.4rem;
   }
 
   .hero-quote {
@@ -109,6 +109,38 @@
   }
 }
 
+@media (min-width: 600px) {
+  .hero-subtitle {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    padding: 0 7rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .hero-section {
+    padding: 7rem 0.75rem 2.5rem 0.75rem; /* Compact side margins */
+  }
+
+  /* Prevent text overlapping by shrinking font sizes */
+  .hero-title {
+    font-size: 2.35rem; /* Drastically scaled down so it stays on 1-2 lines maximum */
+    letter-spacing: 1px;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-quote {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    padding: 0 0.5rem; /* Give text maximum viewport breathing room */
+  }
+}
 /*===========Come_On_in-&-Join_uS-Button-========----*/
 .hero-actions {
   display: flex;
@@ -171,5 +203,18 @@
     box-sizing: border-box;
     padding: 1rem 2rem;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 330px) {
+  .hero-actions {
+    max-width: 100%; /* Spans the full width of the screen safely */
+    gap: 0.65rem;
+  }
+
+  .btn {
+    padding: 0.85rem 1.25rem; /* Thinner height padding stops offscreen push */
+    font-size: 0.75rem;
+    letter-spacing: 1px;
   }
 }

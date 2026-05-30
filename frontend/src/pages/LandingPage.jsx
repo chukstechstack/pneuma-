@@ -19,9 +19,9 @@ const AuthHome = () => {
   return (
     <div className="landing-layout">
       {/* ===============LANDING-LAYOUT=========================== */}
-     {  /* ====================(1)_NAVIGATION==================== */}
+      {/* ====================(1)_NAVIGATION==================== */}
       <nav className="navbar">
-       { /*============Pneuma-&-Dove-Logo============  */}
+        {/*============Pneuma-&-Dove-Logo============  */}
         <div
           className="nav-logo"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -31,7 +31,7 @@ const AuthHome = () => {
           <span className="nav-logo-text">Pneuma</span>
         </div>
 
-       { /*============Hamburger============  */}
+        {/*============Hamburger============  */}
         <button
           className={`hamburger ${isOpen ? "open" : ""}`}
           onClick={() => setIsOpen(!isOpen)}
@@ -50,14 +50,14 @@ const AuthHome = () => {
           >
             Our Mission
           </button>
-           {/*====Discover=====*/}
+          {/*====Discover=====*/}
           <button
             className="nav-scroll-btn"
             onClick={() => handleScroll("discover")}
           >
             Discover
           </button>
-           {/*====Contact=====*/}
+          {/*====Contact=====*/}
           <button
             className="nav-scroll-btn"
             onClick={() => handleScroll("contact")}
@@ -102,12 +102,17 @@ const AuthHome = () => {
           </button>
         </div>
       </main>
-      {/* ==================== SECTION CONTAINER==================== */}
+      {/* ====================Extended-SECTION-CONTAINER==================== */}
       <div className="extended-layout-wrapper">
         {/*============ DISCOVER SECTION ============*/}
         <section id="discover" className="pneuma-sub-section discover-bg">
+
+          {/*============ DISCOVER-Penuma-Description ============*/}
           <h2 className="section-main-heading">Discover Pneuma</h2>
+
+          {/*==Container_For_Sacred-Alter,Controlled-Exposure,Spiritual-Archive ========*/}
           <div className="features-grid-system">
+            {/*============Sacred-Alterr============*/}
             <div className="feature-item-card">
               <div className="feature-emoji">📖</div>
               <h3>Sacred Altar</h3>
@@ -116,7 +121,7 @@ const AuthHome = () => {
                 interactions in a private sanctuary environment.
               </p>
             </div>
-
+            {/*============Controlled-Exposure============*/}
             <div className="feature-item-card">
               <div className="feature-emoji">🛡️</div>
               <h3>Controlled Exposure</h3>
@@ -125,7 +130,7 @@ const AuthHome = () => {
                 Choose exactly which entries you wish to reveal.
               </p>
             </div>
-
+            {/*============Spiritual-Archive============*/}
             <div className="feature-item-card">
               <div className="feature-emoji">🌱</div>
               <h3>Spiritual Archive</h3>

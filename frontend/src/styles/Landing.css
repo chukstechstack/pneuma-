@@ -121,28 +121,53 @@
    HAMBURGER MECHANICS
    ========================================== */
 .hamburger {
-  display: none; /* Desktop hidden setting */
-  background: transparent;
-  border: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 7px;
-  cursor: pointer;
-  padding: 8px;
-  width: 40px;
-  height: 40px;
-  z-index: 2500; /* Stacking rule sits cleanly higher than absolute menu drawers */
-  position: relative;
+  display: flex !important;
+  background: transparent !important;
+  border: none !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  padding: 8px !important;
+  width: 40px !important;
+  height: 40px !important;
+  z-index: 2500 !important; /* Keeps it on top of the menu overlay */
+  position: relative !important;
 }
 
-.bar {
-  width: 22px;
-  height: 1.5px;
-  background-color: var(--text-main);
-  display: block;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+
+/* The three inner tracking bars */
+.hamburger .bar {
+  width: 24px !important;
+  height: 2px !important;
+  background-color: #ffffff !important; /* Forces solid bright white when menu is closed */
+  display: block !important;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
+
+/* --- CLICKED / OPEN STATE ANIMATIONS --- */
+
+/* Top line rotates 45 degrees into a cross line */
+.hamburger.open .bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg) !important;
+  background-color: #d4af37 !important; /* Glow gold signature color */
+}
+
+/* Middle line dissolves outward */
+.hamburger.open .bar:nth-child(2) {
+  opacity: 0 !important;
+  transform: translateX(-10px) !important;
+}
+
+/* Bottom line rotates -45 degrees to close the cross shape */
+.hamburger.open .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg) !important;
+  background-color: #d4af37 !important; /* Glow gold signature color */
+}
+
+
+
 
 /* ==========================================
    2. MINIMALIST HERO ELEMENT
@@ -173,8 +198,8 @@
   text-transform: uppercase;
   color: #ffffff;
   text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.5),
-    0 0 15px rgba(212, 175, 55, 0.1);
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(87, 68, 5, 0.8);
 }
 
 .glow-divider {
@@ -183,7 +208,6 @@
   background: var(--accent-gold);
   margin: 2rem auto;
   opacity: 0.6;
-  
 }
 
 .hero-subtitle {
@@ -207,7 +231,6 @@
   max-width: 680px;
   border-left: 1px solid var(--border-subtle);
   border-right: 1px solid var(--border-subtle);
-
 }
 
 .hero-quote cite {
@@ -259,13 +282,13 @@
 
 .btn-secondary {
   background: transparent;
-  color:   #f4f4f6;
-  border: 1px solid   #f4f4f6;;
+  color: #f4f4f6;
+  border: 1px solid #f4f4f6;
 }
 
 .btn-secondary:hover {
   color: #f4f4f6;
-  border-color:#f4f4f6;;
+  border-color: #f4f4f6;
   transform: translateY(-2px);
 }
 
@@ -295,6 +318,9 @@
   text-transform: uppercase;
   margin-bottom: 4.5rem;
   color: var(--accent-warm-white);
+   text-shadow:
+    0 0 8px rgba(222, 75, 75, 0.9),
+    0 0 15px rgba(250, 199, 14, 0.6);
 }
 
 /* Minimalist Feature Cards Grid Layout */
@@ -307,12 +333,13 @@
 }
 
 .feature-item-card {
-  background: var(--bg-surface);
+  background: transparent;
   border: 1px solid var(--border-subtle);
   border-radius: 6px;
   padding: 3rem 2.5rem;
   text-align: left;
   transition: all 0.3s ease;
+  
 }
 
 .feature-item-card:hover {
@@ -418,31 +445,26 @@
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* ==========================================
-   6. RESPONSIVE QUERY OVERLAYS
+
  
+.footer {
+  padding: 4rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-main);
+  position: relative;
+  z-index: 1;
+}
+
+.footer p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
 /* ==========================================
    6. RESPONSIVE QUERY OVERLAYS (FIXED MOBILE)
    ========================================== */
-@media (max-width: 768px) {
-  /* Fix: Lower hamburger layer bounds */
-  .hamburger {
-    display: flex;
-  }
-
-  /* Smooth transform to 'X' */
-  .hamburger.open .bar:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-    background-color: var(--accent-gold);
-  }
-  .hamburger.open .bar:nth-child(2) {
-    opacity: 0;
-  }
-  .hamburger.open .bar:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-    background-color: var(--accent-gold);
-  }
-
+@media (max-width: 1024px) {
   /* Navigation Links Mobile Container */
   .nav-links {
     position: fixed;
@@ -476,14 +498,19 @@
     width: 100%;
   }
 
+  @media (min-width: 1024px) {
+  .hamburger {
+    display: none !important;
+  }
+}
   /* ==========================================
    Koinonia Hero Section
      ========================================== */
 
   /* Fix 1: Stop viewport layout locking and ease padding */
   .hero-section {
-    min-height: 50rem; /* Drops rigid full-screen requirement so elements don't overflow */
-    margin-bottom: 2rem;
+    min-height: 48rem; /* Drops rigid full-screen requirement so elements don't overflow */
+    margin-bottom: -0.9rem;
   }
 
   .hero-content {
@@ -497,14 +524,14 @@
 
   .glow-divider {
     margin: 1.25rem auto; /* Tightens divider border gaps */
-    margin-bottom: 2rem;
+    margin-bottom: 1.2rem;
   }
 
   .hero-subtitle {
     font-size: 1.2rem;
     line-height: 1.5;
-    margin-bottom: 2rem;
-    padding: 0 1rem;
+    margin-bottom: 1.8rem;
+    padding: 0 1.4rem;
   }
 
   .hero-quote {
@@ -575,23 +602,20 @@
   }
 }
 
+
+@media (width: 600px) {
+  .hero-subtitle {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    padding: 0 7rem;
+  }
+}
+
 /* ==========================================
    7. FOOTER CONTROL
    ========================================== */
-.footer {
-  padding: 4rem 2rem;
-  text-align: center;
-  border-top: 1px solid var(--border-subtle);
-  background: var(--bg-main);
-  position: relative;
-  z-index: 1;
-}
 
-.footer p {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-}
 
 /* ==========================================
    8. ULTRA-SMALL SCREEN ACCESSIBILITY (<= 320px)
@@ -704,54 +728,14 @@
    ========================================== */
 
 /* The main outer button container */
-.hamburger {
-  display: flex !important;
-  background: transparent !important;
-  border: none !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 6px !important;
-  cursor: pointer !important;
-  padding: 8px !important;
-  width: 40px !important;
-  height: 40px !important;
-  z-index: 2500 !important; /* Keeps it on top of the menu overlay */
-  position: relative !important;
-}
+
 
 /* Hidden by default on widescreen monitors */
-@media (min-width: 769px) {
+@media (min-width: 1024px) {
   .hamburger {
     display: none !important;
   }
 }
 
-/* The three inner tracking bars */
-.hamburger .bar {
-  width: 24px !important;
-  height: 2px !important;
-  background-color: #ffffff !important; /* Forces solid bright white when menu is closed */
-  display: block !important;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
-}
 
-/* --- CLICKED / OPEN STATE ANIMATIONS --- */
 
-/* Top line rotates 45 degrees into a cross line */
-.hamburger.open .bar:nth-child(1) {
-  transform: translateY(8px) rotate(45deg) !important;
-  background-color: #d4af37 !important; /* Glow gold signature color */
-}
-
-/* Middle line dissolves outward */
-.hamburger.open .bar:nth-child(2) {
-  opacity: 0 !important;
-  transform: translateX(-10px) !important;
-}
-
-/* Bottom line rotates -45 degrees to close the cross shape */
-.hamburger.open .bar:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg) !important;
-  background-color: #d4af37 !important; /* Glow gold signature color */
-}

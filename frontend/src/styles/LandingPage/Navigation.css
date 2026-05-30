@@ -17,7 +17,6 @@
   z-index: 1000;
 }
 
-
 /*============Pneuma-&-Dove-Logo============*/
 .nav-logo {
   display: flex;
@@ -59,71 +58,42 @@
   padding: 8px !important;
   width: 40px !important;
   height: 40px !important;
-  z-index: 2500 !important; /* Keeps it on top of the menu overlay */
+  z-index: 2500 !important;
   position: relative !important;
 }
 
-@media (max-width: 768px) {
-  /* Fix: Lower hamburger layer bounds */
-  .hamburger {
-    display: flex;
-  }
-
-  /* Smooth transform to 'X' */
-  .hamburger.open .bar:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-    background-color: var(--accent-gold);
-  }
-  .hamburger.open .bar:nth-child(2) {
-    opacity: 0;
-  }
-  .hamburger.open .bar:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-    background-color: var(--accent-gold);
-  }
-}
-
-/* Hidden by default on widescreen monitors */
-@media (min-width: 769px) {
-  .hamburger {
-    display: none !important;
-  }
-}
-
-/* The three inner tracking bars */
 .hamburger .bar {
   width: 24px !important;
   height: 2px !important;
-  background-color: #ffffff !important; /* Forces solid bright white when menu is closed */
+  background-color: #ffffff !important;
   display: block !important;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
 
-/* --- CLICKED / OPEN STATE ANIMATIONS --- */
-
-/* Top line rotates 45 degrees into a cross line */
 .hamburger.open .bar:nth-child(1) {
   transform: translateY(8px) rotate(45deg) !important;
-  background-color: #d4af37 !important; /* Glow gold signature color */
+  background-color: #d4af37 !important;
 }
 
-/* Middle line dissolves outward */
 .hamburger.open .bar:nth-child(2) {
   opacity: 0 !important;
   transform: translateX(-10px) !important;
 }
 
-/* Bottom line rotates -45 degrees to close the cross shape */
 .hamburger.open .bar:nth-child(3) {
   transform: translateY(-8px) rotate(-45deg) !important;
-  background-color: #d4af37 !important; /* Glow gold signature color */
+  background-color: #d4af37 !important;
 }
 
-/* ==========================================
-    Nav-Links
-   ========================================== */
+@media (min-width: 1024px) {
+  .hamburger {
+    display: none !important;
+  }
+}
 
-/* ----OurMission- Discover-Contact ----*/
+/* ---Nav-Links----------------------------------------------- */
+
+/*----OurMission- Discover-Contact----*/
 
 .nav-links {
   display: flex;
@@ -155,9 +125,7 @@
   transform: translateY(-1px);
 }
 
-@media (max-width: 768px) {
-  /* ------------------Navigation Links ---------------*/
-  /* ----OurMission- Discover-Contact ----*/
+@media (max-width: 1024px) {
   .nav-links {
     position: fixed;
     top: 0;
@@ -191,9 +159,7 @@
   }
 }
 
-/* ==========================================
-   8. ULTRA-SMALL SCREEN ACCESSIBILITY (<= 320px)
-   ========================================== */
+/* -----NavLink For 330px */
 @media (max-width: 330px) {
   /* Tighten navbar footprints */
   .navbar {

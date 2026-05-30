@@ -14,9 +14,7 @@
   --font-serif: "Cinzel", serif;
 }
 
-/* ==========================================
-   1. GLOBAL SYSTEM RESETS
-   ========================================== */
+
 .landing-layout {
   margin: 0;
   padding: 0;
@@ -28,7 +26,7 @@
   position: relative;
 }
 
-/* Elegant radial vignette across the page backdrop */
+
 .landing-layout::before {
   content: "";
   position: absolute;
