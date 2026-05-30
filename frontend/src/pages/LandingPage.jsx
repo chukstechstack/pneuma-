@@ -106,7 +106,6 @@ const AuthHome = () => {
       <div className="extended-layout-wrapper">
         {/*============ DISCOVER SECTION ============*/}
         <section id="discover" className="pneuma-sub-section discover-bg">
-
           {/*============ DISCOVER-Penuma-Description ============*/}
           <h2 className="section-main-heading">Discover Pneuma</h2>
 
@@ -114,7 +113,7 @@ const AuthHome = () => {
           <div className="features-grid-system">
             {/*============Sacred-Alterr============*/}
             <div className="feature-item-card">
-              <div className="feature-emoji">📖</div>
+              <div className="feature-emoji">🌱</div>
               <h3>Sacred Altar</h3>
               <p>
                 Write your raw prayers, deep insights, and quiet time
@@ -123,7 +122,7 @@ const AuthHome = () => {
             </div>
             {/*============Controlled-Exposure============*/}
             <div className="feature-item-card">
-              <div className="feature-emoji">🛡️</div>
+              <div className="feature-emoji">🌱</div>
               <h3>Controlled Exposure</h3>
               <p>
                 Your workspace defaults to completely secure private storage.
@@ -139,10 +138,12 @@ const AuthHome = () => {
                 personal archive of God's timing.
               </p>
             </div>
+
+            
           </div>
         </section>
 
-        {/* =============== MISSION SECTION ============== */}
+        {/*===============MISSION-SECTION==============*/}
         <section id="mission" className="pneuma-sub-section mission-bg">
           <div className="mission-inner-container">
             <h2 className="section-main-heading">Our Mission</h2>
@@ -156,7 +157,7 @@ const AuthHome = () => {
           </div>
         </section>
 
-        {/*============ CONTACT / CTA SECTION  ============*/}
+        {/*============ CONTACT_&_CTA-SECTION  ============*/}
         <section id="contact" className="pneuma-sub-section contact-bg">
           <div className="action-cta-card">
             <h2>Ready to track your walk?</h2>

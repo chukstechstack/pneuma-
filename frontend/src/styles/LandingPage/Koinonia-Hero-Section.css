@@ -54,7 +54,7 @@
   font-family: var(--font-sans);
   font-weight: 300;
   font-size: 1.05rem;
-  color: var(--text-muted);
+  color: #b1b2b6;
   line-height: 1.8;
   margin: 0 auto;
   padding: 0 3rem;
@@ -73,16 +73,19 @@
   letter-spacing: 2px;
   color: var(--accent-gold);
   margin-top: 1.25rem;
+  text-shadow:
+    0 0 8px rgba(138, 24, 24, 0.6),
+    0 0 15px rgba(240, 235, 220, 0.8);
 }
 
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 48rem; /* Drops rigid full-screen requirement so elements don't overflow */
+    min-height: 48rem;
     margin-bottom: -0.9rem;
   }
 
   .hero-content {
-    margin-bottom: 4rem; /* Closes gap between quote and actions */
+    margin-bottom: 4rem;
   }
 
   .hero-title {
@@ -91,7 +94,7 @@
   }
 
   .glow-divider {
-    margin: 1.25rem auto; /* Tightens divider border gaps */
+    margin: 1.25rem auto;
     margin-bottom: 1.2rem;
   }
 
@@ -120,12 +123,11 @@
 
 @media (max-width: 330px) {
   .hero-section {
-    padding: 7rem 0.75rem 2.5rem 0.75rem; /* Compact side margins */
+    padding: 7rem 0.75rem 2.5rem 0.75rem;
   }
 
-  /* Prevent text overlapping by shrinking font sizes */
   .hero-title {
-    font-size: 2.35rem; /* Drastically scaled down so it stays on 1-2 lines maximum */
+    font-size: 2.35rem;
     letter-spacing: 1px;
   }
 
@@ -138,7 +140,7 @@
   .hero-quote {
     font-size: 0.85rem;
     line-height: 1.5;
-    padding: 0 0.5rem; /* Give text maximum viewport breathing room */
+    padding: 0 0.5rem;
   }
 }
 /*===========Come_On_in-&-Join_uS-Button-========----*/
@@ -156,11 +158,10 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
   padding: 1rem 4rem;
-  border-radius: 4px; /* Crisp square profile edges replace standard pills */
+  border-radius: 4px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
-
 .btn-primary {
   background: var(--accent-gold);
   color: #0c0d12 !important; /* High contrast against gold */
@@ -174,6 +175,8 @@
   color: var(--accent-gold) !important;
   border-color: var(--accent-gold);
   box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
+  font-weight: 300;
+  transform: translateY(2px);
 }
 
 .btn-secondary {
@@ -184,20 +187,19 @@
 
 .btn-secondary:hover {
   color: #f4f4f6;
-  border-color: #f4f4f6;
+  border-color: #0c0cea;
   transform: translateY(-2px);
 }
 
 @media (max-width: 768px) {
   .hero-actions {
-    flex-direction: column; /* Force clean, vertical button layout stack */
+    flex-direction: column;
     width: 100%;
     max-width: 280px;
-    gap: 0.85rem; /* Even, balanced spacing between the stacked buttons */
+    gap: 0.85rem;
     margin: 0 auto;
   }
 
-  /* Fix 3: Full width tap targets */
   .btn {
     width: 100%;
     box-sizing: border-box;
@@ -208,12 +210,12 @@
 
 @media (max-width: 330px) {
   .hero-actions {
-    max-width: 100%; /* Spans the full width of the screen safely */
+    max-width: 100%;
     gap: 0.65rem;
   }
 
   .btn {
-    padding: 0.85rem 1.25rem; /* Thinner height padding stops offscreen push */
+    padding: 0.85rem 1.25rem;
     font-size: 0.75rem;
     letter-spacing: 1px;
   }

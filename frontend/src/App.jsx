@@ -1,14 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import AuthHome from "./pages/LandingPage.jsx";
-import Login from "./pages/Login.jsx"; //  Added .jsx extension
+import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import HomePage from "./pages/Home.jsx";
 import CreateTask from "./pages/CreateTask.jsx";
 import EditPost from "./pages/EditTask.jsx";
-import { TaskProvider } from "./context/TaskContext.jsx"; // Added .jsx extension just in case
-import ProfilePageLog from "./pages/Profile.jsx"; //  Renamed import variable to prevent compilation confusion
+import { TaskProvider } from "./context/TaskContext.jsx"; 
+import ProfilePageLog from "./pages/Profile.jsx"; 
 import JournalPage from "./pages/JournalFeed.jsx";
 const App = () => {
   return (

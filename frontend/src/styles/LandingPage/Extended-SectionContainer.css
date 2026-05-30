@@ -1,0 +1,157 @@
+/* ====================Extended-SECTION-CONTAINER==================== */
+.extended-layout-wrapper {
+  position: relative;
+  z-index: 1;
+}
+/*============DISCOVER-SECTION============*/
+.pneuma-sub-section {
+  padding: 5rem 8% 4rem 8%; /* Reduced from 10rem top to 5rem */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+}
+/*============ DISCOVER-Penuma-Description ============*/
+.section-main-heading {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-bottom: 4.5rem;
+  color: var(--accent-warm-white);
+  text-shadow:
+    0 0 8px rgba(222, 75, 75, 0.9),
+    0 0 15px rgba(250, 199, 14, 0.6);
+}
+
+/*==Container_For_Sacred-Alter,Controlled-Exposure,Spiritual-Archive ========*/
+.features-grid-system {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1140px;
+}
+
+.feature-item-card {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 3rem 2.5rem;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.feature-item-card:hover {
+  border-color: var(--border-bright);
+  transform: translateY(-4px);
+}
+
+.feature-emoji {
+  font-size: 1.2rem;
+  margin-bottom: 0.2rem;
+  opacity: 0.8;
+  text-shadow:
+    0 0 8px rgba(240, 47, 47, 0.5),
+    0 0 15px rgba(252, 219, 3, 0.9);
+}
+
+.feature-item-card h3 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0 0 1.5rem 0;
+  color: #ffffff;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(87, 68, 5, 0.6);
+}
+
+.feature-item-card p {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #b1b2b6;
+  margin: 0;
+}
+
+/*===============MISSION-SECTION==============*/
+.mission-inner-container {
+  max-width: 760px;
+  padding: 2rem 0;
+}
+
+.mission-descriptive-text {
+  font-size: 1.25rem;
+  line-height: 2;
+  font-weight: 300;
+  color: var(--accent-warm-white);
+  margin: 0;
+}
+
+/*============CONTACT_&_CTA-SECTION ============*/
+.action-cta-card {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  padding: 6rem 3rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 900px;
+  box-sizing: border-box;
+}
+
+.action-cta-card h2 {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 400;
+  letter-spacing: 2px;
+  margin: 0 0 1.25rem 0;
+  color: #e5e5e0;
+  text-shadow:
+    0 0 8px rgba(47, 3, 3, 0.6),
+    0 0 15px rgba(244, 243, 238, 0.8);
+}
+
+.action-cta-card p {
+  color: #e7e7d1;
+  font-size: 1.1rem;
+  font-weight: 300;
+  margin: 0 0 3rem 0;
+  text-shadow:
+    0 0 8px rgba(175, 32, 32, 0.6),
+    0 0 15px rgba(243, 241, 234, 0.8);
+}
+
+.cta-action-btn {
+  display: inline-block;
+  width: auto !important;
+  max-width: max-content;
+  margin-bottom: 4.5rem;
+}
+
+.support-contact-footer {
+  font-size: 0.9rem;
+  color: #f5f5e2;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 2.5rem;
+  letter-spacing: 0.5px;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(231, 208, 130, 0.8);
+}
+
+.email-hyperlink {
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.email-hyperlink:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}

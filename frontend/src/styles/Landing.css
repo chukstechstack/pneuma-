@@ -136,7 +136,6 @@
   position: relative !important;
 }
 
-
 /* The three inner tracking bars */
 .hamburger .bar {
   width: 24px !important;
@@ -165,9 +164,6 @@
   transform: translateY(-8px) rotate(-45deg) !important;
   background-color: #d4af37 !important; /* Glow gold signature color */
 }
-
-
-
 
 /* ==========================================
    2. MINIMALIST HERO ELEMENT
@@ -224,7 +220,7 @@
   font-family: var(--font-sans);
   font-weight: 300;
   font-size: 1.05rem;
-  color: var(--text-muted);
+  color: #b1b2b6;
   line-height: 1.8;
   margin: 0 auto;
   padding: 0 3rem;
@@ -243,6 +239,9 @@
   letter-spacing: 2px;
   color: var(--accent-gold);
   margin-top: 1.25rem;
+   text-shadow:
+    0 0 8px rgba(138, 24, 24, 0.6),
+    0 0 15px rgba(240, 235, 220, 0.8);
 }
 
 /* STRUCTURAL CONTROLS & ACTIONS */
@@ -278,6 +277,8 @@
   color: var(--accent-gold) !important;
   border-color: var(--accent-gold);
   box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
+  font-weight: 300;
+  transform: translateY(2px);
 }
 
 .btn-secondary {
@@ -288,7 +289,7 @@
 
 .btn-secondary:hover {
   color: #f4f4f6;
-  border-color: #f4f4f6;
+  border-color: #0c0cea;
   transform: translateY(-2px);
 }
 
@@ -318,7 +319,7 @@
   text-transform: uppercase;
   margin-bottom: 4.5rem;
   color: var(--accent-warm-white);
-   text-shadow:
+  text-shadow:
     0 0 8px rgba(222, 75, 75, 0.9),
     0 0 15px rgba(250, 199, 14, 0.6);
 }
@@ -329,7 +330,7 @@
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2.5rem;
   width: 100%;
-  max-width: 1140px;
+  max-width: 2000px;
 }
 
 .feature-item-card {
@@ -339,7 +340,6 @@
   padding: 3rem 2.5rem;
   text-align: left;
   transition: all 0.3s ease;
-  
 }
 
 .feature-item-card:hover {
@@ -348,9 +348,12 @@
 }
 
 .feature-emoji {
-  font-size: 1.75rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 0.2rem;
   opacity: 0.8;
+  text-shadow:
+    0 0 8px rgba(240, 47, 47, 0.5),
+    0 0 15px rgba(252, 219, 3, 0.9);
 }
 
 .feature-item-card h3 {
@@ -358,14 +361,17 @@
   font-size: 1.25rem;
   font-weight: 400;
   letter-spacing: 1px;
-  margin: 0 0 1rem 0;
+  margin: 0 0 1.5rem 0;
   color: #ffffff;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(87, 68, 5, 0.6);
 }
 
 .feature-item-card p {
   font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--text-muted);
+  color: #b1b2b6;
   margin: 0;
 }
 
@@ -385,7 +391,7 @@
 
 /* Call to Action Box layout */
 .action-cta-card {
-  background: var(--bg-surface);
+  background:transparent;
   border: 1px solid var(--border-subtle);
   padding: 6rem 3rem;
   border-radius: 8px;
@@ -400,13 +406,20 @@
   font-weight: 400;
   letter-spacing: 2px;
   margin: 0 0 1.25rem 0;
+   color:  #e5e5e0;;
+   text-shadow:
+    0 0 8px rgba(47, 3, 3, 0.6),
+    0 0 15px rgba(244, 243, 238, 0.8);
 }
 
 .action-cta-card p {
-  color: var(--text-muted);
+  color:  #e7e7d1;
   font-size: 1.1rem;
   font-weight: 300;
   margin: 0 0 3rem 0;
+     text-shadow:
+    0 0 8px rgba(175, 32, 32, 0.6),
+    0 0 15px rgba(243, 241, 234, 0.8);
 }
 
 .cta-action-btn {
@@ -418,10 +431,13 @@
 
 .support-contact-footer {
   font-size: 0.9rem;
-  color: var(--text-muted);
+ color:  #f5f5e2;
   border-top: 1px solid var(--border-subtle);
   padding-top: 2.5rem;
   letter-spacing: 0.5px;
+     text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(231, 208, 130, 0.8);
 }
 
 .email-hyperlink {
@@ -437,16 +453,8 @@
   opacity: 0.8;
 }
 
-.bar {
-  width: 22px;
-  height: 1.5px;
-  background-color: var(--text-main); /* 👈 THIS IS IT */
-  display: block;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
 
 
- 
 .footer {
   padding: 4rem 2rem;
   text-align: center;
@@ -460,6 +468,9 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   letter-spacing: 1px;
+     text-shadow:
+    0 0 8px rgba(247, 5, 5, 0.9),
+    0 0 15px rgba(5, 4, 0, 0.9);
 }
 /* ==========================================
    6. RESPONSIVE QUERY OVERLAYS (FIXED MOBILE)
@@ -499,10 +510,10 @@
   }
 
   @media (min-width: 1024px) {
-  .hamburger {
-    display: none !important;
+    .hamburger {
+      display: none !important;
+    }
   }
-}
   /* ==========================================
    Koinonia Hero Section
      ========================================== */
@@ -602,7 +613,6 @@
   }
 }
 
-
 @media (width: 600px) {
   .hero-subtitle {
     font-size: 1.2rem;
@@ -615,7 +625,6 @@
 /* ==========================================
    7. FOOTER CONTROL
    ========================================== */
-
 
 /* ==========================================
    8. ULTRA-SMALL SCREEN ACCESSIBILITY (<= 320px)
@@ -729,13 +738,9 @@
 
 /* The main outer button container */
 
-
 /* Hidden by default on widescreen monitors */
 @media (min-width: 1024px) {
   .hamburger {
     display: none !important;
   }
 }
-
-
-

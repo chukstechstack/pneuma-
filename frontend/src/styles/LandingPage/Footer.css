@@ -1,3 +1,4 @@
+
 .footer {
   padding: 4rem 2rem;
   text-align: center;
@@ -11,4 +12,8 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   letter-spacing: 1px;
+     text-shadow:
+    0 0 8px rgba(247, 5, 5, 0.9),
+    0 0 15px rgba(5, 4, 0, 0.9);
 }
+/* 
