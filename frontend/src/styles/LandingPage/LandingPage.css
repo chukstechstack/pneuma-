@@ -1,0 +1,43 @@
+@import url("https://googleapis.com");
+
+:root {
+  --bg-main: #0c0d12;
+  --bg-surface: #13151d;
+  --panel-glass: rgba(19, 21, 29, 0.75);
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --border-bright: rgba(212, 175, 55, 0.2);
+  --text-main: #f4f4f6;
+  --text-muted: #8e92a2;
+  --accent-gold: #d4af37; /* Soft metallic luxury gold */
+  --accent-warm-white: #e5e5e0;
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Cinzel", serif;
+}
+
+/* ==========================================
+   1. GLOBAL SYSTEM RESETS
+   ========================================== */
+.landing-layout {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Elegant radial vignette across the page backdrop */
+.landing-layout::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 20%,
+    rgba(212, 175, 55, 0.01) 0%,
+    transparent 50%
+  );
+  z-index: 0;
+  pointer-events: none;
+}

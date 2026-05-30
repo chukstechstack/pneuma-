@@ -1,4 +1,4 @@
-@import url('https://googleapis.com');
+@import url("https://googleapis.com");
 
 :root {
   --bg-main: #0c0d12;
@@ -10,8 +10,8 @@
   --text-muted: #8e92a2;
   --accent-gold: #d4af37; /* Soft metallic luxury gold */
   --accent-warm-white: #e5e5e0;
-  --font-sans: 'Inter', sans-serif;
-  --font-serif: 'Cinzel', serif;
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Cinzel", serif;
 }
 
 /* ==========================================
@@ -33,7 +33,11 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 50%);
+  background: radial-gradient(
+    circle at 50% 20%,
+    rgba(212, 175, 55, 0.01) 0%,
+    transparent 50%
+  );
   z-index: 0;
   pointer-events: none;
 }
@@ -60,17 +64,15 @@
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 0px;
   cursor: pointer;
 }
 
 .nav-logo-img {
-  width: 28px;
-  height: 28px;
-  fill: none;
-  stroke: var(--accent-gold);
-  stroke-width: 1.25;
-  filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.15));
+  width: 30px;
+  height: 30px;
+  filter: drop-shadow(0 0 15px rgba(200, 200, 74, 0.9));
+  /* filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.15)); */
 }
 
 .nav-logo-text {
@@ -80,6 +82,9 @@
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--accent-warm-white);
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.8),
+    0 0 15px rgba(212, 175, 55, 0.1);
 }
 
 .nav-links {
@@ -99,7 +104,12 @@
   text-transform: uppercase;
   cursor: pointer;
   padding: 0.5rem 1rem;
-  transition: color 0.3s ease, transform 0.3s ease;
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.9),
+    0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 .nav-scroll-btn:hover {
@@ -108,7 +118,7 @@
 }
 
 /* ==========================================
-   3. HAMBURGER MECHANICS
+   HAMBURGER MECHANICS
    ========================================== */
 .hamburger {
   display: none; /* Desktop hidden setting */
@@ -135,7 +145,7 @@
 }
 
 /* ==========================================
-   4. MINIMALIST HERO ELEMENT
+   2. MINIMALIST HERO ELEMENT
    ========================================== */
 .hero-section {
   position: relative;
@@ -145,7 +155,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10rem 2rem 6rem 2rem;
   text-align: center;
   box-sizing: border-box;
 }
@@ -159,10 +168,13 @@
   font-family: var(--font-serif);
   font-size: 5.5rem;
   font-weight: 400;
-  margin: 0;
+  margin: 1rem;
   letter-spacing: 6px;
   text-transform: uppercase;
   color: #ffffff;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.5),
+    0 0 15px rgba(212, 175, 55, 0.1);
 }
 
 .glow-divider {
@@ -171,6 +183,7 @@
   background: var(--accent-gold);
   margin: 2rem auto;
   opacity: 0.6;
+  
 }
 
 .hero-subtitle {
@@ -194,6 +207,7 @@
   max-width: 680px;
   border-left: 1px solid var(--border-subtle);
   border-right: 1px solid var(--border-subtle);
+
 }
 
 .hero-quote cite {
@@ -211,8 +225,9 @@
 /* STRUCTURAL CONTROLS & ACTIONS */
 .hero-actions {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
   justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .btn {
@@ -221,7 +236,7 @@
   font-weight: 500;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 1.1rem 3rem;
+  padding: 1rem 4rem;
   border-radius: 4px; /* Crisp square profile edges replace standard pills */
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -242,16 +257,15 @@
   box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
 }
 
-
 .btn-secondary {
   background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border-subtle);
+  color:   #f4f4f6;
+  border: 1px solid   #f4f4f6;;
 }
 
 .btn-secondary:hover {
-  color: var(--text-main);
-  border-color: var(--text-main);
+  color: #f4f4f6;
+  border-color:#f4f4f6;;
   transform: translateY(-2px);
 }
 
@@ -272,7 +286,6 @@
   text-align: center;
   border-top: 1px solid var(--border-subtle);
 }
-
 
 .section-main-heading {
   font-family: var(--font-serif);
@@ -413,14 +426,22 @@
    ========================================== */
 @media (max-width: 768px) {
   /* Fix: Lower hamburger layer bounds */
-  .hamburger { 
-    display: flex; 
+  .hamburger {
+    display: flex;
   }
-  
+
   /* Smooth transform to 'X' */
-  .hamburger.open .bar:nth-child(1) { transform: translateY(8px) rotate(45deg); background-color: var(--accent-gold); }
-  .hamburger.open .bar:nth-child(2) { opacity: 0; }
-  .hamburger.open .bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background-color: var(--accent-gold); }
+  .hamburger.open .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    background-color: var(--accent-gold);
+  }
+  .hamburger.open .bar:nth-child(2) {
+    opacity: 0;
+  }
+  .hamburger.open .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: var(--accent-gold);
+  }
 
   /* Navigation Links Mobile Container */
   .nav-links {
@@ -456,96 +477,98 @@
   }
 
   /* ==========================================
-     MOBILE SPACING & LAYOUT CORRECTIONS
+   Koinonia Hero Section
      ========================================== */
-  
+
   /* Fix 1: Stop viewport layout locking and ease padding */
-  .hero-section { 
-    min-height: auto; /* Drops rigid full-screen requirement so elements don't overflow */
-    padding: 10rem 1.25rem 3.5rem 1.25rem; /* Compact padding pushes content up tightly */
+  .hero-section {
+    min-height: 50rem; /* Drops rigid full-screen requirement so elements don't overflow */
+    margin-bottom: 2rem;
   }
 
   .hero-content {
-    margin-bottom: 2rem; /* Closes gap between quote and actions */
+    margin-bottom: 4rem; /* Closes gap between quote and actions */
   }
 
-  .hero-title { 
-    font-size: 3.2rem; 
-    letter-spacing: 2px; 
+  .hero-title {
+    font-size: 3.2rem;
+    letter-spacing: 2px;
   }
-  
+
   .glow-divider {
     margin: 1.25rem auto; /* Tightens divider border gaps */
-  }
-
-  .hero-subtitle { 
-    font-size: 1.15rem; 
-    line-height: 1.5;
     margin-bottom: 2rem;
   }
-  
-  .hero-quote { 
-    padding: 0 1rem; 
-    font-size: 0.95rem; 
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+
+  .hero-quote {
+    padding: 0 rem;
+    font-size: 0.9rem;
     line-height: 1.6;
   }
 
   /* Fix 2: Clean stacking grid system for action triggers */
-  .hero-actions { 
+  .hero-actions {
     flex-direction: column; /* Force clean, vertical button layout stack */
-    width: 100%; 
-    max-width: 280px; 
+    width: 100%;
+    max-width: 280px;
     gap: 0.85rem; /* Even, balanced spacing between the stacked buttons */
     margin: 0 auto;
   }
-  
+
   /* Fix 3: Full width tap targets */
-  .btn { 
-    width: 100%; 
+  .btn {
+    width: 100%;
     box-sizing: border-box;
-    padding: 1rem 2rem; 
+    padding: 1rem 2rem;
     font-size: 0.8rem;
   }
-  
+
   /* Fix 4: Compress huge sub-section spacing blocks */
-  .pneuma-sub-section { 
+  .pneuma-sub-section {
     padding: 3.5rem 6% 3rem 6%; /* Dramatically drops top padding so scrolling feels cohesive */
   }
-  
-  .section-main-heading { 
-    font-size: 1.75rem; 
-    margin-bottom: 2.25rem; 
+
+  .section-main-heading {
+    font-size: 1.75rem;
+    margin-bottom: 2.25rem;
     letter-spacing: 2px;
   }
-  
+
   /* Feature Grid Tightening */
   .features-grid-system {
     gap: 1.25rem; /* Tightens gap between feature text blocks */
   }
 
-  .feature-item-card { 
-    padding: 2rem 1.5rem; 
-    text-align: center; 
+  .feature-item-card {
+    padding: 2rem 1.5rem;
+    text-align: center;
   }
-  
-  .mission-inner-container { 
-    padding: 2.5rem 1.25rem; 
+
+  .mission-inner-container {
+    padding: 2.5rem 1.25rem;
   }
-  
-  .mission-descriptive-text { 
-    font-size: 1rem; 
-    line-height: 1.7; 
+
+  .mission-descriptive-text {
+    font-size: 1rem;
+    line-height: 1.7;
   }
-  
+
   /* CTA Layout Box Adjustment */
-  .action-cta-card { 
-    padding: 3.5rem 1.25rem; 
+  .action-cta-card {
+    padding: 3.5rem 1.25rem;
   }
-  
-  .action-cta-card h2 { 
-    font-size: 1.65rem; 
+
+  .action-cta-card h2 {
+    font-size: 1.65rem;
   }
-  
+
   .action-cta-card p {
     font-size: 1rem;
     margin-bottom: 2rem;
@@ -578,7 +601,7 @@
   .navbar {
     padding: 1rem 4%;
   }
-  
+
   .nav-logo-text {
     font-size: 1.15rem;
     letter-spacing: 1.5px;
@@ -675,7 +698,6 @@
     gap: 0.35rem;
   }
 }
-
 
 /* ==========================================
    PRODUCTION HAMBURGER INJECTION FIX

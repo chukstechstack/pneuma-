@@ -4,7 +4,6 @@ import TaskContext from "../context/TaskContext.jsx";
 import api from "../api/axios.js";
 import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
-import DevBanner from "../components/DevBanner";
 import FullPageLoader from "../components/Loader.jsx";
 
 // Import your unified styles framework
