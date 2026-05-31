@@ -54,12 +54,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 8%;
-  background: var(--panel-glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(5, 3, 3, 0.8) !important;
+  backdrop-filter: blur(15px) !important;
+  -webkit-backdrop-filter: blur(15px) !important;
   border-bottom: 1px solid var(--border-subtle);
   z-index: 1000;
 }
+
 
 .nav-logo {
   display: flex;
@@ -313,6 +314,7 @@
   align-items: center;
   text-align: center;
   border-top: 1px solid var(--border-subtle);
+    background: rgba(12, 0, 0, 0.8) !important;
 }
 
 .section-main-heading {
