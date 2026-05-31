@@ -65,111 +65,34 @@ body {
 }
 
 
-/* ==========================================================================
-   MOBILE QUERY CONFIGURATIONS (LOCKED SIDE-BY-SIDE DOWN TO 290PX)
-   ========================================================================== */
-
-/* 1. Universal Mobile Range (From 480px down to 291px) */
 @media (max-width: 480px) {
+  /* 🌟 Keep your original floating card style - no height forces */
   .register-layout {
-    padding: 0.5rem;
+    padding: 1rem 0.5rem;
+    min-height: 100vh; /* Lets it breathe naturally based on content */
   }
-  
+
   .register-container {
-    padding: 1.5rem 1.25rem !important; /* Slightly snugger padding so 2-columns fit phone widths */
-    margin-top: -1rem;
-  }
-  
-  .register-title {
-    font-size: 1.5rem;
-  }
-  
-  .register-subtitle {
-    font-size: 0.85rem;
-    line-height: 1.4;
+    padding: 2.5rem 1.5rem;
+    width: 100%;
+    max-width: 440px; /* Keeps it contained nicely */
+    border-radius: 8px !important;
   }
 
-  /* 🌟 LOCKED HORIZONTAL: Stays double inputs side-by-side all the way down */
+  /* 🌟 Keep your double inputs horizontal for your phone */
   .name-fields-row {
-    flex-direction: row !important;
     display: flex !important;
-    gap: 0.65rem !important; /* Snug gap so inputs fit perfectly side-by-side */
-  }
-
-  .form-wrapper {
-    gap: 0.85rem !important; /* Tighter layout rows to prevent vertical scrolling */
-  }
-
-  .form-wrapper input {
-    padding: 0.7rem 0.85rem !important; /* Low profile fields */
-    font-size: 0.85rem !important;
-  }
-
-  .register-submit-btn,
-  .google-oauth-btn {
-    padding: 0.75rem 1.25rem !important;
-    font-size: 0.8rem !important;
-  }
-
-  .register-footer {
-    margin-top: 1.25rem !important;
-    padding-top: 0.75rem !important;
-    font-size: 0.8rem !important;
+    flex-direction: row !important; 
+    gap: 1rem; 
   }
 }
 
-/* 2. 🌟 CRITICAL BREAKPOINT: Ultra-Micro Screens (Stacks ONLY at 290px and below) */
+/* 🌟 The absolute lowest safety net for extra tiny displays */
 @media (max-width: 290px) {
-  .register-layout {
-    padding: 0.15rem !important;
-  }
-
-  .register-container {
-    padding: 1rem 0.65rem !important;
-    margin-top: -0.5rem !important;
-    border-radius: 6px !important;
-  }
-
-  .register-title {
-    font-size: 1.15rem !important;
-  }
-
-  /* 🌟 VERTICAL STACK OVERRIDE: Finally triggers at your absolute lower limit */
   .name-fields-row {
-    flex-direction: column !important;
-    gap: 0.55rem !important;
+    gap: 0.5rem !important;
   }
-
-  .form-wrapper {
-    gap: 0.55rem !important;
-  }
-
   .form-wrapper input {
-    padding: 0.55rem 0.75rem !important;
-    font-size: 0.8rem !important;
-  }
-
-  .register-submit-btn {
-    padding: 0.65rem 1rem !important;
-    font-size: 0.75rem !important;
-  }
-
-  .google-oauth-btn {
-    padding: 0.6rem 1rem !important;
-    font-size: 0.75rem !important;
-    gap: 6px !important;
-  }
-
-  .register-footer {
-    margin-top: 0.75rem !important;
-    padding-top: 0.5rem !important;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem !important;
-    font-size: 0.75rem !important;
-  }
-
-  .register-login-link {
-    margin-left: 0px !important;
+    padding: 0.75rem 1rem !important; /* Slightly snugger inputs just for 290px */
   }
 }
