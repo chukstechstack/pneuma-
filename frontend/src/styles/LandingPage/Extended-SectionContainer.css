@@ -79,9 +79,20 @@
 }
 
 /*===============MISSION-SECTION==============*/
+.pneuma-sub-section.mission-bg {
+  width: 100% !important;
+  background-color: #070000;
+  margin: 0 !important;
+  padding: 5rem 0 !important;
+}
+
 .mission-inner-container {
+  width: 100%;
   max-width: 760px;
-  padding: 2rem 0;
+  margin: 0 auto;
+  padding: 0 2rem;
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .mission-descriptive-text {

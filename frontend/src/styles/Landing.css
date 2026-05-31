@@ -20,7 +20,7 @@
 .landing-layout {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-main);
+  background-color: #010411;
   color: var(--text-main);
   font-family: var(--font-sans);
   min-height: 100vh;
@@ -171,13 +171,17 @@
 .hero-section {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   box-sizing: border-box;
+  background-color: #070000;
+  max-width: 2000px;
+  margin: 0 auto;
+  padding: 7rem 3rem;
 }
 
 .hero-content {
@@ -239,7 +243,7 @@
   letter-spacing: 2px;
   color: var(--accent-gold);
   margin-top: 1.25rem;
-   text-shadow:
+  text-shadow:
     0 0 8px rgba(138, 24, 24, 0.6),
     0 0 15px rgba(240, 235, 220, 0.8);
 }
@@ -376,9 +380,24 @@
 }
 
 /* Mission Architectural Centerpiece */
+/* 🌟 LAYER 1: Full-width black background belt stretching edge-to-edge */
+.pneuma-sub-section.mission-bg {
+  width: 100% !important;
+  background-color: #070000; /* Stretches across the entire screen layout */
+  margin: 0 !important;
+  padding: 5rem 0 !important; /* Moves vertical breathing room to the outer edge */
+}
+
+/* 🌟 LAYER 2: Handles layout boundaries for text centering inside the black belt */
 .mission-inner-container {
-  max-width: 760px;
-  padding: 2rem 0;
+  width: 100%;
+  max-width: 760px; /* Restricts text lines from spreading too wide on large screens */
+  margin: 0 auto; /* Keeps contents pinned perfectly to the center */
+  padding: 0 2rem; /* Keeps text safely away from the absolute edges of the screen */
+  box-sizing: border-box;
+  text-align: center;    
+   
+  
 }
 
 .mission-descriptive-text {
@@ -391,7 +410,7 @@
 
 /* Call to Action Box layout */
 .action-cta-card {
-  background:transparent;
+  background: transparent;
   border: 1px solid var(--border-subtle);
   padding: 6rem 3rem;
   border-radius: 8px;
@@ -406,18 +425,18 @@
   font-weight: 400;
   letter-spacing: 2px;
   margin: 0 0 1.25rem 0;
-   color:  #e5e5e0;;
-   text-shadow:
+  color: #e5e5e0;
+  text-shadow:
     0 0 8px rgba(47, 3, 3, 0.6),
     0 0 15px rgba(244, 243, 238, 0.8);
 }
 
 .action-cta-card p {
-  color:  #e7e7d1;
+  color: #e7e7d1;
   font-size: 1.1rem;
   font-weight: 300;
   margin: 0 0 3rem 0;
-     text-shadow:
+  text-shadow:
     0 0 8px rgba(175, 32, 32, 0.6),
     0 0 15px rgba(243, 241, 234, 0.8);
 }
@@ -431,11 +450,11 @@
 
 .support-contact-footer {
   font-size: 0.9rem;
- color:  #f5f5e2;
+  color: #f5f5e2;
   border-top: 1px solid var(--border-subtle);
   padding-top: 2.5rem;
   letter-spacing: 0.5px;
-     text-shadow:
+  text-shadow:
     0 0 8px rgba(255, 255, 255, 0.6),
     0 0 15px rgba(231, 208, 130, 0.8);
 }
@@ -453,8 +472,6 @@
   opacity: 0.8;
 }
 
-
-
 .footer {
   padding: 4rem 2rem;
   text-align: center;
@@ -468,7 +485,7 @@
   font-size: 0.8rem;
   color: var(--text-muted);
   letter-spacing: 1px;
-     text-shadow:
+  text-shadow:
     0 0 8px rgba(247, 5, 5, 0.9),
     0 0 15px rgba(5, 4, 0, 0.9);
 }

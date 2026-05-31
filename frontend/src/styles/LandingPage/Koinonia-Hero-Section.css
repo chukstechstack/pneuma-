@@ -2,14 +2,18 @@
 .hero-section {
   position: relative;
   z-index: 1;
-  min-height: 100vh;
+
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   text-align: center;
   box-sizing: border-box;
+    background-color :#070000;
+    max-width: 1200px;
+  margin: 0 auto;
+  padding: 7rem 3rem;
+
 }
 
 .hero-content {
