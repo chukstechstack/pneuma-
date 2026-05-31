@@ -1,0 +1,83 @@
+/* White form card layout box */
+.register-container {
+  position: relative;
+  z-index: 1;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 480px;
+  padding: 3.5rem 3rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.register-brand-link {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  color: rgba(248, 196, 23, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+  text-shadow:
+    0 0 8px rgba(129, 9, 9, 0.3),
+    0 0 15px rgba(246, 189, 1, 0.9);
+}
+
+.register-logo-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.7);
+  filter: blur(6px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.nav-logo-img-register {
+  width: 30px;
+  height: 30px;
+  position: relative;
+  z-index: 2;
+  filter: none !important;
+}
+
+.register-title {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 1px;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(22, 17, 1, 0.9);
+}
+
+.register-divider {
+  width: 30px;
+  height: 1px;
+  background-color: var(--accent-gold);
+  margin: 0 auto 1.25rem auto;
+  opacity: 0.5;
+}
+
+.register-subtitle {
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}

@@ -56,34 +56,39 @@ const Register = () => {
 
   return (
     <main className="register-layout">
+      {/*=======Register_Layout==============================================*/}
       {/* Full screen loader target component */}
       {isLoading && <FullPageLoader />}
 
-      {/* Ambient background accent glow */}
+      {/*-----Background_Register_Glow----*/}
       <div className="register-ambient-glow"></div>
-
+      {/*==================Register_Section=====================*/}
       <section className="register-container">
-        {/* Architectural Header Accent */}
+        {/*================R_Header================================================*/}
         <header className="register-header">
           <Link to="/" className="register-brand-link">
             <span>
-              
-              <img
-                src={doveLogoUrl}
-                className="nav-logo-img"
-                alt="Pneuma Logo"
-              />
+              {/*----Register_img------*/}
+              <span className="register-logo-wrapper">
+                <img
+                  src={doveLogoUrl}
+                  className="nav-logo-img-register"
+                  alt="Pneuma Logo"
+                />
+              </span>
             </span>
             Pneuma
           </Link>
+          {/*---Register_Title---------*/}
           <h1 className="register-title">Begin Your Journey</h1>
           <div className="register-divider"></div>
+          {/*----------Register_subtitle-----*/}
           <p className="register-subtitle">
             Create your personal sanctuary workspace archive.
           </p>
         </header>
 
-        {/* Form Grid Injection */}
+        {/*========Register_Input_Field==========*/}
         <RegisterInput
           handleChange={handleChange}
           username={username}

@@ -46,9 +46,10 @@ const Login = () => {
 
   return (
     <main className="register-layout">
+      {/* Full screen loader target component */}
       {isLoading && <FullPageLoader />}
 
-      {/* Decorative background aura blur */}
+      {/* Ambient background accent glow */}
       <div className="register-ambient-glow"></div>
 
       <section className="register-container">
@@ -56,11 +57,14 @@ const Login = () => {
         <header className="register-header">
           <Link to="/" className="register-brand-link">
             <span>
-              <img
-                src={doveLogoUrl}
-                className="nav-logo-img"
-                alt="Pneuma Logo"
-              />
+              {/* 🌟 FIXED: Added the unblurred LED lightbulb wrapper here! */}
+              <span className="register-logo-wrapper">
+                <img
+                  src={doveLogoUrl}
+                  className="nav-logo-img-register"
+                  alt="Pneuma Logo"
+                />
+              </span>
             </span>
             Pneuma
           </Link>

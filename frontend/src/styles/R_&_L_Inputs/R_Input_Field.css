@@ -1,0 +1,157 @@
+/*----Form-Input-Container--------------------------------*/
+.form-input-container {
+  width: 100%;
+}
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+/*-----Form-Inputs-------------------------- */
+.name-fields-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.name-fields-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-wrapper input {
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(12, 13, 18, 0.5) !important;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 4px !important;
+  padding: 0.95rem 1.25rem !important;
+  color: white;
+  font-family: var(--font-sans) !important;
+  font-size: 0.95rem !important;
+  transition: all 0.3s ease !important;
+  border-color: #2f2f31 !important;
+}
+.form-wrapper input:hover,
+.register-form-wrapper input:hover {
+  color: #fefed8 !important;
+  opacity: 1 !important;
+  border-color: #d4af37 !important;
+}
+.form-wrapper input:focus,
+.register-form-wrapper input:focus {
+  color: #fbfbf5 !important;
+  opacity: 1 !important;
+  border-color: #d4af37 !important;
+}
+
+
+/*-----Continue_Button-----------------------------------*/
+
+.register-submit-btn {
+  width: 100%;
+  font-family: var(--font-sans) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  padding: 1.1rem 2rem !important;
+  border-radius: 4px !important;
+  background-color: var(--text-main) !important;
+  color: #656c84 !important;
+  border: 1px solid rgb(118, 118, 118) !important;
+  cursor: pointer !important;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease !important;
+  text-shadow:
+    0 0 8px rgba(246, 237, 237, 0.1),
+    0 0 15px rgba(248, 247, 242, 0.4);
+}
+
+.register-submit-btn:hover {
+  background-color: transparent !important;
+  border-color: var(--accent-gold) !important;
+  transform: translateY(-2px) !important;
+  color: var(--accent-gold) !important;
+}
+
+
+/*---Button_Divider-------------*/
+.auth-divider-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem 0;
+  gap: 1rem;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: #232d01;
+}
+
+.divider-text {
+  font-size: 0.85rem;
+  color: var(--accent-gold);
+  text-shadow:
+    0 0 8px rgba(246, 237, 237, 0.9),
+    0 0 15px rgba(248, 247, 242, 0.9);
+}
+
+
+/*----Goggle_Authentication_Button------*/
+.google-oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgb(2, 2, 155);
+  border-radius: 4px;
+  padding: 1rem 2rem;
+  color: #ffffff !important;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.google-oauth-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-gold);
+}
+
+.google-svg-icon {
+  color: var(--accent-gold);
+  transition: color 0.3s ease;
+}
+
+.google-oauth-btn:hover .google-svg-icon {
+  color: white;
+}
+
+.register-footer {
+  margin-top: 2.5rem;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.register-login-link {
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+.register-login-link:hover {
+  text-decoration: underline;
+}
+

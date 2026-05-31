@@ -23,14 +23,10 @@ body {
   background-color: #0c0d12 !important; /* Locks background to deep midnight dark */
 }
 
-/* Also strip it from the root view container inside the body */
-body *, body::before, body::after {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
 /* Force the navbar and main layouts to drop their borders completely */
-.navbar, .register-layout, .register-container {
+.navbar,
+.register-layout,
+.register-container {
   border: none !important;
   border-bottom: none !important;
   box-shadow: none !important;
@@ -74,7 +70,7 @@ body *, body::before, body::after {
 .register-container {
   position: relative;
   z-index: 1;
-  background-color: var(--bg-surface);
+  background-color :#020618;
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   width: 100%;
@@ -92,13 +88,61 @@ body *, body::before, body::after {
 .register-brand-link {
   font-family: var(--font-serif);
   font-size: 0.9rem;
-  color: var(--accent-gold);
+  color: rgba(248, 196, 23, 0.9);
   text-transform: uppercase;
   letter-spacing: 3px;
   text-decoration: none;
   display: inline-block;
   margin-bottom: 1rem;
   opacity: 0.8;
+  text-shadow:
+    0 0 8px rgba(129, 9, 9, 0.3),
+    0 0 15px rgba(246, 189, 1, 0.9);
+}
+
+/* 1. The Light Socket Container Wrapper */
+.register-logo-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
+/* 2. The LED Bulb Layer (Stays locked underneath the bird) */
+.register-logo-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Create a literal round light bulb backdrop */
+  width: 20px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.7);
+
+  /* 🌟 TWEAK THIS: Adjust the blur radius of the backlight glow projection */
+  filter: blur(10px);
+
+  /* Push it cleanly underneath the image z-index */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* 3. The Pristine Bird Image (Stays perfectly sharp and unblurred) */
+.nav-logo-img-register {
+  width: 30px;
+  height: 30px;
+  position: relative;
+
+  /* Pull it on top of the LED backlight layer */
+  z-index: 2;
+
+  /* Completely strip any image-ruining blurs from the asset graphics */
+  filter: none !important;
 }
 
 .register-title {
@@ -108,6 +152,9 @@ body *, body::before, body::after {
   letter-spacing: 1px;
   margin: 0 0 1rem 0;
   color: #ffffff;
+  text-shadow:
+    0 0 8px rgba(255, 255, 255, 0.6),
+    0 0 15px rgba(22, 17, 1, 0.9);
 }
 
 .register-divider {
@@ -134,7 +181,7 @@ body *, body::before, body::after {
 .form-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
 }
 
 .name-fields-row {
@@ -155,17 +202,25 @@ body *, body::before, body::after {
   border: 1px solid var(--border-subtle) !important;
   border-radius: 4px !important;
   padding: 0.95rem 1.25rem !important;
-  color: var(--text-main) !important;
+  color: white;
   font-family: var(--font-sans) !important;
   font-size: 0.95rem !important;
   transition: all 0.3s ease !important;
+  border-color: #2f2f31 !important;
 }
-
+.form-wrapper input:hover,
+.register-form-wrapper input:hover {
+  color: #fefed8 !important;
+  opacity: 1 !important;
+  border-color: #d4af37 !important;
+}
 .form-wrapper input:focus,
 .register-form-wrapper input:focus {
-  color: #ffffff !important; /* Ensures text remains crisp white when clicked */
-  opacity: 1 !important; /* Prevents any faded or semi-transparent behavior */
+  color: #fbfbf5 !important;
+  opacity: 1 !important;
+  border-color: #d4af37 !important;
 }
+
 /* Continue Primary Submit Button */
 .register-submit-btn {
   width: 100%;
@@ -178,16 +233,20 @@ body *, body::before, body::after {
   border-radius: 4px !important;
   background-color: var(--text-main) !important;
   color: #656c84 !important;
-  border: 1px solid var(--text-main) !important;
+  border: 1px solid rgb(118, 118, 118) !important;
   cursor: pointer !important;
   margin-top: 0.5rem;
   transition: all 0.3s ease !important;
+  text-shadow:
+    0 0 8px rgba(246, 237, 237, 0.1),
+    0 0 15px rgba(248, 247, 242, 0.4);
 }
 
 .register-submit-btn:hover {
   background-color: transparent !important;
   border-color: var(--accent-gold) !important;
   transform: translateY(-2px) !important;
+  color: var(--accent-gold) !important;
 }
 
 /* Horizontal text separator splits */
@@ -202,12 +261,15 @@ body *, body::before, body::after {
 .divider-line {
   flex: 1;
   height: 1px;
-  background-color: var(--border-subtle);
+  background-color: #232d01;
 }
 
 .divider-text {
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--accent-gold);
+  text-shadow:
+    0 0 8px rgba(246, 237, 237, 0.9),
+    0 0 15px rgba(248, 247, 242, 0.9);
 }
 
 /* Premium Google Anchor integration layout */
@@ -219,7 +281,7 @@ body *, body::before, body::after {
   width: 100%;
   box-sizing: border-box;
   background-color: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgb(2, 2, 155);
   border-radius: 4px;
   padding: 1rem 2rem;
   color: #ffffff !important;
@@ -232,16 +294,16 @@ body *, body::before, body::after {
 
 .google-oauth-btn:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  border-color: var(--text-muted);
+  border-color: var(--accent-gold);
 }
 
 .google-svg-icon {
-  color: var(--text-muted);
+  color: var(--accent-gold);
   transition: color 0.3s ease;
 }
 
 .google-oauth-btn:hover .google-svg-icon {
-  color: var(--accent-gold);
+  color: white;
 }
 
 .register-footer {
@@ -264,87 +326,121 @@ body *, body::before, body::after {
   text-decoration: underline;
 }
 
-/* Responsive constraints screen micro configurations */
+/* ==========================================
+   MOBILE QUERY CONFIGURATIONS
+   ========================================== */
+
+/* 1. Medium to Small Phones (480px down to 421px) */
 @media (max-width: 480px) {
   .register-layout {
-    padding: 1rem 0.5rem;
+    padding: 0.5rem;
   }
   .register-container {
-    padding: 2.5rem 1.5rem;
+    padding: 2rem 1.5rem; /* Cut down card padding */
+    margin-top: -1rem; /* Pulls container up slightly */
   }
   .register-title {
     font-size: 1.65rem;
   }
   .name-fields-row {
-    flex-direction: column;
-    gap: 1.25rem;
+    flex-direction: row !important;
+    gap: 0.75rem;
   }
 }
 
+/* 2. Micro Screens & Extra Small Phones (420px and below) - COMPACT FIXED 100% SCREEN */
+@media (max-width: 420px) {
+  .register-layout {
+    padding: 0.25rem;
+    align-items: center; /* Keeps card vertically locked in center */
+  }
+
+  .register-container {
+    padding: 1.25rem 1.1rem !important; /* Drastically shaved interior margins */
+    margin-top: -1.5rem !important; /* Aggressively pushes form up against the top */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  /* Shrink the top header section elements to save rows of space */
+  .register-header {
+    margin-bottom: 0.85rem !important;
+  }
+
+  .register-brand-link {
+    font-size: 0.75rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .nav-logo-img-register {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .register-title {
+    font-size: 1.35rem !important; /* Scaled down from 2rem */
+    margin: 0 0 0.25rem 0 !important;
+  }
+
+  .register-divider {
+    margin: 0 auto 0.5rem auto !important;
+  }
+
+  .register-subtitle {
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Stack and tightly compress input clusters */
+  .form-wrapper {
+    gap: 0.65rem !important; /* Brought rows closer together */
+  }
+
+  .name-fields-row {
+    flex-direction: column !important;
+    gap: 0.65rem !important; /* Snug spacing when stacked */
+  }
+
+  /* Shave field paddings down so text boxes are physically shorter */
+  .form-wrapper input {
+    padding: 0.65rem 0.95rem !important; /* Shrunk height to fit screen bounds */
+    font-size: 0.85rem !important;
+  }
+
+  /* Compress buttons and divider blocks */
+  .register-submit-btn {
+    padding: 0.75rem 1.5rem !important; /* Low profile button */
+    font-size: 0.8rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  .auth-divider-block {
+    margin: 0.25rem 0 !important;
+  }
+
+  .google-oauth-btn {
+    padding: 0.7rem 1.5rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* Compress footer anchor elements */
+  .register-footer {
+    margin-top: 1rem !important;
+    padding-top: 0.65rem !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+/* 3. Ultra-Legacy Micro Viewports (320px and below) */
 @media (max-width: 320px) {
   .register-container {
-    padding: 2rem 1rem;
+    padding: 1rem 0.85rem !important;
   }
   .register-title {
-    font-size: 1.45rem;
+    font-size: 1.2rem !important;
   }
   .register-footer {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-  }
-}
-
-/* ==========================================
-   9. DESKTOP & PC LAYOUT COMPACTION (>= 1024px)
-   ========================================== */
-@media (min-width: 1024px) {
-  /* Smash the vertical height of the main hero section */
-  .hero-section {
-    min-height: auto !important; 
-    height: auto !important;
-    padding: 6.5rem 2rem 2rem 2rem !important; /* Tiny top and bottom padding */
-  }
-
-  /* Smash the vertical padding BETWEEN all subsections */
-  .pneuma-sub-section {
-    padding: 2rem 8% 6rem 8% !important; /* Cut top/bottom spacing down to a thin sliver */
-    height: auto !important;
-    min-height: auto !important;
-  }
-
-  /* Pull headings closer to their content card boxes */
-  .section-main-heading {
-    font-size: 2rem !important;
-    margin-bottom: 1.5rem !important; /* Cut heading gap in half */
-  }
-
-  /* Compact the spacing within the feature grid */
-  .features-grid-system {
-    gap: 1.25rem !important; 
-  }
-
-  .feature-item-card {
-    padding: 1.75rem 1.5rem !important; /* Thin out inner card vertical spacing */
-  }
-
-  /* Tighten up the Our Mission segment */
-  .mission-inner-container {
-    padding: 0.5rem 0 !important; 
-    margin-top: -1rem !important; /* Pulls section content upward */
-  }
-
-  /* Tighten up the final CTA sign-up box vertical footprint */
-  .action-cta-card {
-    padding: 2.5rem 3rem !important; /* Narrow vertical box padding */
-    margin-top: -1rem !important;
-  }
-
-  .action-cta-card p {
-    margin-bottom: 1.5rem !important; /* Closes gap before button */
-  }
-
-  .cta-action-btn {
-    margin-bottom: 1rem !important; /* Pulls footer up tightly */
+    gap: 0.25rem !important;
   }
 }

@@ -1,7 +1,5 @@
 import React from "react";
-// Change this line from Register.css to inputs.css
-import "../styles/Inputs.css"; 
-
+import "../styles/Inputs.css";
 
 const RegisterInput = ({
   handleChange,
@@ -13,8 +11,10 @@ const RegisterInput = ({
 }) => {
   return (
     <div className="form-input-container">
+      {/*===R_Input_Field====================================*/}
+      {/*----Form-Input-Container-------*/}
       <form onSubmit={handleSubmit} className="form-wrapper">
-        {/* Horizontal row for First & Last Name */}
+        {/*-----Form-Inputs--------- */}
         <div className="name-fields-row">
           <input
             type="text"
@@ -34,39 +34,44 @@ const RegisterInput = ({
           />
         </div>
 
-        {/* Core Form Inputs */}
-        <input
-          type="email"
-          name="email"
-          value={email}
-          onChange={handleChange}
-          placeholder="Email address"
-          required
-        />
+        <div className="name-fields-row">
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={handleChange}
+            placeholder="Email address"
+            required
+          />
 
-        <input
-          type="password"
-          name="password"
-          value={password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-        />
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+          />
+        </div>
 
-        {/* Submit Action Button */}
+        {/*-----Continue_Button----------*/}
         <button className="register-submit-btn" type="submit">
           Continue
         </button>
 
-        {/* Stylized 'or' Separator line */}
+        {/*---Button_Divider-------------*/}
         <div className="auth-divider-block">
           <span className="divider-line"></span>
           <span className="divider-text">or</span>
           <span className="divider-line"></span>
         </div>
 
-        {/* Google Authentication Button */}
-        <a href="https://pneuma-api-0bvr.onrender.com/auth/google" className="google-oauth-btn">
+        {/*----Goggle_Authentication_Button------*/}
+        <a
+          href="https://pneuma-api-0bvr.onrender.com/auth/google"
+          className="google-oauth-btn"
+        >
+          {/*----Google_Icon----------- */}
           <svg
             className="google-svg-icon"
             viewBox="0 0 24 24"
