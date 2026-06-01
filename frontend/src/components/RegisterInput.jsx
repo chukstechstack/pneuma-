@@ -43,7 +43,19 @@ const RegisterInput = ({
             placeholder="Email address"
             required
           />
+        </div>
 
+        <div className="name-fields-row">
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={handleChange}
+            placeholder="Password"
+            required
+          />
+        </div>
+        <div className="name-fields-row">
           <input
             type="password"
             name="password"

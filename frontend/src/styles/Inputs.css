@@ -21,6 +21,8 @@ body {
   outline: none !important;
   box-shadow: none !important;
   background-color: #0c0d12 !important; /* Locks background to deep midnight dark */
+  height: 100vh;
+
 }
 
 /* Force the navbar and main layouts to drop their borders completely */
@@ -39,12 +41,12 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: var(--font-sans);
-  min-height: 100vh;
+   height: 100vh; 
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden; 
   box-sizing: border-box;
 }
 
@@ -70,7 +72,7 @@ body {
 .register-container {
   position: relative;
   z-index: 1;
-  background-color :#020618;
+   background-color:   rgba(4, 4, 5, 0.75);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   width: 100%;
@@ -93,7 +95,7 @@ body {
   letter-spacing: 3px;
   text-decoration: none;
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
   opacity: 0.8;
   text-shadow:
     0 0 8px rgba(129, 9, 9, 0.3),
@@ -150,7 +152,7 @@ body {
   font-size: 2rem;
   font-weight: 400;
   letter-spacing: 1px;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.4rem 0;
   color: #ffffff;
   text-shadow:
     0 0 8px rgba(255, 255, 255, 0.6),
@@ -201,12 +203,12 @@ body {
   background-color: rgba(12, 13, 18, 0.5) !important;
   border: 1px solid var(--border-subtle) !important;
   border-radius: 4px !important;
-  padding: 0.95rem 1.25rem !important;
+  padding: 0.6rem 1.25rem !important;
   color: white;
   font-family: var(--font-sans) !important;
   font-size: 0.95rem !important;
   transition: all 0.3s ease !important;
-  border-color: #2f2f31 !important;
+  border-color: #6a6a6d !important;
 }
 .form-wrapper input:hover,
 .register-form-wrapper input:hover {
@@ -351,11 +353,60 @@ body {
 }
 
 /* 🌟 The absolute lowest safety net for extra tiny displays */
-@media (max-width: 290px) {
-  .name-fields-row {
-    gap: 0.5rem !important;
+/* 🌟 Scale everything down to fit perfectly on a 290px screen */
+@media (max-width: 320px) {
+  /* Shrink the main wrapper padding */
+  .register-layout {
+    padding: 0.5rem !important;
   }
-  .form-wrapper input {
-    padding: 0.75rem 1rem !important; /* Slightly snugger inputs just for 290px */
+
+  /* Compact the card spacing and internal padding */
+  .register-container {
+    padding: 1.5rem 1.25rem !important;
+    max-width: 100% !important;
+  }
+
+  /* Drop heading sizes and margins */
+  .register-header {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .register-title {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .register-brand-link {
+    font-size: 0.75rem !important;
+    letter-spacing: 1.5px !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .register-subtitle {
+    font-size: 0.8rem !important;
+    line-height: 1 !important;
+  }
+
+  /* Snug inputs and stack side-by-side elements vertically */
+  .name-fields-row {
+    flex-direction: column !important; /* Stacks first/last name to save width */
+    gap: -0rem !important;
+  }
+
+  .form-wrapper input, 
+  input {
+    padding: 0.6rem 0.8rem !important; /* Shaves off height and width */
+    font-size: 0.85rem !important;      /* Smaller text inside input */
+  }
+  
+  /* Shrink decorative elements */
+  .register-logo-wrapper {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  
+  .nav-logo-img-register {
+    width: 24px !important;
+    height: 24px !important;
   }
 }
