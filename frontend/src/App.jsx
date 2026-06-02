@@ -6,8 +6,8 @@ import Register from "./pages/Register.jsx";
 import HomePage from "./pages/Home.jsx";
 import CreateTask from "./pages/CreateTask.jsx";
 import EditPost from "./pages/EditTask.jsx";
-import { TaskProvider } from "./context/TaskContext.jsx"; 
-import ProfilePageLog from "./pages/Profile.jsx"; 
+import { TaskProvider } from "./context/TaskContext.jsx";
+import ProfilePageLog from "./pages/Profile.jsx";
 import JournalPage from "./pages/JournalFeed.jsx";
 const App = () => {
   return (
@@ -20,7 +20,7 @@ const App = () => {
           <Route path="/home" element={<HomePage />} />
           <Route path="/createtask" element={<CreateTask />} />
           <Route path="/edittask/:uuid" element={<EditPost />} />
-          <Route path="/profile" element={<ProfilePageLog />} />{" "}
+          <Route path="/profile" element={<ProfilePageLog />} /> // Change this
           <Route path="/journalfeed/:journalUuid" element={<JournalPage />} />
         </Routes>
       </Router>

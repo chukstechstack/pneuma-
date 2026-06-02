@@ -24,6 +24,7 @@ const PostgresStore = pgSession(session)
 const allowedOrigins = [
   'https://pneuma-frontend-oijl.onrender.com',
   'http://localhost:5173',
+  'http://localhost:5174',
   process.env.FRONTEND_URL
 ];
 

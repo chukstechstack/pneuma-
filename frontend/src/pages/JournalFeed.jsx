@@ -35,7 +35,7 @@ const JournalPage = () => {
   }
 
   // 🛡️ THE ARRAY SHIELD: Prevents crashing if the data is missing or wrong
-  const safeTasks = Array.isArray(journalTasks) ? journalTasks : [];
+  const journalTask = Array.isArray(journalTasks) ? journalTasks : [];
 
   return (
     <div className="home-layout">
@@ -77,7 +77,7 @@ const JournalPage = () => {
           </div>
 
           <div className="timeline-posts-container">
-            {safeTasks.length === 0 ? (
+            {journalTask.length === 0 ? (
               <div
                 className="empty-journal-message"
                 style={{
@@ -90,7 +90,7 @@ const JournalPage = () => {
                 yet.
               </div>
             ) : (
-              safeTasks.map((task) => (
+              journalTask.map((task) => (
                 <Task
                   key={task.uuid || task.id}
                   task={task}

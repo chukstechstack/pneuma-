@@ -2,9 +2,11 @@ import redisClient from "../../config/redisCreateClient.js";
 import { fetchGlobalTasksFeed } from "../../services/task/getTaskService.js";
 
 export const getTask = async (req, res, next) => {
-  // 1. Look for BOTH the uuid and the numeric id
+
+  // Grab the Uuid from deserialized User from passprt to query my Database for the id of the profile user
   const user_uuid = req.user?.uuid;
-  const user_numeric_id = req.user?.id; 
+// Grab the Uuid from deserialized User id to send to the frontend
+  const user_numeric_id = req.user?.id;
 
   // 2. Use the UUID string for your Redis cache key so new users don't get mixed up as 'guest'
   const cacheKey = `tasks_feed:${user_uuid || 'guest'}`;
@@ -23,8 +25,8 @@ export const getTask = async (req, res, next) => {
     const tasksFeed = await fetchGlobalTasksFeed(user_uuid);
 
     // 5. Send back currentUserId as the numeric ID so your frontend context doesn't break!
-    const responseData = { 
-      tasks: tasksFeed, 
+    const responseData = {
+      tasks: tasksFeed,
       currentUserId: user_numeric_id,
       currentUserUuid: user_uuid
     };

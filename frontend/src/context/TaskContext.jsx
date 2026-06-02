@@ -21,7 +21,9 @@ export const TaskProvider = ({ children }) => {
       console.log("Backend keys:", Object.keys(res.data));
       console.log("Backend values:", res.data);
       setTasks(res.data.tasks);
+      //
       setCurrentUserId(res.data.currentUserId);
+      //1. So we can use it query our journal task to know which user triggered the journal
       setCurrentUserUuid(res.data.currentUserUuid);
     } catch (err) {
       if (err.response?.status === 401) {
@@ -66,6 +68,7 @@ export const TaskProvider = ({ children }) => {
 
   const addTaskToState = (newTask) => {
     setTasks((prevTasks) => [newTask, ...prevTasks]);
+    setJournalTasks((prevJournalTasks) => [newTask, ...prevJournalTasks]);
   };
 
   const restoreTaskToState = (restoredTask, originalIndex) => {

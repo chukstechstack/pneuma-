@@ -19,7 +19,7 @@ const CreateTask = () => {
     tags: "",
   });
 
-  const { addTaskToState } = useContext(TaskContext);
+  const { addTaskToState} = useContext(TaskContext);
   const navigate = useNavigate();
 
   const { content, img } = formData;
@@ -53,6 +53,7 @@ const CreateTask = () => {
         user_id: "",
       });
       addTaskToState(res.data.newTask);
+    
       navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || err.message;
