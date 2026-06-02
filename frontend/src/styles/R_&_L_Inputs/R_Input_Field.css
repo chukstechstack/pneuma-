@@ -1,4 +1,3 @@
-/*----Form-Input-Container--------------------------------*/
 .form-input-container {
   width: 100%;
 }
@@ -6,9 +5,9 @@
 .form-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.2rem;
 }
-/*-----Form-Inputs-------------------------- */
+
 .name-fields-row {
   display: flex;
   gap: 1rem;
@@ -20,34 +19,128 @@
   min-width: 0;
 }
 
+.input-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative; 
+  padding-bottom: 22px; 
+  box-sizing: border-box;
+}
+
+.standard-width {
+  width: 100%;
+}
+
 .form-wrapper input {
   width: 100%;
   box-sizing: border-box;
   background-color: rgba(12, 13, 18, 0.5) !important;
   border: 1px solid var(--border-subtle) !important;
   border-radius: 4px !important;
-  padding: 0.95rem 1.25rem !important;
+  padding: 0.65rem 1.25rem !important;
   color: white;
   font-family: var(--font-sans) !important;
   font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
-  border-color: #2f2f31 !important;
+  transition: all 0.2s ease !important;
+  border-color: #6a6a6d !important;
 }
-.form-wrapper input:hover,
-.register-form-wrapper input:hover {
+
+.form-wrapper input:hover {
   color: #fefed8 !important;
   opacity: 1 !important;
   border-color: #d4af37 !important;
 }
-.form-wrapper input:focus,
-.register-form-wrapper input:focus {
+
+.form-wrapper input:focus {
   color: #fbfbf5 !important;
   opacity: 1 !important;
   border-color: #d4af37 !important;
+  outline: none;
 }
 
+/* Password wrapper and dynamic tools context */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
 
-/*-----Continue_Button-----------------------------------*/
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+/* FIXED MICRO STRENGTH BAR DESIGN */
+.strength-bar-track {
+  background-color: rgba(255, 255, 255, 0.08);
+  height: 2px;
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 1px;
+  left: 1px;
+  width: calc(100% - 2px);
+  z-index: 3;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  display: block;
+}
+
+/* FIXED STATIC ZERO-JUMP PLACEMENT ERROR TEXT */
+.error-text {
+  color: #ea4335;
+  font-size: 0.72rem;
+  font-weight: 500;
+  margin: 0;
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  text-align: left;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  animation: errorFadeIn 0.2s ease-out;
+}
+
+@keyframes errorFadeIn {
+  from { opacity: 0; transform: translateY(-2px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.input-error-border {
+  border-color: #ea4335 !important;
+}
+
+/* Submit Actions elements styling overrides */
+.submit-actions-block {
+  width: 100%;
+  margin-top: 0.5rem;
+}
 
 .register-submit-btn {
   width: 100%;
@@ -62,7 +155,6 @@
   color: #656c84 !important;
   border: 1px solid rgb(118, 118, 118) !important;
   cursor: pointer !important;
-  margin-top: 0.5rem;
   transition: all 0.3s ease !important;
   text-shadow:
     0 0 8px rgba(246, 237, 237, 0.1),
@@ -76,13 +168,11 @@
   color: var(--accent-gold) !important;
 }
 
-
-/*---Button_Divider-------------*/
 .auth-divider-block {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
   gap: 1rem;
 }
 
@@ -100,8 +190,6 @@
     0 0 15px rgba(248, 247, 242, 0.9);
 }
 
-
-/*----Goggle_Authentication_Button------*/
 .google-oauth-btn {
   display: flex;
   align-items: center;
@@ -135,23 +223,32 @@
   color: white;
 }
 
-.register-footer {
-  margin-top: 2.5rem;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 1.5rem;
-  text-align: center;
-  font-size: 0.9rem;
-  color: var(--text-muted);
+/* ==========================================
+   INPUTS MEDIA QUERY OVERRIDES
+   ========================================== */
+@media (max-width: 480px) {
+  .name-fields-row {
+    display: flex !important;
+    flex-direction: row !important; 
+    gap: 1rem; 
+  }
 }
 
-.register-login-link {
-  color: var(--accent-gold);
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 6px;
+@media (max-width: 340px) {
+  .form-wrapper {
+    gap: 0.15rem !important;
+  }
+  .name-fields-row {
+    flex-direction: column !important;
+    gap: 0rem !important;
+  }
+  .form-wrapper input {
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.85rem !important;
+  }
+  .register-submit-btn,
+  .google-oauth-btn {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
 }
-
-.register-login-link:hover {
-  text-decoration: underline;
-}
-

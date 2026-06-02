@@ -1,37 +1,56 @@
-import React from "react";
-// Change this line from Register.css to inputs.css
-import "../styles/Inputs.css";
-// Points cleanly to our fixed master style sheet
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react"; 
 
-const LoginInput = ({ handleChange, password, email, handleSubmit }) => {
+// 🌟 REMOVED: Custom CSS line handles entirely via parent imports mapping cascading metrics
+
+const LoginInput = ({ handleChange, password, email, handleSubmit, errors = {} }) => {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="form-input-container">
       <form onSubmit={handleSubmit} className="form-wrapper">
-        {/* Email Input Field */}
-        <input
-          type="email"
-          name="email"
-          value={email}
-          onChange={handleChange}
-          placeholder="Email address"
-          required
-        />
+        
+        {/* Email Input Field Group */}
+        <div className="input-group standard-width">
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={handleChange}
+            placeholder="Email address"
+            className={errors.email ? "input-error-border" : ""}
+          />
+          {errors.email && <p className="error-text">{errors.email}</p>}
+        </div>
 
-        {/* Password Input Field */}
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={handleChange}
-          placeholder="Password"
-          required
-        />
+        {/* Password Input Field Group with Custom Toggle Button */}
+        <div className="input-group standard-width">
+          <div className="password-wrapper">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={password}
+              onChange={handleChange}
+              placeholder="Password"
+              className={errors.password ? "input-error-border" : ""}
+            />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+            </button>
+          </div>
+          {errors.password && <p className="error-text">{errors.password}</p>}
+        </div>
 
-        {/* Primary Continue Submission Button */}
-        <button className="register-submit-btn" type="submit">
-          Continue
-        </button>
+        {/* Primary Continue Submission Button Wrapper */}
+        <div className="submit-actions-block">
+          <button className="register-submit-btn" type="submit">
+            Continue
+          </button>
+        </div>
 
         {/* Stylized Minimal Line Break Separator */}
         <div className="auth-divider-block">
@@ -65,7 +84,7 @@ const LoginInput = ({ handleChange, password, email, handleSubmit }) => {
             />
             <path
               fill="currentColor"
-              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
             />
           </svg>
           <span>Sign in with Google</span>

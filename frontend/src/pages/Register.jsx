@@ -4,51 +4,82 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import doveLogoUrl from "../assets/pneuma.png";
-import "../styles/Inputs.css";
-
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 import TaskContext from "../context/TaskContext.jsx";
+import ServerError from "../components/ServerError.jsx";
+// 🌟 Link your custom filename using standard brackets destructuring
+import { registerSchema } from "../components/zodShemaValidation.js";
+import "../styles/R_&_L_Inputs/R_Layout.css";
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { getTasks } = useContext(TaskContext);
+  const [errors, setErrors] = useState({});
   const [register, setRegister] = useState({
-    username: "",
     password: "",
+    confirmPassword: "",
     first_name: "",
     last_name: "",
-    country: "",
     email: "",
   });
 
-  const { username, password, first_name, last_name, country, email } =
-    register;
+  const { password, confirmPassword, first_name, last_name, email } = register;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRegister((prev) => ({ ...prev, [name]: value }));
-  };
 
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
+    // 1. 🌟 Reset any old error messages from the screen
+
+    // 2. 🌟 HAND THE USER'S INPUT DATA TO ZOD FOR A SAFETY INSPECTION
+    const validationResult = registerSchema.safeParse({
+      first_name,
+      last_name,
+      email,
+      password,
+      confirmPassword,
+    });
+
+    if (!validationResult.success) {
+      const formattedErrors = {};
+      validationResult.error.issues.forEach((issue) => {
+        formattedErrors[issue.path] = issue.message;
+      });
+      setErrors(formattedErrors);
+      return; // 🔥 STOP SUBMISSION IMMEDIATELY (Prevents Axios request)
+    }
+
+    // 4. 🌟 IF THE DATA IS SAFE, EXCLUDE CONFIRMPASSWORD AND POST TO API
     try {
       setIsLoading(true);
-      await api.post("/auth/register", register);
+
+      // Filter out confirmPassword so your backend never sees it
+      const { confirmPassword: _confirmPassword, ...apiPayload } = register;
+
+      await api.post("/auth/register", apiPayload);
       await getTasks();
+
+      // Clear everything back to empty fields upon a successful account creation
       setRegister({
-        username: "",
         password: "",
+        confirmPassword: "",
         first_name: "",
         last_name: "",
-        country: "",
         email: "",
       });
       navigate("/home");
     } catch (err) {
       const message = err?.response?.data?.error || err.message;
-      alert(`Failed to delete: ${message}`);
+      alert(`Registration failed: ${message}`);
     } finally {
       setIsLoading(false);
     }
@@ -91,13 +122,13 @@ const Register = () => {
         {/*========Register_Input_Field==========*/}
         <RegisterInput
           handleChange={handleChange}
-          username={username}
           password={password}
+          confirmPassword={confirmPassword}
           first_name={first_name}
           last_name={last_name}
-          country={country}
           email={email}
           handleSubmit={handleSubmit}
+          errors={errors}
         />
 
         {/* Lower Navigation Footer Alternative link */}

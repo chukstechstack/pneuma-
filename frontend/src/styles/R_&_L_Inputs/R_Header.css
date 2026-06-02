@@ -1,21 +1,8 @@
-/* White form card layout box */
-.register-container {
-  position: relative;
-  z-index: 1;
-  background-color: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: 8px;
-  width: 100%;
-  max-width: 480px;
-  padding: 3.5rem 3rem;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-  box-sizing: border-box;
-}
-
 .register-header {
   text-align: center;
   margin-bottom: 2.5rem;
 }
+
 .register-brand-link {
   font-family: var(--font-serif);
   font-size: 0.9rem;
@@ -24,11 +11,20 @@
   letter-spacing: 3px;
   text-decoration: none;
   display: inline-block;
-  margin-bottom: 1rem;
+  margin-bottom: 0.4rem;
   opacity: 0.8;
   text-shadow:
     0 0 8px rgba(129, 9, 9, 0.3),
     0 0 15px rgba(246, 189, 1, 0.9);
+}
+
+.register-logo-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
 }
 
 .register-logo-wrapper::before {
@@ -37,11 +33,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 12px;
-  height: 12px;
+  width: 20px;
+  height: 16px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.7);
-  filter: blur(6px);
+  filter: blur(10px);
   z-index: 1;
   pointer-events: none;
 }
@@ -59,7 +55,7 @@
   font-size: 2rem;
   font-weight: 400;
   letter-spacing: 1px;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.4rem 0;
   color: #ffffff;
   text-shadow:
     0 0 8px rgba(255, 255, 255, 0.6),
@@ -80,4 +76,31 @@
   color: var(--text-muted);
   line-height: 1.5;
   margin: 0;
+}
+
+/* ==========================================
+   HEADER MEDIA QUERY OVERRIDES
+   ========================================== */
+@media (max-width: 340px) {
+  .register-header {
+    margin-bottom: 0.75rem !important;
+  }
+  .register-title {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .register-brand-link {
+    font-size: 0.75rem !important;
+    letter-spacing: 1.5px !important;
+    margin-bottom: 0.5rem !important;
+  }
+  .register-subtitle {
+    font-size: 0.8rem !important;
+    line-height: 1 !important;
+  }
+  .register-logo-wrapper,
+  .nav-logo-img-register {
+    width: 24px !important;
+    height: 24px !important;
+  }
 }

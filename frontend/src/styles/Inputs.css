@@ -12,7 +12,7 @@
 }
 
 /* ==========================================
-   USE BODY RESET TO KILL SIDE LINES FORGOOD
+   USE BODY RESET TO KILL SIDE LINES FOR GOOD
    ========================================== */
 body {
   margin: 0 !important;
@@ -22,7 +22,6 @@ body {
   box-shadow: none !important;
   background-color: #0c0d12 !important; /* Locks background to deep midnight dark */
   height: 100vh;
-
 }
 
 /* Force the navbar and main layouts to drop their borders completely */
@@ -41,12 +40,12 @@ body {
   background-color: var(--bg-main);
   color: var(--text-main);
   font-family: var(--font-sans);
-   height: 100vh; 
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow: hidden; 
+  overflow: hidden;
   box-sizing: border-box;
 }
 
@@ -72,7 +71,7 @@ body {
 .register-container {
   position: relative;
   z-index: 1;
-   background-color:   rgba(4, 4, 5, 0.75);
+  background-color: rgba(4, 4, 5, 0.75);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
   width: 100%;
@@ -119,17 +118,11 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
-  /* Create a literal round light bulb backdrop */
   width: 20px;
   height: 16px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.7);
-
-  /* 🌟 TWEAK THIS: Adjust the blur radius of the backlight glow projection */
   filter: blur(10px);
-
-  /* Push it cleanly underneath the image z-index */
   z-index: 1;
   pointer-events: none;
 }
@@ -139,11 +132,7 @@ body {
   width: 30px;
   height: 30px;
   position: relative;
-
-  /* Pull it on top of the LED backlight layer */
   z-index: 2;
-
-  /* Completely strip any image-ruining blurs from the asset graphics */
   filter: none !important;
 }
 
@@ -175,6 +164,111 @@ body {
   margin: 0;
 }
 
+/* ==========================================================================
+   💥 FIXED: ANTI-LAYOUT SHIFT INPUT GROUP SYSTEM
+   ========================================================================== */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative; /* Anchor context for absolute icons AND absolute error messages */
+  padding-bottom: 22px; /* Dedicated empty safe harbor space for the errors */
+  box-sizing: border-box;
+}
+
+.standard-width {
+  width: 100%;
+}
+
+/* Password wrapper constraints */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Password eye button styling alignment positioning */
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%); /* Centers nicely regardless of layout changes */
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+}
+
+/* 💥 FIXED: MICRO STRENGTH METER (Super thin and bound directly onto input) */
+.strength-bar-track {
+  background-color: rgba(255, 255, 255, 0.08);
+  height: 2px; /* Ultra thin, clean and modern line */
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 1px; /* Glues onto the inside edge bottom of input wrapper */
+  left: 1px;
+  width: calc(100% - 2px); /* Offsets borders perfectly */
+  z-index: 3;
+}
+
+/* The actual filling visual meter graphic block overlay */
+.strength-bar-fill {
+  height: 100%;
+  transition:
+    width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+/* 💥 FIXED: STRENGTH LABEL POSITIONING */
+.strength-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: absolute;
+  bottom: 4px; /* Sits completely safe within the padding zone */
+  left: 4px;
+  display: block;
+}
+
+/* 💥 FIXED: ABSOLUTE ERROR MESSAGES (Completely removes jumping/pushing) */
+.error-text {
+  color: #ea4335;
+  font-size: 0.72rem;
+  font-weight: 500;
+  margin: 0;
+  position: absolute;
+  bottom: 4px; /* Matches layout alignment grid coordinates */
+  left: 4px;
+  text-align: left;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  animation: errorFadeIn 0.2s ease-out;
+}
+
+@keyframes errorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Red feedback highlight variant rule */
+.input-error-border {
+  border-color: #ea4335 !important;
+}
+
 /* Form input elements styling overrides */
 .form-input-container {
   width: 100%;
@@ -183,7 +277,7 @@ body {
 .form-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.2rem; /* Decreased to adapt to the padding footprint of groups */
 }
 
 .name-fields-row {
@@ -203,27 +297,34 @@ body {
   background-color: rgba(12, 13, 18, 0.5) !important;
   border: 1px solid var(--border-subtle) !important;
   border-radius: 4px !important;
-  padding: 0.6rem 1.25rem !important;
+  padding: 0.65rem 1.25rem !important;
   color: white;
   font-family: var(--font-sans) !important;
   font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
+  transition: all 0.2s ease !important;
   border-color: #6a6a6d !important;
 }
-.form-wrapper input:hover,
-.register-form-wrapper input:hover {
+
+.form-wrapper input:hover {
   color: #fefed8 !important;
   opacity: 1 !important;
   border-color: #d4af37 !important;
 }
-.form-wrapper input:focus,
-.register-form-wrapper input:focus {
+
+/* 💥 FIXED: ANTI-MOBILE ZOOM OPTIMIZATION */
+.form-wrapper input:focus {
   color: #fbfbf5 !important;
   opacity: 1 !important;
   border-color: #d4af37 !important;
+  outline: none;
 }
 
 /* Continue Primary Submit Button */
+.submit-actions-block {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
 .register-submit-btn {
   width: 100%;
   font-family: var(--font-sans) !important;
@@ -237,7 +338,6 @@ body {
   color: #656c84 !important;
   border: 1px solid rgb(118, 118, 118) !important;
   cursor: pointer !important;
-  margin-top: 0.5rem;
   transition: all 0.3s ease !important;
   text-shadow:
     0 0 8px rgba(246, 237, 237, 0.1),
@@ -256,7 +356,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
   gap: 1rem;
 }
 
@@ -326,87 +426,119 @@ body {
 
 .register-login-link:hover {
   text-decoration: underline;
-}/* ==========================================================================
+}
+
+/* ==========================================================================
    MOBILE QUERY CONFIGURATIONS (CLEAN OVERRIDE BACK TO BASICS)
    ========================================================================== */
-
 @media (max-width: 480px) {
-  /* 🌟 Keep your original floating card style - no height forces */
   .register-layout {
     padding: 1rem 0.5rem;
-    min-height: 100vh; /* Lets it breathe naturally based on content */
+    min-height: 100vh;
   }
 
   .register-container {
     padding: 2.5rem 1.5rem;
     width: 100%;
-    max-width: 440px; /* Keeps it contained nicely */
+    max-width: 440px;
     border-radius: 8px !important;
   }
-
-  /* 🌟 Keep your double inputs horizontal for your phone */
   .name-fields-row {
     display: flex !important;
-    flex-direction: row !important; 
-    gap: 1rem; 
+    flex-direction: row !important;
+    gap: 1rem;
   }
 }
-
-/* 🌟 The absolute lowest safety net for extra tiny displays */
-/* 🌟 Scale everything down to fit perfectly on a 290px screen */
 @media (max-width: 320px) {
-  /* Shrink the main wrapper padding */
   .register-layout {
     padding: 0.5rem !important;
   }
-
-  /* Compact the card spacing and internal padding */
   .register-container {
     padding: 1.5rem 1.25rem !important;
     max-width: 100% !important;
   }
-
-  /* Drop heading sizes and margins */
   .register-header {
     margin-bottom: 1.25rem !important;
   }
-
   .register-title {
     font-size: 1.4rem !important;
     margin-bottom: 0.5rem !important;
   }
-
   .register-brand-link {
     font-size: 0.75rem !important;
     letter-spacing: 1.5px !important;
     margin-bottom: 0.5rem !important;
   }
-
   .register-subtitle {
     font-size: 0.8rem !important;
     line-height: 1 !important;
   }
-
-  /* Snug inputs and stack side-by-side elements vertically */
   .name-fields-row {
-    flex-direction: column !important; /* Stacks first/last name to save width */
-    gap: -0rem !important;
+    flex-direction: column !important;
+    gap: 0rem !important;
   }
-
-  .form-wrapper input, 
+  .form-wrapper input,
   input {
-    padding: 0.6rem 0.8rem !important; /* Shaves off height and width */
-    font-size: 0.85rem !important;      /* Smaller text inside input */
+    padding: 0.6rem 0.8rem !important;
+    font-size: 0.85rem !important;
   }
-  
-  /* Shrink decorative elements */
   .register-logo-wrapper {
     width: 24px !important;
     height: 24px !important;
   }
-  
   .nav-logo-img-register {
     width: 24px !important;
     height: 24px !important;
+  }
+}
+
+
+/* ==========================================================================
+   ULTRA-SMALL DISPLAY FIX (240px - 340px VIEWPORTS)
+   ========================================================================== */
+@media (max-width: 340px) {
+  /* 1. Allow the viewport wrapper to scroll if the device is extremely short */
+  .register-layout {
+    height: auto !important;
+    min-height: 100vh !important;
+    padding: 0.75rem 0.5rem !important;
+    overflow-y: auto !important;
+  }
+
+  /* 2. Compact the main card padding significantly to save space */
+  .register-container {
+    padding: 1.25rem 1rem !important;
+    margin: auto 0 !important;
+  }
+
+  /* 3. Drop form gap spacing to the absolute minimum */
+  .form-wrapper {
+    gap: 0.15rem !important;
+  }
+
+  /* 4. Downscale primary buttons so they don't eat up the screen height */
+  .register-submit-btn {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .google-oauth-btn {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  /* 5. Tighten up headers and link lines */
+  .register-header {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .register-title {
+    font-size: 1.25rem !important;
+  }
+
+  .register-footer {
+    margin-top: 1.25rem !important;
+    padding-top: 1rem !important;
+    font-size: 0.8rem !important;
   }
 }

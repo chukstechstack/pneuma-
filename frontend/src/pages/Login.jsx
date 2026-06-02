@@ -1,18 +1,25 @@
 import React, { useState, useContext } from "react";
-import LoginInput from "../components/LoginInput.jsx";
 import { useNavigate, Link } from "react-router-dom";
+import LoginInput from "../components/LoginInput.jsx";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
-import "../styles/Inputs.css";
 import FullPageLoader from "../components/Loader.jsx";
-import "../styles/Loader.css";
 import doveLogoUrl from "../assets/pneuma.png";
+
+// 🌟 CENTRALIZED STRUCTURAL STYLES IMPORT
+import "../styles/R_&_L_Inputs/R_Layout.css";
+import "react-toastify/dist/ReactToastify.css";
+import "../styles/Loader.css";
+
+// 🌟 ADDED: ZOD SCHEMA IMPORT (Adjust path if your schema lives elsewhere)
+import { loginSchema } from "../components/zodShemaValidation.js";
 
 const Login = () => {
   const [login, setLogin] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({}); // Holds validation error items
   const [isLoading, setIsLoading] = useState(false);
   const { getTasks } = useContext(TaskContext);
   const navigate = useNavigate();
@@ -22,10 +29,29 @@ const Login = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLogin((prev) => ({ ...prev, [name]: value }));
+
+    // Dynamic error eraser cleans the field frame on text updates
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({}); // Wipe any leftover messages from the screen viewport
+
+    // 🌟 SAFETY INSPECTION VIA ZOD
+    const validationResult = loginSchema.safeParse({ email, password });
+
+    if (!validationResult.success) {
+      const formattedErrors = {};
+      validationResult.error.issues.forEach((issue) => {
+        formattedErrors[issue.path] = issue.message;
+      });
+      setErrors(formattedErrors);
+      return; // STOP SUBMISSION IMMEDIATELY (Prevents raw backend calls)
+    }
+
     try {
       setIsLoading(true);
       const res = await api.post("/auth/login", login);
@@ -38,6 +64,7 @@ const Login = () => {
       console.log(res);
     } catch (err) {
       const message = err?.response?.data?.error || err.message;
+      alert(`Login failed: ${message}`);
       console.log(message);
     } finally {
       setIsLoading(false);
@@ -57,7 +84,6 @@ const Login = () => {
         <header className="register-header">
           <Link to="/" className="register-brand-link">
             <span>
-              {/* 🌟 FIXED: Added the unblurred LED lightbulb wrapper here! */}
               <span className="register-logo-wrapper">
                 <img
                   src={doveLogoUrl}
@@ -81,6 +107,7 @@ const Login = () => {
           email={email}
           password={password}
           handleSubmit={handleSubmit}
+          errors={errors} // Sent error collection to children nodes
         />
 
         {/* Direct Link Alternative Action */}
