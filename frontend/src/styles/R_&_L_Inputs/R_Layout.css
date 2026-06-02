@@ -71,15 +71,15 @@ body {
   border-radius: 8px;
   width: 100%;
   max-width: 480px;
-  padding: 3.5rem 3rem;
+ padding: 1.5rem 2rem; 
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
 }
 
 .register-footer {
-  margin-top: 2.5rem;
+  margin-top: 1rem; 
   border-top: 1px solid var(--border-subtle);
-  padding-top: 1.5rem;
+  padding-top: 1rem;
   text-align: center;
   font-size: 0.9rem;
   color: var(--text-muted);

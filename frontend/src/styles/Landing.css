@@ -1,762 +1,253 @@
 @import url("https://googleapis.com");
 
 :root {
-  --bg-main: #0c0d12;
-  --bg-surface: #13151d;
-  --panel-glass: rgba(19, 21, 29, 0.75);
-  --border-subtle: rgba(255, 255, 255, 0.05);
-  --border-bright: rgba(212, 175, 55, 0.2);
-  --text-main: #f4f4f6;
-  --text-muted: #8e92a2;
-  --accent-gold: #d4af37; /* Soft metallic luxury gold */
-  --accent-warm-white: #e5e5e0;
-  --font-sans: "Inter", sans-serif;
-  --font-serif: "Cinzel", serif;
+  --cosmic-void: #010102;
+  --gold-dust: #d4af37;
+  --gold-dust-dim: rgba(212, 175, 55, 0.4);
+  --crystal-white: #ffffff;
+  --text-space: #9ca3af;
+  --font-cosmic-sans: "Space Grotesk", sans-serif;
+  --font-cosmic-serif: "Cinzel", serif;
 }
 
 /* ==========================================
-   1. GLOBAL SYSTEM RESETS
+   1. VOID CANVAS BASE
    ========================================== */
-.landing-layout {
-  margin: 0;
-  padding: 0;
-  background-color: #0c0d12;
-  color: var(--text-main);
-  font-family: var(--font-sans);
+.cosmic-particle-void {
+  background-color: var(--cosmic-void);
+  color: var(--crystal-white);
+  font-family: var(--font-cosmic-sans);
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
 }
 
-/* Elegant radial vignette across the page backdrop */
-.landing-layout::before {
-  content: "";
+/* ==========================================
+   2. STARDUST SYSTEM ENGINE
+   ========================================== */
+.quantum-dust-field {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at 50% 20%,
-    rgba(212, 175, 55, 0.01) 0%,
-    transparent 50%
-  );
-  z-index: 0;
+  width: 100%;
+  height: 100vh;
   pointer-events: none;
+  z-index: 1;
+}
+
+.dust-speck {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--gold-dust);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--gold-dust);
+  opacity: 0;
+}
+.dust-speck:nth-child(3n) { width: 3px; height: 3px; background: #fff; box-shadow: 0 0 10px #fff; }
+
+/* Coordinates mapping vectors */
+.dust-speck:nth-child(1)  { top: 15vh; left: 8vw; }
+.dust-speck:nth-child(2)  { top: 80vh; left: 85vw; }
+.dust-speck:nth-child(3)  { top: 45vh; left: -5vw; }
+.dust-speck:nth-child(4)  { top: 90vh; left: 45vw; }
+.dust-speck:nth-child(5)  { top: -2vh; left: 70vw; }
+.dust-speck:nth-child(6)  { top: 35vh; left: 105vw; }
+.dust-speck:nth-child(7)  { top: 70vh; left: 12vw; }
+.dust-speck:nth-child(8)  { top: 22vh; left: 80vw; }
+
+.quantum-dust-field.spark-one .dust-speck {
+  animation: firstSparkGather 1.4s cubic-bezier(0.08, 0.8, 0.1, 1) forwards;
+}
+
+@keyframes firstSparkGather {
+  0% { opacity: 0; transform: scale(5) translate3d(0, 0, 800px); }
+  30% { opacity: 1; }
+  100% { opacity: 0.2; top: 45vh; left: 50vw; transform: scale(0.4) translate3d(0, 0, 0); }
 }
 
 /* ==========================================
-   2. REFINED NAVIGATION BAR
+   3. FIXED SKY NAVIGATION
    ========================================== */
-.navbar {
+.navbar-void-cosmic {
   position: fixed;
-  top: 0;
+  top: -100px;
   left: 0;
   right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 8%;
- background-color:   rgba(13, 13, 16, 0.75);
-  backdrop-filter: blur(15px) !important;
-  -webkit-backdrop-filter: blur(15px) !important;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 1.75rem 6%;
+  background: linear-gradient(to bottom, var(--cosmic-void) 40%, transparent);
   z-index: 1000;
+  transition: top 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
+.navbar-void-cosmic.awake { top: 0; }
 
-.nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 0px;
-  cursor: pointer;
-}
+.nav-logo-cosmic { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.logo-cosmic-glow { width: 26px; height: 26px; filter: contrast(1.5) grayscale(1); }
+.logo-text-formed { font-family: var(--font-cosmic-serif); font-size: 1.2rem; letter-spacing: 3px; font-weight: 700; }
+.nav-links-cosmic { display: flex; gap: 2.5rem; }
 
-.nav-logo-img {
-  width: 30px;
-  height: 30px;
-  filter: drop-shadow(0 0 15px rgba(200, 200, 74, 0.9));
-  /* filter: drop-shadow(0 2px 4px rgba(212, 175, 55, 0.15)); */
-}
-
-.nav-logo-text {
-  font-family: var(--font-serif);
-  font-size: 1.4rem;
-  font-weight: 500;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--accent-warm-white);
-  text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.8),
-    0 0 15px rgba(212, 175, 55, 0.1);
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.nav-scroll-btn {
+.cosmic-nav-btn {
   background: transparent;
   border: none;
-  color: var(--text-muted);
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 1px;
+  color: var(--text-space);
+  font-family: var(--font-cosmic-sans);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 0.5rem 1rem;
-  transition:
-    color 0.3s ease,
-    transform 0.3s ease;
-  text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.9),
-    0 0 15px rgba(212, 175, 55, 0.2);
+  transition: color 0.3s ease;
 }
-
-.nav-scroll-btn:hover {
-  color: var(--accent-gold);
-  transform: translateY(-1px);
-}
+.cosmic-nav-btn:hover { color: var(--gold-dust); }
 
 /* ==========================================
-   HAMBURGER MECHANICS
+   4. SEVERED WING FRICTION IGNITION CORE
    ========================================== */
-.hamburger {
-  display: flex !important;
-  background: transparent !important;
-  border: none !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 6px !important;
-  cursor: pointer !important;
-  padding: 8px !important;
-  width: 40px !important;
-  height: 40px !important;
-  z-index: 2500 !important; /* Keeps it on top of the menu overlay */
-  position: relative !important;
-}
-
-/* The three inner tracking bars */
-.hamburger .bar {
-  width: 24px !important;
-  height: 2px !important;
-  background-color: #ffffff !important; /* Forces solid bright white when menu is closed */
-  display: block !important;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
-}
-
-/* --- CLICKED / OPEN STATE ANIMATIONS --- */
-
-/* Top line rotates 45 degrees into a cross line */
-.hamburger.open .bar:nth-child(1) {
-  transform: translateY(8px) rotate(45deg) !important;
-  background-color: #d4af37 !important; /* Glow gold signature color */
-}
-
-/* Middle line dissolves outward */
-.hamburger.open .bar:nth-child(2) {
-  opacity: 0 !important;
-  transform: translateX(-10px) !important;
-}
-
-/* Bottom line rotates -45 degrees to close the cross shape */
-.hamburger.open .bar:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg) !important;
-  background-color: #d4af37 !important; /* Glow gold signature color */
-}
-
-/* ==========================================
-   2. MINIMALIST HERO ELEMENT
-   ========================================== */
-.hero-section {
-  position: relative;
-  z-index: 1;
-
+.cosmic-hero-stage {
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
   box-sizing: border-box;
-  background-color:   rgba(4, 4, 5, 0.75);
-  max-width: 2000px;
-  margin: 0 auto;
-  padding: 7rem 3rem;
+  padding: 8rem 2rem 4rem 2rem;
 }
 
-.hero-content {
-  max-width: 840px;
-  margin-bottom: 4rem;
-}
+.hero-reconstruction-core { text-align: center; max-width: 900px; }
 
-.hero-title {
-  font-family: var(--font-serif);
-  font-size: 5.5rem;
+.particle-formed-title {
+  font-family: var(--font-cosmic-serif);
+  font-size: 8rem;
   font-weight: 400;
-  margin: 1rem;
-  letter-spacing: 6px;
+  letter-spacing: 24px;
+  margin: 0 0 1rem 0;
+  color: var(--crystal-white);
   text-transform: uppercase;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* WARM METALLIC LUXURY GOLD SPARK IGNITION */
+.particle-formed-title.on-fire {
   color: #ffffff;
-  text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.6),
-    0 0 15px rgba(87, 68, 5, 0.8);
+  text-shadow: 
+    0 0 15px #ffffff,
+    0 0 30px var(--gold-dust),
+    0 0 60px #f59e0b, 
+    0 0 90px rgba(212, 175, 55, 0.3);
+  transform: scale(1.03);
 }
 
-.glow-divider {
-  width: 40px;
-  height: 1px;
-  background: var(--accent-gold);
-  margin: 2rem auto;
-  opacity: 0.6;
-}
-
-.hero-subtitle {
-  font-size: 1.4rem;
-  font-weight: 300;
-  color: var(--accent-warm-white);
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto 3rem auto;
-  letter-spacing: 0.5px;
-}
-
-.hero-quote {
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 1.05rem;
-  color: #b1b2b6;
-  line-height: 1.8;
-  margin: 0 auto;
-  padding: 0 3rem;
-  max-width: 680px;
-  border-left: 1px solid var(--border-subtle);
-  border-right: 1px solid var(--border-subtle);
-}
-
-.hero-quote cite {
-  display: block;
-  font-family: var(--font-serif);
-  font-style: normal;
-  font-size: 0.8rem;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: var(--accent-gold);
-  margin-top: 1.25rem;
-  text-shadow:
-    0 0 8px rgba(138, 24, 24, 0.6),
-    0 0 15px rgba(240, 235, 220, 0.8);
-}
-
-/* STRUCTURAL CONTROLS & ACTIONS */
-.hero-actions {
+.kinetic-alignment-core {
   display: flex;
-  gap: 2rem;
   justify-content: center;
-  margin-bottom: 1rem;
-}
-
-.btn {
-  font-family: var(--font-sans);
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 1rem 4rem;
-  border-radius: 4px; /* Crisp square profile edges replace standard pills */
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-}
-
-.btn-primary {
-  background: var(--accent-gold);
-  color: #0c0d12 !important; /* High contrast against gold */
-  border: 1px solid var(--accent-gold);
-  font-weight: 600;
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15); /* Soft gold aura */
-}
-
-.btn-primary:hover {
-  background: transparent;
-  color: var(--accent-gold) !important;
-  border-color: var(--accent-gold);
-  box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
-  font-weight: 300;
-  transform: translateY(2px);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: #f4f4f6;
-  border: 1px solid #f4f4f6;
-}
-
-.btn-secondary:hover {
-  color: #f4f4f6;
-  border-color: #0c0cea;
-  transform: translateY(-2px);
-}
-
-/* ==========================================
-   5. EXTENDED ARCHITECTURE SUB-SECTIONS
-   ========================================== */
-.extended-layout-wrapper {
-  position: relative;
-  z-index: 1;
-}
-
-.pneuma-sub-section {
-  padding: 5rem 8% 4rem 8%; /* Reduced from 10rem top to 5rem */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  border-top: 1px solid var(--border-subtle);
-  background-color:   rgba(11, 11, 12, 0.75);
 }
 
-.section-main-heading {
-  font-family: var(--font-serif);
-  font-size: 2.5rem;
-  font-weight: 400;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  margin-bottom: 4.5rem;
-  color: var(--accent-warm-white);
-  text-shadow:
-    0 0 8px rgba(222, 75, 75, 0.9),
-    0 0 15px rgba(250, 199, 14, 0.6);
-}
-
-/* Minimalist Feature Cards Grid Layout */
-.features-grid-system {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
-  width: 100%;
-  max-width: 2000px;
-}
-
-.feature-item-card {
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  padding: 3rem 2.5rem;
-  text-align: left;
-  transition: all 0.3s ease;
-}
-
-.feature-item-card:hover {
-  border-color: var(--border-bright);
-  transform: translateY(-4px);
-}
-
-.feature-emoji {
-  font-size: 1.2rem;
-  margin-bottom: 0.2rem;
-  opacity: 0.8;
-  text-shadow:
-    0 0 8px rgba(240, 47, 47, 0.5),
-    0 0 15px rgba(252, 219, 3, 0.9);
-}
-
-.feature-item-card h3 {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  font-weight: 400;
-  letter-spacing: 1px;
-  margin: 0 0 1.5rem 0;
-  color: #ffffff;
-  text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.6),
-    0 0 15px rgba(87, 68, 5, 0.6);
-}
-
-.feature-item-card p {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: #b1b2b6;
-  margin: 0;
-}
-
-/* Mission Architectural Centerpiece */
-/* 🌟 LAYER 1: Full-width black background belt stretching edge-to-edge */
-.pneuma-sub-section.mission-bg {
-  width: 100% !important;
-  background-color: #070000; /* Stretches across the entire screen layout */
-  margin: 0 !important;
-  padding: 5rem 0 !important; /* Moves vertical breathing room to the outer edge */
-}
-
-/* 🌟 LAYER 2: Handles layout boundaries for text centering inside the black belt */
-.mission-inner-container {
-  width: 100%;
-  max-width: 760px; /* Restricts text lines from spreading too wide on large screens */
-  margin: 0 auto; /* Keeps contents pinned perfectly to the center */
-  padding: 0 2rem; /* Keeps text safely away from the absolute edges of the screen */
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.mission-descriptive-text {
-  font-size: 1.25rem;
-  line-height: 2;
-  font-weight: 300;
-  color: var(--accent-warm-white);
-  margin: 0;
-}
-
-/* Call to Action Box layout */
-.action-cta-card {
-  background: transparent;
-  border: 1px solid var(--border-subtle);
-  padding: 6rem 3rem;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 900px;
-  box-sizing: border-box;
-}
-
-.action-cta-card h2 {
-  font-family: var(--font-serif);
-  font-size: 2.5rem;
-  font-weight: 400;
-  letter-spacing: 2px;
-  margin: 0 0 1.25rem 0;
-  color: #e5e5e0;
-  text-shadow:
-    0 0 8px rgba(47, 3, 3, 0.6),
-    0 0 15px rgba(244, 243, 238, 0.8);
-}
-
-.action-cta-card p {
-  color: #e7e7d1;
-  font-size: 1.1rem;
-  font-weight: 300;
-  margin: 0 0 3rem 0;
-  text-shadow:
-    0 0 8px rgba(175, 32, 32, 0.6),
-    0 0 15px rgba(243, 241, 234, 0.8);
-}
-
-.cta-action-btn {
+/* CRISP MECHANICAL DIRECT COLLISION SNAP WINGS */
+.slide-left-wing {
   display: inline-block;
-  width: auto !important;
-  max-width: max-content;
-  margin-bottom: 4.5rem;
+  transform: translateX(-1200px);
+  filter: blur(15px);
+  opacity: 0;
+  animation: mechanicalSnapLeft 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.support-contact-footer {
-  font-size: 0.9rem;
-  color: #f5f5e2;
-  border-top: 1px solid var(--border-subtle);
-  padding-top: 2.5rem;
-  letter-spacing: 0.5px;
-  text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.6),
-    0 0 15px rgba(231, 208, 130, 0.8);
+.slide-right-wing {
+  display: inline-block;
+  transform: translateX(1200px);
+  filter: blur(15px);
+  opacity: 0;
+  animation: mechanicalSnapRight 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.email-hyperlink {
-  color: var(--accent-gold);
-  text-decoration: none;
-  font-weight: 500;
-  margin-left: 4px;
-  transition: opacity 0.2s ease;
+@keyframes mechanicalSnapLeft {
+  0% { transform: translateX(-1200px) scaleX(1.4); filter: blur(25px); opacity: 0; }
+  100% { transform: translateX(0) scaleX(1); filter: blur(0); opacity: 1; }
 }
 
-.email-hyperlink:hover {
-  text-decoration: underline;
-  opacity: 0.8;
+@keyframes mechanicalSnapRight {
+  0% { transform: translateX(1200px) scaleX(1.4); filter: blur(25px); opacity: 0; }
+  100% { transform: translateX(0) scaleX(1); filter: blur(0); opacity: 1; }
 }
 
-.footer {
-  padding: 4rem 2rem;
-  text-align: center;
-  border-top: 1px solid var(--border-subtle);
-  background: var(--bg-main);
-  position: relative;
-  z-index: 1;
-}
-
-.footer p {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  letter-spacing: 1px;
-  text-shadow:
-    0 0 8px rgba(247, 5, 5, 0.9),
-    0 0 15px rgba(5, 4, 0, 0.9);
-}
 /* ==========================================
-   6. RESPONSIVE QUERY OVERLAYS (FIXED MOBILE)
+   5. INTERFACE REVEAL MODULES
+   ========================================== */
+.interface-cascade-wrapper {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.interface-cascade-wrapper.awake { opacity: 1; transform: translateY(0); }
+
+.cosmic-laser-divider { width: 60px; height: 1px; background: var(--gold-dust); margin: 2.5rem auto; opacity: 0.4; }
+.cosmic-subtitle { font-size: 1.15rem; font-weight: 300; color: #d1d5db; line-height: 1.8; max-width: 580px; margin: 0 auto 2.5rem auto; letter-spacing: 0.5px; }
+.cosmic-quote { font-style: italic; font-weight: 300; font-size: 0.95rem; color: var(--text-space); max-width: 500px; margin: 0 auto; line-height: 1.8; }
+.cosmic-quote cite { display: block; font-family: var(--font-cosmic-serif); font-style: normal; font-size: 0.75rem; letter-spacing: 2px; color: var(--gold-dust); margin-top: 1rem; }
+
+/* ACTIONS SYSTEM */
+.cosmic-actions {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 4.5rem;
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cosmic-actions.awake { opacity: 1; transform: translateY(0); }
+
+.btn-cosmic-filament {
+  background: transparent;
+  font-family: var(--font-cosmic-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 1rem 3.5rem;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+.primary-filament { border: 1px solid rgba(212, 175, 55, 0.3); }
+.primary-filament:hover { border-color: var(--gold-dust); color: var(--gold-dust); box-shadow: 0 0 25px rgba(212, 175, 55, 0.25); transform: translateY(-2px); }
+.secondary-filament { border: 1px solid rgba(255, 255, 255, 0.08); }
+.secondary-filament:hover { border-color: #fff; transform: translateY(-2px); }
+
+/* ==========================================
+   6. UNBOUND SCROLL PANELS
+   ========================================== */
+.unbound-cosmic-wrapper { position: relative; z-index: 20; background: var(--cosmic-void); }
+.cosmic-sub-section { padding: 12rem 8% 10rem 8%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.reveal-on-scroll-card { max-width: 780px; text-align: center; }
+.reveal-heading { font-family: var(--font-cosmic-serif); font-size: 2.25rem; letter-spacing: 6px; margin-bottom: 2.5rem; }
+.reveal-text { color: var(--text-space); font-size: 1.1rem; line-height: 2; font-weight: 300; }
+
+.cosmic-cta-gate { border-top: 1px solid rgba(255,255,255,0.03); padding: 8rem 4rem; width: 100%; max-width: 950px; text-align: center; box-sizing: border-box; }
+.cosmic-cta-gate h2 { font-family: var(--font-cosmic-serif); font-size: 2rem; letter-spacing: 5px; margin-bottom: 1.5rem; }
+.cosmic-cta-gate p { color: var(--text-space); margin-bottom: 4rem; font-weight: 300; }
+.cosmic-directory-footer { margin-top: 5rem; font-size: 0.75rem; color: var(--text-space); letter-spacing: 1.5px; }
+.cosmic-hyperlink { color: var(--gold-dust); text-decoration: none; font-weight: 700; }
+.cosmic-footer { padding: 5rem 2rem; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.03); font-size: 0.7rem; letter-spacing: 2px; color: var(--text-space); }
+
+/* ==========================================
+   7. MOBILE RESPONSIVE
    ========================================== */
 @media (max-width: 1024px) {
-  /* Navigation Links Mobile Container */
-  .nav-links {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 100vh;
-    background: var(--bg-main);
-    flex-direction: column;
-    justify-content: center;
-    padding: 2rem;
-    gap: 2rem;
-    opacity: 0;
-    transform: translateY(-15px);
-    pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-    z-index: 2000;
-  }
+  .quantum-dust-field { display: none; }
+  .particle-formed-title { font-size: 3.2rem; letter-spacing: 8px; }
+  .slide-left-wing { animation: mobileLeft 1.2s ease-out forwards; }
+  .slide-right-wing { animation: mobileRight 1.2s ease-out forwards; }
+  
+  @keyframes mobileLeft { 0% { transform: translateX(-150px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
+  @keyframes mobileRight { 0% { transform: translateX(150px); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 
-  .nav-links.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  .nav-scroll-btn {
-    font-size: 1.25rem;
-    font-family: var(--font-serif);
-    letter-spacing: 2px;
-    width: 100%;
-  }
-
-  @media (min-width: 1024px) {
-    .hamburger {
-      display: none !important;
-    }
-  }
-  /* ==========================================
-   Koinonia Hero Section
-     ========================================== */
-
-  /* Fix 1: Stop viewport layout locking and ease padding */
-  .hero-section {
-    min-height: 48rem; /* Drops rigid full-screen requirement so elements don't overflow */
-    margin-bottom: -0.9rem;
-  }
-
-  .hero-content {
-    margin-bottom: 4rem; /* Closes gap between quote and actions */
-  }
-
-  .hero-title {
-    font-size: 3.2rem;
-    letter-spacing: 2px;
-  }
-
-  .glow-divider {
-    margin: 1.25rem auto; /* Tightens divider border gaps */
-    margin-bottom: 1.2rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 1.8rem;
-    padding: 0 1.4rem;
-  }
-
-  .hero-quote {
-    padding: 0 rem;
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-
-  /* Fix 2: Clean stacking grid system for action triggers */
-  .hero-actions {
-    flex-direction: column; /* Force clean, vertical button layout stack */
-    width: 100%;
-    max-width: 280px;
-    gap: 0.85rem; /* Even, balanced spacing between the stacked buttons */
-    margin: 0 auto;
-  }
-
-  /* Fix 3: Full width tap targets */
-  .btn {
-    width: 100%;
-    box-sizing: border-box;
-    padding: 1rem 2rem;
-    font-size: 0.8rem;
-  }
-
-  /* Fix 4: Compress huge sub-section spacing blocks */
-  .pneuma-sub-section {
-    padding: 3.5rem 6% 3rem 6%; /* Dramatically drops top padding so scrolling feels cohesive */
-  }
-
-  .section-main-heading {
-    font-size: 1.75rem;
-    margin-bottom: 2.25rem;
-    letter-spacing: 2px;
-  }
-
-  /* Feature Grid Tightening */
-  .features-grid-system {
-    gap: 1.25rem; /* Tightens gap between feature text blocks */
-  }
-
-  .feature-item-card {
-    padding: 2rem 1.5rem;
-    text-align: center;
-  }
-
-  .mission-inner-container {
-    padding: 2.5rem 1.25rem;
-  }
-
-  .mission-descriptive-text {
-    font-size: 1rem;
-    line-height: 1.7;
-  }
-
-  /* CTA Layout Box Adjustment */
-  .action-cta-card {
-    padding: 3.5rem 1.25rem;
-  }
-
-  .action-cta-card h2 {
-    font-size: 1.65rem;
-  }
-
-  .action-cta-card p {
-    font-size: 1rem;
-    margin-bottom: 2rem;
-  }
+  .cosmic-actions { flex-direction: column; width: 100%; max-width: 260px; gap: 1.2rem; }
+  .btn-cosmic-filament { width: 100%; padding: 1rem; }
 }
 
-@media (width: 600px) {
-  .hero-subtitle {
-    font-size: 1.2rem;
-    line-height: 1.5;
-    margin-bottom: 2rem;
-    padding: 0 7rem;
-  }
-}
-
-/* ==========================================
-   7. FOOTER CONTROL
-   ========================================== */
-
-/* ==========================================
-   8. ULTRA-SMALL SCREEN ACCESSIBILITY (<= 320px)
-   ========================================== */
-@media (max-width: 330px) {
-  /* Tighten navbar footprints */
-  .navbar {
-    padding: 1rem 4%;
-  }
-
-  .nav-logo-text {
-    font-size: 1.15rem;
-    letter-spacing: 1.5px;
-  }
-
-  /* Structural breathing room adjustments */
-  .hero-section {
-    padding: 7rem 0.75rem 2.5rem 0.75rem; /* Compact side margins */
-  }
-
-  /* Prevent text overlapping by shrinking font sizes */
-  .hero-title {
-    font-size: 2.35rem; /* Drastically scaled down so it stays on 1-2 lines maximum */
-    letter-spacing: 1px;
-  }
-
-  .hero-subtitle {
-    font-size: 1rem;
-    line-height: 1.4;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-quote {
-    font-size: 0.85rem;
-    line-height: 1.5;
-    padding: 0 0.5rem; /* Give text maximum viewport breathing room */
-  }
-
-  /* Micro Button Layout Fixes */
-  .hero-actions {
-    max-width: 100%; /* Spans the full width of the screen safely */
-    gap: 0.65rem;
-  }
-
-  .btn {
-    padding: 0.85rem 1.25rem; /* Thinner height padding stops offscreen push */
-    font-size: 0.75rem;
-    letter-spacing: 1px;
-  }
-
-  /* Tighten subsections downward */
-  .pneuma-sub-section {
-    padding: 3rem 4% 2.5rem 4%;
-  }
-
-  .section-main-heading {
-    font-size: 1.45rem;
-    letter-spacing: 1px;
-    margin-bottom: 1.75rem;
-  }
-
-  /* Grid component overrides */
-  .features-grid-system {
-    gap: 1rem;
-  }
-
-  .feature-item-card {
-    padding: 1.5rem 1rem;
-  }
-
-  .feature-item-card h3 {
-    font-size: 1.1rem;
-  }
-
-  /* Mission layout scale down */
-  .mission-inner-container {
-    padding: 1.75rem 1rem;
-  }
-
-  .mission-descriptive-text {
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-
-  /* CTA Workspace Panel tweaks */
-  .action-cta-card {
-    padding: 2.5rem 1rem;
-  }
-
-  .action-cta-card h2 {
-    font-size: 1.35rem;
-  }
-
-  .action-cta-card p {
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .support-contact-footer {
-    font-size: 0.8rem;
-    padding-top: 1.5rem;
-    display: flex;
-    flex-direction: column; /* Stacks label and email links vertically */
-    gap: 0.35rem;
-  }
-}
-
-/* ==========================================
-   PRODUCTION HAMBURGER INJECTION FIX
-   ========================================== */
-
-/* The main outer button container */
-
-/* Hidden by default on widescreen monitors */
-@media (min-width: 1024px) {
-  .hamburger {
-    display: none !important;
-  }
-}
+.hamburger-cosmic { display: flex; background: transparent; border: none; flex-direction: column; gap: 7px; cursor: pointer; }
+.bar-cosmic { width: 22px; height: 1px; background: #fff; }
+@media (min-width: 1024px) { .hamburger-cosmic { display: none; } }
