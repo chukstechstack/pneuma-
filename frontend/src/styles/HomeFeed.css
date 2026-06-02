@@ -1,0 +1,270 @@
+@import url("https://googleapis.com");
+
+:root {
+  --feed-bg: #010102; /* Match your pitch-black canvas */
+  --card-glass: rgba(12, 13, 18, 0.45); /* Ultra-faint translucent slate */
+  --card-border-subtle: rgba(255, 255, 255, 0.03);
+  --card-border-bright: rgba(212, 175, 55, 0.35); /* Your signature warm gold */
+  --gold-glow: #d4af37;
+  --text-pure: #ffffff;
+  --text-dimmed: #8e92a2;
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-serif: "Cinzel", serif;
+}
+
+/* ==========================================
+   1. MONOLITH CONTAINER CARD ARCHITECTURE
+   ========================================== */
+.pneuma-post-card-root {
+  background: var(--card-glass);
+  border: 1px solid var(--card-border-subtle);
+  border-radius: 8px; /* Crisp minimal corners matching the buttons */
+  padding: 2.25rem;
+  max-width: 680px;
+  margin: 2rem auto;
+  box-sizing: border-box;
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  position: relative;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+              transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+}
+
+/* HOVER INTERACTION: The card sharpens, floats up, and gets a gold aura */
+.pneuma-post-card-root:hover {
+  border-color: var(--card-border-bright);
+  transform: translateY(-4px) translateZ(10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 
+              0 0 20px rgba(212, 175, 55, 0.03);
+}
+
+/* ==========================================
+   2. BRANDED HEADER ROW & DROPDOWNS
+   ========================================== */
+.pneuma-post-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.pneuma-post-author-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pneuma-post-avatar-element {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px; /* Squared sleek profiles instead of generic circles */
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: border-color 0.3s ease;
+}
+.pneuma-post-card-root:hover .pneuma-post-avatar-element {
+  border-color: var(--card-border-bright);
+}
+
+.pneuma-post-meta-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pneuma-post-author-name {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: 1.05rem;
+  letter-spacing: 1px;
+  color: var(--text-pure);
+}
+
+.pneuma-post-timestamp-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  color: var(--text-dimmed);
+}
+
+/* INLINE INVISIBLE FOLLOW BUTTON */
+.taskFollowInlineButton {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-pure);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.taskFollowInlineButton:hover {
+  border-color: var(--gold-glow);
+  color: var(--gold-glow);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+}
+.taskFollowInlineButton.following-active {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-dimmed);
+  opacity: 0.6;
+}
+
+/* DOT BUTTON CONFIG */
+.taskDotButton {
+  background: transparent;
+  border: none;
+  color: var(--text-dimmed);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  transition: color 0.2s ease;
+}
+.taskDotButton:hover { color: var(--text-pure); }
+
+.pneuma-post-dropdown-anchor { position: relative; }
+.dotMenuDisplay {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #0c0d12;
+  border: 1px solid var(--card-border-bright);
+  border-radius: 4px;
+  z-index: 100;
+  min-width: 120px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+}
+.menuEditButtonStyle, .menuDeleteButtonStyle {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  text-align: left;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.menuEditButtonStyle { color: var(--text-pure); }
+.menuEditButtonStyle:hover { background: rgba(255,255,255,0.03); color: var(--gold-glow); }
+.menuDeleteButtonStyle { color: #ef4444; border-top: 1px solid rgba(255,255,255,0.03); }
+.menuDeleteButtonStyle:hover { background: rgba(239, 68, 68, 0.05); }
+.menu-backdrop { position: fixed; inset: 0; z-index: 90; background: transparent; }
+
+/* ==========================================
+   3. DESCRIPTION INSIGHT TEXT
+   ========================================== */
+.pneuma-post-body-text {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #d1d5db;
+  margin-bottom: 1.75rem;
+}
+
+.showMoreText {
+  background: transparent;
+  border: none;
+  color: var(--gold-glow);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 0;
+}
+.showMoreText:hover { text-decoration: underline; }
+
+/* ==========================================
+   4. LUMINARY ACTION DOCK (MINIMALIST AXIS)
+   ========================================== */
+.pneuma-post-action-dock {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.action-buttons-left {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.actionButton {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-dimmed);
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+.actionButton svg {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Micro interaction transitions for button subcomponents */
+.actionButton:hover { color: var(--text-pure); background: rgba(255,255,255,0.02); }
+.actionButton:hover svg { transform: scale(1.15); }
+
+/* SPECIFIC LUMINARY STATE GLOWS */
+.actionButton.active { color: var(--gold-glow); }
+.actionButton .icon-active { stroke: var(--gold-glow); fill: rgba(212, 175, 55, 0.1); }
+.inline-action-counter { font-weight: 500; font-size: 0.8rem; opacity: 0.8; }
+
+/* ==========================================
+   5. BLENDED GLOSSY MEDIA PORTAL
+   ========================================== */
+.taskImageWrapper {
+  width: 100%;
+  margin-top: 1.5rem;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  position: relative;
+}
+
+/* Dark frame vignette layer across post image components */
+.taskImageWrapper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+.taskContentImageCard {
+  width: 100%;
+  height: auto;
+  max-height: 450px;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.2) contrast(1.05);
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pneuma-post-card-root:hover .taskContentImageCard {
+  transform: scale(1.02);
+  filter: grayscale(0) contrast(1);
+}
+
+/* Mobile layout compression metrics */
+@media (max-width: 768px) {
+  .pneuma-post-card-root { padding: 1.5rem; margin: 1rem 0.5rem; }
+  .action-label { display: none; } /* Drops label text arrays for ultra-tight hardware screens */
+  .pneuma-post-author-name { font-size: 0.95rem; }
+  .particle-formed-title { font-size: 3rem; }
+}

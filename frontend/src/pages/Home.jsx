@@ -5,7 +5,7 @@ import api from "../api/axios.js";
 import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
-
+import "../styles/HomeFeed.css";
 // Import your unified styles framework
 
 const HomePage = () => {
@@ -89,63 +89,34 @@ const HomePage = () => {
     return <FullPageLoader />;
   }
 
-  const defaultProfileImg =
-    "https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fwww.gravatar.com%2Favatar%2F2c7d99fe281ecd3bcd65ab915bac6dd5%3Fs%3D250";
-
   return (
     /* 🚀 RENEWED BRAND NEW STRUCTURAL WRAPPERS */
     <div className="pneuma-app-shell">
-    <NavBar currentUserUuid={currentUserUuid} />
+      <NavBar currentUserUuid={currentUserUuid} />
       <div className="pneuma-main-stage">
         {/* PROFILE SIDEBAR SECTION */}
         <aside className="pneuma-left-wing-sidebar">
           <div className="profile-sanctuary-card">
             <div className="profile-card-banner" />
 
-            <div className="profile-image-container">
-              <img
-                src={defaultProfileImg}
-                alt="Profile avatar"
-                className="profile-avatar-img"
-              />
-            </div>
-
             <div className="profile-info-block">
               <h3 className="profile-display-name">Chukwunyelu Ki...</h3>
               <p className="profile-app-role">Sanctuary Keeper</p>
             </div>
 
-            <div className="sidebar-journal-nav-wrapper">
-              <Link
-                to={`/journalfeed/${currentUserUuid}`}
-                className="sidebar-journal-nav-btn"
-              >
-                📖 My Personal Journal
-              </Link>
-            </div>
-
-            <div className="profile-action-footer">
-              <Link to="/profile" className="profile-view-link-btn">
-                View Profile
-              </Link>
-            </div>
+            <div className="sidebar-journal-nav-wrapper"></div>
           </div>
         </aside>
 
         {/* TIMELINE FEED SYSTEM */}
         <main className="pneuma-central-feed">
           <div className="create-testimony-trigger-panel">
-            <img
-              src={defaultProfileImg}
-              alt="Feed avatar thumbnail"
-              className="feed-avatar-thumbnail"
-            />
-            <Link
+            {/* <Link
               to="/createtask"
               className="share-testimony-input-placeholder"
             >
               Share a testimony or insight...
-            </Link>
+            </Link> */}
           </div>
 
           <div className="pneuma-stream-wrapper">
