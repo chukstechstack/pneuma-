@@ -7,9 +7,9 @@ import { createTask } from "../controllers/task/createTask.js"; // Pulls both fu
 import { patchTask } from "../controllers/task/patchTask.js";
 import { deleteTask } from "../controllers/task/deleteTask.js";
 import { upload } from "../config/multerConfig.js";
-import { toggleInteraction } from "../controllers/task/toggleInteraction.js";
-import { toggleFollow } from "../controllers/task/toggleFollow.js"; 
-import { journalFeed} from "../controllers/task/journalFeed.js"; 
+import { toggleInteraction } from "../controllers/task/interaction.js";
+import { toggleFollow } from "../controllers/task/follow.js";
+import { journalFeed } from "../controllers/task/journalFeed.js";
 const taskRoute = express.Router();
 
 taskRoute.get("/", ensureAuthenticated, getTask);

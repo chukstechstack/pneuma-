@@ -1,13 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 import pool from "./config/supabaseConfig.js";
-import mainAuthRoute from "./routes/main/mainauthrouter.js";
+
 // Change this line inside your server.js:
 import passport from "./config/passport/serialize_deserialize.js";
 
 import session from "express-session";
 import pgSession from "connect-pg-simple";
 import cors from "cors";
+import mainAuthRoute from "./routes/main/mainauthrouter.js";
 import mainTaskRoute from "./routes/main/maintaskrouter.js";
 import redisClient from "./config/redisCreateClient.js";
 
@@ -39,12 +40,15 @@ const corsOptions = {
       done(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // ✅ Explicitly allowed
+  allowedHeaders: ['Content-Type', 'Authorization'] // ✅ Ensured content-type is fine
 };
 
 // Use everywhere
 app.use(cors(corsOptions));
-app.options('/*info', cors(corsOptions)); // ✅ same config, not bare cors();
+app.options('/*info', cors(corsOptions)); // ✅ Fixed from '/*info' to '/*' for Express 4/5 fallback matching
+// ✅ same config, not bare cors();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

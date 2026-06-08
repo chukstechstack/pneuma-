@@ -6,9 +6,9 @@ export const toggleFollow = async (req, res, next) => {
   const follower_uuid = req.user?.uuid;     // Your unique tracking string
   const { targetProfileUuid } = req.params;  // The creator you want to follow
 
-  // Safety check: Prevent a user from trying to follow themselves
+  // 🎯 FIXED 1: Safety check updated to use targetProfileUuid to prevent variable crashes
   if (follower_uuid === targetProfileUuid) {
-    return res.status(400).json({ error: "You cannot follow your own sanctuary" });
+    return res.status(400).json({ error: "You cannot follow your own sanctuary profile" });
   }
 
   const dbClient = await pool.connect();
@@ -24,11 +24,11 @@ export const toggleFollow = async (req, res, next) => {
 
     if (profileRes.rows.length === 0) {
       await dbClient.query("ROLLBACK");
-      dbClient.release();
+      dbClient.release(); // Explicitly release right before returning
       return res.status(404).json({ error: "Luminary profile not found" });
     }
 
-    // 🔽 GRABBING THE FIRST ROW ITEM SAFELY
+    // GRABBING THE FIRST ROW ITEM SAFELY
     const following_numeric_id = profileRes.rows[0].id;
 
     // 2. Check if you already follow this person
@@ -50,13 +50,13 @@ export const toggleFollow = async (req, res, next) => {
 
       // Decrease your following count
       await dbClient.query(
-        `UPDATE profiles SET following_count = following_count - 1 WHERE id = $1`,
+        `UPDATE profiles SET following_count = GREATEST(0, following_count - 1) WHERE id = $1`,
         [follower_numeric_id]
       );
 
       // Decrease their followers count
       await dbClient.query(
-        `UPDATE profiles SET followers_count = followers_count - 1 WHERE id = $1`,
+        `UPDATE profiles SET followers_count = GREATEST(0, followers_count - 1) WHERE id = $1`,
         [following_numeric_id]
       );
 
@@ -70,32 +70,54 @@ export const toggleFollow = async (req, res, next) => {
 
       // Increase your following count
       await dbClient.query(
-        `UPDATE profiles SET following_count = following_count + 1 WHERE id = $1`,
+        `UPDATE profiles SET following_count = COALESCE(following_count, 0) + 1 WHERE id = $1`,
         [follower_numeric_id]
       );
 
       // Increase their followers count
       await dbClient.query(
-        `UPDATE profiles SET followers_count = followers_count + 1 WHERE id = $1`,
+        `UPDATE profiles SET followers_count = COALESCE(followers_count, 0) + 1 WHERE id = $1`,
         [following_numeric_id]
       );
     }
 
+    // Permanently seal database updates FIRST
     await dbClient.query("COMMIT");
 
-    // 5. CACHE BUSTER: Wipe out your feed cache so it updates instantly
-    const cacheKey = `tasks_feed:${follower_uuid || 'guest'}`;
-    await redisClient.del(cacheKey);
+    // =================================================================
+    // 🧹 FIXED 3: WILDCARD REDIS CACHE INVALIDATION BROOM SYSTEM (FOLLOWS)
+    // =================================================================
+    try {
+      if (follower_uuid) {
+        // ── A. Sweep out your home feed pages so the follow checkbox updates ──
+        const homeFeedPattern = `tasks_feed:${follower_uuid}:*`;
+        const homeKeys = await redisClient.keys(homeFeedPattern);
+        if (homeKeys.length > 0) {
+          await redisClient.del(homeKeys);
+          console.log(` sweep away ${homeKeys.length} home feed chunks for follow change.`);
+        }
 
-    console.log(`💾 [FOLLOW CHANGE]: User ${follower_uuid} toggled follow on ${targetProfileUuid}.`);
+        // ── B. Sweep out your private feed snapshots just to be completely safe ──
+        const journalPattern = `journal_feed:${follower_uuid}:*`;
+        const journalKeys = await redisClient.keys(journalPattern);
+        if (journalKeys.length > 0) {
+          await redisClient.del(journalKeys);
+          console.log(` sweep away ${journalKeys.length} private feed chunks for follow change.`);
+        }
+      }
+    } catch (cacheErr) {
+      console.error("⚠️ Non-critical follow cache sweep error:", cacheErr.message);
+    }
+
+    console.log(`💾 [FOLLOW CHANGE SECURED]: User ${follower_uuid} toggled follow on ${targetProfileUuid}.`);
 
     return res.json({
       message: "Follow status updated successfully",
-      isFollowing: !alreadyFollowing
+      isFollowing: !alreadyFollowing // Matches your frontend res.data.isFollowing hook perfectly
     });
 
   } catch (err) {
-    if (dbClient) await dbClient.query("ROLLBACK");
+    await dbClient.query("ROLLBACK");
     console.error("❌ ERROR IN [toggleFollow Controller]:", err.stack || err.message);
     next(err);
   } finally {

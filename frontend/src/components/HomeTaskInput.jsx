@@ -89,7 +89,7 @@ const Task = ({
                 />
                 <div className="dotMenuDisplay">
                   <Link
-                    to={`/edittask/${uuid}`}
+                    to={`/patchfeed/${uuid}`}
                     className="menuEditButtonStyle"
                   >
                     Modify
@@ -162,7 +162,7 @@ const Task = ({
               size={16}
               strokeWidth={2}
               className={task.is_reposted ? "icon-active" : ""}
-                />
+            />
             <span className="action-label">Forward</span>
             <span className="inline-action-counter">
               {task.reposts_count || 0}

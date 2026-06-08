@@ -1,29 +1,30 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import TaskInput from "../components/EditInput.jsx";
+import TaskInput from "../components/PatchInput.jsx";
 import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
 import FullPageLoader from "../components/Loader.jsx";
-// Change this line from Register.css to inputs.css
 import "../styles/CreateTask.css";
 
-const EditPost = () => {
+const PatchFeed = () => {
   const navigate = useNavigate();
   const { uuid } = useParams();
-  const { tasks, updateTaskInState, loading } = useContext(TaskContext);
+  const { tasks, update_Patched_Task_In_UseContext_State, loading } =
+    useContext(TaskContext);
+  
   const taskToEdit = tasks.find((t) => t.uuid === uuid);
   const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
     content: taskToEdit?.content || "",
     img: taskToEdit?.img || null,
   });
+  const [previewUrl, setPreviewUrl] = useState("");
 
-  //  ADD THIS BLOCK (Only updates state when the actual task switches)
   useEffect(() => {
     if (taskToEdit) {
       setFormData({
-        content: taskToEdit.content || "",
-        img: taskToEdit.img || null,
+        content: taskToEdit?.content || "",
+        img: taskToEdit?.img || null,
       });
     }
   }, [uuid, taskToEdit]);
@@ -32,15 +33,19 @@ const EditPost = () => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files && files.length > 0 ? files[0] : value,
-    }));
+    if (name === "img" && files && files.length > 0) {
+      const file = files[0];
+      setFormData((prev) => ({ ...prev, img: file }));
+
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(URL.createObjectURL(file));
+    } else if (name !== "img") {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
 
     const data = new FormData();
     if (content) data.append("content", content);
@@ -50,30 +55,35 @@ const EditPost = () => {
     try {
       setIsUpdating(true);
       const res = await api.patch(`/task/${uuid}`, data);
-      setFormData({
-        content: "",
-        img: null,
-      });
-      updateTaskInState(res.data.updatedTask);
+
+      // 🎯 FIXED 1: Wiping formData state was completely removed to block pre-navigate layout shifts!
+
+      // 🎯 FIXED 2: Target index [0] to peel back the database query array wrapper safely!
+      if (res.data.updatedTask && Array.isArray(res.data.updatedTask)) {
+        update_Patched_Task_In_UseContext_State(res.data.updatedTask[0]);
+      } else {
+        update_Patched_Task_In_UseContext_State(res.data.updatedTask);
+      }
+      
       navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || "Update failed";
-      console.error(message);
+      console.error("Full Error Object:", err);
+      console.error("Backend Error Message:", message);
     } finally {
       setIsUpdating(false);
     }
   };
 
-  // Clean up memory leaks from local preview URLs
   useEffect(() => {
     return () => {
-      if (img && typeof img === "string") {
-        URL.revokeObjectURL(img);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
       }
     };
-  }, [img]);
+  }, [previewUrl]);
 
-  if (loading || isUpdating) {
+  if (isUpdating || (loading && !taskToEdit)) {
     return <FullPageLoader />;
   }
 
@@ -99,10 +109,11 @@ const EditPost = () => {
           content={content}
           img={img}
           handleSubmit={handleSubmit}
+          previewUrl={previewUrl}
         />
       </section>
     </main>
   );
 };
 
-export default EditPost;
+export default PatchFeed;

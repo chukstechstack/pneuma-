@@ -1,6 +1,6 @@
 import pool from "../../config/supabaseConfig.js";
 
-export const fetchUserJournalFeed = async (journalOwnerUuid, loggedInUserUuid) => {
+export const fetchUserJournalFeed = async (journalOwnerUuid, loggedInUserUuid, freeze_time, fresh_load_pointer) => {
   let loggedInNumericId = null;
   let journalOwnerNumericId = null;
 
@@ -20,54 +20,80 @@ export const fetchUserJournalFeed = async (journalOwnerUuid, loggedInUserUuid) =
     }
   }
 
-  // 3. RUN THE DUAL JOURNAL UNION SYSTEM
-  const result = await pool.query(
-    `
-    -- ── LAYER 1: GRAB ORIGINAL CHRONICLES WRITTEN BY THIS JOURNAL OWNER ──
-    SELECT 
-      c.id, c.uuid, c.title, c.content, c.img, c.created_at,
-      c.likes_count, c.reposts_count, c.shares_count,   
-      CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
-      p.avatar_url, p.uuid AS author_profile_uuid, c.user_id,
-      FALSE AS is_repost_badge, -- It's their own original post
-      NULL AS reposted_by_name,
-      
-      -- Checking interaction checkboxes for the active viewer ($1)
-      EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like') AS is_liked,
-      EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost') AS is_reposted,
-      EXISTS (SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = c.user_id) AS is_following
-    FROM content c 
-    LEFT JOIN profiles p ON c.user_id = p.id 
-    WHERE c.user_id = $2 -- Filters for the journal owner's numbers
+  // If the journal owner profile doesn't exist, stop immediately and return an empty set
+  if (!journalOwnerNumericId) {
+    return { journalFeedTasks: [], next_post_timestamp: null };
+  }
 
-    UNION ALL
+  // 3. Dynamically set up parameters array ($1: viewer, $2: journal owner, $3: freeze timeline date)
+  const Freeze_Time_Date = new Date(Number(freeze_time));
+  const queryParams = [loggedInNumericId, journalOwnerNumericId, Freeze_Time_Date];
 
-    -- ── LAYER 2: GRAB POSTS THAT THIS JOURNAL OWNER EXPLICITLY REPOSTED ──
-    SELECT 
-      c.id, c.uuid, c.title, c.content, c.img, c.created_at,
-      c.likes_count, c.reposts_count, c.shares_count,   
-      CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
-      p.avatar_url, p.uuid AS author_profile_uuid, c.user_id,
-      TRUE AS is_repost_badge, -- Tells frontend to paint the "Reposted" text banner!
-      CONCAT(rp.first_name, ' ', rp.last_name) AS reposted_by_name,
-      
-      -- Keeps checkbox states accurate for the active viewer ($1)
-      EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like') AS is_liked,
-      EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost') AS is_reposted,
-      EXISTS (SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = c.user_id) AS is_following
-    FROM content c 
-    LEFT JOIN profiles p ON c.user_id = p.id 
-    -- Link the interactions tracker table row representing the repost click event
-    INNER JOIN interactions i ON i.content_id = c.id
-    -- Link the profile details of the person who owns this specific journal tab
-    LEFT JOIN profiles rp ON i.user_id = rp.id
-    WHERE i.user_id = $2 AND i.interaction_type = 'repost'
+  // 4. Wrapped UNION system structure inside a master subquery ('sub')
+  let queryText = `
+    SELECT * FROM (
+      -- ── LAYER 1: GRAB ORIGINAL CHRONICLES WRITTEN BY THIS JOURNAL OWNER ──
+      SELECT 
+        c.id, c.uuid, c.title, c.content, c.img, c.created_at,
+        c.likes_count, c.reposts_count, c.shares_count,   
+        CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
+        p.avatar_url, p.uuid AS author_profile_uuid, c.user_id,
+        FALSE AS is_repost_badge, -- It's their own original post
+        NULL AS reposted_by_name,
+        
+        -- Checking interaction checkboxes for the active viewer ($1)
+        EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like') AS is_liked,
+        EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost') AS is_reposted,
+        EXISTS (SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = c.user_id) AS is_following
+      FROM content c 
+      LEFT JOIN profiles p ON c.user_id = p.id 
+      WHERE c.user_id = $2 -- Filters for the journal owner's numbers
 
-    -- ── COMBINE AND ORGANIZE TIMELINE ──
-    ORDER BY created_at DESC
-    `,
-    [loggedInNumericId, journalOwnerNumericId]
-  );
+      UNION ALL
 
-  return result.rows;
+      -- ── LAYER 2: GRAB POSTS THAT THIS JOURNAL OWNER EXPLICITLY REPOSTED ──
+      SELECT 
+        c.id, c.uuid, c.title, c.content, c.img, c.created_at,
+        c.likes_count, c.reposts_count, c.shares_count,   
+        CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
+        p.avatar_url, p.uuid AS author_profile_uuid, c.user_id,
+        TRUE AS is_repost_badge, -- Tells frontend to paint the "Reposted" text banner!
+        CONCAT(rp.first_name, ' ', rp.last_name) AS reposted_by_name,
+        
+        -- Keeps checkbox states accurate for the active viewer ($1)
+        EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like') AS is_liked,
+        EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost') AS is_reposted,
+        EXISTS (SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = c.user_id) AS is_following
+      FROM content c 
+      LEFT JOIN profiles p ON c.user_id = p.id 
+      INNER JOIN interactions i ON i.content_id = c.id
+      LEFT JOIN profiles rp ON i.user_id = rp.id
+      WHERE i.user_id = $2 AND i.interaction_type = 'repost'
+    ) AS sub
+    WHERE sub.created_at <= $3`; // Rule 1: Freeze timeline ceiling at your baseline snapshot time!
+
+  // 5. Apply pagination cursor floor if scrolling down to page 2, 3, etc.
+  if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad') {
+    const last_post_creation_date = new Date(Number(fresh_load_pointer));
+    queryText += ` AND sub.created_at < $4 `;
+    queryParams.push(last_post_creation_date);
+  }
+
+  // 6. Sort strictly by time and apply a strict 40-post batch limit window
+  queryText += ` ORDER BY sub.created_at DESC LIMIT 40`;
+
+  const result = await pool.query(queryText, queryParams);
+  const journalFeedTasks = result.rows;
+
+  // 7. Calculate your moving pagination timestamp token for the bottom post
+  let next_post_timestamp = null;
+  if (journalFeedTasks.length === 40) {
+    const lastItem = journalFeedTasks[journalFeedTasks.length - 1];
+    next_post_timestamp = new Date(lastItem.created_at).getTime();
+  }
+
+  return {
+    journalFeedTasks, // Handed directly back to your controller layer
+    next_post_timestamp // Handed up to drive the React context scroll listener state
+  };
 };

@@ -1,19 +1,23 @@
 import pool from "../../config/supabaseConfig.js";
 
-export const fetchGlobalTasksFeed = async (user_uuid) => {
-  let numericUserId = null;
+export const fetchGlobalTasksFeed = async (user_uuid, freeze_time, fresh_load_pointer) => {
+  let userId = null;
 
-  // 1. Look up the matching numeric ID for the logged-in user
+  // 1. Look up user numeric ID safely
   if (user_uuid) {
-    const userRes = await pool.query("SELECT id FROM profiles WHERE uuid = $1", [user_uuid]);
-    if (userRes.rows.length > 0) {
-      numericUserId = userRes.rows[0].id;
+    const user_Id_Res = await pool.query("SELECT id FROM profiles WHERE uuid = $1", [user_uuid]);
+    if (user_Id_Res.rows.length > 0) {
+      userId = user_Id_Res.rows[0].id;
     }
   }
 
-  // 2. Run the upgraded query using your clean EXISTS pattern!
-  const result = await pool.query(
-    `SELECT 
+  // 2. Setup snapshot baseline dates
+  const Freeze_Time_Date = new Date(Number(freeze_time));
+  const queryParams = [userId, Freeze_Time_Date];
+
+  // 3. Main Query String (Keeps the is_following boolean flag intact!)
+  let queryText = `
+    SELECT 
       c.id,
       c.uuid,
       c.title,
@@ -25,33 +29,50 @@ export const fetchGlobalTasksFeed = async (user_uuid) => {
       c.shares_count,   
       CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
       p.avatar_url,
-      p.uuid AS author_profile_uuid, -- 🧠 NEW: Grab the author's profile UUID for the frontend button!
+      p.uuid AS author_profile_uuid, 
       c.user_id,
 
-
-      -- Checks our interactions table to see if THIS user liked it
       EXISTS (
         SELECT 1 FROM interactions 
         WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like'
       ) AS is_liked,
-      -- Checks our interactions table to see if THIS user reposted it
+      
       EXISTS (
         SELECT 1 FROM interactions 
         WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost'
       ) AS is_reposted,
-      -- 🔽 NEW: Checks our follows table to see if THIS user follows the author
+      
       EXISTS (
         SELECT 1 FROM follows 
         WHERE follower_id = $1 AND following_id = c.user_id
       ) AS is_following
-
-
       
      FROM content c 
      LEFT JOIN profiles p ON c.user_id = p.id 
-     ORDER BY c.created_at DESC`,
-    [numericUserId]
-  );
+     WHERE c.created_at <= $2 `;
 
-  return result.rows;
+  // 4. Anchor timestamp pointer check for pagination scrolling
+  if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad') {
+    const last_post_creation_date = new Date(Number(fresh_load_pointer));
+    queryText += ` AND c.created_at < $3 `;
+    queryParams.push(last_post_creation_date);
+  }
+
+  // 5. Sorted strictly by time. Global content and followed content are beautifully blended.
+  queryText += ` ORDER BY c.created_at DESC LIMIT 40`;
+
+  const result = await pool.query(queryText, queryParams);
+  const tasksFeed = result.rows;
+
+  // 6. Calculate your next moving bookmark timestamp token
+  let next_post_timestamp = null;
+  if (tasksFeed.length === 40) {
+    const lastItem = tasksFeed[tasksFeed.length - 1];
+    next_post_timestamp = new Date(lastItem.created_at).getTime();
+  }
+
+  return {
+    tasksFeed,
+    next_post_timestamp
+  };
 };

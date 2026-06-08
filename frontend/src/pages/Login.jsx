@@ -21,7 +21,7 @@ const Login = () => {
   });
   const [errors, setErrors] = useState({}); // Holds validation error items
   const [isLoading, setIsLoading] = useState(false);
-  const { getTasks } = useContext(TaskContext);
+  const { FreshLoad } = useContext(TaskContext);
   const navigate = useNavigate();
 
   const { email, password } = login;
@@ -59,7 +59,7 @@ const Login = () => {
         email: "",
         password: "",
       });
-      await getTasks();
+      await FreshLoad();
       navigate("/home");
       console.log(res);
     } catch (err) {

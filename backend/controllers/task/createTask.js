@@ -1,9 +1,9 @@
 import TaskInputError from "../../utils/taskInputError.js";
 import sharp from "sharp";
-import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"; // Added DeleteObjectCommand for rollback
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"; 
 import s3 from "../../config/AwsS3ClientConfig.js";
 import redisClient from "../../config/redisCreateClient.js";
-import pool from "../../config/supabaseConfig.js"; // Imported the pool to manage connections
+import pool from "../../config/supabaseConfig.js"; 
 
 // Import your newly created database service workers
 import { insertNewTask, fetchHydratedTaskById } from "../../services/task/createTaskService.js";
@@ -50,15 +50,33 @@ export const createTask = async (req, res, next) => {
     // Execution Layer 2: Run the profile mapping hydration service worker (passing dbClient)
     const resultWithUser = await fetchHydratedTaskById(savedTaskData.id, dbClient);
 
-    await redisClient.del(`tasks_feed:${user_uuid}`);
-    await redisClient.del(`journal_feed:${user_uuid}`); // 👈 Add this clean line here!
-    
-    console.log(`🗑️ Cache busted everywhere for user: ${user_id}`);
-
-    console.log(`🗑️ Cache busted for user: ${user_id}`);
-
-    // If everything up to this point succeeds, permanently commit the database data
+    // 🔒 FIXED STEP 1: Permanently commit your database records FIRST
     await dbClient.query("COMMIT");
+
+    // =================================================================
+    // 🧹 FIXED STEP 2: WILDCARD REDIS CACHE INVALIDATION BROOM SYSTEM
+    // =================================================================
+    try {
+      if (user_uuid) {
+        // ── A. Sweep out all paginated timeline cache snapshots from the Home Feed ──
+        const homeFeedPattern = `tasks_feed:${user_uuid}:*`;
+        const homeKeys = await redisClient.keys(homeFeedPattern);
+        if (homeKeys.length > 0) {
+          await redisClient.del(homeKeys);
+          console.log(`🧹 Creation Cache Reset: Swept away ${homeKeys.length} home feed chunks.`);
+        }
+
+        // ── B. Sweep out all paginated timeline cache snapshots from the Private Feed ──
+        const journalPattern = `journal_feed:${user_uuid}:*`;
+        const journalKeys = await redisClient.keys(journalPattern);
+        if (journalKeys.length > 0) {
+          await redisClient.del(journalKeys);
+          console.log(`🧹 Creation Cache Reset: Swept away ${journalKeys.length} private feed chunks.`);
+        }
+      }
+    } catch (cacheErr) {
+      console.error("⚠️ Non-critical Error in cache-busting during post creation:", cacheErr.message);
+    }
 
     return res.json({
       message: "Content created successfully",
@@ -66,10 +84,13 @@ export const createTask = async (req, res, next) => {
     });
   } catch (err) {
     // EMERGENCY ROLLBACK BLOCK
-    // 1. Undo any database queries executed during this transaction
-    await dbClient.query("ROLLBACK");
+    try {
+      await dbClient.query("ROLLBACK");
+    } catch (rbErr) {
+      // Quietly swallow if the transaction client connection was already broken
+    }
 
-    // 2. If we uploaded a new file to S3 but the DB failed, delete it immediately from storage
+    // If we uploaded a new file to S3 but the DB failed, delete it immediately from storage
     if (uploadedFileName) {
       try {
         await s3.send(new DeleteObjectCommand({

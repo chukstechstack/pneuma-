@@ -19,7 +19,8 @@ const CreateTask = () => {
     tags: "",
   });
 
-  const { addTaskToState} = useContext(TaskContext);
+  const { update_Created_Task_In_UseContext_State } =
+    useContext(TaskContext);
   const navigate = useNavigate();
 
   const { content, img } = formData;
@@ -40,9 +41,7 @@ const CreateTask = () => {
     });
     try {
       setIsLoading(true); /*  4. TRIGGER SPINNER ON START */
-      const res = await api.post("/task", data, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await api.post("/task", data);
 
       setFormData({
         title: "",
@@ -52,8 +51,8 @@ const CreateTask = () => {
         tags: "",
         user_id: "",
       });
-      addTaskToState(res.data.newTask);
-    
+          update_Created_Task_In_UseContext_State(res.data.newTask);
+
       navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || err.message;

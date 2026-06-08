@@ -19,7 +19,7 @@ export const patchTask = async (req, res, next) => {
     await dbClient.query("BEGIN");
 
     if (req.file) {
-      // FIX 1: Pass dbClient into fetchOldTaskImage so it runs inside the transaction
+      // Pass dbClient into fetchOldTaskImage so it runs inside the transaction
       const oldImgRecord = await fetchOldTaskImage(uuid, user_id, dbClient);
       const oldImgUrl = oldImgRecord?.img;
       const operations = [];
@@ -46,7 +46,7 @@ export const patchTask = async (req, res, next) => {
 
       operations.push(optimizePromise);
 
-      // FIX 2: Safely handle concurrent operations without processing double records
+      // Safely handle concurrent operations without processing double records
       const completedOps = await Promise.all(operations);
 
       // The optimized image buffer will always be the last element in your operations array
@@ -80,27 +80,37 @@ export const patchTask = async (req, res, next) => {
       return res.status(404).json({ error: "Task not found or unauthorized" });
     }
 
+    // If everything up to this point succeeds, permanently commit the database data FIRST
+    await dbClient.query("COMMIT");
 
+    // =================================================================
+    // 🧹 FIXED: WILDCARD REDIS CACHE INVALIDATION SYSTEM (RUNS AFTER COMMIT)
+    // =================================================================
     try {
-      // ── A. Clear your personal homepage timeline feed cache ──
-      const homeCacheKey = `tasks_feed:${user_uuid}`;
-      await redisClient.del(homeCacheKey);
-      console.log(`🗑️ [CACHE RESET]: Home timeline feed busted for user: ${user_id}`);
+      if (user_uuid) {
+        // ── A. Sweep out all paginated timeline cache snapshots from the Home Feed ──
+        const homeFeedPattern = `tasks_feed:${user_uuid}:*`;
+        const homeKeys = await redisClient.keys(homeFeedPattern);
+        if (homeKeys.length > 0) {
+          await redisClient.del(homeKeys);
+          console.log(`🧹 Cache Reset: Swept away ${homeKeys.length} paginated home feed chunks.`);
+        }
 
-      // ── B. Clear your clean, single private journal page cache ──
-      const journalCacheKey = `journal_feed:${user_uuid}`;
-      await redisClient.del(journalCacheKey);
-      console.log(`🗑️ [CACHE RESET]: Private journal feed busted cleanly for user: ${user_id}`);
-
+        // ── B. Sweep out all paginated timeline cache snapshots from your Private Feed ──
+        const journalPattern = `journal_feed:${user_uuid}:*`;
+        const journalKeys = await redisClient.keys(journalPattern);
+        if (journalKeys.length > 0) {
+          await redisClient.del(journalKeys);
+          console.log(`🧹 Cache Reset: Swept away ${journalKeys.length} paginated private feed chunks.`);
+        }
+      }
     } catch (cacheErr) {
       console.error("⚠️ Non-critical Error in cache-busting invalidation process:", cacheErr.message);
     }
-    // If everything up to this point succeeds, permanently commit the database data
-    await dbClient.query("COMMIT");
 
     return res.json({
       message: "Task updated successfully",
-      updatedTask: finalUpdateResult.rows[0]
+      updatedTask: finalUpdateResult.rows[0] // 🎯 Matches your frontend update_Edited_Task_In_UseContext_State(res.data.updatedTask) hook perfectly
     });
 
   } catch (err) {
@@ -111,7 +121,7 @@ export const patchTask = async (req, res, next) => {
       // Quietly ignore if transaction wasn't active
     }
 
-    // If we uploaded a new file to S3 but the DB failed, delete it immediately
+    // If we uploaded a new file to S3 but the DB failed, delete it immediately from storage
     if (uploadedFileName) {
       try {
         await s3.send(new DeleteObjectCommand({

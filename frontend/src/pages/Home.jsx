@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import TaskContext from "../context/TaskContext.jsx";
 import api from "../api/axios.js";
@@ -6,7 +6,6 @@ import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/HomeFeed.css";
-// Import your unified styles framework
 
 const HomePage = () => {
   const {
@@ -16,21 +15,38 @@ const HomePage = () => {
     currentUserId,
     currentUserUuid,
     loading: contextLoading,
-    updateSingleTaskInState,
-    toggleInteractionInState,
-    toggleFollowInState,
+    update_Engagement_frm_Database,
+    toggle_Engagement_In_React_State,
+    update_Follow_Request_In_useContext_State,
+    getTasks,
+    has_Next_Post_Timestamp,
   } = useContext(TaskContext);
 
-  const handleFollow = async (targetAuthorUuid) => {
-    // 🧠 SAFETY GATES: Stop the click early if a user tries to follow themselves!
-    if (currentUserUuid === targetAuthorUuid) {
+  // 🧠 SEAMLESS SCROLL LISTENER FOR HISTORICAL TIMELINE
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!has_Next_Post_Timestamp) return;
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 100
+      ) {
+        getTasks(false); // 'false' tells context to APPEND next batch instead of overwriting
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [getTasks, has_Next_Post_Timestamp]);
+
+  const handleFollow = async ( targetProfileUuid) => {
+    if (currentUserUuid ===  targetProfileUuid) {
       alert("You cannot follow your own sanctuary profile.");
       return;
     }
 
-    toggleFollowInState(targetAuthorUuid);
+    update_Follow_Request_In_useContext_State( targetProfileUuid);
     try {
-      const res = await api.post(`/task/profile/follow/${targetAuthorUuid}`);
+      const res = await api.post(`/task/profile/follow/${targetProfileUuid}`);
       const isFollowingServerTruth = res.data.isFollowing;
       console.log(
         `✅ [FOLLOW SYNCED]: Follow status changed to ${isFollowingServerTruth}`,
@@ -40,12 +56,12 @@ const HomePage = () => {
       alert(
         "Unable to update follow connection. Please check your internet connection.",
       );
-      toggleFollowInState(targetAuthorUuid);
+      update_Follow_Request_In_useContext_State( targetProfileUuid);
     }
   };
+
   const handleInteraction = async (taskUuid, type) => {
     console.log("1. Click triggered for UUID:", taskUuid, "Type:", type);
-    // 🔽 FIXED: Added .toLowerCase() to both sides to prevent casing bugs!
     const originalTask = tasks.find(
       (t) => t.uuid?.toLowerCase() === taskUuid?.toLowerCase(),
     );
@@ -54,17 +70,16 @@ const HomePage = () => {
       return;
     }
     console.log("2. Task found! Sending to backend...");
-    // 🔽 Pass the actual task.uuid from the array to keep things perfectly safe
     const stableUuid = originalTask.uuid;
-    toggleInteractionInState(stableUuid, type);
+    toggle_Engagement_In_React_State(stableUuid, type);
 
     try {
       const res = await api.post(`/task/interaction/${stableUuid}`, { type });
-      const updatedPost = res.data.updatedPost;
-      updateSingleTaskInState(updatedPost, type);
+        const { action, updatedPost } = res.data;
+      update_Engagement_frm_Database(updatedPost, type, action);
     } catch (err) {
       console.error("Backend failed, rolling back UI change:", err);
-      toggleInteractionInState(stableUuid, type);
+      toggle_Engagement_In_React_State(stableUuid, type);
       alert("Connection failed. Unable to save your response");
     }
   };
@@ -75,7 +90,6 @@ const HomePage = () => {
 
     if (originalIndex === -1) return;
     deleteTaskFromState(uuid);
-
     try {
       await api.delete(`/task/${uuid}`);
     } catch (err) {
@@ -85,39 +99,17 @@ const HomePage = () => {
     }
   };
 
-  if (contextLoading) {
+  if (contextLoading && tasks.length === 0) {
     return <FullPageLoader />;
   }
 
   return (
-    /* 🚀 RENEWED BRAND NEW STRUCTURAL WRAPPERS */
     <div className="pneuma-app-shell">
       <NavBar currentUserUuid={currentUserUuid} />
       <div className="pneuma-main-stage">
-        {/* PROFILE SIDEBAR SECTION */}
-        <aside className="pneuma-left-wing-sidebar">
-          <div className="profile-sanctuary-card">
-            <div className="profile-card-banner" />
-
-            <div className="profile-info-block">
-              <h3 className="profile-display-name">Chukwunyelu Ki...</h3>
-              <p className="profile-app-role">Sanctuary Keeper</p>
-            </div>
-
-            <div className="sidebar-journal-nav-wrapper"></div>
-          </div>
-        </aside>
-
-        {/* TIMELINE FEED SYSTEM */}
+        {/* TIMELINE FEED SYSTEM ONLY */}
         <main className="pneuma-central-feed">
-          <div className="create-testimony-trigger-panel">
-            {/* <Link
-              to="/createtask"
-              className="share-testimony-input-placeholder"
-            >
-              Share a testimony or insight...
-            </Link> */}
-          </div>
+          <div className="create-testimony-trigger-panel"></div>
 
           <div className="pneuma-stream-wrapper">
             {tasks.map((task) => (
@@ -132,6 +124,16 @@ const HomePage = () => {
               />
             ))}
           </div>
+
+          {/* SUBTLE FOOTER LOADER */}
+          {contextLoading && tasks.length > 0 && (
+            <div
+              className="pneuma-pagination-loading-indicator"
+              style={{ textAlign: "center", padding: "20px", color: "#888" }}
+            >
+              Reflecting on earlier entries...
+            </div>
+          )}
         </main>
       </div>
     </div>

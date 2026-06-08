@@ -6,27 +6,38 @@ export const journalFeed = async (req, res, next) => {
   const logged_in_user_uuid = req.user?.uuid; 
   const { journalUuid } = req.params;         
 
-  // 🎯 THE FIXED MATCHING KEY: No more viewer strings!
-  const cacheKey = `journal_feed:${journalUuid}`;
+  // 1. Unpack the exact matching pagination parameters from the URL query strings
+  const freeze_time = req.query.freeze_time || String(Date.now());
+  const fresh_load_pointer = req.query.fresh_load || 'Yes_Is_FreshLoad';
+
+  // 2. FIXED CACHE KEY: Include the timestamps so distinct pages stay in separate Redis folders!
+  const redisKey = `journal_feed:${journalUuid}:${freeze_time}:${fresh_load_pointer}`;
 
   try {
-    const cachedData = await redisClient.get(cacheKey);
-    if (cachedData) {
-      console.log("⚡ Redis Hit: Serving journal feed from clean cache");
-      return res.json(JSON.parse(cachedData));
+    const redisData = await redisClient.get(redisKey);
+    if (redisData) {
+      console.log(`⚡ Redis Hit: Serving journal feed [Time: ${freeze_time}] [Pointer: ${fresh_load_pointer}]`);
+      return res.json(JSON.parse(redisKey));
     }
 
-    console.log("🐢 Redis Miss: Fetching journal from Postgres");
+    console.log(`🐢 Redis Miss: Fetching journal from Postgres [Time: ${freeze_time}] [Pointer: ${fresh_load_pointer}]`);
 
-    const journalTasks = await fetchUserJournalFeed(journalUuid, logged_in_user_uuid);
+    // 3. Pass your parameters down into your underlying database data query service
+    const { journalFeedTasks, next_post_timestamp } = await fetchUserJournalFeed(
+      journalUuid, 
+      logged_in_user_uuid,
+      freeze_time,
+      fresh_load_pointer
+    );
 
     const responseData = { 
-      tasks: journalTasks, 
+      tasks: journalFeedTasks, 
+      next_post_timestamp: next_post_timestamp || null, // 🎯 Crucial token for your frontend scroll listener
       currentUserId: req.user?.id 
     };
 
-    // Save the results to Redis for 10 minutes
-    await redisClient.set(cacheKey, JSON.stringify(responseData), { EX: 600 });
+    // Save the results to Redis for 5 minutes (300 seconds) to maintain a lightweight memory footprint
+    await redisClient.set(redisKey, JSON.stringify(responseData), { EX: 300 });
 
     return res.json(responseData);
   } catch (err) {

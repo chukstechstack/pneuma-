@@ -5,7 +5,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import HomePage from "./pages/Home.jsx";
 import CreateTask from "./pages/CreateTask.jsx";
-import EditPost from "./pages/EditTask.jsx";
+import PatchFeed from "./pages/PatchFeed.jsx";
 import { TaskProvider } from "./context/TaskContext.jsx";
 import ProfilePageLog from "./pages/Profile.jsx";
 import JournalPage from "./pages/JournalFeed.jsx";
@@ -19,9 +19,12 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/createtask" element={<CreateTask />} />
-          <Route path="/edittask/:uuid" element={<EditPost />} />
+          <Route path="/patchfeed/:uuid" element={<PatchFeed />} />
           <Route path="/profile" element={<ProfilePageLog />} /> // Change this
-          <Route path="/journalfeed/:journalUuid" element={<JournalPage />} />
+          <Route
+            path="/journalfeed/:cuurent_User_privateFeed_post_Uuid"
+            element={<JournalPage />}
+          />
         </Routes>
       </Router>
     </TaskProvider>

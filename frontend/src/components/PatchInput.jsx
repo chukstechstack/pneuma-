@@ -2,13 +2,14 @@ import React from "react";
 // Change this line from Register.css to inputs.css
 import "../styles/CreateTask.css";
 // Links safely to your master consolidated stylesheet hub
-import { ImagePlus, CheckSquare } from 'lucide-react';
+import { ImagePlus, CheckSquare } from "lucide-react";
 
-const TaskInput = ({ 
-  handleChange, 
-  content, 
-  img, 
-  handleSubmit 
+const TaskInput = ({
+  handleChange,
+  content,
+  img,
+  handleSubmit,
+  previewUrl,
 }) => {
   // Determine if we need to show a label or filename for the image preview banner
   const hasImage = !!img;
@@ -18,7 +19,6 @@ const TaskInput = ({
   return (
     <div className="testimony-form-container">
       <form onSubmit={handleSubmit} className="testimony-form-wrapper">
-        
         {/* ==================== TEXT INPUT SANCTUARY ==================== */}
         <textarea
           name="content"
@@ -34,11 +34,13 @@ const TaskInput = ({
         {hasImage && (
           <div className="testimony-preview-image-card">
             <span className="testimony-preview-label-badge">
-              {imageName.length > 20 ? `${imageName.substring(0, 20)}...` : imageName}
+              {imageName.length > 20
+                ? `${imageName.substring(0, 20)}...`
+                : imageName}
             </span>
             <div className="testimony-preview-frame">
               <img
-                src={isNewFile ? URL.createObjectURL(img) : img}
+                src={previewUrl || img} // 👈 Zero execution on render!
                 alt="preview"
                 className="testimony-preview-actual-img"
               />
@@ -48,7 +50,6 @@ const TaskInput = ({
 
         {/* ==================== ACTION HOVER CONTROL ROW ==================== */}
         <div className="testimony-form-actions-row">
-          
           {/* Custom Styled File Upload Button */}
           <label className="testimony-custom-file-upload-btn">
             <input
@@ -67,9 +68,7 @@ const TaskInput = ({
             <CheckSquare size={16} strokeWidth={2} />
             <span>Publish</span>
           </button>
-
         </div>
-
       </form>
     </div>
   );

@@ -1,13 +1,11 @@
 import React, { useState, useContext } from "react";
-import RegisterInput from "../components/RegisterInput.jsx";
-import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
+import RegisterInput from "../components/RegisterInput.jsx";
 import api from "../api/axios.js";
 import doveLogoUrl from "../assets/pneuma.png";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/Loader.css";
 import TaskContext from "../context/TaskContext.jsx";
-import ServerError from "../components/ServerError.jsx";
 // 🌟 Link your custom filename using standard brackets destructuring
 import { registerSchema } from "../components/zodShemaValidation.js";
 import "../styles/R_&_L_Inputs/R_Layout.css";
@@ -15,7 +13,7 @@ import "../styles/R_&_L_Inputs/R_Layout.css";
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { getTasks } = useContext(TaskContext);
+  const { FreshLoad } = useContext(TaskContext);
   const [errors, setErrors] = useState({});
   const [register, setRegister] = useState({
     password: "",
@@ -66,7 +64,7 @@ const Register = () => {
       const { confirmPassword: _confirmPassword, ...apiPayload } = register;
 
       await api.post("/auth/register", apiPayload);
-      await getTasks();
+      await FreshLoad();
 
       // Clear everything back to empty fields upon a successful account creation
       setRegister({

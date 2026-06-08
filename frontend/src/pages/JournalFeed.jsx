@@ -5,42 +5,56 @@ import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
 
-// Reuses your main workspace layout architecture
-
 const JournalPage = () => {
-  const { journalUuid } = useParams();
+  const { cuurent_User_privateFeed_post_Uuid } = useParams();
 
   const {
-    journalTasks,
+    privateFeedTasks,
     journalLoading,
-    getJournalFeed,
+    privateFeedHandler,
     currentUserId,
     currentUserUuid,
-    // 🔽 FIXED: We use your exact function names from TaskContext.jsx
-    toggleInteractionInState,
+    // 🎯 FIXED: Extracted using your exact context blueprint function names
+    toggle_Engagement_In_React_State,
     deleteTaskFromState,
-    toggleFollowInState,
+    update_Follow_Request_In_useContext_State,
+    has_Next_Journal_Timestamp,
   } = useContext(TaskContext);
 
-  // Auto-load your database information on arrival
   useEffect(() => {
-    if (journalUuid) {
-      getJournalFeed(journalUuid);
-    }
-  }, [journalUuid, getJournalFeed]);
+    const handleScroll = () => {
+      if (!has_Next_Journal_Timestamp) return;
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 100
+      ) {
+        privateFeedHandler(cuurent_User_privateFeed_post_Uuid, false); 
+      }
+    };
 
-  // 🛡️ THE SPINNER SHIELD: Shows your spinner while the database works
-  if (journalLoading) {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [
+    cuurent_User_privateFeed_post_Uuid,
+    privateFeedHandler,
+    has_Next_Journal_Timestamp,
+  ]);
+
+  useEffect(() => {
+    if (cuurent_User_privateFeed_post_Uuid) {
+      privateFeedHandler(cuurent_User_privateFeed_post_Uuid, true);
+    }
+  }, [cuurent_User_privateFeed_post_Uuid, privateFeedHandler]);
+
+  const journalTask = Array.isArray(privateFeedTasks) ? privateFeedTasks : [];
+
+  if (journalLoading && journalTask.length === 0) {
     return <FullPageLoader />;
   }
 
-  // 🛡️ THE ARRAY SHIELD: Prevents crashing if the data is missing or wrong
-  const journalTask = Array.isArray(journalTasks) ? journalTasks : [];
-
   return (
     <div className="home-layout">
-      {/* <DevBanner /> */}
-      <NavBar />
+      <NavBar currentUserUuid={currentUserUuid} />
 
       <div className="dashboard-grid">
         <main
@@ -90,15 +104,14 @@ const JournalPage = () => {
                 yet.
               </div>
             ) : (
-              journalTask.map((task) => (
+              journalTask.map((task, index) => (
                 <Task
-                  key={task.uuid || task.id}
+                   key={`${task.uuid || task.id}-${index}`} 
                   task={task}
-                  // 🔽 FIXED: Pass the correct functions into the card properties
                   deleteTask={deleteTaskFromState}
                   isOwner={task.user_id === currentUserId}
-                  handleInteraction={toggleInteractionInState}
-                  handleFollow={toggleFollowInState}
+                  handleInteraction={toggle_Engagement_In_React_State}
+                  handleFollow={update_Follow_Request_In_useContext_State}
                   currentUserUuid={currentUserUuid}
                 />
               ))

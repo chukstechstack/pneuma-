@@ -11,7 +11,6 @@ export const deleteTask = async (req, res, next) => {
   const user_id = req.user?.id;
   const user_uuid = req.user?.uuid;
 
-
   // 2. Checkout a single isolated client connection from the pool
   const dbClient = await pool.connect();
 
@@ -36,7 +35,6 @@ export const deleteTask = async (req, res, next) => {
     // 4. Permanently seal database updates and immediately return connection to pool
     await dbClient.query("COMMIT");
 
-
     // 5. ASYNC BACKGROUND CLEANUP LAYER (Using your clean native URL Web API approach)
     const imgUrl = taskRecord.img;
     if (imgUrl) {
@@ -56,20 +54,28 @@ export const deleteTask = async (req, res, next) => {
         console.error("⚠️ Malformed image URL found during cleanup phase:", urlError.message);
       }
     }
+
     // =================================================================
-    // 6. REDIS CACHE INVALIDATION PIPELINE (HOME FEED + JOURNAL CORES)
+    // 6. FIXED: PAGINATED WILDCARD REDIS CACHE INVALIDATION BROOM SYSTEM
     // =================================================================
     try {
-      // ── A. Clear your personal homepage timeline feed cache ──
-      const homeCacheKey = `tasks_feed:${user_uuid}`;
-      await redisClient.del(homeCacheKey);
-      console.log(`🗑️ [CACHE RESET]: Home timeline feed busted for user: ${user_id}`);
+      if (user_uuid) {
+        // ── A. Sweep out all paginated timeline cache snapshots from the Home Feed ──
+        const homeFeedPattern = `tasks_feed:${user_uuid}:*`;
+        const homeKeys = await redisClient.keys(homeFeedPattern);
+        if (homeKeys.length > 0) {
+          await redisClient.del(homeKeys);
+          console.log(`🧹 Cache Reset: Swept away ${homeKeys.length} paginated home feed drawers.`);
+        }
 
-      // ── B. Clear your clean, single private journal page cache ──
-      const journalCacheKey = `journal_feed:${user_uuid}`;
-      await redisClient.del(journalCacheKey);
-      console.log(`🗑️ [CACHE RESET]: Private journal feed busted cleanly for user: ${user_id}`);
-
+        // ── B. Sweep out all paginated timeline cache snapshots from the Journal Feed ──
+        const journalPattern = `journal_feed:${user_uuid}:*`;
+        const journalKeys = await redisClient.keys(journalPattern);
+        if (journalKeys.length > 0) {
+          await redisClient.del(journalKeys);
+          console.log(`🧹 Cache Reset: Swept away ${journalKeys.length} paginated private journal pages.`);
+        }
+      }
     } catch (cacheErr) {
       console.error("⚠️ Non-critical Error in cache-busting invalidation process:", cacheErr.message);
     }
