@@ -167,6 +167,12 @@ export const TaskProvider = ({ children }) => {
       updated.splice(originalIndex, 0, restoredTask);
       return updated;
     });
+
+    setPrivateFeedTasks((prevTasks) => {
+      const updated = [...prevTasks];
+      updated.splice(originalIndex, 0, restoredTask);
+      return updated;
+    });
   };
 
   // ── OPTIMISTIC STATE FLASH ENGINE ──
@@ -175,7 +181,7 @@ export const TaskProvider = ({ children }) => {
       prevTasks.map((task) => {
         if (task.uuid !== stableUuid) return task;
 
-        const luminaField = type === "like" ? "is_liked" : "is_reposted";
+        const luminaField = type === "like" ? "is_liked" : "is_reposted"; 
         const countField = type === "like" ? "likes_count" : "reposts_count";
         const currentlyActive = task[luminaField];
 
@@ -216,7 +222,7 @@ export const TaskProvider = ({ children }) => {
               {
                 ...targetTask,
                 is_reposted: true,
-                reposts_count: (Number(targetTask.reposts_count) || 0) + 1,
+                reposts_count:  (Number(targetTask.reposts_count) || 0) + 1,
                 is_repost_badge: true,
               },
               ...prevJournal,

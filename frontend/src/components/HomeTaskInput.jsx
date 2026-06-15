@@ -38,6 +38,9 @@ const Task = ({
   return (
     /* 🚀 RENEWED TARGET CONTAINER CLASS */
     <div className="pneuma-post-card-root">
+
+
+      
       {/* ==================== 1. BRANDED HUB HEADER ==================== */}
       <div className="pneuma-post-header-row">
         <div className="pneuma-post-author-group">
@@ -106,6 +109,12 @@ const Task = ({
           </div>
         )}
       </div>
+
+
+
+
+
+
 
       {/* ==================== 2. DESCRIPTION INSIGHT TEXT ==================== */}
       <div className="pneuma-post-body-text">
