@@ -10,6 +10,8 @@ import { upload } from "../config/multerConfig.js";
 import { toggleInteraction } from "../controllers/task/interaction.js";
 import { toggleFollow } from "../controllers/task/follow.js";
 import { journalFeed } from "../controllers/task/journalFeed.js";
+import { commentFeed } from "../controllers/task/commentFeed.js";
+import { getComment } from "../controllers/task/fetchComment.js";
 const taskRoute = express.Router();
 
 taskRoute.get("/", ensureAuthenticated, getTask);
@@ -19,4 +21,8 @@ taskRoute.delete("/:uuid", ensureAuthenticated, deleteTask);
 taskRoute.post("/interaction/:contentUuid", ensureAuthenticated, toggleInteraction)
 taskRoute.post("/profile/follow/:targetProfileUuid", ensureAuthenticated, toggleFollow)
 taskRoute.get("/journalfeed/:journalUuid", ensureAuthenticated, journalFeed);
+taskRoute.post("/:contentUuid/comments", ensureAuthenticated, commentFeed);
+taskRoute.get("/:contentUuid/fetchComments", ensureAuthenticated, getComment); // 🎯 FIXED: Removed the 's' at the end!
+
+
 export default taskRoute;

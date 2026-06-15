@@ -45,8 +45,13 @@ export const fetchGlobalTasksFeed = async (user_uuid, freeze_time, fresh_load_po
       EXISTS (
         SELECT 1 FROM follows 
         WHERE follower_id = $1 AND following_id = c.user_id
-      ) AS is_following
+      ) AS is_following,
       
+        EXISTS   (
+        SELECT COUNT(*)::INT FROM comments 
+        WHERE content_id = c.id
+      ) AS comments_count
+       
      FROM content c 
      LEFT JOIN profiles p ON c.user_id = p.id 
      WHERE c.created_at <= $2 `;

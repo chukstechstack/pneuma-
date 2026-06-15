@@ -181,7 +181,7 @@ export const TaskProvider = ({ children }) => {
       prevTasks.map((task) => {
         if (task.uuid !== stableUuid) return task;
 
-        const luminaField = type === "like" ? "is_liked" : "is_reposted"; 
+        const luminaField = type === "like" ? "is_liked" : "is_reposted";
         const countField = type === "like" ? "likes_count" : "reposts_count";
         const currentlyActive = task[luminaField];
 
@@ -222,7 +222,7 @@ export const TaskProvider = ({ children }) => {
               {
                 ...targetTask,
                 is_reposted: true,
-                reposts_count:  (Number(targetTask.reposts_count) || 0) + 1,
+                reposts_count: (Number(targetTask.reposts_count) || 0) + 1,
                 is_repost_badge: true,
               },
               ...prevJournal,
@@ -294,6 +294,36 @@ export const TaskProvider = ({ children }) => {
     );
   };
 
+  // ── COMMENTS ARCHITECTURE MEMORY ──
+  const [comments, setComments] = useState([]);
+
+  const update_Created_Comment_In_Context_State = (newComment, contentUuid) => {
+    // 1. Adds the text object to your screen memory array
+    setComments((prevComments) => [newComment, ...prevComments]);
+
+    // 2. Increments the home feed task counter
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.uuid !== contentUuid) return task;
+        return {
+          ...task,
+          comments_count: (Number(task.comments_count) || 0) + 1,
+        };
+      }),
+    );
+
+    // 3. Increments the private journal feed task counter
+    setPrivateFeedTasks((prevJournalTasks) =>
+      prevJournalTasks.map((task) => {
+        if (task.uuid !== contentUuid) return task;
+        return {
+          ...task,
+          comments_count: (Number(task.comments_count) || 0) + 1,
+        };
+      }),
+    );
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -314,6 +344,8 @@ export const TaskProvider = ({ children }) => {
         privateFeedHandler,
         has_Next_Post_Timestamp,
         has_Next_Journal_Timestamp,
+        comments,
+        update_Created_Comment_In_Context_State,
       }}
     >
       {children}

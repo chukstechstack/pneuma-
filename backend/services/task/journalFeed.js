@@ -38,16 +38,18 @@ export const fetchUserJournalFeed = async (journalOwnerUuid, loggedInUserUuid, f
         c.likes_count, c.reposts_count, c.shares_count,   
         CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
         p.avatar_url, p.uuid AS author_profile_uuid, c.user_id,
-        FALSE AS is_repost_badge, -- It's their own original post
+        FALSE AS is_repost_badge, 
         NULL AS reposted_by_name,
         
-        -- Checking interaction checkboxes for the active viewer ($1)
+        -- 🌟 ADDED FOR LAYER 1: Count comments for original posts
+        (SELECT COUNT(*)::INT FROM comments WHERE content_id = c.id) AS comments_count,
+
         EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like') AS is_liked,
         EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost') AS is_reposted,
         EXISTS (SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = c.user_id) AS is_following
       FROM content c 
       LEFT JOIN profiles p ON c.user_id = p.id 
-      WHERE c.user_id = $2 -- Filters for the journal owner's numbers
+      WHERE c.user_id = $2 
 
       UNION ALL
 
@@ -57,10 +59,12 @@ export const fetchUserJournalFeed = async (journalOwnerUuid, loggedInUserUuid, f
         c.likes_count, c.reposts_count, c.shares_count,   
         CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
         p.avatar_url, p.uuid AS author_profile_uuid, c.user_id,
-        TRUE AS is_repost_badge, -- Tells frontend to paint the "Reposted" text banner!
+        TRUE AS is_repost_badge, 
         CONCAT(rp.first_name, ' ', rp.last_name) AS reposted_by_name,
         
-        -- Keeps checkbox states accurate for the active viewer ($1)
+        -- 🌟 ADDED FOR LAYER 2: Count comments for reposted content
+        (SELECT COUNT(*)::INT FROM comments WHERE content_id = c.id) AS comments_count,
+
         EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like') AS is_liked,
         EXISTS (SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost') AS is_reposted,
         EXISTS (SELECT 1 FROM follows WHERE follower_id = $1 AND following_id = c.user_id) AS is_following
@@ -70,7 +74,8 @@ export const fetchUserJournalFeed = async (journalOwnerUuid, loggedInUserUuid, f
       LEFT JOIN profiles rp ON i.user_id = rp.id
       WHERE i.user_id = $2 AND i.interaction_type = 'repost'
     ) AS sub
-    WHERE sub.created_at <= $3`; // Rule 1: Freeze timeline ceiling at your baseline snapshot time!
+    WHERE sub.created_at <= $3`;
+  // Rule 1: Freeze timeline ceiling at your baseline snapshot time!
 
   // 5. Apply pagination cursor floor if scrolling down to page 2, 3, etc.
   if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad') {

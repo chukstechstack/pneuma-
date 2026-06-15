@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react";
+import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react"; // 🎯 Just a single dot!
+// 🎯 FIXED: Imported the custom drawer component
+// 🎯 FIXED: Made the entire file name path lowercase to match your file on disk perfectly!
+import CommentDrawer from "../components/comentdrawer.jsx";
 
 const Task = ({
   task,
@@ -24,6 +27,7 @@ const Task = ({
   const [showMenu, setShowMenu] = useState(false);
   const textLimit = 123;
   const shouldShowMore = content?.length > textLimit;
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
 
   // 🧠 DATE FORMATTER ENGINE: Converts raw timestamps into a beautiful "Month Day" string
   const formatTaskDate = (rawDateString) => {
@@ -38,9 +42,6 @@ const Task = ({
   return (
     /* 🚀 RENEWED TARGET CONTAINER CLASS */
     <div className="pneuma-post-card-root">
-
-
-      
       {/* ==================== 1. BRANDED HUB HEADER ==================== */}
       <div className="pneuma-post-header-row">
         <div className="pneuma-post-author-group">
@@ -110,12 +111,6 @@ const Task = ({
         )}
       </div>
 
-
-
-
-
-
-
       {/* ==================== 2. DESCRIPTION INSIGHT TEXT ==================== */}
       <div className="pneuma-post-body-text">
         <div>
@@ -156,10 +151,15 @@ const Task = ({
           </button>
 
           {/* COMMENT BUTTON */}
-          <button className="actionButton comment-btn">
+          <button
+            onClick={() => setIsCommentOpen(!isCommentOpen)}
+            className="actionButton comment-btn"
+          >
             <MessageSquare size={16} strokeWidth={2} />
             <span className="action-label">Reply</span>
-            <span className="inline-action-counter">0</span>
+            <span className="inline-action-counter">
+              {task.comments_count || 0}
+            </span>
           </button>
 
           {/* REPOST BUTTON */}
@@ -195,6 +195,13 @@ const Task = ({
             className="taskContentImageCard"
           />
         </div>
+      )}
+
+      {isCommentOpen && (
+        <CommentDrawer
+          contentUuid={uuid}
+          onClose={() => setIsCommentOpen(false)} // 🎯 FIXED: Spelled component correctly and used your true state setter switch
+        />
       )}
     </div>
   );

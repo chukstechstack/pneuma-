@@ -7,6 +7,7 @@ import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/HomeFeed.css";
 
+
 const HomePage = () => {
   const {
     tasks,

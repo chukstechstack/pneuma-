@@ -17,7 +17,7 @@ export const journalFeed = async (req, res, next) => {
     const redisData = await redisClient.get(redisKey);
     if (redisData) {
       console.log(`⚡ Redis Hit: Serving journal feed [Time: ${freeze_time}] [Pointer: ${fresh_load_pointer}]`);
-      return res.json(JSON.parse(redisKey));
+      return res.json(JSON.parse(redisData));
     }
 
     console.log(`🐢 Redis Miss: Fetching journal from Postgres [Time: ${freeze_time}] [Pointer: ${fresh_load_pointer}]`);
