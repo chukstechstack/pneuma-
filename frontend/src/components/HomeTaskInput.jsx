@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react"; // 🎯 Just a single dot!
 // 🎯 FIXED: Imported the custom drawer component
 // 🎯 FIXED: Made the entire file name path lowercase to match your file on disk perfectly!
-import CommentDrawer from "../components/comentdrawer.jsx";
+import CommentDrawer from "../components/ComentDrawer.jsx";
 
 const Task = ({
   task,
