@@ -1,51 +1,108 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import api from "../api/axios.js";
-// 🎯 FIXED: Removed the curly braces around TaskContext to match your default export style!
 import TaskContext from "../context/TaskContext.jsx";
-// 🎯 FIXED: Wrapped TaskContext in curly braces if it's a named export
 
 const CommentDrawer = ({ contentUuid, onClose }) => {
-  // 🎯 FIXED: Changed from array brackets [] to object braces {} to match your Provider value template
-  const { comments, update_Created_Comment_In_Context_State } =
-    useContext(TaskContext);
+  const {
+    tasks,
+    currentUserId,
+    comments,
+    update_Created_Comment_In_Context_State,
+    set_fetched_Comments_In_Context_State,
+  } = useContext(TaskContext);
 
-  // 🎯 FIXED: Initialized with an empty string "" to prevent uncontrolled input crashes
+  const thisPostComments = comments[contentUuid] || [];
   const [commentText, setCommentText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  // 🔄 Standalone function to fetch comments from database
+  const loadComment = async () => {
+    setIsLoading(true);
+    try {
+      const res = await api.get(`task/${contentUuid}/fetchComments`);
+      const commentsArray = res.data.comments || [];
+      set_fetched_Comments_In_Context_State(commentsArray, contentUuid);
+    } catch (err) {
+      console.error("Fetch failed:", err.message);
+    } finally {
+      setIsLoading(false); // 🎯 GUARANTEES Syncing... turning off
+    }
+  };
+
+  useEffect(() => {
+    if (contentUuid) {
+      loadComment();
+    }
+  }, [contentUuid]);
 
   const handleSend = async (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
 
     const textToSend = commentText;
-    setCommentText("");
+    setCommentText(""); // Instantly clear input box
+    const loggedInUserPost = tasks.find((t) => t.user_id === currentUserId);
+    const realAuthorName = loggedInUserPost
+      ? loggedInUserPost.author_name
+      : "You";
+
+    // 🎯 STEP 1: CREATE OPTIMISTIC VIEW OBJECT
+    const optimisticComment = {
+      uuid: `temp-${Date.now()}`,
+      comment_text: textToSend,
+      author_name: realAuthorName,
+      created_at: new Date().toISOString(),
+    };
+
+    // 🎯 STEP 2: INJECT INSTANTLY TO SCREEN MAP
+    update_Created_Comment_In_Context_State(optimisticComment, contentUuid);
 
     try {
-      const res = await api.post(`/task/${contentUuid}/comments`, {
+      // 🎯 STEP 3: RUN BACKEND POST IN BACKGROUND
+      await api.post(`/task/${contentUuid}/comments`, {
         comment_text: textToSend,
       });
 
-      console.log("save successfuly", res.data);
-      update_Created_Comment_In_Context_State(res.data, contentUuid);
+      // 🎯 STEP 4: FETCH THE REAL RECORD TRUTH TO OVERWRITE FRESHLY
+      const freshRes = await api.get(`task/${contentUuid}/fetchComments`);
+      set_fetched_Comments_In_Context_State(
+        freshRes.data.comments || [],
+        contentUuid,
+      );
     } catch (err) {
-      console.error(err.message);
-      setCommentText(textToSend);
-      alert("could not send comment. Please check your connection");
+      console.error("Save failed, reverting changes...", err.message);
+      alert("Could not sync comment. Reloading list.");
+      loadComment(); // Automatically rolls back to database truth on network drop!
     }
   };
 
   return (
     <div
       style={{
-        background: "#1e2030", // Forces a clear dark background container
+        background: "#1e2030",
         padding: "15px",
         borderRadius: "8px",
         marginTop: "10px",
         border: "1px solid #3b4261",
       }}
     >
-      <h3 style={{ color: "#ffffff", margin: "0 0 10px 0", fontSize: "16px" }}>
-        Comments
-      </h3>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h3
+          style={{ color: "#ffffff", margin: "0 0 10px 0", fontSize: "16px" }}
+        >
+          Comments ({thisPostComments.length})
+        </h3>
+        {isLoading && (
+          <span style={{ color: "#7aa2f7", fontSize: "12px" }}>Syncing...</span>
+        )}
+      </div>
+
       <button
         onClick={onClose}
         style={{
@@ -59,7 +116,7 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
         Close Drawer
       </button>
 
-      {/* 📜 Scrollable List Box with clear color variables */}
+      {/* 📜 Scrollable List Box */}
       <div
         className="comments-list-box"
         style={{
@@ -69,12 +126,14 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
           marginBottom: "15px",
         }}
       >
-        {comments.length === 0 ? (
+        {thisPostComments.length === 0 && isLoading ? (
+          <p style={{ color: "#7aa2f7" }}>Loading thoughts...</p>
+        ) : thisPostComments.length === 0 ? (
           <p style={{ color: "#a9b1d6" }}>
             No thoughts recorded yet. Be the first to reply!
           </p>
         ) : (
-          comments.map((comment) => (
+          thisPostComments.map((comment) => (
             <div
               key={comment.uuid || comment.id}
               style={{
@@ -84,13 +143,11 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
                 borderRadius: "6px",
               }}
             >
-              {/* 🎯 FORCED BRIGHT BLUE FOR AUTHOR */}
               <strong
                 style={{ fontSize: "13px", display: "block", color: "#7aa2f7" }}
               >
                 {comment.author_name || "Anonymous"}
               </strong>
-              {/* 🎯 FORCED PURE WHITE FOR TEXT STRING */}
               <p
                 style={{
                   margin: "4px 0 0 0",

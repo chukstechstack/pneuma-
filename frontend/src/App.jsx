@@ -7,7 +7,7 @@ import HomePage from "./pages/Home.jsx";
 import CreateTask from "./pages/CreateTask.jsx";
 import PatchFeed from "./pages/PatchFeed.jsx";
 import { TaskProvider } from "./context/TaskContext.jsx";
-import ProfilePageLog from "./pages/Profile.jsx";
+import Profile from "./pages/Profile.jsx";
 import JournalPage from "./pages/JournalFeed.jsx";
 const App = () => {
   return (
@@ -20,9 +20,11 @@ const App = () => {
           <Route path="/home" element={<HomePage />} />
           <Route path="/createtask" element={<CreateTask />} />
           <Route path="/patchfeed/:uuid" element={<PatchFeed />} />
-          <Route path="/profile" element={<ProfilePageLog />} /> // Change this
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:targetProfileUuid" element={<Profile />} />
+
           <Route
-            path="/journalfeed/:cuurent_User_privateFeed_post_Uuid"
+            path="/journalfeed/:current_User_privateFeed_post_Uuid"
             element={<JournalPage />}
           />
         </Routes>

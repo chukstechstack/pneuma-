@@ -108,3 +108,36 @@ CREATE INDEX IF NOT EXISTS idx_interactions_lookup_composite ON interactions (us
 CREATE INDEX IF NOT EXISTS idx_follows_follower_following ON follows(follower_id, following_id);
 CREATE INDEX IF NOT EXISTS idx_follows_reverse_lookup ON follows (following_id, follower_id);
 
+
+CREATE TABLE conversations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+
+CREATE TABLE conversation_participants (
+    id SERIAL PRIMARY KEY,
+    conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    -- 🎯 NOTE: Change 'profiles(id)' if your profile table uses a different name or UUID type
+    user_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    -- Safety constraint: Prevents accidentally adding the exact same user to the same room twice
+    UNIQUE (conversation_id, user_id)
+);
+
+
+CREATE TABLE messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
+    -- 🎯 NOTE: Change 'profiles(id)' if your profile table uses a different column name or UUID type
+    sender_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    message_text TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+
+ALTER TABLE follows 
+ADD COLUMN status TEXT NOT NULL DEFAULT 'pending';

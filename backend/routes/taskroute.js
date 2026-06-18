@@ -12,17 +12,26 @@ import { toggleFollow } from "../controllers/task/follow.js";
 import { journalFeed } from "../controllers/task/journalFeed.js";
 import { commentFeed } from "../controllers/task/commentFeed.js";
 import { getComment } from "../controllers/task/fetchComment.js";
+import { establishConversation } from "../controllers/task/conversationController.js";
+import { acceptFollowRequest } from "../controllers/task/acceptFollowRequest.js";
+import { getSmartProfileFeed } from "../controllers/task/profileController.js";
+
 const taskRoute = express.Router();
 
 taskRoute.get("/", ensureAuthenticated, getTask);
-taskRoute.post("/", ensureAuthenticated, upload.single("img"), createTask);
-taskRoute.patch("/:uuid", ensureAuthenticated, upload.single("img"), patchTask);
-taskRoute.delete("/:uuid", ensureAuthenticated, deleteTask);
-taskRoute.post("/interaction/:contentUuid", ensureAuthenticated, toggleInteraction)
-taskRoute.post("/profile/follow/:targetProfileUuid", ensureAuthenticated, toggleFollow)
+taskRoute.get("/profile/:targetProfileUuid", ensureAuthenticated, getSmartProfileFeed);
 taskRoute.get("/journalfeed/:journalUuid", ensureAuthenticated, journalFeed);
-taskRoute.post("/:contentUuid/comments", ensureAuthenticated, commentFeed);
 taskRoute.get("/:contentUuid/fetchComments", ensureAuthenticated, getComment); // 🎯 FIXED: Removed the 's' at the end!
 
+taskRoute.post("/:contentUuid/comments", ensureAuthenticated, commentFeed);
+taskRoute.post("/", ensureAuthenticated, upload.single("img"), createTask);
+taskRoute.post("/interaction/:contentUuid", ensureAuthenticated, toggleInteraction)
+taskRoute.post("/profile/follow/:targetProfileUuid", ensureAuthenticated, toggleFollow)
+taskRoute.post("/:contentUuid/comments", ensureAuthenticated, commentFeed);
+taskRoute.post("/fetchConversation", ensureAuthenticated, establishConversation);
+taskRoute.post("/profile/accept/:followedUserUuid", ensureAuthenticated, acceptFollowRequest);
+
+taskRoute.patch("/:uuid", ensureAuthenticated, upload.single("img"), patchTask);
+taskRoute.delete("/:uuid", ensureAuthenticated, deleteTask);
 
 export default taskRoute;

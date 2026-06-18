@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
 
 const JournalPage = () => {
-  const { cuurent_User_privateFeed_post_Uuid } = useParams();
+  const { current_User_privateFeed_post_Uuid } = useParams();
 
   const {
     privateFeedTasks,
@@ -28,23 +28,23 @@ const JournalPage = () => {
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 100
       ) {
-        privateFeedHandler(cuurent_User_privateFeed_post_Uuid, false); 
+        privateFeedHandler(current_User_privateFeed_post_Uuid, false); 
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [
-    cuurent_User_privateFeed_post_Uuid,
+    current_User_privateFeed_post_Uuid,
     privateFeedHandler,
     has_Next_Journal_Timestamp,
   ]);
 
   useEffect(() => {
-    if (cuurent_User_privateFeed_post_Uuid) {
-      privateFeedHandler(cuurent_User_privateFeed_post_Uuid, true);
+    if (current_User_privateFeed_post_Uuid) {
+      privateFeedHandler(current_User_privateFeed_post_Uuid, true);
     }
-  }, [cuurent_User_privateFeed_post_Uuid, privateFeedHandler]);
+  }, [current_User_privateFeed_post_Uuid, privateFeedHandler]);
 
   const journalTask = Array.isArray(privateFeedTasks) ? privateFeedTasks : [];
 

@@ -1,9 +1,7 @@
 import React, { useState } from "react";
+import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react"; // 🎯 Just a single dot!
-// 🎯 FIXED: Imported the custom drawer component
-// 🎯 FIXED: Made the entire file name path lowercase to match your file on disk perfectly!
-import CommentDrawer from "../components/ComentDrawer.jsx";
+import CommentDrawer from "./ComentDrawer";
 
 const Task = ({
   task,
@@ -27,9 +25,13 @@ const Task = ({
   const [showMenu, setShowMenu] = useState(false);
   const textLimit = 123;
   const shouldShowMore = content?.length > textLimit;
-  const [isCommentOpen, setIsCommentOpen] = useState(false);
 
-  // 🧠 DATE FORMATTER ENGINE: Converts raw timestamps into a beautiful "Month Day" string
+  // 🎯 FIXED STARTING STATE: Looks into browser memory. If empty, defaults to null.
+  const [openDrawerId, setOpenDrawerId] = useState(
+    localStorage.getItem("active_drawer") || null,
+  );
+
+  // 🧠 DATE FORMATTER ENGINE
   const formatTaskDate = (rawDateString) => {
     if (!rawDateString) return "May 20";
     const dateObj = new Date(rawDateString);
@@ -40,28 +42,28 @@ const Task = ({
   };
 
   return (
-    /* 🚀 RENEWED TARGET CONTAINER CLASS */
     <div className="pneuma-post-card-root">
       {/* ==================== 1. BRANDED HUB HEADER ==================== */}
       <div className="pneuma-post-header-row">
         <div className="pneuma-post-author-group">
-          <img
+          <Link to={`/profile/${author_profile_uuid}`} >
+              <img
             src={fallbackUserAvatar}
             alt="profile snippet"
             className="pneuma-post-avatar-element"
           />
+
+        </Link>
+      
           <div className="pneuma-post-meta-column">
-            {/* 1. TOP LINE: Just the Author Name */}
             <div className="pneuma-post-author-name">
               {author_name || "Enlightened Luminary"}
             </div>
 
-            {/* 2. BOTTOM LINE: Calendar Icon, Real Date, and Follow Button sitting side-by-side */}
             <div className="pneuma-post-timestamp-row">
               <Calendar size={12} style={{ opacity: 0.7 }} />
               <span>{formatTaskDate(created_at)}</span>
 
-              {/* 🌟 MOVED INLINE FOLLOW BUTTON: Sits perfectly right after the date string */}
               {currentUserUuid !== author_profile_uuid && (
                 <button
                   onClick={() => handleFollow(author_profile_uuid)}
@@ -118,7 +120,6 @@ const Task = ({
             ? `${content.substring(0, textLimit)}...`
             : content}
 
-          {/* 🔄 FIXED TOGGLE BUTTON: Stays visible to let users collapse text too */}
           {shouldShowMore && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
@@ -152,7 +153,18 @@ const Task = ({
 
           {/* COMMENT BUTTON */}
           <button
-            onClick={() => setIsCommentOpen(!isCommentOpen)}
+            onClick={() => {
+              // Calculate next state step
+              const nextState = openDrawerId === uuid ? null : uuid;
+              setOpenDrawerId(nextState);
+
+              // 🎯 FIXED SHORTCUT: Save to browser memory if opening, clear if closing
+              if (nextState) {
+                localStorage.setItem("active_drawer", uuid);
+              } else {
+                localStorage.removeItem("active_drawer");
+              }
+            }}
             className="actionButton comment-btn"
           >
             <MessageSquare size={16} strokeWidth={2} />
@@ -185,7 +197,17 @@ const Task = ({
           </button>
         </div>
       </div>
-
+      {/* COMMENT DRAWER CONTAINER */}
+      {openDrawerId === uuid && (
+        <CommentDrawer
+          contentUuid={uuid}
+          onClose={() => {
+            // 🎯 FIXED SHORTCUT: Clear state and browser memory at the same time
+            setOpenDrawerId(null);
+            localStorage.removeItem("active_drawer");
+          }}
+        />
+      )}
       {/* ==================== 4. BLENDED GLOSSY MEDIA PORTAL ==================== */}
       {img && (
         <div className="taskImageWrapper">
@@ -195,13 +217,6 @@ const Task = ({
             className="taskContentImageCard"
           />
         </div>
-      )}
-
-      {isCommentOpen && (
-        <CommentDrawer
-          contentUuid={uuid}
-          onClose={() => setIsCommentOpen(false)} // 🎯 FIXED: Spelled component correctly and used your true state setter switch
-        />
       )}
     </div>
   );

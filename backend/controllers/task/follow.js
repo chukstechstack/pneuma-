@@ -64,20 +64,8 @@ export const toggleFollow = async (req, res, next) => {
       // 4. FOLLOW: Add a new connection row
       await dbClient.query(
         `INSERT INTO follows (follower_id, following_id) 
-         VALUES ($1, $2)`,
+         VALUES ($1, $2, 'pending')`,
         [follower_numeric_id, following_numeric_id]
-      );
-
-      // Increase your following count
-      await dbClient.query(
-        `UPDATE profiles SET following_count = COALESCE(following_count, 0) + 1 WHERE id = $1`,
-        [follower_numeric_id]
-      );
-
-      // Increase their followers count
-      await dbClient.query(
-        `UPDATE profiles SET followers_count = COALESCE(followers_count, 0) + 1 WHERE id = $1`,
-        [following_numeric_id]
       );
     }
 

@@ -241,48 +241,31 @@ export const TaskProvider = ({ children }) => {
     type,
     serverAction = null,
   ) => {
-    // A. Reconcile Public Home Feed Stream
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.uuid !== updatedPost.uuid) return task;
+    const updatePostData = (task) => {
+      if (task.uuid !== updatedPost.uuid) return task;
 
-        const isField = type === "like" ? "is_liked" : "is_reposted";
+      let updatedTask = {
+        ...task,
+        likes_count: updatedPost.likes_count,
+        reposts_count: updatedPost.repost_count,
+        shares_count: updatedPost.shares_count,
+      };
 
-        // Evaluates string parameters sent from your express endpoint payload
-        const verifiedActiveState = serverAction
-          ? serverAction === "added"
-          : task[isField];
+      if (type === "like") {
+        if (serverAction === "added") updatedTask.is_liked = true;
+        if (serverAction === "removed") updatedTask.is_liked = false;
+      }
 
-        return {
-          ...task,
-          likes_count: updatedPost.likes_count,
-          reposts_count: updatedPost.reposts_count,
-          shares_count: updatedPost.shares_count,
-          [isField]: verifiedActiveState, // FIXED: Removed broken text lookup array wrappers
-        };
-      }),
-    );
+      if (type === "repost") {
+        if (serverAction === "added") updatedTask.is_reposted = true;
+        if (serverAction === "removed") updatedTask.is_reposted = false;
+      }
 
-    // B. Reconcile Private Sanctuary Feed Stream
-    setPrivateFeedTasks((prevJournal) =>
-      prevJournal.map((task) => {
-        if (task.uuid !== updatedPost.uuid) return task;
+      return updatedTask;
+    };
 
-        const isField = type === "like" ? "is_liked" : "is_reposted";
-
-        const verifiedActiveState = serverAction
-          ? serverAction === "added"
-          : task[isField];
-
-        return {
-          ...task,
-          likes_count: updatedPost.likes_count,
-          reposts_count: updatedPost.reposts_count,
-          shares_count: updatedPost.shares_count,
-          [isField]: verifiedActiveState, // FIXED: Synced verification checks to both feeds!
-        };
-      }),
-    );
+    setTasks((prevTasks) => prevTasks.map(updatePostData));
+    setPrivateFeedTasks((prevJournal) => prevJournal.map(updatePostData));
   };
 
   const update_Follow_Request_In_useContext_State = (authorProfileUuid) => {
@@ -295,33 +278,33 @@ export const TaskProvider = ({ children }) => {
   };
 
   // ── COMMENTS ARCHITECTURE MEMORY ──
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState({});
 
+  // 🎯 FUNCTION A: Optimistically inserts a comment and increments the counter instantly
   const update_Created_Comment_In_Context_State = (newComment, contentUuid) => {
-    // 1. Adds the text object to your screen memory array
-    setComments((prevComments) => [newComment, ...prevComments]);
+    setComments((prevComments) => {
+      const currentPostComments = prevComments[contentUuid] || [];
+      return {
+        ...prevComments,
+        [contentUuid]: [newComment, ...currentPostComments],
+      };
+    });
 
-    // 2. Increments the home feed task counter
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.uuid !== contentUuid) return task;
-        return {
-          ...task,
-          comments_count: (Number(task.comments_count) || 0) + 1,
-        };
-      }),
-    );
+    const incrementCommentCounter = (task) => {
+      if (task.uuid !== contentUuid) return task;
+      return { ...task, comments_count: (Number(task.comments_count) || 0) + 1 };
+    };
 
-    // 3. Increments the private journal feed task counter
-    setPrivateFeedTasks((prevJournalTasks) =>
-      prevJournalTasks.map((task) => {
-        if (task.uuid !== contentUuid) return task;
-        return {
-          ...task,
-          comments_count: (Number(task.comments_count) || 0) + 1,
-        };
-      }),
-    );
+    setTasks((prevTasks) => prevTasks.map(incrementCommentCounter));
+    setPrivateFeedTasks((prevJournalTasks) => prevJournalTasks.map(incrementCommentCounter));
+  };
+
+  // 🎯 FUNCTION B: Standard fetch loader overwrite
+  const set_fetched_Comments_In_Context_State = (fectchedComments, contentUuid) => {
+    setComments((prevComments) => ({
+      ...prevComments,
+      [contentUuid]: fectchedComments,
+    }));
   };
 
   return (
@@ -346,6 +329,8 @@ export const TaskProvider = ({ children }) => {
         has_Next_Journal_Timestamp,
         comments,
         update_Created_Comment_In_Context_State,
+        set_fetched_Comments_In_Context_State,
+
       }}
     >
       {children}

@@ -47,7 +47,7 @@ export const fetchGlobalTasksFeed = async (user_uuid, freeze_time, fresh_load_po
         WHERE follower_id = $1 AND following_id = c.user_id
       ) AS is_following,
       
-        EXISTS   (
+          (
         SELECT COUNT(*)::INT FROM comments 
         WHERE content_id = c.id
       ) AS comments_count
