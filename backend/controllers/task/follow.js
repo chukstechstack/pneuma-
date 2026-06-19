@@ -31,40 +31,44 @@ export const toggleFollow = async (req, res, next) => {
     // GRABBING THE FIRST ROW ITEM SAFELY
     const following_numeric_id = profileRes.rows[0].id;
 
-    // 2. Check if you already follow this person
     const checkRes = await dbClient.query(
-      `SELECT id FROM follows 
-       WHERE follower_id = $1 AND following_id = $2`,
+      `SELECT id, status FROM follows 
+   WHERE follower_id = $1 AND following_id = $2`,
       [follower_numeric_id, following_numeric_id]
     );
-
-    const alreadyFollowing = checkRes.rows.length > 0;
-
-    if (alreadyFollowing) {
-      // 3. UNFOLLOW: Remove the connection row
+    let didFollow = false;
+    if (checkRes.rows.length > 0) {
+      // 1. Grab the current status from the database row string
+      const currentStatus = checkRes.rows[0].status;
+      didFollow = false;
+      // 2. UNFOLLOW / CANCEL: Remove the connection row
       await dbClient.query(
         `DELETE FROM follows 
-         WHERE follower_id = $1 AND following_id = $2`,
+     WHERE follower_id = $1 AND following_id = $2`,
         [follower_numeric_id, following_numeric_id]
       );
 
-      // Decrease your following count
-      await dbClient.query(
-        `UPDATE profiles SET following_count = GREATEST(0, following_count - 1) WHERE id = $1`,
-        [follower_numeric_id]
-      );
+      // 🚨 THE CRITICAL FIX: Only decrease counts if the relation was active!
+      // If it was 'pending', we skip this entirely so counts stay perfectly safe.
+      if (currentStatus === "active") {
+        // Decrease your following count
+        await dbClient.query(
+          `UPDATE profiles SET following_count = GREATEST(0, following_count - 1) WHERE id = $1`,
+          [follower_numeric_id]
+        );
 
-      // Decrease their followers count
-      await dbClient.query(
-        `UPDATE profiles SET followers_count = GREATEST(0, followers_count - 1) WHERE id = $1`,
-        [following_numeric_id]
-      );
-
+        // Decrease their followers count
+        await dbClient.query(
+          `UPDATE profiles SET followers_count = GREATEST(0, followers_count - 1) WHERE id = $1`,
+          [following_numeric_id]
+        );
+      }
     } else {
+      didFollow = true;
       // 4. FOLLOW: Add a new connection row
       await dbClient.query(
         `INSERT INTO follows (follower_id, following_id) 
-         VALUES ($1, $2, 'pending')`,
+         VALUES ($1, $2)`,
         [follower_numeric_id, following_numeric_id]
       );
     }
@@ -101,7 +105,7 @@ export const toggleFollow = async (req, res, next) => {
 
     return res.json({
       message: "Follow status updated successfully",
-      isFollowing: !alreadyFollowing // Matches your frontend res.data.isFollowing hook perfectly
+      isFollowing: didFollow  // Matches your frontend res.data.isFollowing hook perfectly
     });
 
   } catch (err) {

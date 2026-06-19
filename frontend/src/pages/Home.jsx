@@ -7,7 +7,6 @@ import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
 import "../styles/HomeFeed.css";
 
-
 const HomePage = () => {
   const {
     tasks,
@@ -18,7 +17,7 @@ const HomePage = () => {
     loading: contextLoading,
     update_Engagement_frm_Database,
     toggle_Engagement_In_React_State,
-    update_Follow_Request_In_useContext_State,
+    update_Global_Follow_Toggle,
     getTasks,
     has_Next_Post_Timestamp,
   } = useContext(TaskContext);
@@ -39,26 +38,14 @@ const HomePage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [getTasks, has_Next_Post_Timestamp]);
 
-  const handleFollow = async ( targetProfileUuid) => {
-    if (currentUserUuid ===  targetProfileUuid) {
+  const handleFollow = (author_profile_uuid, currentTaskRelationStatus) => {
+    if (currentUserUuid === author_profile_uuid) {
       alert("You cannot follow your own sanctuary profile.");
       return;
     }
 
-    update_Follow_Request_In_useContext_State( targetProfileUuid);
-    try {
-      const res = await api.post(`/task/profile/follow/${targetProfileUuid}`);
-      const isFollowingServerTruth = res.data.isFollowing;
-      console.log(
-        `✅ [FOLLOW SYNCED]: Follow status changed to ${isFollowingServerTruth}`,
-      );
-    } catch (err) {
-      console.error("❌ Follow action failed on network level:", err);
-      alert(
-        "Unable to update follow connection. Please check your internet connection.",
-      );
-      update_Follow_Request_In_useContext_State( targetProfileUuid);
-    }
+    // 🚀 MASTER TRIGGER: Fire the global context scoreboard updater directly!
+    update_Global_Follow_Toggle(author_profile_uuid, currentTaskRelationStatus);
   };
 
   const handleInteraction = async (taskUuid, type) => {
@@ -76,7 +63,7 @@ const HomePage = () => {
 
     try {
       const res = await api.post(`/task/interaction/${stableUuid}`, { type });
-        const { action, updatedPost } = res.data;
+      const { action, updatedPost } = res.data;
       update_Engagement_frm_Database(updatedPost, type, action);
     } catch (err) {
       console.error("Backend failed, rolling back UI change:", err);
@@ -120,7 +107,9 @@ const HomePage = () => {
                 deleteTask={deleteTask}
                 isOwner={task.user_id === currentUserId}
                 handleInteraction={handleInteraction}
-                handleFollow={handleFollow}
+                handleFollow={(author_profile_uuid) =>
+                  handleFollow(author_profile_uuid, task.relation_status)
+                }
                 currentUserUuid={currentUserUuid}
               />
             ))}

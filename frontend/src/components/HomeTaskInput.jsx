@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import TaskContext from "../context/TaskContext.jsx";
 import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import CommentDrawer from "./ComentDrawer";
@@ -17,7 +18,7 @@ const Task = ({
     uuid,
     author_name,
     author_profile_uuid,
-    is_following,
+    relation_status,
     created_at,
   } = task;
 
@@ -30,6 +31,15 @@ const Task = ({
   const [openDrawerId, setOpenDrawerId] = useState(
     localStorage.getItem("active_drawer") || null,
   );
+  const { followStates } = useContext(TaskContext);
+  // Calculate if this specific card should show pending, active, or null
+  let cardActiveRelationStatus;
+
+  if (followStates[author_profile_uuid] !== undefined) {
+    cardActiveRelationStatus = followStates[author_profile_uuid];
+  } else {
+    cardActiveRelationStatus = relation_status;
+  }
 
   // 🧠 DATE FORMATTER ENGINE
   const formatTaskDate = (rawDateString) => {
@@ -46,15 +56,14 @@ const Task = ({
       {/* ==================== 1. BRANDED HUB HEADER ==================== */}
       <div className="pneuma-post-header-row">
         <div className="pneuma-post-author-group">
-          <Link to={`/profile/${author_profile_uuid}`} >
-              <img
-            src={fallbackUserAvatar}
-            alt="profile snippet"
-            className="pneuma-post-avatar-element"
-          />
+          <Link to={`/profile/${author_profile_uuid}`}>
+            <img
+              src={fallbackUserAvatar}
+              alt="profile snippet"
+              className="pneuma-post-avatar-element"
+            />
+          </Link>
 
-        </Link>
-      
           <div className="pneuma-post-meta-column">
             <div className="pneuma-post-author-name">
               {author_name || "Enlightened Luminary"}
@@ -67,10 +76,18 @@ const Task = ({
               {currentUserUuid !== author_profile_uuid && (
                 <button
                   onClick={() => handleFollow(author_profile_uuid)}
-                  className={`taskFollowInlineButton ${is_following ? "following-active" : ""}`}
+                  className={`taskFollowInlineButton ${
+                    cardActiveRelationStatus === "active"
+                      ? "following-active"
+                      : cardActiveRelationStatus === "pending"
+                        ? "following-requested"
+                        : ""
+                  }`}
                   style={{ margin: 0, padding: "2px 6px", fontSize: "11px" }}
                 >
-                  {is_following ? "✓ Following" : "+ Follow"}
+                  {cardActiveRelationStatus === "active" && "✓ Following"}
+                  {cardActiveRelationStatus === "pending" && "Requested..."}
+                  {cardActiveRelationStatus === null && "+ Follow"}
                 </button>
               )}
             </div>

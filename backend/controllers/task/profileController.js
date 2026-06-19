@@ -4,18 +4,32 @@ export const getSmartProfileFeed = async (req, res, next) => {
     const loggedInUserProfileId = req.user?.id; // You (The person viewing)
     const { targetProfileUuid } = req.params;   // The profile being viewed
 
-    if (!targetProfileUuid) {
-        return res.status(400).json({ error: "Target profile UUID is required" });
+    if (!loggedInUserProfileId) {
+        return res.status(401).json({ error: "Authentication required to access sanctuary feeds" });
     }
 
     try {
         // Step 1: Find the target profile details from the database
-        const profileRes = await pool.query(
-            `SELECT id, uuid, username, first_name, last_name, avatar_url, 
-            followers_count, following_count, created_at 
-             FROM profiles WHERE uuid = $1`,
-            [targetProfileUuid]
-        );
+        let profileRes;
+
+        // 1. If a UUID parameter exists, search by UUID (Viewing someone else)
+        if (targetProfileUuid && targetProfileUuid !== "undefined") {
+            profileRes = await pool.query(
+                `SELECT id, uuid, username, first_name, last_name, avatar_url, 
+        followers_count, following_count, created_at 
+         FROM profiles WHERE uuid = $1`,
+                [targetProfileUuid]
+            );
+        } else {
+            // 2. If it is empty, look up the logged-in user directly by their token ID (Navbar click)
+            profileRes = await pool.query(
+                `SELECT id, uuid, username, first_name, last_name, avatar_url, 
+        followers_count, following_count, created_at 
+         FROM profiles WHERE id = $1`,
+                [loggedInUserProfileId]
+            );
+        }
+
 
         if (profileRes.rows.length === 0) {
             return res.status(404).json({ error: "Sanctuary profile not found" });

@@ -1,0 +1,262 @@
+/* ==========================================================================
+   SANCTUARY PROFILE MASTER STYLESHEET
+   ========================================================================== */
+
+/* ⏳ Loading State Interface Screen */
+.profile-loading-screen {
+  color: #7aa2f7;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+/* Master Layout Frame Wrapper */
+.profile-sanctuary-master-frame {
+  max-width: 768px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #1a1b26; 
+  border: 1px solid #24283b;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #ffffff;
+}
+
+/* 📜 Profile Identity Visual Header Card */
+.profile-identity-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #292e42;
+  margin-bottom: 24px;
+}
+
+.profile-identity-card h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.profile-author-fullname {
+  margin: 0;
+  font-size: 16px;
+  color: #a9b1d6;
+}
+
+.profile-counter-stats {
+  font-size: 14px;
+  color: #7aa2f7;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* 🛠️ Engagement Button Layout Row */
+.profile-interaction-dock {
+  margin-bottom: 32px;
+  padding: 16px;
+  background: #1f2335;
+  border-radius: 12px;
+  border: 1px solid #292e42;
+}
+
+.engagement-btn-group {
+  display: flex;
+  gap: 12px;
+}
+
+/* Base Master Button Classes */
+.profile-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.profile-btn:active {
+  transform: scale(0.98);
+}
+
+/* Specific Component Actions */
+.btn-owner {
+  background: #3b4252;
+  color: #ffffff;
+}
+
+.btn-follow {
+  background: #7aa2f7;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.btn-requested {
+  background: #414868;
+  color: #a9b1d6;
+  cursor: pointer;
+}
+
+.btn-following {
+  background: #bb9af7;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.btn-message {
+  background: #24283b;
+  color: #7aa2f7;
+  border: 1px solid #7aa2f7;
+  cursor: pointer;
+}
+
+.btn-locked {
+  background: #1f2335;
+  color: #565f89;
+  border: 1px solid #414868;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+/* 📜 Chronological Scroll Feed View Section */
+.profile-journal-scroll-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+}
+
+.profile-feed-title {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #c0caf5;
+}
+
+.profile-feed-empty {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+  color: #565f89;
+  background: #1a1b26;
+  border: 1px dashed #292e42;
+  border-radius: 8px;
+  font-style: italic;
+}
+
+/* Feed Lists and Cards */
+.profile-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-journal-card {
+  padding: 18px;
+  background: #24283b;
+  border: 1px solid #414868;
+  border-radius: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.profile-journal-card:hover {
+  border-color: #7aa2f7;
+}
+
+.journal-card-content {
+  margin: 0 0 10px 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #ffffff;
+}
+
+.journal-card-date {
+  display: block;
+  font-size: 12px;
+  color: #565f89;
+  font-weight: 500;
+}
+
+/* Redirect Action Links */
+.profile-sanctuary-redirect-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px;
+  background: #24283b;
+  color: #bb9af7;
+  border: 1px solid #bb9af7;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.profile-sanctuary-redirect-btn:hover {
+  background: rgba(187, 154, 247, 0.1);
+}
+
+/* 🔒 Blurred Teaser Layout Styles */
+.profile-teaser-stack-blurred {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  filter: blur(6px);
+  opacity: 0.25;
+  user-select: none;
+  pointer-events: none;
+}
+
+.profile-journal-card-placeholder {
+  padding: 20px;
+  background: #24283b;
+  border: 1px solid #414868;
+  border-radius: 10px;
+}
+
+.skeleton-content-line,
+.skeleton-content-line-short,
+.skeleton-content-line-mid {
+  height: 12px;
+  background: #414868;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.skeleton-content-line { width: 90%; }
+.skeleton-content-line-short { width: 45%; margin-bottom: 0; }
+.skeleton-content-line-mid { width: 65%; margin-bottom: 0; }
+
+.profile-lock-overlay-panel {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  z-index: 2;
+}
+
+.lock-icon-indicator {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.lock-panel-headline {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ff757f;
+}
+
+.lock-panel-subtext {
+  margin: 0;
+  font-size: 14px;
+  color: #a9b1d6;
+  max-width: 280px;
+  line-height: 1.5;
+}

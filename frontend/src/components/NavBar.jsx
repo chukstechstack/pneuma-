@@ -47,9 +47,12 @@ const NavBar = ({ currentUserUuid }) => {
           justifyContent: "space-between",
           alignItems: "center",
           width: "100%",
-          paddingLeft:  "16px" /* 🛡️ SAFETY GATE: Keeps search away from left glass edge */,
-          paddingRight: "16px" /* 🛡️ SAFETY GATE: Pulls message icon safely inside right glass edge */,
-          boxSizing:"border-box" /* Prevents padding from causing horizontal overflow bugs */,
+          paddingLeft:
+            "16px" /* 🛡️ SAFETY GATE: Keeps search away from left glass edge */,
+          paddingRight:
+            "16px" /* 🛡️ SAFETY GATE: Pulls message icon safely inside right glass edge */,
+          boxSizing:
+            "border-box" /* Prevents padding from causing horizontal overflow bugs */,
         }}
       >
         {/* LEFT CONTAINER */}

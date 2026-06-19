@@ -42,10 +42,11 @@ export const fetchGlobalTasksFeed = async (user_uuid, freeze_time, fresh_load_po
         WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost'
       ) AS is_reposted,
       
-      EXISTS (
-        SELECT 1 FROM follows 
+      (
+        SELECT status FROM follows 
         WHERE follower_id = $1 AND following_id = c.user_id
-      ) AS is_following,
+        LIMIT 1
+      ) AS relation_status,
       
           (
         SELECT COUNT(*)::INT FROM comments 

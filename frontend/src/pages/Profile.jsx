@@ -1,199 +1,124 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import TaskContext from "../context/TaskContext.jsx";
 import api from "../api/axios.js";
+import "../styles/Profile.css";
+import TaskContext from "../context/TaskContext.jsx";
+
+// Import your newly divided sub-components cleanly
+import ProfileEngagement from "../components/Profile/Engagement.jsx";
+import ProfileJournal from "../components/Profile/Journal.jsx";
 
 const Profile = () => {
-  const navigate = useNavigate();
   const { targetProfileUuid } = useParams();
-  const { currentUserUuid } = useContext(TaskContext);
+  const navigate = useNavigate();
+  const author_profile_uuid = targetProfileUuid;
+  const { followStates, update_Global_Follow_Toggle } = useContext(TaskContext);
 
+  // 1. Core Profile States
   const [profile, setProfile] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const [relationStatus, setRelationStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // 2. Data Fetching Sync System
   useEffect(() => {
     const fetchSmartProfileData = async () => {
       setIsLoading(true);
       try {
-        const target_User_Uuid = targetProfileUuid || currentUserUuid;
-        console.log("🚀 Fetching profile walk data for UUID:", target_User_Uuid);
-        
-        const res = await api.get(`/task/profile/${target_User_Uuid}`);
+        // Change your fetch line inside Profile.jsx to this:
+        const endpoint = author_profile_uuid
+          ? `/task/profile/${author_profile_uuid}`
+          : `/task/profile/undefined`;
+
+        console.log("fetching profile for ", endpoint);
+
+        const res = await api.get(endpoint);
         setProfile(res.data.profile);
         setTasks(res.data.tasks);
         setIsOwner(res.data.isOwner);
         setRelationStatus(res.data.relationStatus);
       } catch (err) {
-        console.error(err.message);
+        console.error("❌ Profile retrieval failed:", err.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (currentUserUuid) {
-      fetchSmartProfileData();
-    }
-  }, [targetProfileUuid, currentUserUuid]);
+    fetchSmartProfileData();
+  }, [author_profile_uuid]);
+  // 3. Follow Toggle Trigger Logic connected to Context
+  const handleFollowToggle = () => {
+    // 🚨 Pass the unified variable name straight to context toggle!
+    update_Global_Follow_Toggle(author_profile_uuid, relationStatus);
+  };
 
-  // Protective Guard Gate 1: Loading State
+  // 3. Follow Toggle Trigger Logic
+  let activeRelationStatus;
+
+  if (followStates[author_profile_uuid] !== undefined) {
+    activeRelationStatus = followStates[author_profile_uuid];
+  } else {
+    activeRelationStatus = relationStatus;
+  }
+  // 4. Private Messaging Initialization Tunnel
+  const handleMessageInitialization = async () => {
+    if (!profile?.id) return;
+    try {
+      // Send the target profile's internal numeric ID to build or find the room
+      const res = await api.post("/task/fetchConversation", {
+        targetUserProfileId: profile.id,
+      });
+
+      const { conversationId } = res.data;
+      console.log("🎯 Secured Conversation Room Container ID:", conversationId);
+
+      // Navigate straight to your messaging layout with this active room container ID
+      navigate(`/messages/${conversationId}`);
+    } catch (err) {
+      console.error("❌ Room initialization failed:", err.message);
+      alert("Could not open message sanctuary room container.");
+    }
+  };
+
+  // 5. Protective Loading Cover Gate
   if (isLoading) {
     return (
-      <div style={{ color: "#7aa2f7", padding: "20px" }}>
+      <div className="profile-loading-screen">
         Reflecting on profile journal...
       </div>
     );
   }
 
-  // Protective Guard Gate 2: Missing Data Shield
-  if (!profile) {
-    return (
-      <div style={{ color: "#ff757f", padding: "20px" }}>
-        Profile not found in this sanctuary.
-      </div>
-    );
-  }
-
   return (
-    <div className="profile-page-root">
-      {/* ==================== 1. COVER BANNER VIEW ==================== */}
-      <div className="profile-cover-banner-container">
-        <div className="profile-cover-banner-gradient" />
-      </div>
+    <div className="profile-sanctuary-master-frame">
+      {/* 📜 Profile Identity Visual Section */}
+      <>
+        <p className="profile-author-fullname">
+          {profile?.first_name} {profile?.last_name}
+        </p>
+        <span className="profile-counter-stats">
+          Followers: {profile?.followers_count || 0} | Following:
+          {profile?.following_count || 0}
+        </span>
+      </>
 
-      {/* ==================== 2. IDENTITY HEADER VIEW ==================== */}
-      <div>
-        <div className="profile-avatar-frame">
-          <img 
-            src={profile.avatar_url || "https://placeholder.com"} 
-            alt="Author Avatar" 
-            className="profile-display-avatar"
-          />
-        </div>
+      {/* 🛠️ COMPONENT 1: Divided Dynamic Interaction Dock */}
+      <ProfileEngagement
+        isOwner={isOwner}
+        relationStatus={activeRelationStatus}
+        handleFollowToggle={handleFollowToggle}
+        onMessageClick={handleMessageInitialization}
+      />
 
-        <div className="profile-meta-details">
-          <h2 className="profile-full-name">
-            {profile.first_name} {profile.last_name}
-          </h2>
-          <span className="profile-username-handle">@{profile.username}</span>
-          <p className="profile-biography-text">
-            {profile.bio || "Walking in grace, documenting the script written by God."}
-          </p>
-        </div>
-
-        <div className="profile-social-metrics-bar">
-          <span className="metric-item"><strong>{profile.following_count || 0}</strong> Mentors</span>
-          <span className="metric-item"><strong>{profile.followers_count || 0}</strong> Disciples</span>
-        </div>
-      </div>
-
-      {/* ==================== 3. DYNAMIC BUTTON INTERACTION INTERFACE ==================== */}
-      <div className="profile-interaction-dock">
-        {isOwner ? (
-          /* 🎯 STATE 1: OWNER ACTION PANEL */
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button style={{ padding: "8px 16px", background: "#3b4252", color: "white", border: "none", borderRadius: "6px", fontWeight: "500" }}>
-              Modify My Sanctuary Journal
-            </button>
-          </div>
-        ) : relationStatus === null ? (
-          /* 🎯 STATE 2: STRANGER ACTION PANEL */
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button style={{ padding: "8px 16px", background: "#7aa2f7", color: "white", border: "none", borderRadius: "6px", fontWeight: "500", cursor: "pointer" }}>
-              + Follow
-            </button>
-            <button 
-              onClick={() => alert("To protect the purity of this sanctuary, private messages are locked until your follow connection request is accepted by the author.")}
-              style={{ padding: "8px 16px", background: "#1f2335", color: "#565f89", border: "1px solid #414868", borderRadius: "6px", opacity: 0.6, cursor: "pointer" }}
-            >
-              Message
-            </button>
-          </div>
-        ) : relationStatus === "pending" ? (
-          /* 🎯 STATE 3: PENDING ACTION PANEL */
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button style={{ padding: "8px 16px", background: "#414868", color: "#a9b1d6", border: "none", borderRadius: "6px", fontWeight: "500" }}>
-              Requested...
-            </button>
-            <button 
-              onClick={() => alert("To protect the purity of this sanctuary, private messages are locked until your follow connection request is accepted by the author.")}
-              style={{ padding: "8px 16px", background: "#1f2335", color: "#565f89", border: "1px solid #414868", borderRadius: "6px", opacity: 0.6, cursor: "pointer" }}
-            >
-              Message
-            </button>
-          </div>
-        ) : (
-          /* 🎯 STATE 4: APPROVED FRIEND ACTION PANEL */
-          <div style={{ display: "flex", gap: "12px" }}>
-            <button style={{ padding: "8px 16px", background: "#bb9af7", color: "white", border: "none", borderRadius: "6px", fontWeight: "500", cursor: "pointer" }}>
-              ✓ Following
-            </button>
-            <button style={{ padding: "8px 16px", background: "#24283b", color: "#7aa2f7", border: "1px solid #7aa2f7", borderRadius: "6px", fontWeight: "500", cursor: "pointer" }}>
-              Message
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* ==================== 4. CHRONOLOGICAL SCROLL VIEW ==================== */}
-      <div className="profile-journal-scroll-section">
-        {isOwner || relationStatus === "active" ? (
-          /* 🎯 UNLOCKED VIEW LAYER (Owner or Active Friend) */
-          <>
-            <h3 className="profile-feed-title">Rolling Journal Scrolls (5 Newest)</h3>
-            {tasks.length === 0 ? (
-              <p className="profile-feed-empty">This author hasn't recorded any public scrolls yet.</p>
-            ) : (
-              <div className="profile-feed-list">
-                {tasks.map((task) => (
-                  <div key={task.uuid} className="profile-journal-card">
-                    <p className="journal-card-content">{task.content}</p>
-                    <span className="journal-card-date">
-                      {new Date(task.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* Owner Navigation Tunnel Hook */}
-            {isOwner && (
-              <button 
-                onClick={() => navigate(`/journalfeed/${currentUserUuid}`)}
-                className="profile-sanctuary-redirect-btn"
-              >
-                Enter My Full Private Sanctuary Journal →
-              </button>
-            )}
-          </>
-        ) : (
-          /* 🎯 BLURRED TEASER PLACEHOLDER LAYER (Stranger or Pending) */
-          <>
-            <h3 className="profile-feed-title">Rolling Journal Scrolls</h3>
-            
-            <div className="profile-teaser-stack-blurred">
-              <div className="profile-journal-card-placeholder">
-                <div className="skeleton-content-line" />
-                <div className="skeleton-content-line-short" />
-              </div>
-              <div className="profile-journal-card-placeholder">
-                <div className="skeleton-content-line" />
-                <div className="skeleton-content-line-mid" />
-              </div>
-            </div>
-
-            <div className="profile-lock-overlay-panel">
-              <div className="lock-icon-indicator">🔒</div>
-              <h4 className="lock-panel-headline">Scrolls Locked by Author</h4>
-              <p className="lock-panel-subtext">
-                Follow this author to request access to their 5 newest rolling life reflections.
-              </p>
-            </div>
-          </>
-        )}
-      </div>
+      {/* 📜 COMPONENT 2: Divided Rolling Journal Scroll Feed */}
+      <ProfileJournal
+        isOwner={isOwner}
+        relationStatus={activeRelationStatus}
+        tasks={tasks}
+        navigate={navigate}
+        currentUserUuid={profile?.uuid}
+      />
     </div>
   );
 };

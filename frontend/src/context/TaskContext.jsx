@@ -292,19 +292,97 @@ export const TaskProvider = ({ children }) => {
 
     const incrementCommentCounter = (task) => {
       if (task.uuid !== contentUuid) return task;
-      return { ...task, comments_count: (Number(task.comments_count) || 0) + 1 };
+      return {
+        ...task,
+        comments_count: (Number(task.comments_count) || 0) + 1,
+      };
     };
 
     setTasks((prevTasks) => prevTasks.map(incrementCommentCounter));
-    setPrivateFeedTasks((prevJournalTasks) => prevJournalTasks.map(incrementCommentCounter));
+    setPrivateFeedTasks((prevJournalTasks) =>
+      prevJournalTasks.map(incrementCommentCounter),
+    );
   };
 
   // 🎯 FUNCTION B: Standard fetch loader overwrite
-  const set_fetched_Comments_In_Context_State = (fectchedComments, contentUuid) => {
+  const set_fetched_Comments_In_Context_State = (
+    fectchedComments,
+    contentUuid,
+  ) => {
     setComments((prevComments) => ({
       ...prevComments,
       [contentUuid]: fectchedComments,
     }));
+  };
+
+  const [followStates, setFollowStates] = useState({});
+  const update_Global_Follow_Toggle = async (
+    author_profile_uuid,
+    currentServerStatus,
+  ) => {
+    // 1. Find the current status using a clean if/else block
+    let currentStatus;
+
+    if (followStates[author_profile_uuid] !== undefined) {
+      currentStatus = followStates[author_profile_uuid];
+    } else {
+      currentStatus = currentServerStatus;
+    }
+
+    // 2. Calculate what the next status should be instantly
+    let optimisticNextStatus;
+
+    if (currentStatus === null) {
+      optimisticNextStatus = "pending";
+    } else {
+      optimisticNextStatus = null;
+    }
+
+    // 3. Save the previous state in case the network fails
+    const previousStatus = currentStatus;
+
+    // 4. Update our scoreboard instantly so the screen flips
+    setFollowStates((prevScoreboard) => {
+      return {
+        ...prevScoreboard,
+        [author_profile_uuid]: optimisticNextStatus,
+      };
+    });
+
+    // 5. Fire the network request in the background
+    try {
+      const res = await api.post(`/task/profile/follow/${author_profile_uuid}`);
+
+      // Check what the backend confirmed (true = pending, false = deleted/null)
+      let confirmedStatus;
+      if (res.data.isFollowing) {
+        confirmedStatus = "pending";
+      } else {
+        confirmedStatus = null;
+      }
+
+      // Sync the scoreboard with the exact truth from the database
+      setFollowStates((prevScoreboard) => {
+        return {
+          ...prevScoreboard,
+          [author_profile_uuid]: confirmedStatus,
+        };
+      });
+    } catch (err) {
+      console.error(
+        "❌ Follow sync failed, rolling back changes...",
+        err.message,
+      );
+      alert("Network error: Could not sync follow request. Reverting status.");
+
+      // 6. AUTOMATIC ROLLBACK: Put the scoreboard back to what it was before the click
+      setFollowStates((prevScoreboard) => {
+        return {
+          ...prevScoreboard,
+          [author_profile_uuid]: previousStatus,
+        };
+      });
+    }
   };
 
   return (
@@ -330,7 +408,8 @@ export const TaskProvider = ({ children }) => {
         comments,
         update_Created_Comment_In_Context_State,
         set_fetched_Comments_In_Context_State,
-
+        followStates,
+        update_Global_Follow_Toggle,
       }}
     >
       {children}
