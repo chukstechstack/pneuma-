@@ -1,12 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "../styles/NavBar.css";
 import doveLogoUrl from "../assets/pneuma.png";
+import TaskContext from "../context/TaskContext.jsx";
 
 const NavBar = ({ currentUserUuid }) => {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { pendingRequests } = useContext(TaskContext);
 
   // Checks if the user is currently on the home or journal paths to highlight tabs
   const isActive = (path) =>
@@ -176,7 +178,7 @@ const NavBar = ({ currentUserUuid }) => {
         {/* TAB 4: ALERTS / NOTIFICATIONS */}
         <Link
           to="/notifications"
-          className={isActive("/notifications")}
+          className={isActive("/notificationspage")}
           onTouchEnd={(e) => e.currentTarget.blur()}
         >
           <div className="mobile-badge-container-wrapper">
@@ -193,7 +195,9 @@ const NavBar = ({ currentUserUuid }) => {
               <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
               <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
             </svg>
-            <span className="badge-counter-alert">3</span>
+            <span className="badge-counter-alert">
+              {pendingRequests.length}
+            </span>
           </div>
           <span>Alerts</span>
         </Link>
@@ -207,7 +211,12 @@ const NavBar = ({ currentUserUuid }) => {
               alt="Me Profile"
             />
           </div>
-          <span>Profile</span>
+          <span>
+            {pendingRequests.length > 0 && (
+              <span className="navbar-badge">{pendingRequests.length}</span>
+            )}
+            Profile
+          </span>
         </Link>
       </nav>
       {/* ==================== 3. DESKTOP GLASS HEADER BAR ==================== */}

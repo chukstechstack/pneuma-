@@ -29,7 +29,7 @@ taskRoute.post("/interaction/:contentUuid", ensureAuthenticated, toggleInteracti
 taskRoute.post("/profile/follow/:targetProfileUuid", ensureAuthenticated, toggleFollow)
 taskRoute.post("/:contentUuid/comments", ensureAuthenticated, commentFeed);
 taskRoute.post("/fetchConversation", ensureAuthenticated, establishConversation);
-taskRoute.post("/profile/accept/:followerUserUuid", ensureAuthenticated, acceptFollowRequest);
+taskRoute.post("/profile/request-action", ensureAuthenticated, acceptFollowRequest);
 
 taskRoute.patch("/:uuid", ensureAuthenticated, upload.single("img"), patchTask);
 taskRoute.delete("/:uuid", ensureAuthenticated, deleteTask);

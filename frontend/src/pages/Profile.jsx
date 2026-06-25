@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios.js";
 import "../styles/Profile.css";
 import TaskContext from "../context/TaskContext.jsx";
+import { Link } from "react-router-dom";
 
 // Import your newly divided sub-components cleanly
 import ProfileEngagement from "../components/Profile/Engagement.jsx";
@@ -12,7 +13,8 @@ const Profile = () => {
   const { targetProfileUuid } = useParams();
   const navigate = useNavigate();
   const author_profile_uuid = targetProfileUuid;
-  const { followStates, update_Global_Follow_Toggle } = useContext(TaskContext);
+  const { followStates, update_Global_Follow_Toggle, pendingRequests } =
+    useContext(TaskContext);
 
   // 1. Core Profile States
   const [profile, setProfile] = useState(null);
@@ -54,12 +56,12 @@ const Profile = () => {
   };
 
   // 3. Follow Toggle Trigger Logic
-  let activeRelationStatus;
+  let active_Relation_Follow_Status;
 
   if (followStates[author_profile_uuid] !== undefined) {
-    activeRelationStatus = followStates[author_profile_uuid];
+    active_Relation_Follow_Status = followStates[author_profile_uuid];
   } else {
-    activeRelationStatus = relationStatus;
+    active_Relation_Follow_Status = relationStatus;
   }
   // 4. Private Messaging Initialization Tunnel
   const handleMessageInitialization = async () => {
@@ -106,15 +108,22 @@ const Profile = () => {
       {/* 🛠️ COMPONENT 1: Divided Dynamic Interaction Dock */}
       <ProfileEngagement
         isOwner={isOwner}
-        relationStatus={activeRelationStatus}
+        active_Relation_Follow_Status={active_Relation_Follow_Status}
         handleFollowToggle={handleFollowToggle}
         onMessageClick={handleMessageInitialization}
       />
-
+      {pendingRequests.length > 0 && (
+        <Link to="/pending-requests" className="pending-requests-link-wrapper">
+          <div className="pending-requests-bar">
+            <span>{pendingRequests.length} Pending Requests</span>
+            <span>View All</span>
+          </div>
+        </Link>
+      )}
       {/* 📜 COMPONENT 2: Divided Rolling Journal Scroll Feed */}
       <ProfileJournal
         isOwner={isOwner}
-        relationStatus={activeRelationStatus}
+        active_Relation_Follow_Status={active_Relation_Follow_Status}
         tasks={tasks}
         navigate={navigate}
         currentUserUuid={profile?.uuid}

@@ -10,7 +10,6 @@ const ProfileJournal = ({
   return (
     <div className="profile-journal-scroll-section">
       {isOwner || relationStatus === "active" ? (
-        /* 🎯 UNLOCKED VIEW LAYER (Owner or Active Friend) */
         <>
           <h3 className="profile-feed-title">
             Rolling Journal Scrolls (5 Newest)
@@ -21,7 +20,8 @@ const ProfileJournal = ({
             </p>
           ) : (
             <div className="profile-feed-list">
-              {tasks.map((task) => (
+              {/* 🎯 LOGIC: Slice the array to only show the first 5 */}
+              {tasks.slice(0, 5).map((task) => (
                 <div key={task.uuid} className="profile-journal-card">
                   <p className="journal-card-content">{task.content}</p>
                   <span className="journal-card-date">
@@ -32,7 +32,6 @@ const ProfileJournal = ({
             </div>
           )}
 
-          {/* Owner Navigation Tunnel Hook */}
           {isOwner && (
             <button
               onClick={() => navigate(`/journalfeed/${currentUserUuid}`)}
@@ -43,27 +42,17 @@ const ProfileJournal = ({
           )}
         </>
       ) : (
-        /* 🎯 BLURRED TEASER PLACEHOLDER LAYER (Stranger or Pending) */
         <>
+          {/* 🎯 BLURRED TEASER PLACEHOLDER LAYER */}
           <h3 className="profile-feed-title">Rolling Journal Scrolls</h3>
-
           <div className="profile-teaser-stack-blurred">
-            <div className="profile-journal-card-placeholder">
-              <div className="skeleton-content-line" />
-              <div className="skeleton-content-line-short" />
-            </div>
-            <div className="profile-journal-card-placeholder">
-              <div className="skeleton-content-line" />
-              <div className="skeleton-content-line-mid" />
-            </div>
+             {/* ... your existing blurred UI ... */}
           </div>
-
           <div className="profile-lock-overlay-panel">
             <div className="lock-icon-indicator">🔒</div>
             <h4 className="lock-panel-headline">Scrolls Locked by Author</h4>
             <p className="lock-panel-subtext">
-              Follow this author to request access to their 5 newest rolling
-              life reflections.
+              Follow this author to request access to their 5 newest rolling life reflections.
             </p>
           </div>
         </>

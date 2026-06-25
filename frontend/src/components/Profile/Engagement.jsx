@@ -2,7 +2,7 @@ import React from "react";
 
 const ProfileEngagement = ({
   isOwner,
-  relationStatus,
+  active_Relation_Follow_Status,
   handleFollowToggle,
   onMessageClick,
 }) => {
@@ -15,7 +15,7 @@ const ProfileEngagement = ({
             Modify My Sanctuary Journal
           </button>
         </div>
-      ) : relationStatus === null ? (
+      ) : active_Relation_Follow_Status === null ? (
         /* 🎯 STATE 2: STRANGER ACTION PANEL */
         <div className="engagement-btn-group">
           <button
@@ -35,7 +35,7 @@ const ProfileEngagement = ({
             Message
           </button>
         </div>
-      ) : relationStatus === "pending" ? (
+      ) : active_Relation_Follow_Status === "pending" ? (
         /* 🎯 STATE 3: PENDING ACTION PANEL */
         <div className="engagement-btn-group">
           <button

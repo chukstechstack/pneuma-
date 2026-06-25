@@ -160,8 +160,9 @@ export const TaskProvider = ({ children }) => {
 
     const socketURL = import.meta.env.DEV
       ? "http://localhost:3000"
-      : "https://onrender.com";
+      : "https://pneuma-api-0bvr.onrender.com";
     const newSocket = io(socketURL, { withCredentials: true });
+
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
@@ -208,6 +209,58 @@ export const TaskProvider = ({ children }) => {
     pullOldRequests();
   }, [currentUserUuid]);
 
+  // Update requests status for Profile
+  // Inside TaskContext.jsx
+  useEffect(() => {
+    if (socket) {
+      socket.on("connection_status_updated", (data) => {
+        // 1. Update the local followStates object
+        setFollowStates((prev) => ({
+          ...prev,
+          [data.authorUuid]: data.newStatus,
+        }));
+
+        // 2. Optional: Remove the request from the pending list if they are on that page
+        setPendingRequests((prev) =>
+          prev.filter((req) => req.sender_uuid !== data.senderUuid),
+        );
+      });
+    }
+
+    return () => socket.off("connection_status_updated");
+  }, [socket]);
+  const Handle_Decline_Accept_Action = async (followerUuid, action) => {
+    const backupRequests = [...pendingRequests];
+
+    // 1. Optimistic Update (The UI feels instant)
+    setPendingRequests((prev) =>
+      prev.filter((req) => req.followerUuid !== followerUuid),
+    );
+
+    try {
+      // 2. Wait for the 'Receipt' from the server
+      const response = await api.patch("/task/profile/request-action", {
+        followerUuid,
+        action,
+      });
+
+      // 3. Optional: Verify the receipt
+      console.log("Server confirmed:", response.data.message);
+
+      // If you need to update followStates based on the server's specific confirmation:
+      if (response.data.status) {
+        setFollowStates((prev) => ({
+          ...prev,
+          [followerUuid]: response.data.status,
+        }));
+      }
+    } catch (err) {
+      // 4. The Safety Net: If the server fails, restore the pile
+      console.error("Api failed, rolling back UI", err.message);
+      setPendingRequests(backupRequests);
+      alert("Something went wrong. Please check your connection.");
+    }
+  };
   // ----------------------------------------------------
   // 🛠️ 5. COMPONENT OPERATIONS MAPPINGS
   // ----------------------------------------------------
@@ -294,6 +347,7 @@ export const TaskProvider = ({ children }) => {
         socket,
         pendingRequests,
         setPendingRequests,
+        Handle_Decline_Accept_Action,
 
         // Unified cleanly mapped functions!
         FreshLoad: privateFreshLoadHandler,
