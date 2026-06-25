@@ -39,8 +39,7 @@ export const TaskProvider = ({ children }) => {
   const [privateFeedTasks, setPrivateFeedTasks] = useState([]);
   const [journalLoading, setJournalLoading] = useState(false);
   const [next_Journal_Timestamp, set_Next_Journal_Timestamp] = useState(null);
-  const [has_Next_Journal_Timestamp, set_Has_next_Journal_Timestamp] =
-    useState(true);
+  const [has_Next_Journal_Timestamp, set_Has_next_Journal_Timestamp] = useState(true);
   const journalInProgress = useRef(false);
   const journal_Freeze_Time = useRef(String(Date.now()));
 
@@ -55,91 +54,75 @@ export const TaskProvider = ({ children }) => {
   // ----------------------------------------------------
 
   // 🌍 Global Feed Handler: Runs natively inside your state space
-  const privateFreshLoadHandler = useCallback(
-    async (isFreshLoad = true) => {
-      if (requestInProgress.current) return;
-      if (!isFreshLoad && !has_Next_Post_Timestamp) return;
+  const privateFreshLoadHandler = useCallback(async (isFreshLoad = true) => {
+    if (requestInProgress.current) return;
+    if (!isFreshLoad && !has_Next_Post_Timestamp) return;
 
-      requestInProgress.current = true;
-      setLoading(true);
+    requestInProgress.current = true;
+    setLoading(true);
 
-      try {
-        if (isFreshLoad) {
-          freeze_time.current = String(Date.now());
-        }
-
-        const is_FreshLoad_Pointer = isFreshLoad
-          ? "Yes_Is_FreshLoad"
-          : next_Post_Timestamp;
-        const res = await api.get(
-          `/task?freeze_time=${freeze_time.current}&fresh_load=${is_FreshLoad_Pointer}`,
-        );
-
-        setTasks((prev) =>
-          isFreshLoad ? res.data.tasks : [...prev, ...res.data.tasks],
-        );
-        setCurrentUserId(res.data.currentUserId);
-        setCurrentUserUuid(res.data.currentUserUuid);
-
-        const next_post_ts = res.data.next_post_timestamp;
-        set_Next_Post_Timestamp(next_post_ts);
-        set_Has_Next_Post_Timestamp(Boolean(next_post_ts));
-      } catch (err) {
-        if (err.response?.status === 401) {
-          console.log(
-            "👤 User is currently a guest. Waiting for login/register...",
-          );
-        } else {
-          console.error(err.response?.data?.error || err.message);
-        }
-      } finally {
-        requestInProgress.current = false;
-        setLoading(false);
+    try {
+      if (isFreshLoad) {
+        freeze_time.current = String(Date.now());
       }
-    },
-    [next_Post_Timestamp, has_Next_Post_Timestamp],
-  );
+
+      const is_FreshLoad_Pointer = isFreshLoad ? "Yes_Is_FreshLoad" : next_Post_Timestamp;
+      const res = await api.get(
+        `/task?freeze_time=${freeze_time.current}&fresh_load=${is_FreshLoad_Pointer}`
+      );
+
+      setTasks((prev) => (isFreshLoad ? res.data.tasks : [...prev, ...res.data.tasks]));
+      setCurrentUserId(res.data.currentUserId);
+      setCurrentUserUuid(res.data.currentUserUuid);
+
+      const next_post_ts = res.data.next_post_timestamp;
+      set_Next_Post_Timestamp(next_post_ts);
+      set_Has_Next_Post_Timestamp(Boolean(next_post_ts));
+    } catch (err) {
+      if (err.response?.status === 401) {
+        console.log("👤 User is currently a guest. Waiting for login/register...");
+      } else {
+        console.error(err.response?.data?.error || err.message);
+      }
+    } finally {
+      requestInProgress.current = false;
+      setLoading(false);
+    }
+  }, [next_Post_Timestamp, has_Next_Post_Timestamp]);
 
   // 🔒 Private Feed Handler: No more passing 11 arguments down a pipeline!
-  const privateJournalFeedHandler = useCallback(
-    async (targetUserUuid, isFreshLoad = true) => {
-      if (!targetUserUuid || targetUserUuid === "sanctuary") return;
-      if (journalInProgress.current) return;
-      if (!isFreshLoad && !has_Next_Journal_Timestamp) return;
+  const privateJournalFeedHandler = useCallback(async (targetUserUuid, isFreshLoad = true) => {
+    if (!targetUserUuid || targetUserUuid === "sanctuary") return;
+    if (journalInProgress.current) return;
+    if (!isFreshLoad && !has_Next_Journal_Timestamp) return;
 
-      journalInProgress.current = true;
-      setJournalLoading(true);
+    journalInProgress.current = true;
+    setJournalLoading(true);
 
-      try {
-        if (isFreshLoad) {
-          console.log("🔄 Resetting journal timeline ceiling to 'now'");
-          journal_Freeze_Time.current = String(Date.now());
-        }
-
-        const is_FreshLoad_Pointer = isFreshLoad
-          ? "Yes_Is_FreshLoad"
-          : next_Journal_Timestamp;
-        const res = await api.get(
-          `/task/journalfeed/${targetUserUuid}?freeze_time=${journal_Freeze_Time.current}&fresh_load=${is_FreshLoad_Pointer}`,
-        );
-
-        setPrivateFeedTasks((prev) =>
-          isFreshLoad ? res.data.tasks : [...prev, ...res.data.tasks],
-        );
-        setCurrentUserId(res.data.currentUserId);
-
-        const next_timestamp = res.data.next_post_timestamp;
-        set_Next_Journal_Timestamp(next_timestamp);
-        set_Has_next_Journal_Timestamp(Boolean(next_timestamp));
-      } catch (err) {
-        console.error("❌ Failed to fetch journal sanctuary posts:", err);
-      } finally {
-        journalInProgress.current = false;
-        setJournalLoading(false);
+    try {
+      if (isFreshLoad) {
+        console.log("🔄 Resetting journal timeline ceiling to 'now'");
+        journal_Freeze_Time.current = String(Date.now());
       }
-    },
-    [next_Journal_Timestamp, has_Next_Journal_Timestamp],
-  );
+
+      const is_FreshLoad_Pointer = isFreshLoad ? "Yes_Is_FreshLoad" : next_Journal_Timestamp;
+      const res = await api.get(
+        `/task/journalfeed/${targetUserUuid}?freeze_time=${journal_Freeze_Time.current}&fresh_load=${is_FreshLoad_Pointer}`
+      );
+
+      setPrivateFeedTasks((prev) => (isFreshLoad ? res.data.tasks : [...prev, ...res.data.tasks]));
+      setCurrentUserId(res.data.currentUserId);
+
+      const next_timestamp = res.data.next_post_timestamp;
+      set_Next_Journal_Timestamp(next_timestamp);
+      set_Has_next_Journal_Timestamp(Boolean(next_timestamp));
+    } catch (err) {
+      console.error("❌ Failed to fetch journal sanctuary posts:", err);
+    } finally {
+      journalInProgress.current = false;
+      setJournalLoading(false);
+    }
+  }, [next_Journal_Timestamp, has_Next_Journal_Timestamp]);
 
   // ----------------------------------------------------
   // 🌀 4. AUTOMATIC SIDE EFFECTS (Mounted Run Triggers)
@@ -158,20 +141,13 @@ export const TaskProvider = ({ children }) => {
   useEffect(() => {
     if (!currentUserUuid) return;
 
-    const socketURL = import.meta.env.DEV
-      ? "http://localhost:3000"
-      : "https://onrender.com";
+    const socketURL = import.meta.env.DEV ? "http://localhost:3000" : "https://onrender.com";
     const newSocket = io(socketURL, { withCredentials: true });
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
-      console.log(
-        "⚡ Living network connection established. Socket ID:",
-        newSocket.id,
-      );
-      newSocket.emit("current_Logged_In_User_Uuid", {
-        userUuid: currentUserUuid,
-      });
+      console.log("⚡ Living network connection established. Socket ID:", newSocket.id);
+      newSocket.emit("current_Logged_In_User_Uuid", { userUuid: currentUserUuid });
     });
 
     newSocket.on("incoming_follow_request", (payload) => {
@@ -193,15 +169,9 @@ export const TaskProvider = ({ children }) => {
       try {
         const res = await api.get("/task/profile/pending-requests");
         setPendingRequests(res.data.requests);
-        console.log(
-          "📥 Historical pending requests successfully seeded:",
-          res.data.requests,
-        );
+        console.log("📥 Historical pending requests successfully seeded:", res.data.requests);
       } catch (err) {
-        console.error(
-          "❌ Failed to pull old pending follow requests:",
-          err.message,
-        );
+        console.error("❌ Failed to pull old pending follow requests:", err.message);
       }
     };
 
@@ -211,69 +181,17 @@ export const TaskProvider = ({ children }) => {
   // ----------------------------------------------------
   // 🛠️ 5. COMPONENT OPERATIONS MAPPINGS
   // ----------------------------------------------------
-  const handleCreateTask = (newTask) =>
-    update_Created_Task_In_UseContext_State(
-      newTask,
-      setTasks,
-      setPrivateFeedTasks,
-    );
-  const handlePatchTask = (updatedTask) =>
-    update_Patched_Task_In_UseContext_State(
-      updatedTask,
-      setTasks,
-      setPrivateFeedTasks,
-    );
-  const handleDeleteTask = (uuid) =>
-    deleteTaskFromState(uuid, setTasks, setPrivateFeedTasks);
-  const handleRestoreTask = (restoredTask, originalIndex) =>
-    restoreTaskToState(
-      restoredTask,
-      originalIndex,
-      setTasks,
-      setPrivateFeedTasks,
-    );
+  const handleCreateTask = (newTask) => update_Created_Task_In_UseContext_State(newTask, setTasks, setPrivateFeedTasks);
+  const handlePatchTask = (updatedTask) => update_Patched_Task_In_UseContext_State(updatedTask, setTasks, setPrivateFeedTasks);
+  const handleDeleteTask = (uuid) => deleteTaskFromState(uuid, setTasks, setPrivateFeedTasks);
+  const handleRestoreTask = (restoredTask, originalIndex) => restoreTaskToState(restoredTask, originalIndex, setTasks, setPrivateFeedTasks);
 
-  const handleCreateComment = (newComment, contentUuid) =>
-    update_Created_Comment_In_Context_State(
-      newComment,
-      contentUuid,
-      setComments,
-      setTasks,
-      setPrivateFeedTasks,
-    );
-  const handleSetFetchedComments = (fetchedComments, contentUuid) =>
-    set_fetched_Comments_In_Context_State(
-      fetchedComments,
-      contentUuid,
-      setComments,
-    );
+  const handleCreateComment = (newComment, contentUuid) => update_Created_Comment_In_Context_State(newComment, contentUuid, setComments, setTasks, setPrivateFeedTasks);
+  const handleSetFetchedComments = (fetchedComments, contentUuid) => set_fetched_Comments_In_Context_State(fetchedComments, contentUuid, setComments);
 
-  const handleToggleEngagement = (stableUuid, type) =>
-    toggle_Engagement_In_React_State(
-      stableUuid,
-      type,
-      setTasks,
-      setPrivateFeedTasks,
-      tasks,
-    );
-  const handleUpdateEngagementFromDb = (updatedPost, type, serverAction) =>
-    update_Engagement_frm_Database(
-      updatedPost,
-      type,
-      serverAction,
-      setTasks,
-      setPrivateFeedTasks,
-    );
-  const handleGlobalFollowToggle = async (
-    author_profile_uuid,
-    currentServerStatus,
-  ) =>
-    await update_Global_Follow_Toggle(
-      author_profile_uuid,
-      currentServerStatus,
-      followStates,
-      setFollowStates,
-    );
+  const handleToggleEngagement = (stableUuid, type) => toggle_Engagement_In_React_State(stableUuid, type, setTasks, setPrivateFeedTasks, tasks);
+  const handleUpdateEngagementFromDb = (updatedPost, type, serverAction) => update_Engagement_frm_Database(updatedPost, type, serverAction, setTasks, setPrivateFeedTasks);
+  const handleGlobalFollowToggle = async (author_profile_uuid, currentServerStatus) => await update_Global_Follow_Toggle(author_profile_uuid, currentServerStatus, followStates, setFollowStates);
 
   // ----------------------------------------------------
   // 🔌 6. THE ROOM SERVICE WINDOW (Return Statement)

@@ -11,6 +11,9 @@ import cors from "cors";
 import mainAuthRoute from "./routes/main/mainauthrouter.js";
 import mainTaskRoute from "./routes/main/maintaskrouter.js";
 import redisClient from "./config/redisCreateClient.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
+
 
 
 
@@ -109,7 +112,39 @@ const startServer = async () => {
     await redisClient.connect();
     console.log(" 🚀 Connected to Redis")
 
-    app.listen(PORT, () => console.log(`🚀 Server running at PORT: ${PORT}`));
+    const httpServer = createServer(app);
+
+    const io = new Server(httpServer, {
+      cors: {
+        origin: allowedOrigins,
+        credentials: true
+      }
+
+    });
+
+    app.set("socketio", io);
+
+
+    io.on("connection", (socket) => {
+      console.log(`⚡ User connected to WebSocket: ${socket.id}`);
+
+      // 🎯 THE LIVE SESSION RADAR: Anchor this phone line to a private room
+      socket.on("current_Logged_In_User_Uuid", (data) => {
+        const { userUuid } = data;
+        if (userUuid) {
+          socket.join(`current_Logged_In_User_Uuid:${userUuid}`);
+          console.log(`🔒 Secure room locked for User UUID: ${userUuid} on Socket: ${socket.id}`);
+        }
+      });
+
+      socket.on("disconnect", () => {
+        console.log(`🔌 User disconnected: ${socket.id}`);
+      });
+    });
+
+
+
+    httpServer.listen(PORT, () => console.log(`🚀 Living Server running at PORT: ${PORT}`));
   } catch (err) {
     console.error("❌ Failed to connect:", err.message);
     process.exit(1);

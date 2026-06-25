@@ -24,7 +24,7 @@ const App = () => {
           <Route path="/profile/:targetProfileUuid" element={<Profile />} />
 
           <Route
-            path="/journalfeed/:current_User_privateFeed_post_Uuid"
+            path="/journalfeed/:targetUserUuid"
             element={<JournalPage />}
           />
         </Routes>

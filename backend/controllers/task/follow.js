@@ -75,7 +75,18 @@ export const toggleFollow = async (req, res, next) => {
 
     // Permanently seal database updates FIRST
     await dbClient.query("COMMIT");
-
+    if (didFollow) {
+      const io = req.app.get("socketio");
+      const authorRoom = `current_Logged_In_User_Uuid:${targetProfileUuid}`;
+      const strangerPayload = {
+        followerUuid: follower_uuid,
+        firstName: req.user?.first_name || "Enlightened",
+        lastName: req.user?.last_name || "Luminary",
+        avatarUrl: req.user?.avatar_url || null
+      };
+      io.to(authorRoom).emit("incoming_follow_request", strangerPayload);
+      console.log(`📡 Real-time follow request sent straight into custom room: ${authorRoom}`);
+    }
     // =================================================================
     // 🧹 FIXED 3: WILDCARD REDIS CACHE INVALIDATION BROOM SYSTEM (FOLLOWS)
     // =================================================================
@@ -97,6 +108,17 @@ export const toggleFollow = async (req, res, next) => {
           console.log(` sweep away ${journalKeys.length} private feed chunks for follow change.`);
         }
       }
+
+      // ── C. Sweep out the Author's profile cache so they see the request change ──
+      if (targetProfileUuid) {
+        const authorProfilePattern = `profile_feed:${targetProfileUuid}:*`;
+        const authorProfileKeys = await redisClient.keys(authorProfilePattern);
+        if (authorProfileKeys.length > 0) {
+          await redisClient.del(authorProfileKeys);
+          console.log(`🧹 Swept away ${authorProfileKeys.length} profile cache chunks for target author.`);
+        }
+      }
+
     } catch (cacheErr) {
       console.error("⚠️ Non-critical follow cache sweep error:", cacheErr.message);
     }

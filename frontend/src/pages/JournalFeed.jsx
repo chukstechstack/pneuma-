@@ -6,7 +6,7 @@ import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
 
 const JournalPage = () => {
-  const { current_User_privateFeed_post_Uuid } = useParams();
+  const { targetUserUuid } = useParams();
 
   const {
     privateFeedTasks,
@@ -28,23 +28,23 @@ const JournalPage = () => {
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 100
       ) {
-        privateFeedHandler(current_User_privateFeed_post_Uuid, false); 
+        privateFeedHandler(targetUserUuid, false);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [
-    current_User_privateFeed_post_Uuid,
+    targetUserUuid,
     privateFeedHandler,
     has_Next_Journal_Timestamp,
   ]);
 
   useEffect(() => {
-    if (current_User_privateFeed_post_Uuid) {
-      privateFeedHandler(current_User_privateFeed_post_Uuid, true);
+    if (targetUserUuid) {
+      privateFeedHandler(targetUserUuid, true);
     }
-  }, [current_User_privateFeed_post_Uuid, privateFeedHandler]);
+  }, [targetUserUuid, privateFeedHandler]);
 
   const journalTask = Array.isArray(privateFeedTasks) ? privateFeedTasks : [];
 
@@ -106,7 +106,7 @@ const JournalPage = () => {
             ) : (
               journalTask.map((task, index) => (
                 <Task
-                   key={`${task.uuid || task.id}-${index}`} 
+                  key={`${task.uuid || task.id}-${index}`}
                   task={task}
                   deleteTask={deleteTaskFromState}
                   isOwner={task.user_id === currentUserId}

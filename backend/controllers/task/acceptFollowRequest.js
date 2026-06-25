@@ -2,9 +2,9 @@ import redisClient from "../../config/redisCreateClient.js";
 import pool from "../../config/supabaseConfig.js";
 export const acceptFollowRequest = async (req, res, next) => {
     const following_numeric_id = req.user?.id;
-    const { followedUserUuid } = req.params;
+    const { followerUserUuid } = req.params;
 
-    if (!followedUserUuid) {
+    if (!followerUserUuid) {
         return res.status(400).json({ error: "Target profile UUID is required" })
     }
 
@@ -12,7 +12,7 @@ export const acceptFollowRequest = async (req, res, next) => {
     const dbClient = await pool.connect();
     try {
         await dbClient.query("BEGIN");
-        const profileRes = await dbClient.query(` select id from profiles where uuid  = $1`, [followedUserUuid]);
+        const profileRes = await dbClient.query(` select id from profiles where uuid  = $1`, [followerUserUuid]);
         if (profileRes.rows.length === 0) {
             await dbClient.query("ROLLBACK");
             return res.status(404).json({ error: "Stranger Ppofile not found" })
@@ -38,7 +38,26 @@ export const acceptFollowRequest = async (req, res, next) => {
         );
 
         await dbClient.query("COMMIT");
+        try {
+            if (followerUserUuid) {
+                const followerHomePattern = `tasks_feed:${followerUserUuid}:*`;
+                const followerKeys = await redisClient.keys(followerHomePattern);
+                if (followerKeys.length > 0) {
+                    await redisClient.del(followerKeys);
+                    console.log(`🧹 Swept ${followerKeys.length} feed chunks for follower.`);
+                }
+            }
 
+            if (following_numeric_id) {
+                const authorPattern = `profile_feed:${following_numeric_id}:*`;
+                const authorKeys = await redisClient.keys(authorPattern);
+                if (authorKeys.length > 0) {
+                    await redisClient.del(authorKeys);
+                }
+            }
+        } catch (cacheErr) {
+            console.error("⚠️ Non-critical follow approval cache clear failure:", cacheErr.message);
+        }
         // 4. Send the successful verification payload back to React
         return res.json({
             message: "Follow request accepted successfully!",
