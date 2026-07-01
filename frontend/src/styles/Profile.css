@@ -290,7 +290,7 @@
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: #d11515;
 }
 
 /* The count badge styling */
@@ -301,4 +301,37 @@
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: bold;
+}
+
+.drawer-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 300px; /* Adjust as needed */
+  height: 100%;
+  background: white;
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.pending-dock {
+  position: fixed;
+  top: 0;
+  left: -400px; /* Hidden off-screen */
+  width: 350px;
+  height: 100vh;
+  background: white;
+  transition: left 0.3s ease-in-out;
+  z-index: 1000;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+}
+
+.pending-dock.open {
+  left: 0; /* Slides into view */
 }

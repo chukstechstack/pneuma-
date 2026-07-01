@@ -209,26 +209,6 @@ export const TaskProvider = ({ children }) => {
     pullOldRequests();
   }, [currentUserUuid]);
 
-  // Update requests status for Profile
-  // Inside TaskContext.jsx
-  useEffect(() => {
-    if (socket) {
-      socket.on("connection_status_updated", (data) => {
-        // 1. Update the local followStates object
-        setFollowStates((prev) => ({
-          ...prev,
-          [data.authorUuid]: data.newStatus,
-        }));
-
-        // 2. Optional: Remove the request from the pending list if they are on that page
-        setPendingRequests((prev) =>
-          prev.filter((req) => req.sender_uuid !== data.senderUuid),
-        );
-      });
-    }
-
-    return () => socket.off("connection_status_updated");
-  }, [socket]);
   const Handle_Decline_Accept_Action = async (followerUuid, action) => {
     const backupRequests = [...pendingRequests];
 
@@ -238,29 +218,72 @@ export const TaskProvider = ({ children }) => {
     );
 
     try {
-      // 2. Wait for the 'Receipt' from the server
       const response = await api.patch("/task/profile/request-action", {
         followerUuid,
         action,
       });
 
-      // 3. Optional: Verify the receipt
-      console.log("Server confirmed:", response.data.message);
-
-      // If you need to update followStates based on the server's specific confirmation:
       if (response.data.status) {
         setFollowStates((prev) => ({
           ...prev,
           [followerUuid]: response.data.status,
         }));
+
+
+        setRefreshCounter((prev) => prev + 1);
       }
+      // Inside your "Accept" function:
     } catch (err) {
-      // 4. The Safety Net: If the server fails, restore the pile
-      console.error("Api failed, rolling back UI", err.message);
+      // Capture the full error details
+      if (err.response) {
+        // The server responded with a status code outside the 2xx range
+        console.error(
+          "Server responded with:",
+          err.response.status,
+          err.response.data,
+        );
+      } else if (err.request) {
+        // The request was made but no response was received (Network/CORS issue)
+        console.error("No response received from server:", err.request);
+      } else {
+        // Something happened in setting up the request
+        console.error("Error setting up request:", err.message);
+      }
+
       setPendingRequests(backupRequests);
-      alert("Something went wrong. Please check your connection.");
+      alert("Action failed. Check console for details.");
     }
   };
+  const [refreshCounter, setRefreshCounter] = useState(0);
+  // Who followed receives the packet information from who accepted
+  useEffect(() => {
+    if (socket) {
+      // 1. Existing: Handle direct follow status changes
+      socket.on("connection_status_updated", (data) => {
+        setFollowStates((prev) => ({
+          ...prev,
+          [data.authorUuid]: data.newStatus,
+        }));
+        setPendingRequests((prev) =>
+          prev.filter((req) => req.sender_uuid !== data.senderUuid),
+        );
+      });
+
+      // 2. NEW: Handle the "Inner Circle" dock refresh
+      socket.on("connection_updated", () => {
+        console.log("🔄 Real-time broadcast: Updating Inner Circle dock...");
+        setRefreshCounter((prev) => prev + 1);
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off("connection_status_updated");
+        socket.off("connection_updated"); // Don't forget to clean up this listener!
+      }
+    };
+  }, [socket]); // Keep dependencies minimal
+
   // ----------------------------------------------------
   // 🛠️ 5. COMPONENT OPERATIONS MAPPINGS
   // ----------------------------------------------------
@@ -348,6 +371,9 @@ export const TaskProvider = ({ children }) => {
         pendingRequests,
         setPendingRequests,
         Handle_Decline_Accept_Action,
+        refreshCounter,
+
+        setRefreshCounter,
 
         // Unified cleanly mapped functions!
         FreshLoad: privateFreshLoadHandler,

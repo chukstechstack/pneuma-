@@ -1,6 +1,6 @@
-import pool from "../../config/supabaseConfig.js";
+import pool from "../../../config/supabaseConfig.js";
 
-export const  getComment  = async (req, res, next) => {
+export const getComment = async (req, res, next) => {
     const { contentUuid } = req.params;
     const freeze_time = req.query.freeze_time || String(Date.now());
     const fresh_load_pointer = req.query.fresh_load || "Yes_Is_FreshLoad";

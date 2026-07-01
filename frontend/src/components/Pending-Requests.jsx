@@ -1,37 +1,55 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import TaskContext from "../context/TaskContext.jsx";
+import "../styles/Profile.css";
 
-const Pending_Request = () => {
+const PendingRequest = () => {
   const { pendingRequests, Handle_Decline_Accept_Action } =
     useContext(TaskContext);
+  const [isOpen, setIsOpen] = useState(false); // Local state only!
 
-  if (pendingRequests.length === 0) {
-    return (
-      <div>
-        <p> No pending requests</p>
+  // The "bar" that opens the dock
+  if (!isOpen) {
+    return pendingRequests.length > 0 ? (
+      <div className="pending-requests-bar" onClick={() => setIsOpen(true)}>
+        <span>{pendingRequests.length} Pending Requests</span>
+        <span>View All</span>
       </div>
-    );
+    ) : null;
   }
+
+  // The actual sliding dock
   return (
-    <div>
-      <h2> 🔒 Pending Requests ({pendingRequests.length})</h2>
-      <div>
+    <div className="pending-dock open">
+      <div className="dock-header">
+        <h2>🔒 Pending Requests ({pendingRequests.length})</h2>
+        <button onClick={() => setIsOpen(false)}>Close</button>
+      </div>
+
+      <div className="dock-list">
         {pendingRequests.map((request) => (
-          <div key={request.followerUuid}>
-            <div>
-              <img
-                src={request.avatarUrl || "https://placeholder.com"}
-                alt="profile avatar"
-              />
-            </div>
+          <div key={request.followerUuid} className="request-card">
+            <img
+              src={request.avatarUrl || "https://placeholder.com"}
+              alt="avatar"
+            />
             <p>
               {request.firstName} {request.lastName}
             </p>
-            <p> Wants to Follow your scrolls </p>
-
-            <div>
-              <button onClick={() => Handle_Decline_Accept_Action(request.followerUuid, 'accept')}> Accept</button>
-              <button onClick={() => Handle_Decline_Accept_Action(request.followerUuid, 'decline')}> Decline </button>
+            <div className="action-buttons">
+              <button
+                onClick={() =>
+                  Handle_Decline_Accept_Action(request.followerUuid, "accept")
+                }
+              >
+                Accept
+              </button>
+              <button
+                onClick={() =>
+                  Handle_Decline_Accept_Action(request.followerUuid, "decline")
+                }
+              >
+                Decline
+              </button>
             </div>
           </div>
         ))}
@@ -40,4 +58,4 @@ const Pending_Request = () => {
   );
 };
 
-export default Pending_Request;
+export default PendingRequest;

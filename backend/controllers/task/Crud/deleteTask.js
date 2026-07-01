@@ -1,10 +1,10 @@
-import s3 from "../../config/AwsS3ClientConfig.js";
+import s3 from "../../../config/AwsS3ClientConfig.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import redisClient from "../../config/redisCreateClient.js";
-import pool from "../../config/supabaseConfig.js"; // 1. Imported your database pool configuration
+import redisClient from "../../../config/redisCreateClient.js";
+import pool from "../../../config/supabaseConfig.js"; // 1. Imported your database pool configuration
 
 // Import your newly created service infrastructure
-import { findTaskImageForCleanup, executeTaskDeletion } from "../../services/task/deleteTaskService.js";
+import { findTaskImageForCleanup, executeTaskDeletion } from "../../../services/task/deleteTaskService.js";
 
 export const deleteTask = async (req, res, next) => {
   const { uuid } = req.params;

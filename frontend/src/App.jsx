@@ -9,6 +9,8 @@ import PatchFeed from "./pages/PatchFeed.jsx";
 import { TaskProvider } from "./context/TaskContext.jsx";
 import Profile from "./pages/Profile.jsx";
 import JournalPage from "./pages/JournalFeed.jsx";
+import Pending_Request from "./components/pending-Requests.jsx";
+import NotificationsPage from "./pages/NotificationsPage.jsx";
 const App = () => {
   return (
     <TaskProvider>
@@ -22,7 +24,8 @@ const App = () => {
           <Route path="/patchfeed/:uuid" element={<PatchFeed />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:targetProfileUuid" element={<Profile />} />
-
+          <Route path="/pending-requests" element={<Pending_Request />} />
+          <Route path="/NotificationsPage" element={<NotificationsPage />} />
           <Route
             path="/journalfeed/:targetUserUuid"
             element={<JournalPage />}

@@ -1,12 +1,12 @@
-import TaskInputError from "../../utils/taskInputError.js";
+import TaskInputError from "../../../utils/taskInputError.js";
 import sharp from "sharp";
-import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3"; 
-import s3 from "../../config/AwsS3ClientConfig.js";
-import redisClient from "../../config/redisCreateClient.js";
-import pool from "../../config/supabaseConfig.js"; 
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import s3 from "../../../config/AwsS3ClientConfig.js";
+import redisClient from "../../../config/redisCreateClient.js";
+import pool from "../../../config/supabaseConfig.js";
 
 // Import your newly created database service workers
-import { insertNewTask, fetchHydratedTaskById } from "../../services/task/createTaskService.js";
+import { insertNewTask, fetchHydratedTaskById } from "../../../services/task/createTaskService.js";
 
 export const createTask = async (req, res, next) => {
   const { content } = req.body;

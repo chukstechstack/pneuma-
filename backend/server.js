@@ -1,10 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import pool from "./config/supabaseConfig.js";
-
-// Change this line inside your server.js:
 import passport from "./config/passport/serialize_deserialize.js";
-
 import session from "express-session";
 import pgSession from "connect-pg-simple";
 import cors from "cors";
@@ -14,67 +11,47 @@ import redisClient from "./config/redisCreateClient.js";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
-
-
-
-// import crypto from "crypto";
-// const sessionSecret = crypto.randomBytes(32).toString('hex');
-// console.log(sessionSecret)
-
 dotenv.config();
 const app = express();
 const PostgresStore = pgSession(session)
 
-const allowedOrigins = [
-  'https://pneuma-frontend-oijl.onrender.com',
-  'http://localhost:5173',
-  'http://localhost:5174',
-  process.env.FRONTEND_URL
-];
+app.use(cors({
+  origin: ['https://pneuma-frontend-oijl.onrender.com', 'http://localhost:5173', 'http://localhost:5174'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true
+}));
 
-// Define once
-const corsOptions = {
-  origin: function (origin, done) {
-    if (!origin) return done(null, true);
-    if (allowedOrigins.includes(origin)) {
-      done(null, true);
-    } else {
-      console.log("CORS blocked this origin:", origin);
-      done(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // ✅ Explicitly allowed
-  allowedHeaders: ['Content-Type', 'Authorization'] // ✅ Ensured content-type is fine
-};
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+  res.header('Access-Control-Allow-Credentials', 'true');
 
-// Use everywhere
-app.use(cors(corsOptions));
-app.options('/*info', cors(corsOptions)); // ✅ Fixed from '/*info' to '/*' for Express 4/5 fallback matching
-// ✅ same config, not bare cors();
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.enable('trust proxy'); // Add this line!
-// app.set('trust proxy', true);
+app.enable('trust proxy');
 
-// Separate the Database Store Instance
 const sessionStore = new PostgresStore({
   pool: pool,
   tableName: 'session',
   createTableIfMissing: true
 });
 
-//  Separate the Cookie Configuration Object
 const isProduction = process.env.NODE_ENV === "production"
 const sessionCookieConfig = {
   httpOnly: true,
   secure: isProduction,
   sameSite: isProduction ? "none" : "lax",
-  maxAge: 1000 * 60 * 60 * 24 * 5,  // 5 days
+  maxAge: 1000 * 60 * 60 * 24 * 5,
 }
 
-//  Initialize the Final Middleware
 const sessionOptions = {
   store: sessionStore,
   cookie: sessionCookieConfig,
@@ -86,19 +63,15 @@ const sessionOptions = {
 }
 
 app.use(session(sessionOptions))
-
 app.use(passport.initialize());
 app.use(passport.session());
 
 const PORT = process.env.PORT || 3000;
 
-
-
 app.use("/auth", mainAuthRoute);
 app.use("/task", mainTaskRoute);
 app.use((err, req, res, next) => {
   console.error(err);
-
   res.status(err.statusCode || 500).json({
     error: err.message || "something went wrong",
   });
@@ -116,19 +89,16 @@ const startServer = async () => {
 
     const io = new Server(httpServer, {
       cors: {
-        origin: allowedOrigins,
+        origin: ['https://pneuma-frontend-oijl.onrender.com', 'http://localhost:5173', 'http://localhost:5174'],
         credentials: true
       }
-
     });
 
     app.set("socketio", io);
 
-
     io.on("connection", (socket) => {
       console.log(`⚡ User connected to WebSocket: ${socket.id}`);
 
-      // 🎯 THE LIVE SESSION RADAR: Anchor this phone line to a private room
       socket.on("current_Logged_In_User_Uuid", (data) => {
         const { userUuid } = data;
         if (userUuid) {
@@ -141,8 +111,6 @@ const startServer = async () => {
         console.log(`🔌 User disconnected: ${socket.id}`);
       });
     });
-
-
 
     httpServer.listen(PORT, () => console.log(`🚀 Living Server running at PORT: ${PORT}`));
   } catch (err) {

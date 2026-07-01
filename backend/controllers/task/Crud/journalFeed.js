@@ -1,10 +1,10 @@
-import pool from "../../config/supabaseConfig.js";
-import redisClient from "../../config/redisCreateClient.js";
-import { fetchUserJournalFeed } from "../../services/task/journalFeed.js"; 
+import pool from "../../../config/supabaseConfig.js";
+import redisClient from "../../../config/redisCreateClient.js";
+import { fetchUserJournalFeed } from "../../../services/task/journalFeed.js";
 
 export const journalFeed = async (req, res, next) => {
-  const logged_in_user_uuid = req.user?.uuid; 
-  const { journalUuid } = req.params;         
+  const logged_in_user_uuid = req.user?.uuid;
+  const { journalUuid } = req.params;
 
   // 1. Unpack the exact matching pagination parameters from the URL query strings
   const freeze_time = req.query.freeze_time || String(Date.now());
@@ -24,16 +24,16 @@ export const journalFeed = async (req, res, next) => {
 
     // 3. Pass your parameters down into your underlying database data query service
     const { journalFeedTasks, next_post_timestamp } = await fetchUserJournalFeed(
-      journalUuid, 
+      journalUuid,
       logged_in_user_uuid,
       freeze_time,
       fresh_load_pointer
     );
 
-    const responseData = { 
-      tasks: journalFeedTasks, 
+    const responseData = {
+      tasks: journalFeedTasks,
       next_post_timestamp: next_post_timestamp || null, // 🎯 Crucial token for your frontend scroll listener
-      currentUserId: req.user?.id 
+      currentUserId: req.user?.id
     };
 
     // Save the results to Redis for 5 minutes (300 seconds) to maintain a lightweight memory footprint

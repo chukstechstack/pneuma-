@@ -1,5 +1,5 @@
-import pool from "../../config/supabaseConfig.js";
-import redisClient from "../../config/redisCreateClient.js";
+import pool from "../../../config/supabaseConfig.js";
+import redisClient from "../../../config/redisCreateClient.js";
 
 export const toggleFollow = async (req, res, next) => {
   const follower_numeric_id = req.user?.id; // You (The person clicking)

@@ -2,14 +2,14 @@ import React from "react";
 
 const ProfileJournal = ({
   isOwner,
-  relationStatus,
+  active_Relation_Follow_Status,
   tasks,
   navigate,
   currentUserUuid,
 }) => {
   return (
     <div className="profile-journal-scroll-section">
-      {isOwner || relationStatus === "active" ? (
+      {isOwner || active_Relation_Follow_Status === "active" ? (
         <>
           <h3 className="profile-feed-title">
             Rolling Journal Scrolls (5 Newest)
@@ -46,13 +46,14 @@ const ProfileJournal = ({
           {/* 🎯 BLURRED TEASER PLACEHOLDER LAYER */}
           <h3 className="profile-feed-title">Rolling Journal Scrolls</h3>
           <div className="profile-teaser-stack-blurred">
-             {/* ... your existing blurred UI ... */}
+            {/* ... your existing blurred UI ... */}
           </div>
           <div className="profile-lock-overlay-panel">
             <div className="lock-icon-indicator">🔒</div>
             <h4 className="lock-panel-headline">Scrolls Locked by Author</h4>
             <p className="lock-panel-subtext">
-              Follow this author to request access to their 5 newest rolling life reflections.
+              Follow this author to request access to their 5 newest rolling
+              life reflections.
             </p>
           </div>
         </>

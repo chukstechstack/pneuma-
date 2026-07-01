@@ -62,7 +62,6 @@ const ProfileEngagement = ({
             onClick={handleFollowToggle}
             className="profile-btn btn-following"
           >
-            ✓ Following
           </button>
           <button onClick={onMessageClick} className="profile-btn btn-message">
             Message

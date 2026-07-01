@@ -1,12 +1,12 @@
-import redisClient from "../../config/redisCreateClient.js";
-import { fetchGlobalTasksFeed } from "../../services/task/getTaskService.js";
+import redisClient from "../../../config/redisCreateClient.js";
+import { fetchGlobalTasksFeed } from "../../../services/task/getTaskService.js";
 
 export const getTask = async (req, res, next) => {
   const user_uuid = req.user?.uuid;
   const user_Id = req.user?.id;
 
   // 1. Fixed parameter casing to match your frontend URL exactly (Fresh_Load)
-  const  freeze_time = req.query.freeze_time || String(Date.now());
+  const freeze_time = req.query.freeze_time || String(Date.now());
   const fresh_load_pointer = req.query.fresh_load || 'Yes_Is_FreshLoad';
 
   // 2. Clear, structured redis cache key name

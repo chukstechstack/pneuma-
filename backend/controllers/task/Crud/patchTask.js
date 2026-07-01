@@ -1,9 +1,9 @@
 import sharp from "sharp";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import s3 from "../../config/AwsS3ClientConfig.js";
-import redisClient from "../../config/redisCreateClient.js";
-import pool from "../../config/supabaseConfig.js";
-import { fetchOldTaskImage, executeDynamicTaskUpdate } from "../../services/task/patchTaskService.js";
+import s3 from "../../../config/AwsS3ClientConfig.js";
+import redisClient from "../../../config/redisCreateClient.js";
+import pool from "../../../config/supabaseConfig.js";
+import { fetchOldTaskImage, executeDynamicTaskUpdate } from "../../../services/task/patchTaskService.js";
 
 export const patchTask = async (req, res, next) => {
   const { uuid } = req.params;
