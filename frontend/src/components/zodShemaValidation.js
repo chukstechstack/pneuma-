@@ -1,4 +1,4 @@
-import * as zod  from "zod";
+import * as zod from "zod";
 
 // 🌟 EXPORT THE SCHEMA CLEANLY
 export const registerSchema = zod
@@ -16,11 +16,11 @@ export const registerSchema = zod
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
-    path: ["confirmPassword"], 
+    path: ["confirmPassword"],
   });
 
 
-  export const loginSchema = zod.object({
+export const loginSchema = zod.object({
   email: zod
     .string()
     .min(1, "Email address is required")

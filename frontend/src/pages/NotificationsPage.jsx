@@ -3,11 +3,9 @@ import { Link } from "react-router-dom";
 import TaskContext from "../context/TaskContext.jsx";
 import "../styles/Profile.css";
 
-// 1. Defined here so it stays in the same file
 const PendingRequestsBar = () => {
   const { pendingRequests } = useContext(TaskContext);
 
-  // Optional: Hide the bar completely if there are no requests
   if (pendingRequests.length === 0) return null;
 
   return (

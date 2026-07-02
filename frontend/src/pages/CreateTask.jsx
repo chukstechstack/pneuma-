@@ -5,12 +5,11 @@ import TaskContext from "../context/TaskContext.jsx";
 import api from "../api/axios.js";
 import "../styles/CreateTask.css";
 
-import FullPageLoader from "../components/Loader.jsx"; /*  1. ADD LOADER IMPORT */
-import "../styles/Loader.css"; /*  2. ADD LOADER STYLES */
+import FullPageLoader from "../components/Loader.jsx";
+import "../styles/Loader.css";
 
 const CreateTask = () => {
-  const [isLoading, setIsLoading] =
-    useState(false); /*  3. ADD INITIAL LOADING STATE */
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
@@ -19,8 +18,7 @@ const CreateTask = () => {
     tags: "",
   });
 
-  const { update_Created_Task_In_UseContext_State } =
-    useContext(TaskContext);
+  const { update_Created_Task_In_UseContext_State } = useContext(TaskContext);
   const navigate = useNavigate();
 
   const { content, img } = formData;
@@ -40,7 +38,7 @@ const CreateTask = () => {
       data.append(key, value);
     });
     try {
-      setIsLoading(true); /*  4. TRIGGER SPINNER ON START */
+      setIsLoading(true);
       const res = await api.post("/task", data);
 
       setFormData({
@@ -51,14 +49,14 @@ const CreateTask = () => {
         tags: "",
         user_id: "",
       });
-          update_Created_Task_In_UseContext_State(res.data.newTask);
+      update_Created_Task_In_UseContext_State(res.data.newTask);
 
       navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || err.message;
       console.error(message);
     } finally {
-      setIsLoading(false); /*  5. TURN OFF SPINNER WHEN DONE/FAILED */
+      setIsLoading(false);
     }
   };
 
@@ -72,7 +70,6 @@ const CreateTask = () => {
 
   return (
     <main className="create-task-layout">
-      {/*  6. INJECT SPINNER TARGET IF ACTIVE */}
       {isLoading && <FullPageLoader />}
 
       <div className="create-task-ambient-glow"></div>

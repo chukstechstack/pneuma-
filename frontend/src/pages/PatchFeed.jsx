@@ -11,7 +11,7 @@ const PatchFeed = () => {
   const { uuid } = useParams();
   const { tasks, update_Patched_Task_In_UseContext_State, loading } =
     useContext(TaskContext);
-  
+
   const taskToEdit = tasks.find((t) => t.uuid === uuid);
   const [isUpdating, setIsUpdating] = useState(false);
   const [formData, setFormData] = useState({
@@ -56,15 +56,12 @@ const PatchFeed = () => {
       setIsUpdating(true);
       const res = await api.patch(`/task/${uuid}`, data);
 
-      // 🎯 FIXED 1: Wiping formData state was completely removed to block pre-navigate layout shifts!
-
-      // 🎯 FIXED 2: Target index [0] to peel back the database query array wrapper safely!
       if (res.data.updatedTask && Array.isArray(res.data.updatedTask)) {
         update_Patched_Task_In_UseContext_State(res.data.updatedTask[0]);
       } else {
         update_Patched_Task_In_UseContext_State(res.data.updatedTask);
       }
-      
+
       navigate("/home");
     } catch (err) {
       const message = err.response?.data?.error || "Update failed";
@@ -117,4 +114,3 @@ const PatchFeed = () => {
 };
 
 export default PatchFeed;
-

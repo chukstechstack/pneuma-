@@ -14,7 +14,6 @@ const JournalPage = () => {
     privateFeedHandler,
     currentUserId,
     currentUserUuid,
-    // 🎯 FIXED: Extracted using your exact context blueprint function names
     toggle_Engagement_In_React_State,
     deleteTaskFromState,
     update_Follow_Request_In_useContext_State,
@@ -34,11 +33,7 @@ const JournalPage = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [
-    targetUserUuid,
-    privateFeedHandler,
-    has_Next_Journal_Timestamp,
-  ]);
+  }, [targetUserUuid, privateFeedHandler, has_Next_Journal_Timestamp]);
 
   useEffect(() => {
     if (targetUserUuid) {

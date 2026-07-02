@@ -27,12 +27,11 @@ const Task = ({
   const textLimit = 123;
   const shouldShowMore = content?.length > textLimit;
 
-  // 🎯 FIXED STARTING STATE: Looks into browser memory. If empty, defaults to null.
   const [openDrawerId, setOpenDrawerId] = useState(
     localStorage.getItem("active_drawer") || null,
   );
   const { followStates } = useContext(TaskContext);
-  // Calculate if this specific card should show pending, active, or null
+
   let cardActiveRelationStatus;
 
   if (followStates[author_profile_uuid] !== undefined) {
@@ -41,7 +40,6 @@ const Task = ({
     cardActiveRelationStatus = relation_status;
   }
 
-  // 🧠 DATE FORMATTER ENGINE
   const formatTaskDate = (rawDateString) => {
     if (!rawDateString) return "May 20";
     const dateObj = new Date(rawDateString);
@@ -152,7 +150,6 @@ const Task = ({
       {/* ==================== 3. LUMINARY ACTION BAR ==================== */}
       <div className="pneuma-post-action-dock">
         <div className="action-buttons-left">
-          {/* LIKE BUTTON */}
           <button
             onClick={() => handleInteraction(uuid, "like")}
             className={`actionButton like-btn ${task.is_liked ? "active" : ""}`}
@@ -168,14 +165,11 @@ const Task = ({
             </span>
           </button>
 
-          {/* COMMENT BUTTON */}
           <button
             onClick={() => {
-              // Calculate next state step
               const nextState = openDrawerId === uuid ? null : uuid;
               setOpenDrawerId(nextState);
 
-              // 🎯 FIXED SHORTCUT: Save to browser memory if opening, clear if closing
               if (nextState) {
                 localStorage.setItem("active_drawer", uuid);
               } else {
@@ -191,7 +185,6 @@ const Task = ({
             </span>
           </button>
 
-          {/* REPOST BUTTON */}
           <button
             onClick={() => handleInteraction(uuid, "repost")}
             className={`actionButton repost-btn ${task.is_reposted ? "active" : ""}`}
@@ -207,19 +200,17 @@ const Task = ({
             </span>
           </button>
 
-          {/* SEND BUTTON */}
           <button className="actionButton send-btn">
             <Send size={16} strokeWidth={2} />
             <span className="action-label">Send</span>
           </button>
         </div>
       </div>
-      {/* COMMENT DRAWER CONTAINER */}
+
       {openDrawerId === uuid && (
         <CommentDrawer
           contentUuid={uuid}
           onClose={() => {
-            // 🎯 FIXED SHORTCUT: Clear state and browser memory at the same time
             setOpenDrawerId(null);
             localStorage.removeItem("active_drawer");
           }}

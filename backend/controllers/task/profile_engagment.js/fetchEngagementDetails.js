@@ -1,11 +1,10 @@
 import pool from "../../../config/supabaseConfig.js";
 export const fetchEngagementDetails = async (req, res) => {
   try {
-    const { targetProfileUuid } = req.params; // Changed from 'uuid' to match your endpoint
+    const { targetProfileUuid } = req.params;
     let targetId;
-    // 1. Get the target user's internal ID
     if (targetProfileUuid === 'me') {
-      targetId = req.user.id; // Get the authenticated user's internal ID
+      targetId = req.user.id;
     } else {
       const targetUser = await pool.query("SELECT id FROM profiles WHERE uuid = $1", [targetProfileUuid]);
       if (targetUser.rows.length === 0) return res.status(404).json({ error: "User not found" });
@@ -13,9 +12,6 @@ export const fetchEngagementDetails = async (req, res) => {
     }
 
 
-
-    // 2. Fetch the Unified Connection List
-    // This query gets everyone connected to the targetId
     const connections = await pool.query(`
       SELECT DISTINCT p.uuid, p.username, p.first_name, p.last_name, p.avatar_url
       FROM profiles p

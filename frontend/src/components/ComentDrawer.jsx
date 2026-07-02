@@ -15,7 +15,6 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
   const [commentText, setCommentText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // 🔄 Standalone function to fetch comments from database
   const loadComment = async () => {
     setIsLoading(true);
     try {
@@ -25,7 +24,7 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
     } catch (err) {
       console.error("Fetch failed:", err.message);
     } finally {
-      setIsLoading(false); // 🎯 GUARANTEES Syncing... turning off
+      setIsLoading(false);
     }
   };
 
@@ -40,13 +39,12 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
     if (!commentText.trim()) return;
 
     const textToSend = commentText;
-    setCommentText(""); // Instantly clear input box
+    setCommentText("");
     const loggedInUserPost = tasks.find((t) => t.user_id === currentUserId);
     const realAuthorName = loggedInUserPost
       ? loggedInUserPost.author_name
       : "You";
 
-    // 🎯 STEP 1: CREATE OPTIMISTIC VIEW OBJECT
     const optimisticComment = {
       uuid: `temp-${Date.now()}`,
       comment_text: textToSend,
@@ -54,16 +52,13 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
       created_at: new Date().toISOString(),
     };
 
-    // 🎯 STEP 2: INJECT INSTANTLY TO SCREEN MAP
     update_Created_Comment_In_Context_State(optimisticComment, contentUuid);
 
     try {
-      // 🎯 STEP 3: RUN BACKEND POST IN BACKGROUND
       await api.post(`/task/${contentUuid}/comments`, {
         comment_text: textToSend,
       });
 
-      // 🎯 STEP 4: FETCH THE REAL RECORD TRUTH TO OVERWRITE FRESHLY
       const freshRes = await api.get(`task/${contentUuid}/fetchComments`);
       set_fetched_Comments_In_Context_State(
         freshRes.data.comments || [],
@@ -72,7 +67,7 @@ const CommentDrawer = ({ contentUuid, onClose }) => {
     } catch (err) {
       console.error("Save failed, reverting changes...", err.message);
       alert("Could not sync comment. Reloading list.");
-      loadComment(); // Automatically rolls back to database truth on network drop!
+      loadComment();
     }
   };
 

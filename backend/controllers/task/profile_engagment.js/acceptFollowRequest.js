@@ -35,21 +35,18 @@ export const acceptFollowRequest = async (req, res, next) => {
             await dbClient.query("DELETE FROM follows WHERE follower_id = $1 AND following_id = $2 AND status = 'pending'", [follower_numeric_id, following_numeric_id]);
         }
 
-        // Cache Clearing
+
         try {
             await redisClient.del(`tasks_feed:${followerUuid}:*`);
             await redisClient.del(`profile_feed:${following_numeric_id}:*`);
         } catch (cacheErr) { console.error("Cache clear failed", cacheErr); }
 
         await dbClient.query("COMMIT");
-
-        // Socket Broadcast
         if (action === 'accept') {
             const io = req.app.get("socketio");
-            // Notify both users' "Inner Circle" to refresh
+
             io.to(`current_Logged_In_User_Uuid:${followerUuid}`).emit("connection_updated");
             io.to(`current_Logged_In_User_Uuid:${req.user.uuid}`).emit("connection_updated");
-            // Notify specific status update
             io.to(`current_Logged_In_User_Uuid:${followerUuid}`).emit("connection_status_updated", { authorUuid: req.user.uuid, newStatus: 'active' });
         }
 

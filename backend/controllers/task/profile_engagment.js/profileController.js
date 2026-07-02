@@ -10,7 +10,6 @@ export const getSmartProfileFeed = async (req, res, next) => {
     try {
         let profileRes;
 
-        // 1. Fetch Profile (Logic remains the same as your updated version)
         if (targetProfileUuid && targetProfileUuid !== "undefined" && targetProfileUuid !== "me") {
             profileRes = await pool.query(
                 `SELECT id, uuid, username, first_name, last_name, avatar_url, 
@@ -38,7 +37,7 @@ export const getSmartProfileFeed = async (req, res, next) => {
         let relationStatus = null;
         let visibleTasks = [];
 
-        // Replace your existing followCheck block with this:
+
         if (!isOwner) {
             const followCheck = await pool.query(
                 `SELECT status 
@@ -58,7 +57,6 @@ export const getSmartProfileFeed = async (req, res, next) => {
             }
         }
 
-        // 3. Fetch Tasks if owner or active connection
         if (isOwner || relationStatus === 'active') {
             const taskRes = await pool.query(`
                 SELECT id, uuid, title, content, img, created_at, likes_count, reposts_count

@@ -20,7 +20,6 @@ const ProfileJournal = ({
             </p>
           ) : (
             <div className="profile-feed-list">
-              {/* 🎯 LOGIC: Slice the array to only show the first 5 */}
               {tasks.slice(0, 5).map((task) => (
                 <div key={task.uuid} className="profile-journal-card">
                   <p className="journal-card-content">{task.content}</p>
@@ -43,11 +42,8 @@ const ProfileJournal = ({
         </>
       ) : (
         <>
-          {/* 🎯 BLURRED TEASER PLACEHOLDER LAYER */}
           <h3 className="profile-feed-title">Rolling Journal Scrolls</h3>
-          <div className="profile-teaser-stack-blurred">
-            {/* ... your existing blurred UI ... */}
-          </div>
+          <div className="profile-teaser-stack-blurred"></div>
           <div className="profile-lock-overlay-panel">
             <div className="lock-icon-indicator">🔒</div>
             <h4 className="lock-panel-headline">Scrolls Locked by Author</h4>

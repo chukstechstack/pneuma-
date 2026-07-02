@@ -11,7 +11,6 @@ const TaskInput = ({
   handleSubmit,
   previewUrl,
 }) => {
-  // Determine if we need to show a label or filename for the image preview banner
   const hasImage = !!img;
   const isNewFile = img instanceof File;
   const imageName = isNewFile ? img.name : "Current Image Asset";
@@ -40,7 +39,7 @@ const TaskInput = ({
             </span>
             <div className="testimony-preview-frame">
               <img
-                src={previewUrl || img} // 👈 Zero execution on render!
+                src={previewUrl || img}
                 alt="preview"
                 className="testimony-preview-actual-img"
               />
@@ -48,11 +47,8 @@ const TaskInput = ({
           </div>
         )}
 
-        
-
         {/* ==================== ACTION HOVER CONTROL ROW ==================== */}
         <div className="testimony-form-actions-row">
-          {/* Custom Styled File Upload Button */}
           <label className="testimony-custom-file-upload-btn">
             <input
               type="file"
@@ -65,7 +61,6 @@ const TaskInput = ({
             <span>Image</span>
           </label>
 
-          {/* Primary Form Submission Action Trigger */}
           <button type="submit" className="testimony-submit-action-btn">
             <CheckSquare size={16} strokeWidth={2} />
             <span>Publish</span>

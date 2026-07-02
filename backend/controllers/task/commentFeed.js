@@ -20,7 +20,6 @@ export const commentFeed = async (req, res, next) => {
             return res.status(404).json({ error: "journal post not found " });
         }
 
-
         const content_id = checkContent.rows[0].id;
 
         const insertQuery = `INSERT INTO  comments (content_id, user_id, comment_text) 
@@ -50,8 +49,6 @@ export const commentFeed = async (req, res, next) => {
         if (err.message === "Add a comment") {
             return res.status(400).json({ error: err.message })
         }
-
-
         next(err);
     }
 

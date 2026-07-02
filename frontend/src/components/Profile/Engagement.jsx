@@ -9,20 +9,18 @@ const ProfileEngagement = ({
   return (
     <div className="profile-interaction-dock">
       {isOwner ? (
-        /* 🎯 STATE 1: OWNER ACTION PANEL */
         <div className="engagement-btn-group">
           <button className="profile-btn btn-owner">
             Modify My Sanctuary Journal
           </button>
         </div>
-      ) : active_Relation_Follow_Status === null ? (
-        /* 🎯 STATE 2: STRANGER ACTION PANEL */
+      ) : active_Relation_Follow_Status === null ? 
         <div className="engagement-btn-group">
           <button
             onClick={handleFollowToggle}
             className="profile-btn btn-follow"
           >
-            + Follow
+            + Connect
           </button>
           <button
             onClick={() =>
@@ -35,8 +33,7 @@ const ProfileEngagement = ({
             Message
           </button>
         </div>
-      ) : active_Relation_Follow_Status === "pending" ? (
-        /* 🎯 STATE 3: PENDING ACTION PANEL */
+       : active_Relation_Follow_Status === "pending" ? (
         <div className="engagement-btn-group">
           <button
             onClick={handleFollowToggle}
@@ -56,13 +53,11 @@ const ProfileEngagement = ({
           </button>
         </div>
       ) : (
-        /* 🎯 STATE 4: APPROVED FRIEND ACTION PANEL */
         <div className="engagement-btn-group">
           <button
             onClick={handleFollowToggle}
             className="profile-btn btn-following"
-          >
-          </button>
+          ></button>
           <button onClick={onMessageClick} className="profile-btn btn-message">
             Message
           </button>

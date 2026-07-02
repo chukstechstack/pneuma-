@@ -22,7 +22,6 @@ const HomePage = () => {
     has_Next_Post_Timestamp,
   } = useContext(TaskContext);
 
-  // 🧠 SEAMLESS SCROLL LISTENER FOR HISTORICAL TIMELINE
   useEffect(() => {
     const handleScroll = () => {
       if (!has_Next_Post_Timestamp) return;
@@ -30,7 +29,7 @@ const HomePage = () => {
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 100
       ) {
-        getTasks(false); // 'false' tells context to APPEND next batch instead of overwriting
+        getTasks(false);
       }
     };
 
@@ -44,7 +43,6 @@ const HomePage = () => {
       return;
     }
 
-    // 🚀 MASTER TRIGGER: Fire the global context scoreboard updater directly!
     update_Global_Follow_Toggle(author_profile_uuid, currentTaskRelationStatus);
   };
 

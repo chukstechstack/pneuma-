@@ -5,9 +5,8 @@ import "../styles/Profile.css";
 const PendingRequest = () => {
   const { pendingRequests, Handle_Decline_Accept_Action } =
     useContext(TaskContext);
-  const [isOpen, setIsOpen] = useState(false); // Local state only!
+  const [isOpen, setIsOpen] = useState(false);
 
-  // The "bar" that opens the dock
   if (!isOpen) {
     return pendingRequests.length > 0 ? (
       <div className="pending-requests-bar" onClick={() => setIsOpen(true)}>
@@ -17,7 +16,6 @@ const PendingRequest = () => {
     ) : null;
   }
 
-  // The actual sliding dock
   return (
     <div className="pending-dock open">
       <div className="dock-header">

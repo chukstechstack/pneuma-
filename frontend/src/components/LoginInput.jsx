@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-// 🌟 REMOVED: Custom CSS line handles entirely via parent imports mapping cascading metrics
-
 const LoginInput = ({
   handleChange,
   password,
@@ -15,7 +13,6 @@ const LoginInput = ({
   return (
     <div className="form-input-container">
       <form onSubmit={handleSubmit} className="form-wrapper">
-        {/* Email Input Field Group */}
         <div className="input-group standard-width">
           <input
             type="email"
@@ -28,7 +25,6 @@ const LoginInput = ({
           {errors.email && <p className="error-text">{errors.email}</p>}
         </div>
 
-        {/* Password Input Field Group with Custom Toggle Button */}
         <div className="input-group standard-width">
           <div className="password-wrapper">
             <input
@@ -50,21 +46,18 @@ const LoginInput = ({
           {errors.password && <p className="error-text">{errors.password}</p>}
         </div>
 
-        {/* Primary Continue Submission Button Wrapper */}
         <div className="submit-actions-block">
           <button className="register-submit-btn" type="submit">
             Continue
           </button>
         </div>
 
-        {/* Stylized Minimal Line Break Separator */}
         <div className="auth-divider-block">
           <span className="divider-line"></span>
           <span className="divider-text">or</span>
           <span className="divider-line"></span>
         </div>
 
-        {/* Premium Google Sign-In Integration Button */}
         <a
           href="https://pneuma-api-0bvr.onrender.com/auth/google"
           className="google-oauth-btn"

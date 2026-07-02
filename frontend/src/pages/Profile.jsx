@@ -4,7 +4,7 @@ import api from "../api/axios.js";
 import "../styles/Profile.css";
 import TaskContext from "../context/TaskContext.jsx";
 
-// Import sub-components
+
 import ProfileEngagement from "../components/Profile/Engagement.jsx";
 import ProfileJournal from "../components/Profile/Journal.jsx";
 import PendingRequest from "../components/Pending-Requests";
@@ -17,19 +17,17 @@ const Profile = () => {
   const { followStates, update_Global_Follow_Toggle, refreshCounter } =
     useContext(TaskContext);
 
-  // 1. Core Profile States
   const [profile, setProfile] = useState(null);
   const [tasks, setTasks] = useState([]);
   const [isOwner, setIsOwner] = useState(false);
   const [relationStatus, setRelationStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 2. Dock & Connection States
+
   const [connections, setConnections] = useState([]);
   const [isDockOpen, setIsDockOpen] = useState(false);
   const [dockLoading, setDockLoading] = useState(false);
 
-  // 3. Fetch Connections (Reactive to refreshCounter)
   useEffect(() => {
     const prefetchConnections = async () => {
       setDockLoading(true);
@@ -48,7 +46,7 @@ const Profile = () => {
     prefetchConnections();
   }, [author_profile_uuid, refreshCounter]);
 
-  // 4. Fetch Profile Data
+
   useEffect(() => {
     const fetchSmartProfileData = async () => {
       setIsLoading(true);

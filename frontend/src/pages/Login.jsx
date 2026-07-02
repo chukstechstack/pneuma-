@@ -5,13 +5,10 @@ import api from "../api/axios.js";
 import TaskContext from "../context/TaskContext.jsx";
 import FullPageLoader from "../components/Loader.jsx";
 import doveLogoUrl from "../assets/pneuma.png";
-
-// 🌟 CENTRALIZED STRUCTURAL STYLES IMPORT
 import "../styles/R_&_L_Inputs/R_Layout.css";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/Loader.css";
 
-// 🌟 ADDED: ZOD SCHEMA IMPORT (Adjust path if your schema lives elsewhere)
 import { loginSchema } from "../components/zodShemaValidation.js";
 
 const Login = () => {
@@ -19,7 +16,7 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [errors, setErrors] = useState({}); // Holds validation error items
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { FreshLoad } = useContext(TaskContext);
   const navigate = useNavigate();
@@ -30,7 +27,6 @@ const Login = () => {
     const { name, value } = e.target;
     setLogin((prev) => ({ ...prev, [name]: value }));
 
-    // Dynamic error eraser cleans the field frame on text updates
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -38,9 +34,8 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrors({}); // Wipe any leftover messages from the screen viewport
+    setErrors({});
 
-    // 🌟 SAFETY INSPECTION VIA ZOD
     const validationResult = loginSchema.safeParse({ email, password });
 
     if (!validationResult.success) {
@@ -49,7 +44,7 @@ const Login = () => {
         formattedErrors[issue.path] = issue.message;
       });
       setErrors(formattedErrors);
-      return; // STOP SUBMISSION IMMEDIATELY (Prevents raw backend calls)
+      return;
     }
 
     try {

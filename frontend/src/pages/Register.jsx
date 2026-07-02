@@ -36,9 +36,6 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    // 1. 🌟 Reset any old error messages from the screen
-
-    // 2. 🌟 HAND THE USER'S INPUT DATA TO ZOD FOR A SAFETY INSPECTION
     const validationResult = registerSchema.safeParse({
       first_name,
       last_name,
@@ -53,20 +50,16 @@ const Register = () => {
         formattedErrors[issue.path] = issue.message;
       });
       setErrors(formattedErrors);
-      return; // 🔥 STOP SUBMISSION IMMEDIATELY (Prevents Axios request)
+      return;
     }
 
-    // 4. 🌟 IF THE DATA IS SAFE, EXCLUDE CONFIRMPASSWORD AND POST TO API
     try {
       setIsLoading(true);
-
-      // Filter out confirmPassword so your backend never sees it
       const { confirmPassword: _confirmPassword, ...apiPayload } = register;
 
       await api.post("/auth/register", apiPayload);
       await FreshLoad();
 
-      // Clear everything back to empty fields upon a successful account creation
       setRegister({
         password: "",
         confirmPassword: "",

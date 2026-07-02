@@ -10,13 +10,11 @@ const NavBar = ({ currentUserUuid }) => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const { pendingRequests } = useContext(TaskContext);
 
-  // Checks if the user is currently on the home or journal paths to highlight tabs
   const isActive = (path) =>
     location.pathname.startsWith(path) ? "nav-item active" : "nav-item";
 
   const mobileProfilePic = "https://dev.to";
 
-  // 🚀 OPTIMIZED LINKEDIN SCROLL ENGINE
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -26,9 +24,9 @@ const NavBar = ({ currentUserUuid }) => {
         setIsVisible(true);
       } else if (scrollDifference > 8) {
         if (currentScrollY > lastScrollY) {
-          setIsVisible(false); // Scrolling down
+          setIsVisible(false);
         } else {
-          setIsVisible(true); // Scrolling up
+          setIsVisible(true);
         }
       }
 
@@ -49,15 +47,11 @@ const NavBar = ({ currentUserUuid }) => {
           justifyContent: "space-between",
           alignItems: "center",
           width: "100%",
-          paddingLeft:
-            "16px" /* 🛡️ SAFETY GATE: Keeps search away from left glass edge */,
-          paddingRight:
-            "16px" /* 🛡️ SAFETY GATE: Pulls message icon safely inside right glass edge */,
-          boxSizing:
-            "border-box" /* Prevents padding from causing horizontal overflow bugs */,
+          paddingLeft: "16px",
+          paddingRight: "16px",
+          boxSizing: "border-box",
         }}
       >
-        {/* LEFT CONTAINER */}
         <div className="mobile-nav-left" style={{ flexGrow: 1 }}>
           <div className="mobile-search-trigger-bar" style={{ width: "100%" }}>
             <svg
@@ -78,17 +72,15 @@ const NavBar = ({ currentUserUuid }) => {
           </div>
         </div>
 
-        {/* RIGHT CONTAINER */}
         <Link
           to="/messages"
           className="mobile-nav-badge-icon"
           onTouchEnd={(e) => e.currentTarget.blur()}
           style={{
-            marginLeft:
-              "16px" /* 🚀 REPLACED 'AUTO': Creates a firm, safe gap right after search bar */,
+            marginLeft: "16px",
             display: "flex",
             alignItems: "center",
-            flexShrink: 0 /* Prevents the icon from squishing on tiny devices */,
+            flexShrink: 0,
           }}
         >
           <svg
@@ -108,7 +100,6 @@ const NavBar = ({ currentUserUuid }) => {
       </nav>
       {/* ==================== 2. MOBILE BOTTOM FIXED NAVIGATION ==================== */}
       <nav className={`mobile-bottom-nav ${!isVisible ? "nav-hidden" : ""}`}>
-        {/* TAB 1: HOME */}
         <Link
           to="/home"
           className={isActive("/home")}
@@ -130,7 +121,6 @@ const NavBar = ({ currentUserUuid }) => {
           <span>Home</span>
         </Link>
 
-        {/* TAB 2: MY PERSONAL JOURNAL (Mapped directly to your dynamic router path!) */}
         <Link
           to={`/journalfeed/${currentUserUuid || "sanctuary"}`}
           className={isActive("/journalfeed")}
@@ -152,7 +142,6 @@ const NavBar = ({ currentUserUuid }) => {
           <span>Journal</span>
         </Link>
 
-        {/* TAB 3: POST ACCENT BUTTON (Perfectly Centered) */}
         <Link
           to="/createtask"
           className="nav-item mobile-post-accent-btn"
@@ -175,7 +164,6 @@ const NavBar = ({ currentUserUuid }) => {
           <span>Post</span>
         </Link>
 
-        {/* TAB 4: ALERTS / NOTIFICATIONS */}
         <Link
           to="/notifications"
           className={isActive("/notificationspage")}
@@ -202,7 +190,6 @@ const NavBar = ({ currentUserUuid }) => {
           <span>Alerts</span>
         </Link>
 
-        {/* TAB 5: PROFILE PICTURE LINK */}
         <Link to="/profile" className={isActive("/profile")}>
           <div className="mobile-avatar-frame-bottom">
             <img

@@ -56,7 +56,6 @@ const TaskInput = ({
             <span>Image</span>
           </label>
 
-          {/* Primary Form Submission Action Trigger */}
           <button type="submit" className="testimony-submit-action-btn">
             <CheckSquare size={16} strokeWidth={2} />
             <span>Publish</span>
