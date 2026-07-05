@@ -89,33 +89,48 @@ export const update_Engagement_frm_Database = (updatedPost, type, serverAction, 
 };
 
 
-// ── 🔒 OPTIMISTIC INLINE FOLLOW TIMELINE TOGGLE ──
-export const update_Global_Follow_Toggle = async (author_profile_uuid, currentServerStatus, followStates, setFollowStates) => {
-  // 1. Find the current status using a clean if/else block
+// ========useContext_Global_Connect_Updater===============================================
+
+
+export const Global_Engagement_Updater_For_Connect_Request = async (
+  author_profile_uuid,
+  currentTaskRelationStatus,
+  engagement_Request_Status,
+  set_engagement_Request_Status
+) => {
   let currentStatus;
 
-  if (followStates[author_profile_uuid] !== undefined) {
-    currentStatus = followStates[author_profile_uuid];
+  if (engagement_Request_Status[author_profile_uuid] !== undefined) {
+    currentStatus = engagement_Request_Status[author_profile_uuid];
   } else {
-    currentStatus = currentServerStatus;
+    currentStatus = currentTaskRelationStatus;
   }
-  let optimisticNextStatus;
+
+  let optimistic_Next_Status;
+
+  // Logic: 
+  // If it's null, we are initiating a follow -> "pending"
+  // If it's "pending" OR "active", we are removing/canceling -> null
   if (currentStatus === null) {
-    optimisticNextStatus = "pending";
+    optimistic_Next_Status = "pending";
   } else {
-    optimisticNextStatus = null;
+    optimistic_Next_Status = null;
   }
+
   const previousStatus = currentStatus;
-  setFollowStates((prevScoreboard) => {
+
+  // Optimistic UI Update
+  set_engagement_Request_Status((oldStatus) => {
     return {
-      ...prevScoreboard,
-      [author_profile_uuid]: optimisticNextStatus,
+      ...oldStatus,
+      [author_profile_uuid]: optimistic_Next_Status,
     };
   });
 
-
+  // ----------Database_Api_call--------------------------------------
   try {
-    const res = await api.post(`/task/profile/follow/${author_profile_uuid}`);
+    const res = await api.post(`/task/profile/connect/${author_profile_uuid}`);
+    
     let confirmedStatus;
     if (res.data.isFollowing) {
       confirmedStatus = "pending";
@@ -123,10 +138,9 @@ export const update_Global_Follow_Toggle = async (author_profile_uuid, currentSe
       confirmedStatus = null;
     }
 
-
-    setFollowStates((prevScoreboard) => {
+    set_engagement_Request_Status((oldStatus) => {
       return {
-        ...prevScoreboard,
+        ...oldStatus,
         [author_profile_uuid]: confirmedStatus,
       };
     });
@@ -134,7 +148,7 @@ export const update_Global_Follow_Toggle = async (author_profile_uuid, currentSe
     console.error("❌ Follow sync failed, rolling back changes...", err.message);
     alert("Network error: Could not sync follow request. Reverting status.");
 
-    setFollowStates((prevScoreboard) => {
+    set_engagement_Request_Status((prevScoreboard) => {
       return {
         ...prevScoreboard,
         [author_profile_uuid]: previousStatus,

@@ -15,14 +15,14 @@ import {
 import {
   toggle_Engagement_In_React_State,
   update_Engagement_frm_Database,
-  update_Global_Follow_Toggle,
+  Global_Engagement_Updater_For_Connect_Request,
 } from "./operations/Engagement.js";
 
 const TaskContext = createContext();
 
 export const TaskProvider = ({ children }) => {
   // ----------------------------------------------------
-  // 🌍 1. GLOBAL TIMELINE STREAM STATE
+  // 🌍 1. Home_Feed_States
   // ----------------------------------------------------
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -44,17 +44,16 @@ export const TaskProvider = ({ children }) => {
   const journalInProgress = useRef(false);
   const journal_Freeze_Time = useRef(String(Date.now()));
 
-  // Other contextual memory anchors
+  // ----------------------------------------------------
+  // ⚙️ 3.Engagement & COmment States
+  // ----------------------------------------------------
   const [comments, setComments] = useState({});
-  const [followStates, setFollowStates] = useState({});
-  const [socket, setSocket] = useState(null);
+
   const [pendingRequests, setPendingRequests] = useState([]);
 
-  // ----------------------------------------------------
-  // ⚙️ 3. CORE HANDLERS (Brought Inside the House!)
-  // ----------------------------------------------------
-
-  // 🌍 Global Feed Handler: Runs natively inside your state space
+  // ==================================================================
+  //                 HOME FEED
+  // ==================================================================
   const privateFreshLoadHandler = useCallback(
     async (isFreshLoad = true) => {
       if (requestInProgress.current) return;
@@ -99,8 +98,11 @@ export const TaskProvider = ({ children }) => {
     },
     [next_Post_Timestamp, has_Next_Post_Timestamp],
   );
+  //  // ------------------------END-----------------------------------
 
-  // 🔒 Private Feed Handler: No more passing 11 arguments down a pipeline!
+  // ==================================================================
+  //                 PRIVATE JOURNAL FEED
+  // ==================================================================
   const privateJournalFeedHandler = useCallback(
     async (targetUserUuid, isFreshLoad = true) => {
       if (!targetUserUuid || targetUserUuid === "sanctuary") return;
@@ -141,11 +143,6 @@ export const TaskProvider = ({ children }) => {
     [next_Journal_Timestamp, has_Next_Journal_Timestamp],
   );
 
-  // ----------------------------------------------------
-  // 🌀 4. AUTOMATIC SIDE EFFECTS (Mounted Run Triggers)
-  // ----------------------------------------------------
-
-  // Seed the timeline stream immediately upon booting
   const hasMounted = useRef(false);
   useEffect(() => {
     if (!hasMounted.current) {
@@ -154,16 +151,21 @@ export const TaskProvider = ({ children }) => {
     }
   }, [privateFreshLoadHandler]);
 
-  // Real-time network listener mapping
+  // ------------------------END-----------------------------------
+
+  // ==================================================================
+  // 3. Socket Configuration Setup
+  // ==================================================================
+  const [socket, setSocket] = useState(null);
+
   useEffect(() => {
     if (!currentUserUuid) return;
 
     const socketURL = import.meta.env.DEV
       ? "http://localhost:3000"
       : "https://pneuma-api-0bvr.onrender.com";
-    const newSocket = io(socketURL, { withCredentials: true });
 
-    setSocket(newSocket);
+    const newSocket = io(socketURL, { withCredentials: true });
 
     newSocket.on("connect", () => {
       console.log(
@@ -175,78 +177,98 @@ export const TaskProvider = ({ children }) => {
       });
     });
 
-    newSocket.on("incoming_follow_request", (payload) => {
+    setSocket(newSocket);
+
+    return () => newSocket.disconnect();
+  }, [currentUserUuid]);
+  // ------------------------END-----------------------------------
+
+  // ==================================================================
+  // 4.              CONNECTION REQUEST
+  // ==================================================================
+  const [engagement_Request_Status, set_engagement_Request_Status] = useState(
+    {},
+  );
+  const [refreshCounter, setRefreshCounter] = useState(0);
+  const Global_Engagement_Updater_For_Connect_Request = async (
+    author_profile_uuid,
+    currentTaskRelationStatus,
+    engagement_Request_Status,
+    set_engagement_Request_Status,
+  ) =>
+    await Global_Engagement_Updater_For_Connect_Request(
+      author_profile_uuid,
+      currentTaskRelationStatus,
+      engagement_Request_Status,
+      set_engagement_Request_Status,
+    );
+
+  //--------------------Active_Connect_Request------------------
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleIncomingRequest = (payload) => {
       console.log("🔔 Socket caught an incoming connection alert:", payload);
       setPendingRequests((prevRequests) => [payload, ...prevRequests]);
-    });
+    };
+
+    socket.on("incoming_connect_request", handleIncomingRequest);
 
     return () => {
-      newSocket.disconnect();
-      console.log("🔌 Live phone line closed down.");
+      socket.off("incoming_connect_request", handleIncomingRequest);
     };
-  }, [currentUserUuid]);
-
-  // Historical request parser
+  }, [socket]);
+  // -------------------Active_unCOnnect_Request-------------------
   useEffect(() => {
-    if (!currentUserUuid) return;
-
-    const pullOldRequests = async () => {
-      try {
-        const res = await api.get("/task/profile/pending-requests");
-        setPendingRequests(res.data.requests);
-        console.log(
-          "📥 Historical pending requests successfully seeded:",
-          res.data.requests,
-        );
-      } catch (err) {
-        console.error(
-          "❌ Failed to pull old pending follow requests:",
-          err.message,
-        );
-      }
+    if (!socket) return;
+    const handleStatusChange = (payload) => {
+      set_engagement_Request_Status((prev) => ({
+        ...prev,
+        [payload.followerUuid]: payload.newStatus,
+      }));
     };
 
-    pullOldRequests();
-  }, [currentUserUuid]);
+    socket.on("unConnect_Status_Changes", handleStatusChange);
 
-  const Handle_Decline_Accept_Action = async (followerUuid, action) => {
+    return () => {
+      socket.off("unConnect_Status_Changes", handleStatusChange);
+    };
+  }, [socket]);
+
+  // ----------Accept_Decline_Request--------------------
+  const Handle_Decline_Accept_Action = async (requested_User_Uuuid, action) => {
     const backupRequests = [...pendingRequests];
 
-    // 1. Optimistic Update (The UI feels instant)
     setPendingRequests((prev) =>
-      prev.filter((req) => req.followerUuid !== followerUuid),
+      prev.filter((req) => req.requested_User_Uuuid !== requested_User_Uuuid),
     );
 
     try {
       const response = await api.patch("/task/profile/request-action", {
-        followerUuid,
+        requested_User_Uuuid,
         action,
       });
 
       if (response.data.status) {
-        setFollowStates((prev) => ({
-          ...prev,
-          [followerUuid]: response.data.status,
-        }));
-
+        (set_engagement_Request_Status,
+          (prev) => ({
+            ...prev,
+            [requested_User_Uuuid]: response.data.status,
+            set_engagement_Request_Status,
+          }));
 
         setRefreshCounter((prev) => prev + 1);
       }
-      // Inside your "Accept" function:
     } catch (err) {
-      // Capture the full error details
       if (err.response) {
-        // The server responded with a status code outside the 2xx range
         console.error(
           "Server responded with:",
           err.response.status,
           err.response.data,
         );
       } else if (err.request) {
-        // The request was made but no response was received (Network/CORS issue)
         console.error("No response received from server:", err.request);
       } else {
-        // Something happened in setting up the request
         console.error("Error setting up request:", err.message);
       }
 
@@ -254,22 +276,20 @@ export const TaskProvider = ({ children }) => {
       alert("Action failed. Check console for details.");
     }
   };
-  const [refreshCounter, setRefreshCounter] = useState(0);
-  // Who followed receives the packet information from who accepted
+
+  // ---------Active_Update_Accept_&_Decline_For_Author-------------
   useEffect(() => {
     if (socket) {
-      // 1. Existing: Handle direct follow status changes
       socket.on("connection_status_updated", (data) => {
-        setFollowStates((prev) => ({
-          ...prev,
-          [data.authorUuid]: data.newStatus,
-        }));
+        (set_engagement_Request_Status,
+          (prev) => ({
+            ...prev,
+            [data.authorUuid]: data.newStatus,
+          }));
         setPendingRequests((prev) =>
           prev.filter((req) => req.sender_uuid !== data.senderUuid),
         );
       });
-
-      // 2. NEW: Handle the "Inner Circle" dock refresh
       socket.on("connection_updated", () => {
         console.log("🔄 Real-time broadcast: Updating Inner Circle dock...");
         setRefreshCounter((prev) => prev + 1);
@@ -279,10 +299,11 @@ export const TaskProvider = ({ children }) => {
     return () => {
       if (socket) {
         socket.off("connection_status_updated");
-        socket.off("connection_updated"); // Don't forget to clean up this listener!
+        socket.off("connection_updated");
       }
     };
-  }, [socket]); // Keep dependencies minimal
+  }, [socket]);
+  //---------------------------END---------------------------------------------
 
   // ----------------------------------------------------
   // 🛠️ 5. COMPONENT OPERATIONS MAPPINGS
@@ -340,20 +361,7 @@ export const TaskProvider = ({ children }) => {
       setTasks,
       setPrivateFeedTasks,
     );
-  const handleGlobalFollowToggle = async (
-    author_profile_uuid,
-    currentServerStatus,
-  ) =>
-    await update_Global_Follow_Toggle(
-      author_profile_uuid,
-      currentServerStatus,
-      followStates,
-      setFollowStates,
-    );
 
-  // ----------------------------------------------------
-  // 🔌 6. THE ROOM SERVICE WINDOW (Return Statement)
-  // ----------------------------------------------------
   return (
     <TaskContext.Provider
       value={{
@@ -366,10 +374,12 @@ export const TaskProvider = ({ children }) => {
         has_Next_Post_Timestamp,
         has_Next_Journal_Timestamp,
         comments,
-        followStates,
+        engagement_Request_Status,
+        set_engagement_Request_Status,
         socket,
         pendingRequests,
         setPendingRequests,
+
         Handle_Decline_Accept_Action,
         refreshCounter,
 
@@ -390,7 +400,7 @@ export const TaskProvider = ({ children }) => {
 
         update_Created_Comment_In_Context_State: handleCreateComment,
         set_fetched_Comments_In_Context_State: handleSetFetchedComments,
-        update_Global_Follow_Toggle: handleGlobalFollowToggle,
+        Global_Engagement_Updater_For_Connect_Request,
       }}
     >
       {children}

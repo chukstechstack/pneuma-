@@ -57,6 +57,19 @@ export const getSmartProfileFeed = async (req, res, next) => {
             }
         }
 
+        if (!isOwner) {
+            const followCheck = await pool.query(
+                `SELECT status 
+         FROM follows 
+         WHERE follower_id = $1 AND following_id = $2
+         LIMIT 1`,
+                [loggedInUserProfileId, targetProfileNumericId]
+            );
+
+            if (followCheck.rows.length > 0) {
+                relationStatus = followCheck.rows[0].status;
+            }
+        }
         if (isOwner || relationStatus === 'active') {
             const taskRes = await pool.query(`
                 SELECT id, uuid, title, content, img, created_at, likes_count, reposts_count

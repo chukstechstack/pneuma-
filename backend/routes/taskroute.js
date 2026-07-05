@@ -16,9 +16,9 @@ import { getComment } from "../controllers/task/Crud/fetchComment.js";
 
 
 import { acceptFollowRequest } from "../controllers/task/profile_engagment.js/acceptFollowRequest.js";
-import { getSmartProfileFeed } from "../controllers/task/profile_engagment.js/profileController.js";
+import { getSmartProfileFeed } from "../controllers/task/profile_engagment.js/fetch_profileController.js";
 import { getPendingRequests } from "../controllers/task/profile_engagment.js/getPendingRequests.js";
-import { toggleFollow } from "../controllers/task/profile_engagment.js/follow.js";
+import { connectRequest } from "../controllers/task/profile_engagment.js/connectRequest.js";
 import { fetch_Journal_When_Accepted } from "../controllers/task/profile_engagment.js/fetch_Journal_When_Accepted.js";
 import { fetchEngagementDetails } from "../controllers/task/profile_engagment.js/fetchEngagementDetails.js";
 
@@ -35,7 +35,7 @@ taskRoute.options('/{*wildcard}', cors());
 taskRoute.get("/", ensureAuthenticated, getTask);
 taskRoute.get("/profile/pending-requests", ensureAuthenticated, getPendingRequests);
 taskRoute.get("/profile/:targetProfileUuid", ensureAuthenticated, getSmartProfileFeed);
-taskRoute.get("/profile/engagement-details/:targetProfileUuid", ensureAuthenticated, fetchEngagementDetails);
+taskRoute.get("/profile/innerCircle-details/:targetProfileUuid", ensureAuthenticated, fetchEngagementDetails);
 
 taskRoute.get("/journalfeed/:journalUuid", ensureAuthenticated, journalFeed);
 taskRoute.get("/:contentUuid/fetchComments", ensureAuthenticated, getComment);
@@ -44,7 +44,7 @@ taskRoute.get("/task/journal-posts/:targetProfileUuid", ensureAuthenticated, fet
 taskRoute.post("/:contentUuid/comments", ensureAuthenticated, commentFeed);
 taskRoute.post("/", ensureAuthenticated, upload.single("img"), createTask);
 taskRoute.post("/interaction/:contentUuid", ensureAuthenticated, toggleInteraction)
-taskRoute.post("/profile/follow/:targetProfileUuid", ensureAuthenticated, toggleFollow)
+taskRoute.post("/profile/connect/:targetProfileUuid", ensureAuthenticated, connectRequest)
 taskRoute.post("/:contentUuid/comments", ensureAuthenticated, commentFeed);
 taskRoute.post("/fetchConversation", ensureAuthenticated, establishConversation);
 

@@ -1,7 +1,7 @@
 import pool from "../../../config/supabaseConfig.js";
 import redisClient from "../../../config/redisCreateClient.js";
 
-export const toggleFollow = async (req, res, next) => {
+export const connectRequest = async (req, res, next) => {
   const follower_numeric_id = req.user?.id;
   const follower_uuid = req.user?.uuid;
   const { targetProfileUuid } = req.params;
@@ -78,8 +78,15 @@ export const toggleFollow = async (req, res, next) => {
         lastName: req.user?.last_name || "Luminary",
         avatarUrl: req.user?.avatar_url || null
       };
-      io.to(authorRoom).emit("incoming_follow_request", strangerPayload);
+      io.to(authorRoom).emit("incoming_connect_request", strangerPayload);
       console.log(`📡 Real-time follow request sent straight into custom room: ${authorRoom}`);
+    } else {
+      const io = req.app.get("socketio");
+      const authorRoom = `current_Logged_In_User_Uuid:${targetProfileUuid}`;
+      io.to(authorRoom).emit("unConnect_Status_Changes", {
+        followerUuid: follower_uuid,
+        newStatus: null // Telling the frontend to reset status to null
+      });
     }
 
     try {

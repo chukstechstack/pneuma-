@@ -8,8 +8,8 @@ const Task = ({
   task,
   deleteTask,
   isOwner,
-  handleInteraction,
-  handleFollow,
+  handle_Like_Reply_Share_Interaction,
+  handle_Engagement_Request_For_Connect,
   currentUserUuid,
 }) => {
   const {
@@ -30,14 +30,15 @@ const Task = ({
   const [openDrawerId, setOpenDrawerId] = useState(
     localStorage.getItem("active_drawer") || null,
   );
-  const { followStates } = useContext(TaskContext);
+  const { engagement_Request_Status } = useContext(TaskContext);
 
-  let cardActiveRelationStatus;
+  let card_Active_Relation_Status;
 
-  if (followStates[author_profile_uuid] !== undefined) {
-    cardActiveRelationStatus = followStates[author_profile_uuid];
+  if (engagement_Request_Status[author_profile_uuid] !== undefined) {
+    card_Active_Relation_Status =
+      engagement_Request_Status[author_profile_uuid];
   } else {
-    cardActiveRelationStatus = relation_status;
+    card_Active_Relation_Status = relation_status;
   }
 
   const formatTaskDate = (rawDateString) => {
@@ -73,19 +74,21 @@ const Task = ({
 
               {currentUserUuid !== author_profile_uuid && (
                 <button
-                  onClick={() => handleFollow(author_profile_uuid)}
+                  onClick={() =>
+                    handle_Engagement_Request_For_Connect(author_profile_uuid)
+                  }
                   className={`taskFollowInlineButton ${
-                    cardActiveRelationStatus === "active"
+                    card_Active_Relation_Status === "active"
                       ? "following-active"
-                      : cardActiveRelationStatus === "pending"
+                      : card_Active_Relation_Status === "pending"
                         ? "following-requested"
                         : ""
                   }`}
                   style={{ margin: 0, padding: "2px 6px", fontSize: "11px" }}
                 >
-                  {cardActiveRelationStatus === "active" && "✓ Following"}
-                  {cardActiveRelationStatus === "pending" && "Requested..."}
-                  {cardActiveRelationStatus === null && "+ Follow"}
+                  {card_Active_Relation_Status === "active" && "UnConnect"}
+                  {card_Active_Relation_Status === "pending" && "Requested..."}
+                  {card_Active_Relation_Status === null && "+ Connect"}
                 </button>
               )}
             </div>
@@ -151,7 +154,7 @@ const Task = ({
       <div className="pneuma-post-action-dock">
         <div className="action-buttons-left">
           <button
-            onClick={() => handleInteraction(uuid, "like")}
+            onClick={() => handle_Like_Reply_Share_Interaction(uuid, "like")}
             className={`actionButton like-btn ${task.is_liked ? "active" : ""}`}
           >
             <ThumbsUp
@@ -186,7 +189,7 @@ const Task = ({
           </button>
 
           <button
-            onClick={() => handleInteraction(uuid, "repost")}
+            onClick={() => handle_Like_Reply_Share_Interaction(uuid, "repost")}
             className={`actionButton repost-btn ${task.is_reposted ? "active" : ""}`}
           >
             <Repeat2

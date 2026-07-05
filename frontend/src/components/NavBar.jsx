@@ -13,8 +13,6 @@ const NavBar = ({ currentUserUuid }) => {
   const isActive = (path) =>
     location.pathname.startsWith(path) ? "nav-item active" : "nav-item";
 
-  const mobileProfilePic = "https://dev.to";
-
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -183,9 +181,9 @@ const NavBar = ({ currentUserUuid }) => {
               <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
               <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
             </svg>
-            <span className="badge-counter-alert">
+            {/* <span className="badge-counter-alert">
               {pendingRequests.length}
-            </span>
+            </span> */}
           </div>
           <span>Alerts</span>
         </Link>
@@ -193,7 +191,7 @@ const NavBar = ({ currentUserUuid }) => {
         <Link to="/profile" className={isActive("/profile")}>
           <div className="mobile-avatar-frame-bottom">
             <img
-              src={mobileProfilePic}
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysX8k1gABg8LHF0QSukobgjnwgnxqX1Pqjcxx6AafbTLSGRq8560Mz8I&s=10"
               className="mobile-avatar-img-bottom"
               alt="Me Profile"
             />
@@ -208,6 +206,7 @@ const NavBar = ({ currentUserUuid }) => {
       </nav>
       {/* ==================== 3. DESKTOP GLASS HEADER BAR ==================== */}
       <nav className="desktop-master-nav">
+        {/* ==========================Pneuma_Logo============================ */}
         <div className="desktop-nav-inner-container">
           <div className="desktop-nav-left-wing">
             <Link to="/home" className="desktop-nav-brand-title">
@@ -241,6 +240,7 @@ const NavBar = ({ currentUserUuid }) => {
             </div>
           </div>
 
+          {/* ==========================Home_Desktop============================ */}
           <div className="desktop-nav-right-navigation-menu">
             <Link
               to="/home"
@@ -258,7 +258,30 @@ const NavBar = ({ currentUserUuid }) => {
               </svg>
               <span className="menu-anchor-text-label">Home</span>
             </Link>
+            {/* ==========================Post_Task_Desktop============================ */}
+            <Link
+              to="/createtask"
+              className="nav-item mobile-post-accent-btn"
+              onTouchEnd={(e) => e.currentTarget.blur()}
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect width="18" height="18" x="3" y="3" rx="2" />
+                <line x1="12" x2="12" y1="8" y2="16" />
+                <line x1="8" x2="16" y1="12" y2="12" />
+              </svg>
+              <span>Post</span>
+            </Link>
 
+            {/* ==========================Message_Desktop============================ */}
             <Link
               to="/messages"
               className={`desktop-menu-item-anchor ${location.pathname === "/messages" ? "active" : ""}`}
@@ -280,6 +303,7 @@ const NavBar = ({ currentUserUuid }) => {
               <span className="menu-anchor-text-label">Messaging</span>
             </Link>
 
+            {/* ==========================Alerts_Desktop============================ */}
             <Link
               to="/notifications"
               className={`desktop-menu-item-anchor ${location.pathname === "/notifications" ? "active" : ""}`}
@@ -299,7 +323,24 @@ const NavBar = ({ currentUserUuid }) => {
                   3
                 </span>
               </div>
-              <span className="menu-anchor-text-label">Notifications</span>
+              <span className="menu-anchor-text-label">Alerts</span>
+            </Link>
+
+            {/* ==========================Profile_Desktop============================ */}
+            <Link to="/profile" className={isActive("/profile")}>
+              <div className="mobile-avatar-frame-bottom">
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysX8k1gABg8LHF0QSukobgjnwgnxqX1Pqjcxx6AafbTLSGRq8560Mz8I&s=10"
+                  className="mobile-avatar-img-bottom"
+                  alt="Me Profile"
+                />
+              </div>
+              <span>
+                {pendingRequests.length > 0 && (
+                  <span className="navbar-badge">{pendingRequests.length}</span>
+                )}
+                Profile
+              </span>
             </Link>
           </div>
         </div>

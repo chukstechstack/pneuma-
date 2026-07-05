@@ -2,14 +2,17 @@ import React from "react";
 
 const ProfileJournal = ({
   isOwner,
-  active_Relation_Follow_Status,
+  active_Relationtionship_Request_Status,
   tasks,
   navigate,
   currentUserUuid,
 }) => {
+  const isAuthorized =
+    isOwner || active_Relationtionship_Request_Status === "active";
+
   return (
     <div className="profile-journal-scroll-section">
-      {isOwner || active_Relation_Follow_Status === "active" ? (
+      {isAuthorized ? (
         <>
           <h3 className="profile-feed-title">
             Rolling Journal Scrolls (5 Newest)
@@ -30,7 +33,6 @@ const ProfileJournal = ({
               ))}
             </div>
           )}
-
           {isOwner && (
             <button
               onClick={() => navigate(`/journalfeed/${currentUserUuid}`)}
@@ -41,21 +43,16 @@ const ProfileJournal = ({
           )}
         </>
       ) : (
-        <>
-          <h3 className="profile-feed-title">Rolling Journal Scrolls</h3>
-          <div className="profile-teaser-stack-blurred"></div>
-          <div className="profile-lock-overlay-panel">
-            <div className="lock-icon-indicator">🔒</div>
-            <h4 className="lock-panel-headline">Scrolls Locked by Author</h4>
-            <p className="lock-panel-subtext">
-              Follow this author to request access to their 5 newest rolling
-              life reflections.
-            </p>
-          </div>
-        </>
+        <div className="profile-lock-overlay-panel">
+          <div className="lock-icon-indicator">🔒</div>
+          <h4 className="lock-panel-headline">Scrolls Locked by Author</h4>
+          <p className="lock-panel-subtext">
+            Follow this author to request access to their 5 newest rolling life
+            reflections.
+          </p>
+        </div>
       )}
     </div>
   );
 };
-
 export default ProfileJournal;

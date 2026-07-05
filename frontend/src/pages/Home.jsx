@@ -17,11 +17,12 @@ const HomePage = () => {
     loading: contextLoading,
     update_Engagement_frm_Database,
     toggle_Engagement_In_React_State,
-    update_Global_Follow_Toggle,
-    getTasks,
+    Global_Engagement_Updater_For_Connect_Request,
+    FreshLoad,
     has_Next_Post_Timestamp,
   } = useContext(TaskContext);
 
+  // =================Pagination_Scroll=================================
   useEffect(() => {
     const handleScroll = () => {
       if (!has_Next_Post_Timestamp) return;
@@ -29,24 +30,33 @@ const HomePage = () => {
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 100
       ) {
-        getTasks(false);
+        FreshLoad(false);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [getTasks, has_Next_Post_Timestamp]);
-
-  const handleFollow = (author_profile_uuid, currentTaskRelationStatus) => {
+  }, [FreshLoad, has_Next_Post_Timestamp]);
+  // ================End=============
+  // ==============Handle_Follow_Request=========================================
+  const handle_Engagement_Request_For_Connect = (
+    author_profile_uuid,
+    currentTaskRelationStatus,
+  ) => {
     if (currentUserUuid === author_profile_uuid) {
       alert("You cannot follow your own sanctuary profile.");
       return;
     }
 
-    update_Global_Follow_Toggle(author_profile_uuid, currentTaskRelationStatus);
+    Global_Engagement_Updater_For_Connect_Request(
+      author_profile_uuid,
+      currentTaskRelationStatus,
+    );
   };
+  // ================End=============
 
-  const handleInteraction = async (taskUuid, type) => {
+  // ==============handle_Like_Reply_Share_Interaction =========================================
+  const handle_Like_Reply_Share_Interaction = async (taskUuid, type) => {
     console.log("1. Click triggered for UUID:", taskUuid, "Type:", type);
     const originalTask = tasks.find(
       (t) => t.uuid?.toLowerCase() === taskUuid?.toLowerCase(),
@@ -69,7 +79,9 @@ const HomePage = () => {
       alert("Connection failed. Unable to save your response");
     }
   };
+  // ================End=============
 
+  // ==============Deletetask_Request=========================================
   const deleteTask = async (uuid) => {
     const originalIndex = tasks.findIndex((task) => task.uuid === uuid);
     const taskToRestore = tasks[originalIndex];
@@ -84,11 +96,13 @@ const HomePage = () => {
       alert(`Failed to delete: ${message}`);
     }
   };
+  // ================End=============
 
+  // ================Load_SPinner==============================================
   if (contextLoading && tasks.length === 0) {
     return <FullPageLoader />;
   }
-
+  // ================End=============
   return (
     <div className="pneuma-app-shell">
       <NavBar currentUserUuid={currentUserUuid} />
@@ -104,16 +118,21 @@ const HomePage = () => {
                 task={task}
                 deleteTask={deleteTask}
                 isOwner={task.user_id === currentUserId}
-                handleInteraction={handleInteraction}
-                handleFollow={(author_profile_uuid) =>
-                  handleFollow(author_profile_uuid, task.relation_status)
+                handle_Like_Reply_Share_Interaction={
+                  handle_Like_Reply_Share_Interaction
+                }
+                handle_Engagement_Request_For_Connect={(author_profile_uuid) =>
+                  handle_Engagement_Request_For_Connect(
+                    author_profile_uuid,
+                    task.relation_status,
+                  )
                 }
                 currentUserUuid={currentUserUuid}
               />
             ))}
           </div>
 
-          {/* SUBTLE FOOTER LOADER */}
+          {/*----Entry_Loader_Spinner*/}
           {contextLoading && tasks.length > 0 && (
             <div
               className="pneuma-pagination-loading-indicator"
