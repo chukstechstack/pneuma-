@@ -95,64 +95,41 @@ export const update_Engagement_frm_Database = (updatedPost, type, serverAction, 
 export const Global_Engagement_Updater_For_Connect_Request = async (
   author_profile_uuid,
   currentTaskRelationStatus,
-  engagement_Request_Status,
+  engagement_Request_Status = {},
   set_engagement_Request_Status
 ) => {
-  let currentStatus;
-
-  if (engagement_Request_Status[author_profile_uuid] !== undefined) {
-    currentStatus = engagement_Request_Status[author_profile_uuid];
-  } else {
-    currentStatus = currentTaskRelationStatus;
+  if (!set_engagement_Request_Status) {
+    console.error("Critical: set_engagement_Request_Status is missing!");
+    return;
   }
 
-  let optimistic_Next_Status;
+  // Use optional chaining for safe access
+  const currentStatus = engagement_Request_Status?.[author_profile_uuid] ?? currentTaskRelationStatus;
 
-  // Logic: 
-  // If it's null, we are initiating a follow -> "pending"
-  // If it's "pending" OR "active", we are removing/canceling -> null
-  if (currentStatus === null) {
-    optimistic_Next_Status = "pending";
-  } else {
-    optimistic_Next_Status = null;
-  }
-
+  const optimistic_Next_Status = currentStatus === null ? "pending" : null;
   const previousStatus = currentStatus;
 
   // Optimistic UI Update
-  set_engagement_Request_Status((oldStatus) => {
-    return {
-      ...oldStatus,
-      [author_profile_uuid]: optimistic_Next_Status,
-    };
-  });
+  set_engagement_Request_Status((prev) => ({
+    ...prev,
+    [author_profile_uuid]: optimistic_Next_Status,
+  }));
 
-  // ----------Database_Api_call--------------------------------------
   try {
     const res = await api.post(`/task/profile/connect/${author_profile_uuid}`);
-    
-    let confirmedStatus;
-    if (res.data.isFollowing) {
-      confirmedStatus = "pending";
-    } else {
-      confirmedStatus = null;
-    }
 
-    set_engagement_Request_Status((oldStatus) => {
-      return {
-        ...oldStatus,
-        [author_profile_uuid]: confirmedStatus,
-      };
-    });
+    // Set confirmed status based on backend response
+    const confirmedStatus = res.data.isFollowing ? "pending" : null;
+
+    set_engagement_Request_Status((prev) => ({
+      ...prev,
+      [author_profile_uuid]: confirmedStatus,
+    }));
   } catch (err) {
-    console.error("❌ Follow sync failed, rolling back changes...", err.message);
-    alert("Network error: Could not sync follow request. Reverting status.");
-
-    set_engagement_Request_Status((prevScoreboard) => {
-      return {
-        ...prevScoreboard,
-        [author_profile_uuid]: previousStatus,
-      };
-    });
+    console.error("❌ Follow sync failed, rolling back...", err.message);
+    set_engagement_Request_Status((prev) => ({
+      ...prev,
+      [author_profile_uuid]: previousStatus,
+    }));
   }
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import api from "../api/axios.js";
 import "../styles/Profile.css";
 import TaskContext from "../context/TaskContext.jsx";
@@ -15,6 +15,7 @@ const Profile = () => {
   const {
     engagement_Request_Status,
     Global_Engagement_Updater_For_Connect_Request,
+    refreshCounter,
   } = useContext(TaskContext);
 
   const [profile, setProfile] = useState(null);
@@ -23,8 +24,12 @@ const Profile = () => {
   const [relationStatus, setRelationStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [innerCircle, setInnerCircle] = useState([]);
+  const [isDockOpen, setIsDockOpen] = useState(false);
+  const [dockLoading, setDockLoading] = useState(false);
+
   useEffect(() => {
-    const fetchSmartProfileData = async () => {
+    const fetchProfile = async () => {
       setIsLoading(true);
       try {
         const endpoint = author_profile_uuid
@@ -35,26 +40,59 @@ const Profile = () => {
         setTasks(res.data.tasks);
         setIsOwner(res.data.isOwner);
         setRelationStatus(res.data.relationStatus);
+        console.log(res)
       } catch (err) {
         console.error("❌ Profile retrieval failed:", err.message);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchSmartProfileData();
+    fetchProfile();
   }, [author_profile_uuid]);
 
-  // Centralized status calculation
-  const active_Relationtionship_Request_Status =
-    engagement_Request_Status[author_profile_uuid] !== undefined
-      ? engagement_Request_Status[author_profile_uuid]
-      : relationStatus;
+  useEffect(() => {
+    const fetchInnerCircle = async () => {
+      setDockLoading(true);
+      try {
+        const res = await api.get(
+          `/task/profile/innerCircle-details/${author_profile_uuid || "me"}`,
+        );
+        setInnerCircle(res.data.list || []);
+        console.log(res)
+      } catch (err) {
+        console.error("Connection fetch failed:", err);
+      } finally {
+        setDockLoading(false);
+      }
+    };
+    fetchInnerCircle();
+  }, [author_profile_uuid, refreshCounter]);
 
-  // Centralized handler
-  const connect_Request_Handler = () => {
+  const activeRelationshipStatus =
+    engagement_Request_Status[author_profile_uuid] ?? relationStatus;
+
+  useEffect(() => {
+    if (activeRelationshipStatus === "active" && !isOwner) {
+      const fetchTasksOnActivation = async () => {
+        try {
+          const res = await api.get(`/task/profile/${author_profile_uuid}`);
+          setTasks(res.data.tasks);
+          console.log(res)
+        } catch (err) {
+          console.error(
+            "❌ Failed to fetch journal after activation:",
+            err.message,
+          );
+        }
+      };
+      fetchTasksOnActivation();
+    }
+  }, [activeRelationshipStatus, author_profile_uuid, isOwner]);
+
+  const connectRequestHandler = () => {
     Global_Engagement_Updater_For_Connect_Request(
       author_profile_uuid,
-      active_Relationtionship_Request_Status,
+      activeRelationshipStatus,
     );
   };
 
@@ -82,21 +120,56 @@ const Profile = () => {
       <p className="profile-author-fullname">
         {profile?.first_name} {profile?.last_name}
       </p>
-      <PendingRequest />
+
+      <PendingRequest currentUserUuid={profile?.uuid} />
+
+      {(activeRelationshipStatus === "active" || isOwner) && (
+        <button onClick={() => setIsDockOpen(true)}>
+          {isOwner ? "View My Inner Circle" : "View Inner Circle"}
+        </button>
+      )}
+
+      {isDockOpen && (
+        <div className="drawer-overlay">
+          <div className="drawer-content">
+            <button onClick={() => setIsDockOpen(false)}>Close</button>
+            <h3>Your Connections</h3>
+            {dockLoading ? (
+              <p>Loading...</p>
+            ) : (
+              innerCircle.map((user) => (
+                <div key={user.uuid} className="connection-member">
+                  <Link
+                    to={`/profile/${user.uuid}`}
+                    onClick={() => setIsDockOpen(false)}
+                  >
+                    <img
+                      src={user.avatar_url || "/default-avatar.png"}
+                      alt={`${user.first_name} ${user.last_name}`}
+                      className="connection-avatar"
+                    />
+                  </Link>
+                  <span>
+                    {user.first_name} {user.last_name}
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
       <ProfileEngagement
         isOwner={isOwner}
-        active_Relationtionship_Request_Status={
-          active_Relationtionship_Request_Status
-        }
-        connect_Request_Handler={connect_Request_Handler}
+        active_Relationtionship_Request_Status={activeRelationshipStatus}
+        connect_Request_Handler={connectRequestHandler}
         onMessageClick={handleMessageInitialization}
         author_profile_uuid={author_profile_uuid}
       />
+
       <ProfileJournal
         isOwner={isOwner}
-        active_Relationtionship_Request_Status={
-          active_Relationtionship_Request_Status
-        }
+        active_Relationtionship_Request_Status={activeRelationshipStatus}
         tasks={tasks}
         navigate={navigate}
         currentUserUuid={profile?.uuid}

@@ -15,7 +15,7 @@ import {
 import {
   toggle_Engagement_In_React_State,
   update_Engagement_frm_Database,
-  Global_Engagement_Updater_For_Connect_Request,
+  Global_Engagement_Updater_For_Connect_Request as performConnectRequest,
 } from "./operations/Engagement.js";
 
 const TaskContext = createContext();
@@ -179,7 +179,9 @@ export const TaskProvider = ({ children }) => {
 
     setSocket(newSocket);
 
-    return () => newSocket.disconnect();
+    return () => {
+      newSocket.disconnect();
+    };
   }, [currentUserUuid]);
   // ------------------------END-----------------------------------
 
@@ -190,13 +192,11 @@ export const TaskProvider = ({ children }) => {
     {},
   );
   const [refreshCounter, setRefreshCounter] = useState(0);
-  const Global_Engagement_Updater_For_Connect_Request = async (
+  const handleGlobalConnect = async (
     author_profile_uuid,
     currentTaskRelationStatus,
-    engagement_Request_Status,
-    set_engagement_Request_Status,
   ) =>
-    await Global_Engagement_Updater_For_Connect_Request(
+    await performConnectRequest(
       author_profile_uuid,
       currentTaskRelationStatus,
       engagement_Request_Status,
@@ -208,101 +208,90 @@ export const TaskProvider = ({ children }) => {
     if (!socket) return;
 
     const handleIncomingRequest = (payload) => {
-      console.log("🔔 Socket caught an incoming connection alert:", payload);
-      setPendingRequests((prevRequests) => [payload, ...prevRequests]);
+      console.log("🔔 Incoming connection alert:", payload);
+      setPendingRequests((prev) => [payload, ...prev]);
+      
+    };
+
+    const handleStatusChange = (data) => {
+      const targetId = data.partner_Uuid;
+
+      if (!targetId) {
+        console.error("❌ Socket event received with missing ID:", data);
+        return;
+      }
+
+      set_engagement_Request_Status((prev) => ({
+        ...prev,
+        [targetId]: data.newStatus,
+      }));
+
+      setPendingRequests((prev) =>
+        prev.filter((req) => req.requested_User_Uuid !== targetId),
+      );
+    };
+
+    const handleRefresh = () => {
+      console.log("🔄 Broadcasting global sync refresh...");
+      setRefreshCounter((prev) => prev + 1);
     };
 
     socket.on("incoming_connect_request", handleIncomingRequest);
+    socket.on(
+      "connection_status_updated_for_accepted_user",
+      handleStatusChange,
+    );
+    socket.on("connection_updated_for_requested_user", handleStatusChange);
+    socket.on("unConnect_Status_Changes", handleStatusChange);
+    socket.on("trigger_global_sync_refresh", handleRefresh);
 
     return () => {
       socket.off("incoming_connect_request", handleIncomingRequest);
+      socket.off(
+        "connection_status_updated_for_accepted_user",
+        handleStatusChange,
+      );
+      socket.off("connection_updated_for_requested_user", handleStatusChange);
+      socket.off("unConnect_Status_Changes", handleStatusChange);
+      socket.off("trigger_global_sync_refresh", handleRefresh);
     };
   }, [socket]);
   // -------------------Active_unCOnnect_Request-------------------
-  useEffect(() => {
-    if (!socket) return;
-    const handleStatusChange = (payload) => {
-      set_engagement_Request_Status((prev) => ({
-        ...prev,
-        [payload.followerUuid]: payload.newStatus,
-      }));
-    };
-
-    socket.on("unConnect_Status_Changes", handleStatusChange);
-
-    return () => {
-      socket.off("unConnect_Status_Changes", handleStatusChange);
-    };
-  }, [socket]);
 
   // ----------Accept_Decline_Request--------------------
-  const Handle_Decline_Accept_Action = async (requested_User_Uuuid, action) => {
+  const [requestError, setRequestError] = useState(null);
+  const Handle_Decline_Accept_Action = async (requested_User_Uuid, action) => {
     const backupRequests = [...pendingRequests];
+    setRequestError(null);
 
     setPendingRequests((prev) =>
-      prev.filter((req) => req.requested_User_Uuuid !== requested_User_Uuuid),
+      prev.filter((req) => req.requested_User_Uuid !== requested_User_Uuid),
     );
+
+    console.log("🚀 Payload being sent:", { requested_User_Uuid, action });
 
     try {
       const response = await api.patch("/task/profile/request-action", {
-        requested_User_Uuuid,
+        requested_User_Uuid,
         action,
       });
 
       if (response.data.status) {
-        (set_engagement_Request_Status,
-          (prev) => ({
-            ...prev,
-            [requested_User_Uuuid]: response.data.status,
-            set_engagement_Request_Status,
-          }));
-
+        set_engagement_Request_Status((prev) => ({
+          ...prev,
+          [requested_User_Uuid]: response.data.status,
+        }));
         setRefreshCounter((prev) => prev + 1);
       }
     } catch (err) {
-      if (err.response) {
-        console.error(
-          "Server responded with:",
-          err.response.status,
-          err.response.data,
-        );
-      } else if (err.request) {
-        console.error("No response received from server:", err.request);
-      } else {
-        console.error("Error setting up request:", err.message);
-      }
-
       setPendingRequests(backupRequests);
-      alert("Action failed. Check console for details.");
+      const msg = err.response?.data?.error || err.message || "Unknown error";
+      setRequestError(msg);
+      setTimeout(() => setRequestError(null), 3000);
+      console.error("Action Failed:", msg);
     }
   };
 
-  // ---------Active_Update_Accept_&_Decline_For_Author-------------
-  useEffect(() => {
-    if (socket) {
-      socket.on("connection_status_updated", (data) => {
-        (set_engagement_Request_Status,
-          (prev) => ({
-            ...prev,
-            [data.authorUuid]: data.newStatus,
-          }));
-        setPendingRequests((prev) =>
-          prev.filter((req) => req.sender_uuid !== data.senderUuid),
-        );
-      });
-      socket.on("connection_updated", () => {
-        console.log("🔄 Real-time broadcast: Updating Inner Circle dock...");
-        setRefreshCounter((prev) => prev + 1);
-      });
-    }
-
-    return () => {
-      if (socket) {
-        socket.off("connection_status_updated");
-        socket.off("connection_updated");
-      }
-    };
-  }, [socket]);
   //---------------------------END---------------------------------------------
 
   // ----------------------------------------------------
@@ -379,13 +368,15 @@ export const TaskProvider = ({ children }) => {
         socket,
         pendingRequests,
         setPendingRequests,
+        requestError,
+        setRequestError,
 
         Handle_Decline_Accept_Action,
         refreshCounter,
 
         setRefreshCounter,
 
-        // Unified cleanly mapped functions!
+    
         FreshLoad: privateFreshLoadHandler,
         getTasks: privateFreshLoadHandler,
         privateFeedHandler: privateJournalFeedHandler,
@@ -400,7 +391,7 @@ export const TaskProvider = ({ children }) => {
 
         update_Created_Comment_In_Context_State: handleCreateComment,
         set_fetched_Comments_In_Context_State: handleSetFetchedComments,
-        Global_Engagement_Updater_For_Connect_Request,
+        Global_Engagement_Updater_For_Connect_Request: handleGlobalConnect,
       }}
     >
       {children}

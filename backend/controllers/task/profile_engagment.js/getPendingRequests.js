@@ -7,7 +7,7 @@ export const getPendingRequests = async (req, res) => {
   try {
     const query = `
       SELECT 
-        p.uuid AS "requested_User_Uuuid", 
+        p.uuid AS "requested_User_Uuid", 
         p.first_name AS "firstName", 
         p.last_name AS "lastName", 
         p.avatar_url AS "avatarUrl"

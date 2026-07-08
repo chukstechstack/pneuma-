@@ -9,6 +9,7 @@ const PendingRequest = () => {
     Handle_Decline_Accept_Action,
     setPendingRequests,
     currentUserUuid,
+    requestError,
   } = useContext(TaskContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -54,11 +55,11 @@ const PendingRequest = () => {
         <button onClick={() => setIsOpen(false)}>Close</button>
         {/* // --------------------END---------------------------------- */}
       </div>
-
+      {requestError && <div className="error-toast">{requestError}</div>}
       {/* ================Pending_Request_Profiles======================== */}
       <div className="dock-list">
         {pendingRequests.map((request) => (
-          <div key={request.followerUuid} className="request-card">
+          <div key={request.requested_User_Uuid} className="request-card">
             <img
               src={request.avatarUrl || "https://placeholder.com"}
               alt="avatar"
@@ -73,16 +74,26 @@ const PendingRequest = () => {
             <div className="action-buttons">
               {/* =====Accept_&_Decline_Request_Handler =======================*/}
               <button
-                onClick={() =>
-                  Handle_Decline_Accept_Action(request.followerUuid, "accept")
-                }
+                onClick={() => {
+                  console.log(
+                    "Button clicked, UUID is:",
+                    request.requested_User_Uuid,
+                  );
+                  Handle_Decline_Accept_Action(
+                    request.requested_User_Uuid,
+                    "accept",
+                  );
+                }}
               >
                 Accept
               </button>
               {/* --------------END------------------------ */}
               <button
                 onClick={() =>
-                  Handle_Decline_Accept_Action(request.followerUuid, "decline")
+                  Handle_Decline_Accept_Action(
+                    request.requested_User_Uuid,
+                    "decline",
+                  )
                 }
               >
                 Decline
