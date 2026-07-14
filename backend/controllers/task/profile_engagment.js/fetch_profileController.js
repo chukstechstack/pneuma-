@@ -12,15 +12,13 @@ export const getSmartProfileFeed = async (req, res, next) => {
 
         if (targetProfileUuid && targetProfileUuid !== "undefined" && targetProfileUuid !== "me") {
             profileRes = await pool.query(
-                `SELECT id, uuid, username, first_name, last_name, avatar_url, 
-                 followers_count, following_count, created_at 
+                `SELECT id, uuid, username, first_name, last_name, avatar_url, created_at 
                  FROM profiles WHERE uuid = $1`,
                 [targetProfileUuid]
             );
         } else {
             profileRes = await pool.query(
-                `SELECT id, uuid, username, first_name, last_name, avatar_url, 
-                 followers_count, following_count, created_at 
+                `SELECT id, uuid, username, first_name, last_name, avatar_url, created_at 
                  FROM profiles WHERE id = $1`,
                 [loggedInUserProfileId]
             );
@@ -57,22 +55,10 @@ export const getSmartProfileFeed = async (req, res, next) => {
             }
         }
 
-        if (!isOwner) {
-            const followCheck = await pool.query(
-                `SELECT status 
-         FROM follows 
-         WHERE follower_id = $1 AND following_id = $2
-         LIMIT 1`,
-                [loggedInUserProfileId, targetProfileNumericId]
-            );
 
-            if (followCheck.rows.length > 0) {
-                relationStatus = followCheck.rows[0].status;
-            }
-        }
         if (isOwner || relationStatus === 'active') {
             const taskRes = await pool.query(`
-                SELECT id, uuid, title, content, img, created_at, likes_count, reposts_count
+                SELECT id, uuid, content, img, created_at
                 FROM content
                 WHERE user_id = $1
                 ORDER BY created_at DESC

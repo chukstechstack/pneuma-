@@ -20,7 +20,7 @@ import { getSmartProfileFeed } from "../controllers/task/profile_engagment.js/fe
 import { getPendingRequests } from "../controllers/task/profile_engagment.js/getPendingRequests.js";
 import { connectRequest } from "../controllers/task/profile_engagment.js/connectRequest.js";
 import { fetch_Journal_When_Accepted } from "../controllers/task/profile_engagment.js/fetch_Journal_When_Accepted.js";
-import { fetchEngagementDetails } from "../controllers/task/profile_engagment.js/fetchEngagementDetails.js";
+import { fetchEngagementDetails } from "../controllers/task/profile_engagment.js/fetch_Inner_Circle.js";
 
 
 import { toggleInteraction } from "../controllers/task/toggle_L_R.js";

@@ -74,7 +74,7 @@ export const connectRequest = async (req, res, next) => {
       console.log(`📡 Real-time follow request sent to: ${authorRoom}`);
     } else {
       io.to(authorRoom).emit("unConnect_Status_Changes", {
-        followerUuid: follower_uuid,
+        partner_Uuid: follower_uuid,
         newStatus: null
       });
     }
