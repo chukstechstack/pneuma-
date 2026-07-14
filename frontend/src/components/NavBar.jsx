@@ -1,15 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/NavBar.css";
 import doveLogoUrl from "../assets/pneuma.png";
-import TaskContext from "../context/TaskContext.jsx";
+import { useAuthStore } from "../store/useAuthStore";
 
-const NavBar = ({ currentUserUuid }) => {
+const NavBar = () => {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const { pendingRequests } = useContext(TaskContext);
 
+  const { userUuid } = useAuthStore();
   const isActive = (path) =>
     location.pathname.startsWith(path) ? "nav-item active" : "nav-item";
 
@@ -120,7 +120,7 @@ const NavBar = ({ currentUserUuid }) => {
         </Link>
 
         <Link
-          to={`/journalfeed/${currentUserUuid || "sanctuary"}`}
+          to={`/journalfeed/${userUuid || "sanctuary"}`}
           className={isActive("/journalfeed")}
           onTouchEnd={(e) => e.currentTarget.blur()}
         >
@@ -196,12 +196,7 @@ const NavBar = ({ currentUserUuid }) => {
               alt="Me Profile"
             />
           </div>
-          <span>
-            {pendingRequests.length > 0 && (
-              <span className="navbar-badge">{pendingRequests.length}</span>
-            )}
-            Profile
-          </span>
+          <span>Profile</span>
         </Link>
       </nav>
       {/* ==================== 3. DESKTOP GLASS HEADER BAR ==================== */}
@@ -335,12 +330,7 @@ const NavBar = ({ currentUserUuid }) => {
                   alt="Me Profile"
                 />
               </div>
-              <span>
-                {pendingRequests.length > 0 && (
-                  <span className="navbar-badge">{pendingRequests.length}</span>
-                )}
-                Profile
-              </span>
+              <span>Profile</span>
             </Link>
           </div>
         </div>

@@ -1,189 +1,101 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios.js";
-import TaskContext from "../context/TaskContext.jsx";
+import "../styles/Profile.css";
 
 const CommentDrawer = ({ contentUuid, onClose }) => {
-  const {
-    tasks,
-    currentUserId,
-    comments,
-    update_Created_Comment_In_Context_State,
-    set_fetched_Comments_In_Context_State,
-  } = useContext(TaskContext);
-
-  const thisPostComments = comments[contentUuid] || [];
+  const queryClient = useQueryClient();
   const [commentText, setCommentText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const loadComment = async () => {
-    setIsLoading(true);
-    try {
-      const res = await api.get(`task/${contentUuid}/fetchComments`);
-      const commentsArray = res.data.comments || [];
-      set_fetched_Comments_In_Context_State(commentsArray, contentUuid);
-    } catch (err) {
-      console.error("Fetch failed:", err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { data: comments = [], isLoading } = useQuery({
+    queryKey: ["comments", contentUuid],
+    queryFn: async () => {
+      const res = await api.get(`/task/${contentUuid}/fetchComments`);
+      return res.data.comments || [];
+    },
+  });
 
-  useEffect(() => {
-    if (contentUuid) {
-      loadComment();
-    }
-  }, [contentUuid]);
+  const mutation = useMutation({
+    mutationFn: (newComment) =>
+      api.post(`/task/${contentUuid}/comments`, { comment_text: newComment }),
 
-  const handleSend = async (e) => {
+    onMutate: async (newCommentText) => {
+      await queryClient.cancelQueries(["comments", contentUuid]);
+
+      const previousComments = queryClient.getQueryData([
+        "comments",
+        contentUuid,
+      ]);
+
+      queryClient.setQueryData(["comments", contentUuid], (old) => [
+        ...old,
+        {
+          uuid: "temp-" + Date.now(),
+          comment_text: newCommentText,
+          author_name: "You (Posting...)",
+        },
+      ]);
+
+      setCommentText("");
+
+      return { previousComments };
+    },
+
+    onError: (err, newComment, context) => {
+      queryClient.setQueryData(
+        ["comments", contentUuid],
+        context.previousComments,
+      );
+      setCommentText(newComment);
+      alert("Could not post comment.");
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries(["comments", contentUuid]);
+    },
+  });
+  const handleSend = (e) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-
-    const textToSend = commentText;
-    setCommentText("");
-    const loggedInUserPost = tasks.find((t) => t.user_id === currentUserId);
-    const realAuthorName = loggedInUserPost
-      ? loggedInUserPost.author_name
-      : "You";
-
-    const optimisticComment = {
-      uuid: `temp-${Date.now()}`,
-      comment_text: textToSend,
-      author_name: realAuthorName,
-      created_at: new Date().toISOString(),
-    };
-
-    update_Created_Comment_In_Context_State(optimisticComment, contentUuid);
-
-    try {
-      await api.post(`/task/${contentUuid}/comments`, {
-        comment_text: textToSend,
-      });
-
-      const freshRes = await api.get(`task/${contentUuid}/fetchComments`);
-      set_fetched_Comments_In_Context_State(
-        freshRes.data.comments || [],
-        contentUuid,
-      );
-    } catch (err) {
-      console.error("Save failed, reverting changes...", err.message);
-      alert("Could not sync comment. Reloading list.");
-      loadComment();
-    }
+    mutation.mutate(commentText);
   };
 
   return (
-    <div
-      style={{
-        background: "#1e2030",
-        padding: "15px",
-        borderRadius: "8px",
-        marginTop: "10px",
-        border: "1px solid #3b4261",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <h3
-          style={{ color: "#ffffff", margin: "0 0 10px 0", fontSize: "16px" }}
-        >
-          Comments ({thisPostComments.length})
-        </h3>
-        {isLoading && (
-          <span style={{ color: "#7aa2f7", fontSize: "12px" }}>Syncing...</span>
-        )}
+    <div className="comment-drawer-root">
+      <div className="drawer-header">
+        <h3>Comments ({comments.length})</h3>
+        {mutation.isPending && <span className="sync-status">Posting...</span>}
       </div>
 
-      <button
-        onClick={onClose}
-        style={{
-          color: "#ff757f",
-          cursor: "pointer",
-          background: "none",
-          border: "none",
-          marginBottom: "10px",
-        }}
-      >
+      <button className="close-drawer-btn" onClick={onClose}>
         Close Drawer
       </button>
 
-      {/* 📜 Scrollable List Box */}
-      <div
-        className="comments-list-box"
-        style={{
-          minHeight: "50px",
-          maxHeight: "200px",
-          overflowY: "auto",
-          marginBottom: "15px",
-        }}
-      >
-        {thisPostComments.length === 0 && isLoading ? (
-          <p style={{ color: "#7aa2f7" }}>Loading thoughts...</p>
-        ) : thisPostComments.length === 0 ? (
-          <p style={{ color: "#a9b1d6" }}>
-            No thoughts recorded yet. Be the first to reply!
-          </p>
+      <div className="comments-list-box">
+        {isLoading ? (
+          <p>Loading thoughts...</p>
+        ) : comments.length === 0 ? (
+          <p>No thoughts recorded yet.</p>
         ) : (
-          thisPostComments.map((comment) => (
-            <div
-              key={comment.uuid || comment.id}
-              style={{
-                padding: "8px",
-                marginBottom: "8px",
-                background: "#1a1b26",
-                borderRadius: "6px",
-              }}
-            >
-              <strong
-                style={{ fontSize: "13px", display: "block", color: "#7aa2f7" }}
-              >
-                {comment.author_name || "Anonymous"}
-              </strong>
-              <p
-                style={{
-                  margin: "4px 0 0 0",
-                  fontSize: "14px",
-                  color: "#ffffff",
-                }}
-              >
-                {comment.comment_text}
-              </p>
+          comments.map((comment) => (
+            <div key={comment.uuid || comment.id} className="comment-item">
+              <strong>{comment.author_name || "Anonymous"}</strong>
+              <p>{comment.comment_text}</p>
             </div>
           ))
         )}
       </div>
 
-      <form onSubmit={handleSend} style={{ display: "flex", gap: "8px" }}>
+      <form className="comment-input-form" onSubmit={handleSend}>
         <input
           type="text"
           placeholder="write a reply..."
           value={commentText}
           onChange={(e) => setCommentText(e.target.value)}
-          style={{
-            flex: 1,
-            padding: "8px",
-            background: "#1a1b26",
-            color: "#ffffff",
-            border: "1px solid #414868",
-            borderRadius: "4px",
-          }}
+          disabled={mutation.isPending}
         />
-        <button
-          type="submit"
-          style={{
-            padding: "8px 12px",
-            background: "#7aa2f7",
-            color: "#1a1b26",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          send
+        <button type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? "..." : "send"}
         </button>
       </form>
     </div>

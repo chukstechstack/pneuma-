@@ -1,8 +1,6 @@
 import React from "react";
-// Change this line from Register.css to inputs.css
 import "../styles/CreateTask.css";
-// Links safely to your master consolidated stylesheet hub
-import { ImagePlus, CheckSquare } from "lucide-react";
+import { ImagePlus, CheckSquare, Loader2 } from "lucide-react"; // Added Loader2 for visual feedback
 
 const TaskInput = ({
   handleChange,
@@ -10,10 +8,10 @@ const TaskInput = ({
   img,
   handleSubmit,
   previewUrl,
+  isPending,
 }) => {
-  const hasImage = !!img;
-  const isNewFile = img instanceof File;
-  const imageName = isNewFile ? img.name : "Current Image Asset";
+  const imageName = img instanceof File ? img.name : "Current Image Asset";
+  const displaySrc = previewUrl || img;
 
   return (
     <div className="testimony-form-container">
@@ -27,19 +25,20 @@ const TaskInput = ({
           rows="6"
           className="testimony-textarea-field"
           required
+          disabled={isPending} // Prevent edits while saving
         />
 
         {/* ==================== LIGHTWEIGHT LIVE IMAGE PREVIEW CARD ==================== */}
-        {hasImage && (
+        {img && (
           <div className="testimony-preview-image-card">
             <span className="testimony-preview-label-badge">
               {imageName.length > 20
-                ? `${imageName.substring(0, 20)}...`
+                ? `${imageName.slice(0, 17)}...`
                 : imageName}
             </span>
             <div className="testimony-preview-frame">
               <img
-                src={previewUrl || img}
+                src={displaySrc}
                 alt="preview"
                 className="testimony-preview-actual-img"
               />
@@ -49,21 +48,37 @@ const TaskInput = ({
 
         {/* ==================== ACTION HOVER CONTROL ROW ==================== */}
         <div className="testimony-form-actions-row">
-          <label className="testimony-custom-file-upload-btn">
+          <label
+            className={`testimony-custom-file-upload-btn ${isPending ? "disabled" : ""}`}
+          >
             <input
               type="file"
               name="img"
               accept="image/*"
               onChange={handleChange}
               className="testimony-hidden-file-input"
+              disabled={isPending}
             />
             <ImagePlus size={18} strokeWidth={1.5} />
             <span>Image</span>
           </label>
 
-          <button type="submit" className="testimony-submit-action-btn">
-            <CheckSquare size={16} strokeWidth={2} />
-            <span>Publish</span>
+          <button
+            type="submit"
+            className="testimony-submit-action-btn"
+            disabled={isPending}
+          >
+            {isPending ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                <span>Publishing...</span>
+              </>
+            ) : (
+              <>
+                <CheckSquare size={16} strokeWidth={2} />
+                <span>Publish</span>
+              </>
+            )}
           </button>
         </div>
       </form>

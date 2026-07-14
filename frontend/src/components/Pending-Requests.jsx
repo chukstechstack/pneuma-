@@ -1,104 +1,103 @@
-import React, { useState, useContext, useEffect } from "react";
-import TaskContext from "../context/TaskContext.jsx";
-import "../styles/Profile.css";
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios.js";
+import "../styles/Profile.css";
 
-const PendingRequest = () => {
-  const {
-    pendingRequests,
-    Handle_Decline_Accept_Action,
-    setPendingRequests,
-    currentUserUuid,
-    requestError,
-  } = useContext(TaskContext);
+const Pending_Request = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  // ============Automatic_Fetch_Pending_Requests_On_Fresh_Load===================
-  useEffect(() => {
-    if (!currentUserUuid) return;
-    // -------------------Fetch_Handler-----------------------------------
-    const Automatic_fetch_Pending_Requests_Fresh_Load = async () => {
-      try {
-        const res = await api.get("/task/profile/pending-requests");
-        setPendingRequests(res.data.requests);
-        console.log(
-          "📥 Historical pending requests successfully seeded:",
-          res.data.requests,
-        );
-      } catch (err) {
-        console.error(
-          "❌ Failed to pull old pending follow requests:",
-          err.message,
-        );
+  const { data: pendingRequests = [] } = useQuery({
+    queryKey: ["pendingRequests"],
+    queryFn: async () => {
+      const res = await api.get("/task/profile/pending-requests");
+      return res.data.requests;
+    },
+    onError: (err) => console.error("Fetch failed:", err),
+  });
+
+  const mutation = useMutation({
+    mutationFn: async ({ targetUuid, action }) => {
+      const res = await api.patch("/task/profile/request-action", {
+        targetUuid,
+        action,
+      });
+      return res.data.updatedRequests;
+    },
+
+    onMutate: async ({ targetUuid }) => {
+      await queryClient.cancelQueries({ queryKey: ["pendingRequests"] });
+      const previousRequests = queryClient.getQueryData(["pendingRequests"]);
+
+      queryClient.setQueryData(["pendingRequests"], (old = []) =>
+        old.filter((req) => req.requested_User_Uuid !== targetUuid),
+      );
+
+      return { previousRequests };
+    },
+
+    onSuccess: (updatedRequests) => {
+      if (updatedRequests) {
+        queryClient.setQueryData(["pendingRequests"], updatedRequests);
       }
-    };
+    },
 
-    Automatic_fetch_Pending_Requests_Fresh_Load();
-  }, [currentUserUuid, setPendingRequests]);
-  // -----------------------------END----------------------------------
+    onError: (err, variables, context) => {
+      console.error("Mutation failed, rolling back:", err);
+      if (context?.previousRequests) {
+        queryClient.setQueryData(["pendingRequests"], context.previousRequests);
+      }
+    },
+  });
+  if (pendingRequests.length === 0) return null;
 
-  // =====================View_All====================================
+  // 4. View when collapsed
   if (!isOpen) {
-    return pendingRequests.length > 0 ? (
+    return (
       <div className="pending-requests-bar" onClick={() => setIsOpen(true)}>
         <span>{pendingRequests.length} Pending Requests</span>
         <span>View All</span>
       </div>
-    ) : null;
+    );
   }
-  // ---------------------END----------------------------------
+
   return (
     <div className="pending-dock open">
       <div className="dock-header">
-        {/* ================Close_Button================================= */}
         <h2>🔒 Pending Requests ({pendingRequests.length})</h2>
         <button onClick={() => setIsOpen(false)}>Close</button>
-        {/* // --------------------END---------------------------------- */}
       </div>
-      {requestError && <div className="error-toast">{requestError}</div>}
-      {/* ================Pending_Request_Profiles======================== */}
       <div className="dock-list">
         {pendingRequests.map((request) => (
           <div key={request.requested_User_Uuid} className="request-card">
             <img
               src={request.avatarUrl || "https://placeholder.com"}
               alt="avatar"
-              // ---------------------END----------------------------------
             />
-
-            {/* ===================Profile_Names============================= */}
             <p>
               {request.firstName} {request.lastName}
-              {/* ----------------------END------------------------------- */}
             </p>
             <div className="action-buttons">
-              {/* =====Accept_&_Decline_Request_Handler =======================*/}
               <button
-                onClick={() => {
-                  console.log(
-                    "Button clicked, UUID is:",
-                    request.requested_User_Uuid,
-                  );
-                  Handle_Decline_Accept_Action(
-                    request.requested_User_Uuid,
-                    "accept",
-                  );
-                }}
+                onClick={() =>
+                  mutation.mutate({
+                    targetUuid: request.requested_User_Uuid,
+                    action: "accept",
+                  })
+                }
               >
                 Accept
               </button>
-              {/* --------------END------------------------ */}
               <button
                 onClick={() =>
-                  Handle_Decline_Accept_Action(
-                    request.requested_User_Uuid,
-                    "decline",
-                  )
+                  mutation.mutate({
+                    targetUuid: request.requested_User_Uuid,
+                    action: "decline",
+                  })
                 }
               >
                 Decline
               </button>
-              {/* --------------END------------------------ */}
             </div>
           </div>
         ))}
@@ -107,4 +106,4 @@ const PendingRequest = () => {
   );
 };
 
-export default PendingRequest;
+export default Pending_Request;

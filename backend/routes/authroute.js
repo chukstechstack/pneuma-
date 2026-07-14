@@ -25,4 +25,3 @@ authRoute.get("/me", ensureAuthenticated, (req, res) => {
 authRoute.get("/google", googleLogin);
 
 export default authRoute;
-/auth/me

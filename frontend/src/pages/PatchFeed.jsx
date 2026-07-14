@@ -1,88 +1,88 @@
-import { useEffect, useState, useContext } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import TaskInput from "../components/PatchInput.jsx";
-import api from "../api/axios.js";
-import TaskContext from "../context/TaskContext.jsx";
-import FullPageLoader from "../components/Loader.jsx";
+import { useUpdateTask } from "../hooks/useTaskMutations";
+import { useAuthStore } from "../store/useAuthStore.js";
 import "../styles/CreateTask.css";
 
 const PatchFeed = () => {
   const navigate = useNavigate();
+  const { user } = useAuthStore();
+  const currentUserUuid = user?.uuid;
   const { uuid } = useParams();
-  const { tasks, update_Patched_Task_In_UseContext_State, loading } =
-    useContext(TaskContext);
+  const queryClient = useQueryClient();
 
-  const taskToEdit = tasks.find((t) => t.uuid === uuid);
-  const [isUpdating, setIsUpdating] = useState(false);
+  // Find task: Journal-first, fallback to Home Feed
+  const findTask = () => {
+    const journalData = queryClient.getQueryData(["journal", currentUserUuid]);
+    const homeData = queryClient.getQueryData(["homeFeed"]);
+
+    return (
+      journalData?.pages.flatMap((p) => p.tasks).find((t) => t.uuid === uuid) ||
+      homeData?.pages.flatMap((p) => p.tasks).find((t) => t.uuid === uuid)
+    );
+  };
+
+  const taskToEdit = findTask();
+
   const [formData, setFormData] = useState({
     content: taskToEdit?.content || "",
     img: taskToEdit?.img || null,
   });
   const [previewUrl, setPreviewUrl] = useState("");
 
-  useEffect(() => {
-    if (taskToEdit) {
-      setFormData({
-        content: taskToEdit?.content || "",
-        img: taskToEdit?.img || null,
-      });
-    }
-  }, [uuid, taskToEdit]);
+  const { mutate: updateTask, isPending } = useUpdateTask(currentUserUuid);
 
-  const { content, img } = formData;
+  // Cleanup memory when component unmounts or previewUrl changes
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  if (!taskToEdit) {
+    return (
+      <div className="error-container">
+        <p>Task not found. Redirecting...</p>
+        <button onClick={() => navigate("/home")}>Back to Feed</button>
+      </div>
+    );
+  }
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "img" && files && files.length > 0) {
+
+    if (name === "img" && files?.length) {
       const file = files[0];
       setFormData((prev) => ({ ...prev, img: file }));
-
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      // Cleanup previous preview
+      URL.revokeObjectURL(previewUrl);
       setPreviewUrl(URL.createObjectURL(file));
-    } else if (name !== "img") {
+    } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const data = new FormData();
-    if (content) data.append("content", content);
-    if (img instanceof File) {
-      data.append("img", img);
+    if (formData.content) data.append("content", formData.content);
+    if (formData.img instanceof File) {
+      data.append("img", formData.img);
     }
-    try {
-      setIsUpdating(true);
-      const res = await api.patch(`/task/${uuid}`, data);
 
-      if (res.data.updatedTask && Array.isArray(res.data.updatedTask)) {
-        update_Patched_Task_In_UseContext_State(res.data.updatedTask[0]);
-      } else {
-        update_Patched_Task_In_UseContext_State(res.data.updatedTask);
-      }
-
-      navigate("/home");
-    } catch (err) {
-      const message = err.response?.data?.error || "Update failed";
-      console.error("Full Error Object:", err);
-      console.error("Backend Error Message:", message);
-    } finally {
-      setIsUpdating(false);
-    }
+    // Trigger update and navigate on success
+    updateTask(
+      { uuid, formData: data, content: formData.content },
+      {
+        onSuccess: () => {
+          navigate("/home");
+        },
+      },
+    );
   };
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
-  if (isUpdating || (loading && !taskToEdit)) {
-    return <FullPageLoader />;
-  }
 
   return (
     <main className="create-task-layout">
@@ -90,9 +90,6 @@ const PatchFeed = () => {
 
       <section className="create-task-container">
         <header className="create-task-header">
-          <Link to="/home" className="create-task-back-link">
-            ← Back to Archive Feed
-          </Link>
           <h1 className="create-task-title">Modify Testimony</h1>
           <div className="create-task-divider"></div>
           <p className="create-task-subtitle">
@@ -103,10 +100,11 @@ const PatchFeed = () => {
 
         <TaskInput
           handleChange={handleChange}
-          content={content}
-          img={img}
+          content={formData.content}
+          img={formData.img}
           handleSubmit={handleSubmit}
           previewUrl={previewUrl}
+          isPending={isPending}
         />
       </section>
     </main>

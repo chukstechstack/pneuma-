@@ -1,7 +1,5 @@
-
 import { Link } from "react-router-dom";
 
-import TaskContext from "../../context/TaskContext.jsx";
 
 const ProfileEngagement = ({
   isOwner,
@@ -9,8 +7,6 @@ const ProfileEngagement = ({
   connect_Request_Handler,
   onMessageClick,
 }) => {
-
-
   return (
     <div className="profile-interaction-dock">
       {isOwner ? (
@@ -34,9 +30,6 @@ const ProfileEngagement = ({
           <button onClick={onMessageClick} className="profile-btn btn-message">
             Message
           </button>
-    
-
-        
         </div>
       )}
     </div>

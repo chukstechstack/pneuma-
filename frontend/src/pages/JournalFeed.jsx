@@ -1,116 +1,85 @@
-import React, { useContext, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import TaskContext from "../context/TaskContext.jsx";
+import React, { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+import api from "../api/axios.js";
 import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
+import { useAuthStore } from "../store/useAuthStore";
+import { useDeleteTask } from "../hooks/useTaskMutations"; // Import the shared hook
 
 const JournalPage = () => {
   const { targetUserUuid } = useParams();
+  const { userUuid } = useAuthStore();
+  const navigate = useNavigate();
+  const isOwner = userUuid === targetUserUuid;
 
-  const {
-    privateFeedTasks,
-    journalLoading,
-    privateFeedHandler,
-    currentUserId,
-    currentUserUuid,
-    toggle_Engagement_In_React_State,
-    deleteTaskFromState,
-    update_Follow_Request_In_useContext_State,
-    has_Next_Journal_Timestamp,
-  } = useContext(TaskContext);
+  // Use the shared hook with the journal-specific query key
+  const { mutate: deleteSelectedTask } = useDeleteTask([
+    "journal",
+    targetUserUuid,
+  ]);
+
+  // Create the "Tripwire" sensor
+  const { ref, inView } = useInView();
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["journal", targetUserUuid],
+      queryFn: async ({ pageParam = "Yes_Is_FreshLoad" }) => {
+        console.log(" 🔍 Attempting to Fetching Journal Feed");
+        const res = await api.get(
+          `/task/journalfeed/${targetUserUuid}?fresh_load=${pageParam}`,
+        );
+        console.log("🔄 Journal Feed Fetched", res);
+        return res.data;
+      },
+      getNextPageParam: (lastPage) => lastPage.next_post_timestamp || undefined,
+    });
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!has_Next_Journal_Timestamp) return;
-      if (
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 100
-      ) {
-        privateFeedHandler(targetUserUuid, false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [targetUserUuid, privateFeedHandler, has_Next_Journal_Timestamp]);
-
-  useEffect(() => {
-    if (targetUserUuid) {
-      privateFeedHandler(targetUserUuid, true);
+    if (inView && hasNextPage) {
+      fetchNextPage();
     }
-  }, [targetUserUuid, privateFeedHandler]);
+  }, [inView, fetchNextPage, hasNextPage]);
 
-  const journalTask = Array.isArray(privateFeedTasks) ? privateFeedTasks : [];
+  const journalTasks = data?.pages.flatMap((page) => page.tasks) || [];
 
-  if (journalLoading && journalTask.length === 0) {
-    return <FullPageLoader />;
-  }
+  if (isLoading) return <FullPageLoader />;
 
   return (
     <div className="home-layout">
-      <NavBar currentUserUuid={currentUserUuid} />
-
+      <NavBar />
       <div className="dashboard-grid">
         <main
           className="timeline-feed-wrapper"
           style={{ gridColumn: "span 2" }}
         >
-          <div
-            className="journal-header-banner"
-            style={{
-              padding: "20px 0",
-              borderBottom: "1px solid var(--border-subtle)",
-              marginBottom: "20px",
-            }}
-          >
-            <h2
-              style={{
-                fontFamily: "var(--font-serif)",
-                color: "var(--accent-gold)",
-                margin: 0,
-              }}
-            >
-              📖 The Chronicle Sanctuary
-            </h2>
-            <p
-              style={{
-                color: "var(--text-muted)",
-                fontSize: "0.85rem",
-                marginTop: "4px",
-              }}
-            >
-              A personal repository of your written testimonies and echoed
-              insights.
-            </p>
+          <div className="journal-header-banner">
+            {/* ... header code ... */}
           </div>
 
           <div className="timeline-posts-container">
-            {journalTask.length === 0 ? (
-              <div
-                className="empty-journal-message"
-                style={{
-                  textAlign: "center",
-                  padding: "40px",
-                  color: "var(--text-muted)",
-                }}
-              >
-                No testimonies or echoed insights saved inside this sanctuary
-                yet.
+            {journalTasks.length === 0 ? (
+              <div className="empty-journal-message">
+                No testimonies saved yet.
               </div>
             ) : (
-              journalTask.map((task, index) => (
+              journalTasks.map((task) => (
                 <Task
-                  key={`${task.uuid || task.id}-${index}`}
+                  key={task.uuid}
                   task={task}
-                  deleteTask={deleteTaskFromState}
-                  isOwner={task.user_id === currentUserId}
-                  handleInteraction={toggle_Engagement_In_React_State}
-                  handleFollow={update_Follow_Request_In_useContext_State}
-                  currentUserUuid={currentUserUuid}
+                  isOwner={isOwner}
+                  deleteTask={() => deleteSelectedTask(task.uuid)}
+                  onEdit={(uuid) => navigate(`/patchfeed/${uuid}`)}
                 />
               ))
             )}
+
+            <div ref={ref} style={{ height: "20px" }}>
+              {isFetchingNextPage && <p>Loading more...</p>}
+            </div>
           </div>
         </main>
       </div>

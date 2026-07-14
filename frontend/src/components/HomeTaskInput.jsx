@@ -1,16 +1,16 @@
-import React, { useState, useContext } from "react";
-import TaskContext from "../context/TaskContext.jsx";
-import { ThumbsUp, MessageSquare, Repeat2, Send, Calendar } from "lucide-react";
+import React, { useState } from "react";
+import { ThumbsUp, MessageSquare, Repeat2, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import CommentDrawer from "./ComentDrawer";
+import { useConnectionMutation } from "../hooks/useConnections.js";
 
 const Task = ({
   task,
   deleteTask,
   isOwner,
   handle_Like_Reply_Share_Interaction,
-  handle_Engagement_Request_For_Connect,
   currentUserUuid,
+  onEdit,
 }) => {
   const {
     content,
@@ -20,26 +20,24 @@ const Task = ({
     author_profile_uuid,
     relation_status,
     created_at,
+    is_liked,
+    is_reposted,
+    likes_count,
+    comments_count,
+    reposts_count,
   } = task;
+
+  const { mutate: toggleConnection } =
+    useConnectionMutation(author_profile_uuid);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const textLimit = 123;
-  const shouldShowMore = content?.length > textLimit;
-
   const [openDrawerId, setOpenDrawerId] = useState(
     localStorage.getItem("active_drawer") || null,
   );
-  const { engagement_Request_Status } = useContext(TaskContext);
 
-  let card_Active_Relation_Status;
-
-  if (engagement_Request_Status[author_profile_uuid] !== undefined) {
-    card_Active_Relation_Status =
-      engagement_Request_Status[author_profile_uuid];
-  } else {
-    card_Active_Relation_Status = relation_status;
-  }
+  const textLimit = 123;
+  const shouldShowMore = content?.length > textLimit;
 
   const formatTaskDate = (rawDateString) => {
     if (!rawDateString) return "May 20";
@@ -58,7 +56,7 @@ const Task = ({
           <Link to={`/profile/${author_profile_uuid}`}>
             <img
               src={fallbackUserAvatar}
-              alt="profile snippet"
+              alt="profile"
               className="pneuma-post-avatar-element"
             />
           </Link>
@@ -67,35 +65,39 @@ const Task = ({
             <div className="pneuma-post-author-name">
               {author_name || "Enlightened Luminary"}
             </div>
-
             <div className="pneuma-post-timestamp-row">
               <Calendar size={12} style={{ opacity: 0.7 }} />
               <span>{formatTaskDate(created_at)}</span>
 
               {currentUserUuid !== author_profile_uuid && (
                 <button
-                  onClick={() =>
-                    handle_Engagement_Request_For_Connect(author_profile_uuid)
-                  }
+                  onClick={() => {
+                    const action =
+                      relation_status === "active" ||
+                      relation_status === "pending"
+                        ? "disconnect"
+                        : "connect";
+                    toggleConnection(action);
+                  }}
                   className={`taskFollowInlineButton ${
-                    card_Active_Relation_Status === "active"
+                    relation_status === "active"
                       ? "following-active"
-                      : card_Active_Relation_Status === "pending"
+                      : relation_status === "pending"
                         ? "following-requested"
                         : ""
                   }`}
                   style={{ margin: 0, padding: "2px 6px", fontSize: "11px" }}
                 >
-                  {card_Active_Relation_Status === "active" && "UnConnect"}
-                  {card_Active_Relation_Status === "pending" && "Requested..."}
-                  {card_Active_Relation_Status === null && "+ Connect"}
+                  {relation_status === "active" && "UnConnect"}
+                  {relation_status === "pending" && "Requested..."}
+                  {(!relation_status || relation_status === "none") &&
+                    "+ Connect"}
                 </button>
               )}
             </div>
           </div>
         </div>
 
-        {/* THREE DOT MANAGEMENT DROPDOWN */}
         {isOwner && (
           <div className="pneuma-post-dropdown-anchor">
             <button
@@ -104,7 +106,6 @@ const Task = ({
             >
               ⋮
             </button>
-
             {showMenu && (
               <>
                 <div
@@ -112,12 +113,15 @@ const Task = ({
                   onClick={() => setShowMenu(false)}
                 />
                 <div className="dotMenuDisplay">
-                  <Link
-                    to={`/patchfeed/${uuid}`}
+                  <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      onEdit(uuid);
+                    }}
                     className="menuEditButtonStyle"
                   >
                     Modify
-                  </Link>
+                  </button>
                   <button
                     onClick={() => deleteTask(uuid)}
                     className="menuDeleteButtonStyle"
@@ -131,17 +135,15 @@ const Task = ({
         )}
       </div>
 
-      {/* ==================== 2. DESCRIPTION INSIGHT TEXT ==================== */}
+      {/* ==================== 2. DESCRIPTION ==================== */}
       <div className="pneuma-post-body-text">
         <div>
           {!isExpanded && shouldShowMore
             ? `${content.substring(0, textLimit)}...`
             : content}
-
           {shouldShowMore && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              style={{ marginLeft: "6px", cursor: "pointer" }}
               className="showMoreText"
             >
               {isExpanded ? "Show Less" : "expand"}
@@ -150,62 +152,48 @@ const Task = ({
         </div>
       </div>
 
-      {/* ==================== 3. LUMINARY ACTION BAR ==================== */}
+      {/* ==================== 3. ACTION BAR ==================== */}
       <div className="pneuma-post-action-dock">
         <div className="action-buttons-left">
           <button
             onClick={() => handle_Like_Reply_Share_Interaction(uuid, "like")}
-            className={`actionButton like-btn ${task.is_liked ? "active" : ""}`}
+            className={`actionButton like-btn ${is_liked ? "active" : ""}`}
           >
             <ThumbsUp
               size={16}
               strokeWidth={2}
-              className={task.is_liked ? "icon-active" : ""}
+              className={is_liked ? "icon-active" : ""}
             />
             <span className="action-label">Support</span>
-            <span className="inline-action-counter">
-              {task.likes_count || 0}
-            </span>
+            <span className="inline-action-counter">{likes_count || 0}</span>
           </button>
 
           <button
             onClick={() => {
               const nextState = openDrawerId === uuid ? null : uuid;
               setOpenDrawerId(nextState);
-
-              if (nextState) {
-                localStorage.setItem("active_drawer", uuid);
-              } else {
-                localStorage.removeItem("active_drawer");
-              }
+              nextState
+                ? localStorage.setItem("active_drawer", uuid)
+                : localStorage.removeItem("active_drawer");
             }}
             className="actionButton comment-btn"
           >
             <MessageSquare size={16} strokeWidth={2} />
             <span className="action-label">Reply</span>
-            <span className="inline-action-counter">
-              {task.comments_count || 0}
-            </span>
+            <span className="inline-action-counter">{comments_count || 0}</span>
           </button>
 
           <button
             onClick={() => handle_Like_Reply_Share_Interaction(uuid, "repost")}
-            className={`actionButton repost-btn ${task.is_reposted ? "active" : ""}`}
+            className={`actionButton repost-btn ${is_reposted ? "active" : ""}`}
           >
             <Repeat2
               size={16}
               strokeWidth={2}
-              className={task.is_reposted ? "icon-active" : ""}
+              className={is_reposted ? "icon-active" : ""}
             />
             <span className="action-label">Forward</span>
-            <span className="inline-action-counter">
-              {task.reposts_count || 0}
-            </span>
-          </button>
-
-          <button className="actionButton send-btn">
-            <Send size={16} strokeWidth={2} />
-            <span className="action-label">Send</span>
+            <span className="inline-action-counter">{reposts_count || 0}</span>
           </button>
         </div>
       </div>
@@ -219,14 +207,10 @@ const Task = ({
           }}
         />
       )}
-      {/* ==================== 4. BLENDED GLOSSY MEDIA PORTAL ==================== */}
+
       {img && (
         <div className="taskImageWrapper">
-          <img
-            src={img}
-            alt="Luminary asset"
-            className="taskContentImageCard"
-          />
+          <img src={img} alt="media" className="taskContentImageCard" />
         </div>
       )}
     </div>

@@ -344,3 +344,104 @@
   border: 1px solid red;
   margin-bottom: 10px;
 }
+
+
+/* Drawer Container */
+.comment-drawer-root {
+  background: #1e2030;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 10px;
+  border: 1px solid #3b4261;
+}
+
+/* Header Row */
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.drawer-header h3 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 16px;
+}
+
+.sync-status {
+  color: #7aa2f7;
+  font-size: 12px;
+}
+
+/* Close Button */
+.close-drawer-btn {
+  color: #ff757f;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  margin-bottom: 10px;
+}
+
+/* Scrollable Comment List */
+.comments-list-box {
+  min-height: 50px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+}
+
+.comments-list-box p {
+  color: #a9b1d6;
+  font-size: 14px;
+}
+
+/* Individual Comment Item */
+.comment-item {
+  padding: 8px;
+  margin-bottom: 8px;
+  background: #1a1b26;
+  border-radius: 6px;
+}
+
+.comment-item strong {
+  font-size: 13px;
+  display: block;
+  color: #7aa2f7;
+}
+
+.comment-item p {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+/* Input Form */
+.comment-input-form {
+  display: flex;
+  gap: 8px;
+}
+
+.comment-input-form input {
+  flex: 1;
+  padding: 8px;
+  background: #1a1b26;
+  color: #ffffff;
+  border: 1px solid #414868;
+  border-radius: 4px;
+}
+
+.comment-input-form button {
+  padding: 8px 12px;
+  background: #7aa2f7;
+  color: #1a1b26;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.comment-input-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
