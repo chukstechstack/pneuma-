@@ -30,6 +30,8 @@ const HomePage = () => {
         return res.data;
       },
       getNextPageParam: (lastPage) => lastPage.next_post_timestamp || undefined,
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
     });
 
   const tasks = data?.pages.flatMap((page) => page.tasks) || [];

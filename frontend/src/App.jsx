@@ -18,7 +18,6 @@ import CreateTask from "./pages/CreateTask.jsx";
 import PatchFeed from "./pages/PatchFeed.jsx";
 import Profile from "./pages/Profile.jsx";
 import JournalPage from "./pages/JournalFeed.jsx";
-import NotificationsPage from "./pages/NotificationsPage.jsx";
 import { useAuthStore } from "./store/useAuthStore";
 
 const queryClient = new QueryClient();
@@ -49,7 +48,6 @@ const SocketWatcher = () => {
   return null;
 };
 
-
 const App = () => {
   useInitializeUser();
 
@@ -68,7 +66,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/:targetProfileUuid" element={<Profile />} />
           <Route path="/pending-requests" element={<Pending_Request />} />
-          <Route path="/NotificationsPage" element={<NotificationsPage />} />
+
           <Route
             path="/journalfeed/:targetUserUuid"
             element={<JournalPage />}

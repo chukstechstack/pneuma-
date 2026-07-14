@@ -11,11 +11,15 @@ export const fetchGlobalTasksFeed = async (user_uuid, freeze_time, fresh_load_po
     }
   }
 
-  // 2. Setup snapshot baseline dates
-  const Freeze_Time_Date = new Date(Number(freeze_time));
+  // 2. Setup snapshot baseline dates with fallback to current time
+  const freezeTimeValue = (freeze_time && !isNaN(Number(freeze_time))) 
+    ? Number(freeze_time) 
+    : Date.now();
+    
+  const Freeze_Time_Date = new Date(freezeTimeValue);
   const queryParams = [userId, Freeze_Time_Date];
 
-  // 3. Main Query String (Keeps the is_following boolean flag intact!)
+  // 3. Main Query String
   let queryText = `
     SELECT 
       c.id,
@@ -48,7 +52,7 @@ export const fetchGlobalTasksFeed = async (user_uuid, freeze_time, fresh_load_po
         LIMIT 1
       ) AS relation_status,
       
-          (
+      (
         SELECT COUNT(*)::INT FROM comments 
         WHERE content_id = c.id
       ) AS comments_count
@@ -57,14 +61,14 @@ export const fetchGlobalTasksFeed = async (user_uuid, freeze_time, fresh_load_po
      LEFT JOIN profiles p ON c.user_id = p.id 
      WHERE c.created_at <= $2 `;
 
-  // 4. Anchor timestamp pointer check for pagination scrolling
-  if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad') {
+  // 4. Anchor timestamp pointer check with safety validation
+  if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad' && !isNaN(Number(fresh_load_pointer))) {
     const last_post_creation_date = new Date(Number(fresh_load_pointer));
     queryText += ` AND c.created_at < $3 `;
     queryParams.push(last_post_creation_date);
   }
 
-  // 5. Sorted strictly by time. Global content and followed content are beautifully blended.
+  // 5. Sorted strictly by time
   queryText += ` ORDER BY c.created_at DESC LIMIT 40`;
 
   const result = await pool.query(queryText, queryParams);

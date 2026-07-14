@@ -32,10 +32,12 @@ const JournalPage = () => {
         const res = await api.get(
           `/task/journalfeed/${targetUserUuid}?fresh_load=${pageParam}`,
         );
-        console.log("🔄 Journal Feed Fetched", res);
+        console.log(" ✔️💥 Fecthed Journal data:", res);
         return res.data;
       },
       getNextPageParam: (lastPage) => lastPage.next_post_timestamp || undefined,
+      staleTime: 5 * 60 * 1000,
+      refetchOnWindowFocus: false,
     });
 
   useEffect(() => {

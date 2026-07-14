@@ -13,7 +13,6 @@ const PatchFeed = () => {
   const { uuid } = useParams();
   const queryClient = useQueryClient();
 
-  // Find task: Journal-first, fallback to Home Feed
   const findTask = () => {
     const journalData = queryClient.getQueryData(["journal", currentUserUuid]);
     const homeData = queryClient.getQueryData(["homeFeed"]);
@@ -34,7 +33,6 @@ const PatchFeed = () => {
 
   const { mutate: updateTask, isPending } = useUpdateTask(currentUserUuid);
 
-  // Cleanup memory when component unmounts or previewUrl changes
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -56,7 +54,7 @@ const PatchFeed = () => {
     if (name === "img" && files?.length) {
       const file = files[0];
       setFormData((prev) => ({ ...prev, img: file }));
-      // Cleanup previous preview
+
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(URL.createObjectURL(file));
     } else {

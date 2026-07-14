@@ -6,7 +6,7 @@ export const useDeleteTask = (queryKey) => {
 
     return useMutation({
         mutationFn: (uuid) => api.delete(`/task/${uuid}`),
-        
+
         onMutate: async (uuid) => {
             await queryClient.cancelQueries({ queryKey });
             const previousData = queryClient.getQueryData(queryKey);
@@ -25,6 +25,10 @@ export const useDeleteTask = (queryKey) => {
         },
         onError: (err, uuid, context) => {
             queryClient.setQueryData(queryKey, context.previousData);
+        },
+        onSuccess: (response) => {
+            console.log("Delete successful! Server response:", response);
+
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey });
@@ -66,7 +70,10 @@ export const useUpdateTask = (targetUserUuid) => {
             return { prevHome, prevJournal };
         },
 
-
+        onSuccess: (response) => {
+            console.log("Update successful! Server response:", response);
+            console.log("Updated data:", response.data);
+        },
         onSettled: (data) => {
             if (data?.data?.updatedTask) {
                 const updatedTask = data.data.updatedTask;

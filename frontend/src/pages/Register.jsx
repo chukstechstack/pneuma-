@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useMutation } from "@tanstack/react-query"; // Import useMutation
 
 import api from "../api/axios.js";
-import { registerSchema } from "../schemas/registerSchema.js";
+import { registerSchema } from "../schemas/auth_Schema.js";
 import RegisterInput from "../components/RegisterInput.jsx";
 import FullPageLoader from "../components/Loader.jsx";
 import doveLogoUrl from "../assets/pneuma.png";
@@ -17,16 +17,19 @@ const Register = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // 1. Define the mutation
   const { mutate: registerUser, isPending } = useMutation({
     mutationFn: (userData) => api.post("/auth/register", userData),
-    onSuccess: async () => {
+    onSuccess: async (response) => {
+      console.log("Registration successful! Server response:", response);
+      console.log("User data:", response.data);
+
       await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
       navigate("/home");
     },
     onError: (err) => {
       const message = err?.response?.data?.error || err.message;
       alert(`Registration failed: ${message}`);
+      console.error(message);
     },
   });
 
@@ -46,7 +49,7 @@ const Register = () => {
 
   return (
     <main className="register-layout">
-      {isPending && <FullPageLoader />} 
+      {isPending && <FullPageLoader />}
       <div className="register-ambient-glow"></div>
       <section className="register-container">
         <header className="register-header">

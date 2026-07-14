@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios.js";
@@ -26,32 +26,25 @@ const Profile = () => {
         ? `/task/profile/${targetProfileUuid}`
         : `/task/profile/me`;
       const res = await api.get(endpoint);
+      console.log("💤💫Profile Server response:", res);
+
       return res.data;
     },
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
-
-  useEffect(() => {
-    if (uuid) {
-      queryClient.prefetchQuery({
-        queryKey: ["innerCircle", uuid],
-        queryFn: async () => {
-          const res = await api.get(
-            `/task/profile/innerCircle-details/${uuid}`,
-          );
-          return res.data.list || [];
-        },
-      });
-    }
-  }, [uuid, queryClient]);
 
   const { data: innerCircle = [], isLoading: dockLoading } = useQuery({
     queryKey: ["innerCircle", uuid],
     queryFn: async () => {
       const res = await api.get(`/task/profile/innerCircle-details/${uuid}`);
+      console.log(" ✔️💥 User data:", res);
       return res.data.list || [];
     },
     enabled: isDockOpen,
     initialData: () => queryClient.getQueryData(["innerCircle", uuid]),
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   const { mutate: toggleConnection } = useConnectionMutation(uuid);
