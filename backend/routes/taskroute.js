@@ -37,6 +37,7 @@ taskRoute.get("/profile/pending-requests", ensureAuthenticated, getPendingReques
 taskRoute.get("/profile/:targetProfileUuid", ensureAuthenticated, getSmartProfileFeed);
 taskRoute.get("/profile/innerCircle-details/:targetProfileUuid", ensureAuthenticated, fetchEngagementDetails);
 
+
 taskRoute.get("/journalfeed/:journalUuid", ensureAuthenticated, journalFeed);
 taskRoute.get("/:contentUuid/fetchComments", ensureAuthenticated, getComment);
 taskRoute.get("/task/journal-posts/:targetProfileUuid", ensureAuthenticated, fetch_Journal_When_Accepted);

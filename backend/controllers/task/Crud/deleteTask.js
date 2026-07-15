@@ -1,9 +1,9 @@
 import s3 from "../../../config/AwsS3ClientConfig.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import redisClient from "../../../config/redisCreateClient.js";
-import pool from "../../../config/supabaseConfig.js"; // 1. Imported your database pool configuration
+import pool from "../../../config/supabaseConfig.js";
 
-// Import your newly created service infrastructure
+
 import { findTaskImageForCleanup, executeTaskDeletion } from "../../../services/task/deleteTaskService.js";
 
 export const deleteTask = async (req, res, next) => {
@@ -11,7 +11,7 @@ export const deleteTask = async (req, res, next) => {
   const user_id = req.user?.id;
   const user_uuid = req.user?.uuid;
 
-  // 2. Checkout a single isolated client connection from the pool
+
   const dbClient = await pool.connect();
 
   try {

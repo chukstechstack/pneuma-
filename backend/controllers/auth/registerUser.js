@@ -23,7 +23,7 @@ export const registerUser = async (req, res, next) => {
 
     req.login(newUser, (err) => {
       if (err) return next(err);
-      
+
       req.session.save(async (sessionErr) => { // 3. Make this callback async
         if (sessionErr) return next(sessionErr);
 
@@ -31,7 +31,7 @@ export const registerUser = async (req, res, next) => {
           // 4. WARM UP CACHE: Fetch feed for the new user's UUID immediately
           const tasksFeed = await fetchGlobalTasksFeed(newUser.uuid);
           const responseData = { tasks: tasksFeed, currentUserId: newUser.id };
-          
+
           const cacheKey = `tasks_feed:${newUser.uuid}`;
           await redisClient.set(cacheKey, JSON.stringify(responseData), { EX: 600 });
           console.log(`🔥 Redis Warmed Up for user: ${newUser.uuid}`);
@@ -40,7 +40,13 @@ export const registerUser = async (req, res, next) => {
           // Don't block registration if Redis warm up fails
         }
 
-        return res.status(201).json({ message: "user registered successfully" });
+        return res.status(201).json({
+          message: "user registered successfully",
+          user: {
+            id: newUser.id,
+            uuid: newUser.uuid
+          }
+        });
       });
     });
 
