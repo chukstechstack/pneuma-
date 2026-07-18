@@ -12,7 +12,6 @@ const RegisterInput = ({
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Watch password for the strength bar
   const passwordValue = useWatch({ control, name: "password" });
 
   const getPasswordStrength = (pass) => {
@@ -48,7 +47,6 @@ const RegisterInput = ({
   return (
     <div className="form-input-container">
       <form onSubmit={handleSubmit(onSubmit)} className="form-wrapper">
-        {/* Name Fields */}
         <div className="name-fields-row">
           <div className="input-group">
             <input
@@ -72,7 +70,6 @@ const RegisterInput = ({
           </div>
         </div>
 
-        {/* Email */}
         <div className="name-fields-row">
           <div className="input-group standard-width">
             <input
@@ -87,7 +84,6 @@ const RegisterInput = ({
           </div>
         </div>
 
-        {/* Password */}
         <div className="name-fields-row">
           <div className="input-group standard-width">
             <div className="password-wrapper">
@@ -131,7 +127,6 @@ const RegisterInput = ({
           </div>
         </div>
 
-        {/* Confirm Password */}
         <div className="name-fields-row">
           <div className="input-group standard-width">
             <div className="password-wrapper">
@@ -161,7 +156,6 @@ const RegisterInput = ({
           </button>
         </div>
 
-        {/* Line Divider */}
         <div className="auth-divider-block">
           <span className="divider-line"></span>
           <span className="divider-text">or</span>

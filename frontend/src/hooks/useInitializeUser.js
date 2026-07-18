@@ -4,20 +4,23 @@ import api from '../api/axios';
 import { useAuthStore } from '../store/useAuthStore';
 
 export const useInitializeUser = () => {
-  const { userId, setAuth } = useAuthStore();
+
+  const { userId, userUuid, setAuth } = useAuthStore();
 
   useEffect(() => {
-    if (!userId) {
+
+    if (!userId || !userUuid) {
       console.log("🔍 Attempting to fetch authenticated user...");
 
       api.get('/auth/me')
         .then((res) => {
           console.log("✅ User found:", res.data);
+
           setAuth(res.data.id, res.data.uuid);
         })
         .catch((err) => {
           console.log("❌ User not logged in or auth failed:", err.message);
         });
     }
-  }, [userId, setAuth]);
+  }, [userId, userUuid, setAuth]);
 };

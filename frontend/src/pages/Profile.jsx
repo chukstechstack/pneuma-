@@ -18,7 +18,6 @@ const Profile = () => {
 
   const [isDockOpen, setIsDockOpen] = useState(false);
 
-  // --- 1. Main Profile Query ---
   const { data, isLoading, isError } = useQuery({
     queryKey: ["profile", uuid],
     queryFn: async () => {

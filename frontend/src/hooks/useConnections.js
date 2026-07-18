@@ -10,23 +10,65 @@ export const useConnectionMutation = (targetUuid) => {
             return res.data;
         },
         onMutate: async (action) => {
-            await queryClient.cancelQueries({ queryKey: ['connectionStatus', targetUuid] });
-            const previous = queryClient.getQueryData(['connectionStatus', targetUuid]);
+            // Cancel all related queries
+            await queryClient.cancelQueries({ queryKey: ['homeFeed'] });
+            await queryClient.cancelQueries({ queryKey: ['profile', targetUuid] });
+            await queryClient.cancelQueries({ queryKey: ['journalFeed', targetUuid] });
 
+            const previousHomeFeed = queryClient.getQueryData(['homeFeed']);
+            const previousProfile = queryClient.getQueryData(['profile', targetUuid]);
+            const previousJournal = queryClient.getQueryData(['journalFeed', targetUuid]);
 
-            const nextState = action === 'connect' ? 'pending' : 'none';
-            queryClient.setQueryData(['connectionStatus', targetUuid], nextState);
+            const newStatus = action === 'connect' ? 'pending' : 'none';
 
-            return { previous };
+            // Optimistic Updates
+            queryClient.setQueryData(['homeFeed'], (old) => old ? ({
+                ...old,
+                pages: old.pages.map(p => ({
+                    ...p, tasks: p.tasks.map(t =>
+                        t.author_profile_uuid === targetUuid ? { ...t, relation_status: newStatus } : t
+                    )
+                }))
+            }) : old);
+
+            queryClient.setQueryData(['profile', targetUuid], (old) => old ? ({
+                ...old,
+                relationStatus: newStatus
+            }) : old);
+
+            queryClient.setQueryData(['journalFeed', targetUuid], (old) => old ? ({
+                ...old,
+                relationStatus: newStatus
+            }) : old);
+
+            return { previousHomeFeed, previousProfile, previousJournal };
         },
         onSuccess: (data) => {
+            const newStatus = data.isFollowing ? 'pending' : 'none';
 
-            const newStatus = data.status || data;
-            queryClient.setQueryData(['connectionStatus', targetUuid], newStatus);
+            queryClient.setQueryData(['homeFeed'], (old) => old ? ({
+                ...old,
+                pages: old.pages.map(p => ({
+                    ...p, tasks: p.tasks.map(t =>
+                        t.author_profile_uuid === targetUuid ? { ...t, relation_status: newStatus } : t
+                    )
+                }))
+            }) : old);
+
+            queryClient.setQueryData(['profile', targetUuid], (old) => old ? ({
+                ...old,
+                relationStatus: newStatus
+            }) : old);
+
+            queryClient.setQueryData(['journalFeed', targetUuid], (old) => old ? ({
+                ...old,
+                relationStatus: newStatus
+            }) : old);
         },
         onError: (err, action, context) => {
-            queryClient.setQueryData(['connectionStatus', targetUuid], context.previous);
-        },
-
+            if (context.previousHomeFeed) queryClient.setQueryData(['homeFeed'], context.previousHomeFeed);
+            if (context.previousProfile) queryClient.setQueryData(['profile', targetUuid], context.previousProfile);
+            if (context.previousJournal) queryClient.setQueryData(['journalFeed', targetUuid], context.previousJournal);
+        }
     });
 };

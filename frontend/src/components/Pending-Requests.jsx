@@ -9,10 +9,14 @@ const Pending_Request = () => {
 
   const { data: pendingRequests = [] } = useQuery({
     queryKey: ["pendingRequests"],
+
     queryFn: async () => {
       const res = await api.get("/task/profile/pending-requests");
       return res.data.requests;
     },
+    staleTime: 1000 * 60 * 5,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
     onError: (err) => console.error("Fetch failed:", err),
   });
 
@@ -49,9 +53,9 @@ const Pending_Request = () => {
       }
     },
   });
+  console.log("Current pendingRequests in UI:", pendingRequests);
   if (pendingRequests.length === 0) return null;
 
-  // 4. View when collapsed
   if (!isOpen) {
     return (
       <div className="pending-requests-bar" onClick={() => setIsOpen(true)}>

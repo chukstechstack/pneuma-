@@ -36,6 +36,8 @@ const HomePage = () => {
 
   const tasks = data?.pages.flatMap((page) => page.tasks) || [];
 
+  const isOwner = (task) => userUuid === task.author_profile_uuid;
+
   useEffect(() => {
     if (inView && hasNextPage) {
       fetchNextPage();
@@ -59,7 +61,7 @@ const HomePage = () => {
                 key={task.uuid || task.id}
                 task={task}
                 deleteTask={() => deleteSelectedTask(task.uuid)}
-                isOwner={task.user_id === userUuid}
+                isOwner={isOwner(task)}
                 handle_Like_Reply_Share_Interaction={
                   handle_Like_Reply_Share_Interaction
                 }

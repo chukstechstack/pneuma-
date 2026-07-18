@@ -7,7 +7,7 @@ import Task from "../components/HomeTaskInput.jsx";
 import NavBar from "../components/NavBar";
 import FullPageLoader from "../components/Loader.jsx";
 import { useAuthStore } from "../store/useAuthStore";
-import { useDeleteTask } from "../hooks/useTaskMutations"; // Import the shared hook
+import { useDeleteTask } from "../hooks/useTaskMutations";
 
 const JournalPage = () => {
   const { targetUserUuid } = useParams();
@@ -15,13 +15,11 @@ const JournalPage = () => {
   const navigate = useNavigate();
   const isOwner = userUuid === targetUserUuid;
 
-  // Use the shared hook with the journal-specific query key
   const { mutate: deleteSelectedTask } = useDeleteTask([
     "journal",
     targetUserUuid,
   ]);
 
-  // Create the "Tripwire" sensor
   const { ref, inView } = useInView();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =

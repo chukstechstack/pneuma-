@@ -10,7 +10,6 @@ const ProfileJournal = ({
   const isAuthorized =
     isOwner || active_Relationtionship_Request_Status === "active";
 
-  // Helper for date formatting
   const formatDate = (date) =>
     new Date(date).toLocaleDateString("en-US", {
       month: "short",

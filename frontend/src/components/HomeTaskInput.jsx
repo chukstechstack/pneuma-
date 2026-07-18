@@ -192,7 +192,7 @@ const Task = ({
               strokeWidth={2}
               className={is_reposted ? "icon-active" : ""}
             />
-            <span className="action-label">Forward</span>
+            <span className="action-label">Re-Send</span>
             <span className="inline-action-counter">{reposts_count || 0}</span>
           </button>
         </div>

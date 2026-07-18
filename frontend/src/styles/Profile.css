@@ -445,3 +445,15 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Add to your global CSS or the relevant stylesheet */
+.presence-notification-slot {
+  width: 100%;
+  margin-top: 90px; /* Adjust this to create space below your navbar */
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.main-content-slot {
+  width: 100%;
+}

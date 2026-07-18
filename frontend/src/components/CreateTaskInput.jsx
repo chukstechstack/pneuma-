@@ -62,7 +62,7 @@ const TaskInput = ({
           <button
             type="submit"
             className="testimony-submit-action-btn"
-            disabled={isPending} // Locked while sending
+            disabled={isPending}
           >
             <CheckSquare size={16} strokeWidth={2} />
             <span>{isPending ? "Publishing..." : "Publish"}</span>

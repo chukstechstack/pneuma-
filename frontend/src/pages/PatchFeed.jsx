@@ -71,7 +71,6 @@ const PatchFeed = () => {
       data.append("img", formData.img);
     }
 
-    // Trigger update and navigate on success
     updateTask(
       { uuid, formData: data, content: formData.content },
       {

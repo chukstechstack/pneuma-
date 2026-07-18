@@ -4,7 +4,7 @@ import api from "../api/axios";
 export const useInteraction = () => {
   const queryClient = useQueryClient();
 
-  // Helper to update paginated feed structure
+
   const updatePaginatedFeed = (oldData, updaterFn) => {
     if (!oldData) return oldData;
     return {

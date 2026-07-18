@@ -9,6 +9,8 @@ import { loginSchema } from "../schemas/auth_Schema.js";
 import LoginInput from "../components/LoginInput.jsx";
 import FullPageLoader from "../components/Loader.jsx";
 import doveLogoUrl from "../assets/pneuma.png";
+import { useAuthStore } from "../store/useAuthStore";
+import socket from "../services/socketservice.js";
 
 import "../styles/Loader.css";
 import "../styles/R_&_L_Inputs/R_Layout.css";
@@ -22,6 +24,12 @@ const Login = () => {
     onSuccess: async (response) => {
       console.log("Registration successful! Server response:", response);
       console.log("User data:", response.data);
+      const { id, uuid } = response.data.user || response.data;
+      useAuthStore.getState().setAuth(id, uuid);
+
+      socket.connect();
+      socket.emit("current_Logged_In_User_Uuid", { userUuid: uuid });
+      console.log(" 💤☢️ socket connected for User:", uuid);
       await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
       navigate("/home");
     },
