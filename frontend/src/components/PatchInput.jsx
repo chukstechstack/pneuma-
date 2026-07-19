@@ -76,7 +76,7 @@ const TaskInput = ({
             ) : (
               <>
                 <CheckSquare size={16} strokeWidth={2} />
-                <span>Publish</span>
+                <span>Publish  </span>
               </>
             )}
           </button>

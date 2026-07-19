@@ -26,7 +26,7 @@ const ProfileJournal = ({
             Follow this author to request access to their 5 newest reflections.
           </p>
         </div>
-      ) : (
+      ) : ( 
         <>
           <h3 className="profile-feed-title">
             Rolling Journal Scrolls (5 Newest)

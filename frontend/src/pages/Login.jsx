@@ -56,7 +56,7 @@ const Login = () => {
       <section className="register-container">
         <header className="register-header">
           <Link to="/" className="register-brand-link">
-            <span className="register-logo-wrapper">
+            <span className="register-logo-wrapper"> 
               <img
                 src={doveLogoUrl}
                 className="nav-logo-img-register"

@@ -11,7 +11,6 @@ import { useInitializeUser } from "./hooks/useInitializeUser";
 import socket, { setupSocketListeners } from "./services/socketservice.js";
 import { queryClient } from "./api/queryClient";
 
-// Import Pages & Components
 import Pending_Request from "./components/pending-Requests.jsx";
 import AuthHome from "./pages/LandingPage.jsx";
 import Login from "./pages/Login.jsx";
@@ -31,10 +30,16 @@ const SocketWatcher = () => {
   useEffect(() => {
     if (userUuid) {
       socket.connect();
+      
+     
+      if (socket.connected) {
+        socket.emit("current_Logged_In_User_Uuid", { userUuid });
+        console.log("📤 Emitting UUID (immediate):", userUuid);
+      }
 
+    
       const onConnect = () => {
         console.log("✅ Socket Connected! ID:", socket.id);
-
         socket.emit("current_Logged_In_User_Uuid", { userUuid });
       };
 
@@ -45,6 +50,8 @@ const SocketWatcher = () => {
       };
     }
   }, [userUuid]);
+
+
 
   useEffect(() => {
     setupSocketListeners(queryClient);
@@ -61,6 +68,7 @@ const SocketWatcher = () => {
 
 const AuthenticatedGuard = ({ children }) => {
   const { userUuid } = useAuthStore();
+  console.log("AuthGuard:", userUuid);
   useInitializeUser();
   if (userUuid === null) return <FullPageLoader />;
   return userUuid ? children : <Navigate to="/login" />;

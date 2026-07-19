@@ -1,19 +1,21 @@
-// services/socketservice.js
 import { io } from "socket.io-client";
 
-const socket = io(import.meta.env.VITE_API_URL || "https://pneuma-api-0bvr.onrender.com", {
-  withCredentials: true,
+// Explicitly point to the backend port
+// This will use the environment variable if present, otherwise default to localhost
+const SOCKET_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-}
-);
+export const socket = io(SOCKET_URL, {
+  withCredentials: true,
+  transports: ['websocket']
+});
 
 export const setupSocketListeners = (queryClient) => {
   socket.onAny((eventName, ...args) => {
     console.log(`📡 DEBUG: Received event: ${eventName}`, args);
   });
   socket.on("incoming_connect_request", (payload) => {
-    console.log("📥 Socket Event: incoming_connect_request", payload);
     queryClient.setQueryData(['pendingRequests'], (old = []) => [...old, payload]);
+    updateProfileStatusCache(queryClient, payload.requested_User_Uuid, "pending");
   });
 
   socket.on("unConnect_Status_Changes", (payload) => {

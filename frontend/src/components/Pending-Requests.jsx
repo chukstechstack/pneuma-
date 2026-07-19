@@ -14,7 +14,7 @@ const Pending_Request = () => {
       const res = await api.get("/task/profile/pending-requests");
       return res.data.requests;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 5,   
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     onError: (err) => console.error("Fetch failed:", err),

@@ -10,7 +10,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useDeleteTask } from "../hooks/useTaskMutations";
 import { useInteraction } from "../hooks/useInteraction";
 import { useNavigate } from "react-router-dom";
-// Note: We deleted TaskContext import!
+
 
 const HomePage = () => {
   const { ref, inView } = useInView();

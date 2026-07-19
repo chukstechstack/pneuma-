@@ -39,17 +39,15 @@ export const connectRequest = async (req, res, next) => {
 
     const io = req.app.get("socketio");
 
-  
+
 
     // 2. Your existing code
     io.to(`current_Logged_In_User_Uuid:${targetProfileUuid}`).emit(
       didFollow ? "incoming_connect_request" : "unConnect_Status_Changes",
       didFollow ? { requested_User_Uuid: follower_uuid } : { partner_Uuid: follower_uuid }
     );
-    io.to(`current_Logged_In_User_Uuid:${targetProfileUuid}`).emit(
-      didFollow ? "incoming_connect_request" : "unConnect_Status_Changes",
-      didFollow ? { requested_User_Uuid: follower_uuid } : { partner_Uuid: follower_uuid }
-    );
+
+
     console.log(`Sending to target Profile:${targetProfileUuid}`)
 
     io.to(`current_Logged_In_User_Uuid:${follower_uuid}`).emit("connection_updated_for_requested_user", {
