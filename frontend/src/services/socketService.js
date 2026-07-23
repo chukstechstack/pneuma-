@@ -1,14 +1,5 @@
-import { io } from "socket.io-client";
 
-// Explicitly point to the backend port
-// This will use the environment variable if present, otherwise default to localhost
-const SOCKET_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
-export const socket = io(SOCKET_URL, {
-  withCredentials: true,
-  transports: ['websocket']
-});
-
+import socket from "@api/socketApi.js"
 export const setupSocketListeners = (queryClient) => {
   socket.onAny((eventName, ...args) => {
     console.log(`📡 DEBUG: Received event: ${eventName}`, args);
@@ -38,7 +29,7 @@ export const setupSocketListeners = (queryClient) => {
     updateProfileStatusCache(queryClient, payload.partner_Uuid, payload.newStatus);
   });
 
-  // Inside setupSocketListeners in your frontend
+
   socket.on("test_event", (data) => {
     console.log("🔥 GLOBAL TEST RECEIVED:", data);
   });

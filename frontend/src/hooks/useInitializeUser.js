@@ -1,7 +1,7 @@
 // src/hooks/useInitializeUser.js
 import { useEffect } from 'react';
-import api from '../api/axios';
-import { useAuthStore } from '../store/useAuthStore';
+import api from '@api/axios';
+import { useAuthStore } from '@store/useAuthStore';
 
 export const useInitializeUser = () => {
 

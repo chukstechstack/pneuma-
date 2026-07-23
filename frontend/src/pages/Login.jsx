@@ -4,13 +4,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import api from "../api/axios.js";
+import api from "@api/axios.js";
 import { loginSchema } from "../schemas/auth_Schema.js";
-import LoginInput from "../components/LoginInput.jsx";
-import FullPageLoader from "../components/Loader.jsx";
-import doveLogoUrl from "../assets/pneuma.png";
-import { useAuthStore } from "../store/useAuthStore";
-import socket from "../services/socketservice.js";
+import LoginInput from "@components/LoginInput.jsx";
+import FullPageLoader from "@components/Loader.jsx";
+import doveLogoUrl from "@assets/pneuma.png";
+import { useAuthStore } from "@store/useAuthStore";
+import socket from "@api/socketApi.js"
 
 import "../styles/Loader.css";
 import "../styles/R_&_L_Inputs/R_Layout.css";

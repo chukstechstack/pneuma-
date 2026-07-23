@@ -2,15 +2,15 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query"; // Import useMutation
+import { useQueryClient, useMutation } from "@tanstack/react-query"; 
 
-import api from "../api/axios.js";
-import { registerSchema } from "../schemas/auth_Schema.js";
-import RegisterInput from "../components/RegisterInput.jsx";
-import FullPageLoader from "../components/Loader.jsx";
-import doveLogoUrl from "../assets/pneuma.png";
-import { useAuthStore } from "../store/useAuthStore";
-import socket from "../services/socketservice.js";
+import api from "@api/axios.js";
+import { registerSchema } from "@schemas/auth_Schema.js";
+import RegisterInput from "@components/RegisterInput.jsx";
+import FullPageLoader from "@components/Loader.jsx";
+import doveLogoUrl from "@assets/pneuma.png";
+import { useAuthStore } from "@store/useAuthStore";
+import socket from "@api/socketApi.js"
 
 import "../styles/Loader.css";
 import "../styles/R_&_L_Inputs/R_Layout.css";
@@ -20,14 +20,13 @@ const Register = () => {
   const queryClient = useQueryClient();
 
   const { mutate: registerUser, isPending } = useMutation({
-    mutationFn: (userData) => api.post("/auth/register", userData),
+    mutationFn: (apiPayload) => api.post("/auth/register", apiPayload),
     onSuccess: async (response) => {
       console.log("Registration successful! Server response:", response);
-      console.log("User data:", response.data);
       const { id, uuid } = response.data.user;
       useAuthStore.getState().setAuth(id, uuid);
       socket.connect();
-      socket.emit("current_Logged_In_User_Uuid", { userUuid: uuid });
+      socket.emit("📤 Emitting_Registered_User_Uuid", { userUuid: uuid });
       console.log(" 💤☢️ socket connected for User:", uuid);
       await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
       navigate("/home");

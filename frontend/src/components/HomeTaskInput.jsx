@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ThumbsUp, MessageSquare, Repeat2, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 import CommentDrawer from "./ComentDrawer";
-import { useConnectionMutation } from "../hooks/useConnections.js";
+import { useConnectionMutation } from "@hooks/useConnections.js";
 
 const Task = ({
   task,

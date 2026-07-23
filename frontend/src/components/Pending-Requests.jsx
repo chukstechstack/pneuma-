@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../api/axios.js";
-import "../styles/Profile.css";
+import api from "@api/axios.js";
+import "@styles/Profile.css";
 
 const Pending_Request = () => {
   const [isOpen, setIsOpen] = useState(false);

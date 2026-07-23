@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../api/axios.js";
-import "../styles/Profile.css";
+import api from "@api/axios.js";
+import "@styles/Profile.css";
 
 const CommentDrawer = ({ contentUuid, onClose }) => {
   const queryClient = useQueryClient();

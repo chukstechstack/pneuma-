@@ -1,77 +1,71 @@
-import React, { useEffect } from "react";
+import { queryClient } from "@api/queryClient";
+import { useInitializeUser } from "@hooks/useInitializeUser";
+import  { setupSocketListeners } from "@services/socketService.js";
+import socket from "@api/socketApi.js"
+import { useAuthStore } from "@store/useAuthStore";
+import  { useEffect } from "react";
 import {
+  Navigate,
+  Outlet,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Outlet,
-  Navigate,
 } from "react-router-dom";
-import { useAuthStore } from "./store/useAuthStore";
-import { useInitializeUser } from "./hooks/useInitializeUser";
-import socket, { setupSocketListeners } from "./services/socketservice.js";
-import { queryClient } from "./api/queryClient";
 
-import Pending_Request from "./components/pending-Requests.jsx";
-import AuthHome from "./pages/LandingPage.jsx";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import HomePage from "./pages/Home.jsx";
-import CreateTask from "./pages/CreateTask.jsx";
-import PatchFeed from "./pages/PatchFeed.jsx";
-import Profile from "./pages/Profile.jsx";
-import JournalPage from "./pages/JournalFeed.jsx";
-import FullPageLoader from "./components/Loader.jsx";
+import FullPageLoader from "@components/Loader.jsx";
+import Pending_Request from "@components/Pending-Requests.jsx";
+import CreateTask from "@pages/CreateTask.jsx";
+import HomePage from "@pages/Home.jsx";
+import JournalPage from "@pages/JournalFeed.jsx";
+import AuthHome from "@pages/LandingPage.jsx";
+import Login from "@pages/Login.jsx";
+import PatchFeed from "@pages/PatchFeed.jsx";
+import Profile from "@pages/Profile.jsx";
+import Register from "@pages/Register.jsx";
 
-import "./styles/Profile.css";
+
+import "@styles/Profile.css";
 
 const SocketWatcher = () => {
   const { userUuid } = useAuthStore();
 
   useEffect(() => {
-    if (userUuid) {
-      socket.connect();
-      
-     
-      if (socket.connected) {
-        socket.emit("current_Logged_In_User_Uuid", { userUuid });
-        console.log("📤 Emitting UUID (immediate):", userUuid);
-      }
-
-    
-      const onConnect = () => {
-        console.log("✅ Socket Connected! ID:", socket.id);
-        socket.emit("current_Logged_In_User_Uuid", { userUuid });
-      };
-
-      socket.on("connect", onConnect);
-
-      return () => {
-        socket.off("connect", onConnect);
-      };
-    }
-  }, [userUuid]);
+    if (!userUuid) return;
 
 
-
-  useEffect(() => {
     setupSocketListeners(queryClient);
-    return () => {
-      socket.off("incoming_connect_request");
-      socket.off("unConnect_Status_Changes");
-      socket.off("connection_updated_for_requested_user");
-      socket.off("connection_status_updated_for_accepted_user");
+
+    const onConnect = () => {
+      console.log("✅ Socket Connected! ID:", socket.id);
+      socket.emit("current_Logged_In_User_Uuid", { userUuid });
+      console.log("📤 Emitting UUID:", userUuid);
     };
-  }, []);
+
+
+    socket.on("connect", onConnect);
+
+    if (socket.connected) {
+      console.log("⚡ Already connected, emitting UUID directly");
+      socket.emit("current_Logged_In_User_Uuid", { userUuid });
+            console.log(" User Emmited", {userUuid});
+    } else {
+      socket.connect();
+    }
+
+
+    return () => {
+      socket.off("connect", onConnect);
+    };
+  }, [userUuid]);
 
   return null;
 };
-
 const AuthenticatedGuard = ({ children }) => {
   const { userUuid } = useAuthStore();
   console.log("AuthGuard:", userUuid);
   useInitializeUser();
   if (userUuid === null) return <FullPageLoader />;
-  return userUuid ? children : <Navigate to="/login" />;
+  return userUuid ? children : <Navigate to="/login" />
 };
 
 const PresenceContainer = () => (

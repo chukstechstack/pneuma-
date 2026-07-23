@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import api from "../api/axios.js";
-import Task from "../components/HomeTaskInput.jsx";
-import NavBar from "../components/NavBar";
-import FullPageLoader from "../components/Loader.jsx";
-import { useAuthStore } from "../store/useAuthStore";
-import { useDeleteTask } from "../hooks/useTaskMutations";
+import api from "@api/axios.js";
+import Task from "@components/HomeTaskInput.jsx";
+import NavBar from "@components/NavBar";
+import FullPageLoader from "@components/Loader.jsx";
+import { useAuthStore } from "@store/useAuthStore";
+import { useDeleteTask } from "@hooks/useTaskMutations";
 
 const JournalPage = () => {
   const { targetUserUuid } = useParams();
@@ -57,7 +57,7 @@ const JournalPage = () => {
           style={{ gridColumn: "span 2" }}
         >
           <div className="journal-header-banner">
-            {/* ... header code ... */}
+ 
           </div>
 
           <div className="timeline-posts-container">

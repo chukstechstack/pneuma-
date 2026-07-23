@@ -1,6 +1,7 @@
 import React from "react";
-import "../styles/CreateTask.css";
+import "@styles/CreateTask.css";
 import { ImagePlus, CheckSquare, Loader2 } from "lucide-react";
+
 
 const TaskInput = ({
   handleChange,

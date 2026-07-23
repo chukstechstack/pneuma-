@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import "../styles/NavBar.css";
-import doveLogoUrl from "../assets/pneuma.png";
-import { useAuthStore } from "../store/useAuthStore";
+import "@styles/NavBar.css";
+import doveLogoUrl from "@assets/pneuma.png";
+import { useAuthStore } from "@store/useAuthStore";
 
 const NavBar = () => {
   const location = useLocation();

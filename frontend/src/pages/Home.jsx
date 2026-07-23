@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import api from "../api/axios.js";
-import Task from "../components/HomeTaskInput.jsx";
-import NavBar from "../components/NavBar";
-import FullPageLoader from "../components/Loader.jsx";
-import "../styles/HomeFeed.css";
-import { useAuthStore } from "../store/useAuthStore";
-import { useDeleteTask } from "../hooks/useTaskMutations";
-import { useInteraction } from "../hooks/useInteraction";
+import api from "@api/axios.js";
+import Task from "@components/HomeTaskInput.jsx";
+import NavBar from "@components/NavBar";
+import FullPageLoader from "@components/Loader.jsx";
+import "@styles/HomeFeed.css";
+import { useAuthStore } from "@store/useAuthStore";
+import { useDeleteTask } from "@hooks/useTaskMutations";
+import { useInteraction } from "@hooks/useInteraction";
 import { useNavigate } from "react-router-dom";
 
 

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../api/axios.js";
+import api from "@api/axios.js";
 
 export const useDeleteTask = (queryKey) => {
     const queryClient = useQueryClient();

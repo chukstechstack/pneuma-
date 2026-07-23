@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Landing.css";
-import doveLogoUrl from "../assets/pneuma.png";
+import "@styles/Landing.css";
+import doveLogoUrl from "@assets/pneuma.png";
 
 const AuthHome = () => {
   const navigate = useNavigate();
