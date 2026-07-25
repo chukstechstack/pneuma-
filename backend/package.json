@@ -6,6 +6,8 @@
     "connect-pg-simple": "^10.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "multer": "^2.1.1",
@@ -18,10 +20,14 @@
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@types/connect-pg-simple": "^7.0.3",
     "@types/express": "^5.0.6",
+    "@types/express-session": "^1.19.0",
+    "@types/multer": "^2.2.0",
     "@types/node": "^26.1.1",
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.14",
+    "tsconfig-paths": "^4.2.0",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2"
   },
@@ -30,8 +36,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node --import tsconfig-paths/register dist/server.js",
+    "dev": "tsx --import tsconfig-paths/register src/server.ts"
   },
   "keywords": [],
   "author": "",

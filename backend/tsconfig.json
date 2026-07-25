@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": [
+      "node"
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@Terminal/*": [
+        "/src/Terminal/*"
+      ],
+      "@Routes/*": [
+        "/src/Routes/*"
+      ],
+      "@Schema/*": [
+        "/src/Schema/*"
+      ],
+      "@drizzle/*": [
+        "./src/drizzle/*"
+      ],
+      "@Workshop/*": [
+        "/src/Workshop/*"
+      ],
+      "@Toolkits/*": [
+        "/src/Toolkit/*"
+      ],
+      "@Types/*": [
+        "/src/Types/*"
+      ],
+      "@CheckPoint/*": [
+        "/src/CheckPoint/*"
+      ],
+      "@Operator/*": [
+        "/src/Operator/*"
+      ]
+    },
+    "sourceMap": true,
+    "strict": true,
+    "moduleDetection": "force"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
