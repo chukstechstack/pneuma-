@@ -1,4 +1,4 @@
-import pool from "@Terminal/Supabase/supabaseConfig";
+import pool from "@/Terminal/Supabase/supabaseConfig";
 
 export interface PendingRequestRow {
   requested_User_Uuid: string;

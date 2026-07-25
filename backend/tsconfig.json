@@ -16,31 +16,31 @@
         "./src/*"
       ],
       "@Terminal/*": [
-        "/src/Terminal/*"
+        "./src/Terminal/*"
       ],
       "@Routes/*": [
-        "/src/Routes/*"
+        "./src/Routes/*"
       ],
       "@Schema/*": [
-        "/src/Schema/*"
+        "./src/Schema/*"
       ],
       "@drizzle/*": [
         "./src/drizzle/*"
       ],
       "@Workshop/*": [
-        "/src/Workshop/*"
+        "./src/Workshop/*"
       ],
       "@Toolkits/*": [
-        "/src/Toolkit/*"
+        "./src/Toolkit/*"
       ],
       "@Types/*": [
-        "/src/Types/*"
+        "./src/Types/*"
       ],
       "@CheckPoint/*": [
-        "/src/CheckPoint/*"
+        "./src/CheckPoint/*"
       ],
       "@Operator/*": [
-        "/src/Operator/*"
+        "./src/Operator/*"
       ]
     },
     "sourceMap": true,

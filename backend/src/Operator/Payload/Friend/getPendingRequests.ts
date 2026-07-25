@@ -1,17 +1,11 @@
-import pool from "@/Terminal/Supabase/supabaseConfig";
-import type { Request, Response } from "express";
+import type { Request, Response, NextFunction } from "express";
+import { fetchPendingRequestsQuery, PendingRequestRow } from "@Workshop/Payload/Friend/pendingRequestsServices";
+import { getErrorMessage } from "@/Types";
 
 interface AuthenticatedRequest extends Request {
   user?: {
-    id?: string;
+    id?: string | number;
   };
-}
-
-interface PendingRequestRow {
-  requested_User_Uuid: string;
-  firstName: string | null;
-  lastName: string | null;
-  avatarUrl: string | null;
 }
 
 interface PendingRequestsResponseData {
@@ -20,7 +14,8 @@ interface PendingRequestsResponseData {
 
 export const getPendingRequests = async (
   req: AuthenticatedRequest,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   const authorProfileId = req.user?.id;
 
@@ -29,26 +24,13 @@ export const getPendingRequests = async (
   }
 
   try {
-    const query = `
-      SELECT 
-        p.uuid AS "requested_User_Uuid", 
-        p.first_name AS "firstName", 
-        p.last_name AS "lastName", 
-        p.avatar_url AS "avatarUrl"
-      FROM follows f
-      JOIN profiles p ON f.follower_id = p.id
-      WHERE f.following_id = $1 
-      AND f.status = 'pending'
-    `;
+    const requests = await fetchPendingRequestsQuery(authorProfileId);
 
-    const { rows } = await pool.query<PendingRequestRow>(query, [authorProfileId]);
-
-    const responseData: PendingRequestsResponseData = { requests: rows };
+    const responseData: PendingRequestsResponseData = { requests };
     return res.status(200).json(responseData);
     
   } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : String(err);
-    console.error("Error fetching pending requests:", errorMessage);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("❌ BACKEND CONTROLLER LAYER caught a pending requests crash:", getErrorMessage(err));
+    next(err);
   }
 };
