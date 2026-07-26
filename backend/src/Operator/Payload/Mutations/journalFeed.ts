@@ -11,6 +11,13 @@ interface JournalFeedRequestQuery {
   fresh_load?: string;
 }
 
+interface AuthenticatedRequest extends Request<JournalFeedRequestParams, unknown, unknown, JournalFeedRequestQuery> {
+  user?: {
+    uuid?: string;
+    id?: string | number;
+  };
+}
+
 interface JournalFeedFetchResult {
   journalFeedTasks: unknown[];
   next_post_timestamp?: string | number | null;
@@ -23,7 +30,7 @@ interface JournalFeedResponseData {
 }
 
 export const journalFeed = async (
-  req: Request<JournalFeedRequestParams, unknown, unknown, JournalFeedRequestQuery>,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ) => {

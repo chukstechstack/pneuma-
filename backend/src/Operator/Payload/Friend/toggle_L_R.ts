@@ -1,7 +1,7 @@
 import redisClient from "@/Terminal/Redis/redisCreateClient";
-import { executeToggleInteraction } from "@/Workshop/Payload/toggle_L_R.js";
+import { executeToggleInteraction } from "@/Workshop/Payload/Friend/toggle_L_R.js";
 import type { Request, Response, NextFunction } from "express";
-import { getErrorMessage } from "../../Types";
+import { getErrorMessage } from "../../../Types";
 
 type InteractionType = 'like' | 'repost' | 'share';
 

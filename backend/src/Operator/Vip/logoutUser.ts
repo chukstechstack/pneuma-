@@ -1,7 +1,14 @@
-import LoginError from "../../../utils/loginError.js";
+import LoginError from "@Toolkits/Login/loginError";
+import { NextFunction, Request, Response } from "express";
 
-export const logoutUser = (req, res, next) => {
-  req.logout((err) => {
+type LogoutRequest = Request & {
+  logout: (callback: (err: any) => void) => void;
+};
+
+export const logoutUser = (req: Request, res: Response, next: NextFunction) => {
+  const logoutReq = req as LogoutRequest;
+
+  logoutReq.logout((err) => {
     if (err) return next(new LoginError("log out failed", 500));
 
     req.session.destroy((err) => {

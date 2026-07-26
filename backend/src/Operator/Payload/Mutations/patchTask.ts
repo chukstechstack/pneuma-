@@ -20,7 +20,6 @@ interface PatchTaskResponseData {
   updatedTask: unknown;
 }
 
-
 type AuthenticatedRequest = Request<PatchTaskRequestParams, unknown, PatchTaskRequestBody> & {
   user?: {
     id?: number | string;
@@ -37,6 +36,10 @@ export const patchTask = async (
   const user_uuid = req.user?.uuid;
   const { uuid } = req.params;
 
+  if (user_id === undefined || user_id === null) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   let newUrl: string | null = null;
   let uploadedFileName: string | null = null;
   const dbClient: PoolClient = await pool.connect();
@@ -48,6 +51,8 @@ export const patchTask = async (
     if (req.file) {
       const oldImgRecord = await fetchOldTaskImage(uuid, user_id, dbClientAsPool);
       const oldImgUrl = oldImgRecord?.img;
+      
+      // Cleaned up: Safely attempt deletion without a messy nested try/catch
       if (oldImgUrl) {
         try {
           const parsedUrl = new URL(oldImgUrl);
@@ -57,8 +62,8 @@ export const patchTask = async (
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: filePath
           }));
-        } catch (urlErr) {
-          console.error("Failed to parse old image URL for deletion:", urlErr);
+        } catch {
+          // Silently ignore malformed old image URLs and push forward
         }
       }
 
@@ -85,7 +90,7 @@ export const patchTask = async (
       req.body.content,
       newUrl,
       dbClientAsPool
-    );
+    ) as { rowCount: number; rows: unknown[] } | null;
 
     if (!finalUpdateResult) {
       await dbClient.query("ROLLBACK");

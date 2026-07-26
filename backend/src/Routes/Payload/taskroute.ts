@@ -8,7 +8,7 @@ import { patchTask } from "@/Operator/Payload/Mutations/patchTask";
 import { deleteTask } from "@/Operator/Payload/Mutations/deleteTask";
 
 import { journalFeed } from "@/Operator/Payload/Mutations/journalFeed";
-import { getComment } from "@/Operator/Payload/Mutations/fetchComment";
+import { getComment } from "@/Operator/Payload/Friend/fetchComment";
 
 import { acceptFollowRequest } from "@/Operator/Payload/Friend/acceptFollowRequest";
 import { getSmartProfileFeed } from "@/Operator/Payload/Friend/fetch_profileController";
@@ -17,8 +17,8 @@ import { connectRequest } from "@/Operator/Payload/Friend/connectRequest.js";
 import { fetch_Journal_When_Accepted } from "@/Operator/Payload/Friend/fetch_Journal_When_Accepted";
 import { fetchEngagementDetails } from "@/Operator/Payload/Friend/fetch_Inner_Circle";
 
-import { toggleInteraction } from "@/Operator/Payload/toggle_L_R";
-import { commentFeed } from "@/Operator/Payload/commentFeed";
+import { toggleInteraction } from "@/Operator/Payload/Friend/toggle_L_R";
+import { commentFeed } from "@/Operator/Payload/Friend/commentFeed";
 
 
 const taskRoute = express.Router();
@@ -97,22 +97,22 @@ interface DeleteTaskParams {
   [key: string]: string;
 }
 
-taskRoute.get<GetTaskParams>("/", ensureAuthenticated, getTask);
-taskRoute.get<GetPendingRequestsParams>("/profile/pending-requests", ensureAuthenticated, getPendingRequests);
-taskRoute.get<SmartProfileFeedParams>("/profile/:targetProfileUuid", ensureAuthenticated, getSmartProfileFeed);
-taskRoute.get<InnerCircleDetailsParams>("/profile/innerCircle-details/:targetProfileUuid", ensureAuthenticated, fetchEngagementDetails);
+taskRoute.get<GetTaskParams>("/", ensureAuthenticated, getTask as express.RequestHandler<GetTaskParams>);
+taskRoute.get<GetPendingRequestsParams>("/profile/pending-requests", ensureAuthenticated, getPendingRequests as express.RequestHandler<GetPendingRequestsParams>);
+taskRoute.get<SmartProfileFeedParams>("/profile/:targetProfileUuid", ensureAuthenticated, getSmartProfileFeed as express.RequestHandler<SmartProfileFeedParams>);
+taskRoute.get<InnerCircleDetailsParams>("/profile/innerCircle-details/:targetProfileUuid", ensureAuthenticated, fetchEngagementDetails as express.RequestHandler<InnerCircleDetailsParams>);
 
-taskRoute.get<JournalFeedParams>("/journalfeed/:journalUuid", ensureAuthenticated, journalFeed);
-taskRoute.get<GetCommentParams>("/:contentUuid/fetchComments", ensureAuthenticated, getComment);
-taskRoute.get<FetchJournalRequestParams>("/task/journal-posts/:targetProfileUuid", ensureAuthenticated, fetch_Journal_When_Accepted);
+taskRoute.get<JournalFeedParams>("/journalfeed/:journalUuid", ensureAuthenticated, journalFeed as express.RequestHandler<JournalFeedParams>);
+taskRoute.get<GetCommentParams>("/:contentUuid/fetchComments", ensureAuthenticated, getComment as express.RequestHandler<GetCommentParams>);
+taskRoute.get<FetchJournalRequestParams>("/task/journal-posts/:targetProfileUuid", ensureAuthenticated, fetch_Journal_When_Accepted as express.RequestHandler<FetchJournalRequestParams>);
 
-taskRoute.post<CommentFeedParams>("/:contentUuid/comments", ensureAuthenticated, commentFeed);
-taskRoute.post<CreateTaskParams>("/", ensureAuthenticated, upload.single("img"), createTask);
-taskRoute.post<ToggleInteractionParams>("/interaction/:contentUuid", ensureAuthenticated, toggleInteraction);
-taskRoute.post<ConnectRequestParams>("/profile/connect/:targetProfileUuid", ensureAuthenticated, connectRequest);
+taskRoute.post<CommentFeedParams>("/:contentUuid/comments", ensureAuthenticated, commentFeed as express.RequestHandler<CommentFeedParams>);
+taskRoute.post<CreateTaskParams>("/", ensureAuthenticated, upload.single("img"), createTask as express.RequestHandler<CreateTaskParams>);
+taskRoute.post<ToggleInteractionParams>("/interaction/:contentUuid", ensureAuthenticated, toggleInteraction as express.RequestHandler<ToggleInteractionParams>);
+taskRoute.post<ConnectRequestParams>("/profile/connect/:targetProfileUuid", ensureAuthenticated, connectRequest as express.RequestHandler<ConnectRequestParams>);
 
-taskRoute.patch<AcceptFollowRequestParams>("/profile/request-action", ensureAuthenticated, acceptFollowRequest);
-taskRoute.patch<PatchTaskParams>("/:uuid", ensureAuthenticated, upload.single("img"), patchTask);
-taskRoute.delete<DeleteTaskParams>("/:uuid", ensureAuthenticated, deleteTask);
+taskRoute.patch<AcceptFollowRequestParams>("/profile/request-action", ensureAuthenticated, acceptFollowRequest as express.RequestHandler<AcceptFollowRequestParams>);
+taskRoute.patch<PatchTaskParams>("/:uuid", ensureAuthenticated, upload.single("img"), patchTask as express.RequestHandler<PatchTaskParams>);
+taskRoute.delete<DeleteTaskParams>("/:uuid", ensureAuthenticated, deleteTask as express.RequestHandler<DeleteTaskParams>);
 
 export default taskRoute;

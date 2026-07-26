@@ -1,4 +1,5 @@
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
+import type { PassportStatic, Profile as GoogleProfile } from "passport";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import {
@@ -6,28 +7,45 @@ import {
   findGoogleUserByEmail,
   updateGoogleIdByEmail,
   insertGoogleUser,
-} from "../../Workshop/Vip/passportService.js";
+} from "@Workshop/Vip/passportService";
 
 dotenv.config();
 
-export const initGoogleStrategy = (passport) => {
+const googleClientID = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+const googleCallbackURL = process.env.GOOGLE_CALLBACK_URL;
+
+if (!googleClientID || !googleClientSecret || !googleCallbackURL) {
+  throw new Error("Missing Google OAuth environment variables");
+}
+
+export const initGoogleStrategy = (passport: PassportStatic) => {
   passport.use(
     new GoogleStrategy(
       {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: process.env.GOOGLE_CALLBACK_URL,
-        passReqToCallback: true,
+        clientID: googleClientID,
+        clientSecret: googleClientSecret,
+        callbackURL: googleCallbackURL,
       },
-      async (request, accessToken, refreshToken, profile, done) => {
+      async (_accessToken: string, _refreshToken: string, profile: GoogleProfile, done) => {
         try {
-          const email = profile.emails[0].value;
+          const email = profile.emails?.[0]?.value;
           const google_id = profile.id;
           const [first_name, last_name] = profile.displayName.split(" ");
           
+          if (!email) {
+            return done(new Error("Email not found in Google profile"));
+          }
+          
           console.log("Processing Google Profile for ID:", google_id);
           
-          let user = await findUserByGoogle_id(google_id);
+          type GoogleAuthUser =
+            | Awaited<ReturnType<typeof findUserByGoogle_id>>
+            | Awaited<ReturnType<typeof findGoogleUserByEmail>>
+            | Awaited<ReturnType<typeof updateGoogleIdByEmail>>
+            | Awaited<ReturnType<typeof insertGoogleUser>>;
+
+          let user: GoogleAuthUser = await findUserByGoogle_id(google_id);
           if (!user) {
             user = await findGoogleUserByEmail(email);
             if (user) {

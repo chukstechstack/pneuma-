@@ -1,66 +1,84 @@
-import s3 from "../../../Terminal/AwsS3ClientConfig.js";
+import s3 from "@Terminal/Aws/AwsS3ClientConfig";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import redisClient from "../../../Terminal/redisCreateClient.js";
-import pool from "../../../Terminal/supabaseConfig.js";
+import redisClient from "@Terminal/Redis/redisCreateClient";
+import pool from "@Terminal/Supabase/supabaseConfig.js";
+import type { Request, Response, NextFunction } from "express";
+import type { PoolClient } from "pg";
 
+import { findTaskImageForCleanup, executeTaskDeletion } from "@Workshop/Payload/Mutations/deleteTaskService";
 
-import { findTaskImageForCleanup, executeTaskDeletion } from "../../../../services/task/deleteTaskService.js";
+interface DeleteTaskParams {
+  uuid: string;
+  [key: string]: string;
+}
 
-export const deleteTask = async (req, res, next) => {
+interface AuthenticatedRequest extends Request<DeleteTaskParams, unknown, unknown> {
+  user?: {
+    id?: number | string;
+    uuid?: string;
+  };
+}
+
+interface DeleteTaskResponseData {
+  message: string;
+}
+
+export const deleteTask = async (
+  req: AuthenticatedRequest,
+  res: Response<DeleteTaskResponseData | { error: string }>,
+  next: NextFunction
+) => {
   const { uuid } = req.params;
   const user_id = req.user?.id;
   const user_uuid = req.user?.uuid;
 
+  if (user_id === undefined || user_id === null) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
-  const dbClient = await pool.connect();
+  const dbClient: PoolClient = await pool.connect();
 
   try {
-    // 3. Start safe database isolation transaction layer
     await dbClient.query("BEGIN");
 
-    // Execution Layer 1: Query the image data passing your explicit dbClient as the 3rd argument
     const taskRecord = await findTaskImageForCleanup(uuid, user_id, dbClient);
     if (!taskRecord) {
       await dbClient.query("ROLLBACK");
       return res.status(403).json({ error: "You are unauthorized or task not found" });
     }
 
-    // Execution Layer 2: Run physical row deletion passing your explicit dbClient as the 3rd argument
     const deletedCount = await executeTaskDeletion(uuid, user_id, dbClient);
     if (deletedCount === 0) {
       await dbClient.query("ROLLBACK");
       return res.status(403).json({ error: "You are unauthorized" });
     }
 
-    // 4. Permanently seal database updates and immediately return connection to pool
     await dbClient.query("COMMIT");
 
-    // 5. ASYNC BACKGROUND CLEANUP LAYER (Using your clean native URL Web API approach)
     const imgUrl = taskRecord.img;
-    if (imgUrl) {
+    if (typeof imgUrl === "string" && imgUrl) {
       try {
         const parsedUrl = new URL(imgUrl);
-        const filePath = parsedUrl.pathname.substring(1); // Strips the leading "/" cleanly
+        const filePath = parsedUrl.pathname.substring(1);
 
         if (filePath) {
-          // Fire and forget in the background so it doesn't cause lagging response latency
           s3.send(new DeleteObjectCommand({
             Bucket: process.env.AWS_BUCKET_NAME,
             Key: filePath
           })).then(() => console.log(`AWS S3 cleanup success: ${filePath}`))
-            .catch(err => console.error(`⚠️ S3 background cleanup failed for ${filePath}:`, err));
+            .catch((err: unknown) => {
+              const errMsg = err instanceof Error ? err.message : String(err);
+              console.error(`⚠️ S3 background cleanup failed for ${filePath}:`, errMsg);
+            });
         }
-      } catch (urlError) {
-        console.error("⚠️ Malformed image URL found during cleanup phase:", urlError.message);
+      } catch (urlError: unknown) {
+        const urlErrMsg = urlError instanceof Error ? urlError.message : String(urlError);
+        console.error("⚠️ Malformed image URL found during cleanup phase:", urlErrMsg);
       }
     }
 
-    // =================================================================
-    // 6. FIXED: PAGINATED WILDCARD REDIS CACHE INVALIDATION BROOM SYSTEM
-    // =================================================================
     try {
       if (user_uuid) {
-        // ── A. Sweep out all paginated timeline cache snapshots from the Home Feed ──
         const homeFeedPattern = `tasks_feed:${user_uuid}:*`;
         const homeKeys = await redisClient.keys(homeFeedPattern);
         if (homeKeys.length > 0) {
@@ -68,7 +86,6 @@ export const deleteTask = async (req, res, next) => {
           console.log(`🧹 Cache Reset: Swept away ${homeKeys.length} paginated home feed drawers.`);
         }
 
-        // ── B. Sweep out all paginated timeline cache snapshots from the Journal Feed ──
         const journalPattern = `journal_feed:${user_uuid}:*`;
         const journalKeys = await redisClient.keys(journalPattern);
         if (journalKeys.length > 0) {
@@ -76,23 +93,23 @@ export const deleteTask = async (req, res, next) => {
           console.log(`🧹 Cache Reset: Swept away ${journalKeys.length} paginated private journal pages.`);
         }
       }
-    } catch (cacheErr) {
-      console.error("⚠️ Non-critical Error in cache-busting invalidation process:", cacheErr.message);
+    } catch (cacheErr: unknown) {
+      const cacheErrMsg = cacheErr instanceof Error ? cacheErr.message : String(cacheErr);
+      console.error("⚠️ Non-critical Error in cache-busting invalidation process:", cacheErrMsg);
     }
 
-    return res.status(200).json({ message: "Deleted successfully" });
+    const responseData: DeleteTaskResponseData = { message: "Deleted successfully" };
+    return res.status(200).json(responseData);
 
-  } catch (err) {
-    // EMERGENCY ROLLBACK BLOCK
+  } catch (err: unknown) {
     try {
       await dbClient.query("ROLLBACK");
-    } catch (rollbackErr) {
-      // Quietly ignore if transaction wasn't actively processing queries
+    } catch {
+
     }
     console.error(err);
     return next(err);
   } finally {
-    // Crucial Guard: Always guarantee connection client is released back to connection pool
     dbClient.release();
   }
 };

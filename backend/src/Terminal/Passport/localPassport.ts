@@ -1,9 +1,10 @@
+import type { PassportStatic } from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcryptjs from "bcryptjs";
 import { findUserByEmail } from "../../Workshop/Vip/passportService.js";
-import LoginError from "../../Toolkit/Login/loginError.js";
+import LoginError from "@Toolkits/Login/loginError";
 
-export const initLocalStrategy = (passport) => {
+export const initLocalStrategy = (passport: PassportStatic) => {
   passport.use(
     "local",
     new LocalStrategy(
@@ -15,7 +16,7 @@ export const initLocalStrategy = (passport) => {
 
           const user = await findUserByEmail(email);
 
-          if (!user) {
+          if (!user || !user.password) {
             return done(null, false, { message: "User not found" });
           }
 

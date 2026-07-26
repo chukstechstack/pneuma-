@@ -17,10 +17,10 @@ interface UserUuidPayload {
 const startServer = async (): Promise<void> => {
   try {
     await pool.connect();
-    console.log("✅ Connected to Supabase PostgreSQL");
+    console.log("🔥  Connected to Supabase PostgreSQL");
 
     await redisClient.connect();
-    console.log("🚀 Connected to Redis");
+    console.log("📌 Connected to Redis");
 
     const httpServer: HttpServer = createServer(app);
 
@@ -49,10 +49,10 @@ const startServer = async (): Promise<void> => {
       });
     });
 
-    httpServer.listen(PORT, () => console.log(`🚀 Living Server running at PORT: ${PORT}`));
+    httpServer.listen(PORT, () => console.log(`♨️   Living Server running at PORT: ${PORT}`));
 
   } catch (err: unknown) {
-    console.error("❌ Failed to connect:", getErrorMessage(err));
+    console.error("☠️ Failed to connect:", getErrorMessage(err));
     process.exit(1);
   }
 };

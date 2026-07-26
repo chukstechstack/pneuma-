@@ -1,8 +1,15 @@
-import LoginError from "../../../utils/loginError.js";
-import passport from "../../../config/passport/serialize_deserialize.js";
+import { Request, Response, NextFunction } from "express";
+import LoginError from "@Toolkits/Login/loginError";
+import passport from "@Terminal/Passport/serialize_deserialize.js";
 
-export const loginUser = (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
+export const loginUser = (
+  req: Request & {
+    login(user: any, done: (err: any) => void): void;
+  },
+  res: Response,
+  next: NextFunction
+) => {
+  passport.authenticate("local", (err: any, user: any, info: any) => {
     if (err) return next(err);
     if (!user) return next(new LoginError(info?.message || "user not found Register!!", 404));
 

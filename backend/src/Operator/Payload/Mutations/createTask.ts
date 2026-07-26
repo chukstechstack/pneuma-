@@ -1,36 +1,65 @@
-import TaskInputError from "../../../../utils/taskInputError.js";
+import TaskInputError from "@Toolkits/Input/taskInputError"
 import sharp from "sharp";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import s3 from "../../../Terminal/AwsS3ClientConfig.js";
-import redisClient from "../../../Terminal/redisCreateClient.js";
-import pool from "../../../Terminal/supabaseConfig.js";
+import s3 from "@Terminal/Aws/AwsS3ClientConfig";
+import redisClient from "@Terminal/Redis/redisCreateClient";
+import pool from "@Terminal/Supabase/supabaseConfig.js";
+import type { Request, Response, NextFunction } from "express";
+import type { PoolClient } from "pg";
 
-// Import your newly created database service workers
-import { insertNewTask, fetchHydratedTaskById } from "../../../../services/task/createTaskService.js";
+import { insertNewTask, fetchHydratedTaskById } from "@Workshop/Payload/Mutations/createTaskService";
 
-export const createTask = async (req, res, next) => {
-  const { content } = req.body;
+interface CreateTaskParams {
+  [key: string]: string;
+}
+
+interface CreateTaskRequestBody {
+  content?: string;
+  [key: string]: unknown;
+}
+
+interface AuthenticatedRequest extends Request<CreateTaskParams, unknown, CreateTaskRequestBody> {
+  user?: {
+    id?: number | string;
+    uuid?: string;
+  };
+}
+
+interface CreateTaskResponseData {
+  message: string;
+  newTask: unknown;
+}
+
+export const createTask = async (
+  req: AuthenticatedRequest,
+  res: Response<CreateTaskResponseData | { error: string }>,
+  next: NextFunction
+) => {
+  const content = req.body.content;
   const user_uuid = req.user?.uuid;
   const user_id = req.user?.id;
 
-  let img_url = null;
-  let uploadedFileName = null; // Track file name for S3 emergency rollback
-  const dbClient = await pool.connect(); // Checkout a single database client connection
+  if (user_id === undefined || user_id === null) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  let img_url: string | null = null;
+  let uploadedFileName: string | null = null;
+  const dbClient: PoolClient = await pool.connect();
 
   try {
-    if (!content) throw new TaskInputError("Content is required");
+    if (!content) {
+      throw new TaskInputError("Content is required");
+    }
 
-    // Start database transaction block
     await dbClient.query("BEGIN");
 
-    // Transform and stream data to S3 if a file is uploaded
     if (req.file) {
       const optimizedBuffer = await sharp(req.file.buffer)
         .resize({ width: 800, withoutEnlargement: true })
         .webp({ quality: 80 })
         .toBuffer();
 
-      // Track the name before uploading so the catch block can see it
       uploadedFileName = `tasks/${Date.now()}-optimized.webp`;
 
       await s3.send(new PutObjectCommand({
@@ -43,22 +72,17 @@ export const createTask = async (req, res, next) => {
       img_url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uploadedFileName}`;
     }
 
-    // Execution Layer 1: Run the raw SQL insertion service worker (passing dbClient)
     const savedTaskData = await insertNewTask(content, img_url, user_id, dbClient);
-    if (!savedTaskData) throw new Error("Failed to persist task resource data");
+    if (!savedTaskData) {
+      throw new Error("Failed to persist task resource data");
+    }
 
-    // Execution Layer 2: Run the profile mapping hydration service worker (passing dbClient)
     const resultWithUser = await fetchHydratedTaskById(savedTaskData.id, dbClient);
 
-    // 🔒 FIXED STEP 1: Permanently commit your database records FIRST
     await dbClient.query("COMMIT");
 
-    // =================================================================
-    // 🧹 FIXED STEP 2: WILDCARD REDIS CACHE INVALIDATION BROOM SYSTEM
-    // =================================================================
     try {
       if (user_uuid) {
-        // ── A. Sweep out all paginated timeline cache snapshots from the Home Feed ──
         const homeFeedPattern = `tasks_feed:${user_uuid}:*`;
         const homeKeys = await redisClient.keys(homeFeedPattern);
         if (homeKeys.length > 0) {
@@ -66,7 +90,6 @@ export const createTask = async (req, res, next) => {
           console.log(`🧹 Creation Cache Reset: Swept away ${homeKeys.length} home feed chunks.`);
         }
 
-        // ── B. Sweep out all paginated timeline cache snapshots from the Private Feed ──
         const journalPattern = `journal_feed:${user_uuid}:*`;
         const journalKeys = await redisClient.keys(journalPattern);
         if (journalKeys.length > 0) {
@@ -74,23 +97,25 @@ export const createTask = async (req, res, next) => {
           console.log(`🧹 Creation Cache Reset: Swept away ${journalKeys.length} private feed chunks.`);
         }
       }
-    } catch (cacheErr) {
-      console.error("⚠️ Non-critical Error in cache-busting during post creation:", cacheErr.message);
+    } catch (cacheErr: unknown) {
+      const cacheErrMsg = cacheErr instanceof Error ? cacheErr.message : String(cacheErr);
+      console.error("⚠️ Non-critical Error in cache-busting during post creation:", cacheErrMsg);
     }
 
-    return res.json({
+    const responseData: CreateTaskResponseData = {
       message: "Content created successfully",
       newTask: resultWithUser,
-    });
-  } catch (err) {
-    // EMERGENCY ROLLBACK BLOCK
+    };
+
+    return res.json(responseData);
+
+  } catch (err: unknown) {
     try {
       await dbClient.query("ROLLBACK");
-    } catch (rbErr) {
-      // Quietly swallow if the transaction client connection was already broken
+    } catch {
+      // Quietly swallow if client was already broken
     }
 
-    // If we uploaded a new file to S3 but the DB failed, delete it immediately from storage
     if (uploadedFileName) {
       try {
         await s3.send(new DeleteObjectCommand({
@@ -98,14 +123,14 @@ export const createTask = async (req, res, next) => {
           Key: uploadedFileName
         }));
         console.log(`Successfully cleaned up orphan S3 file: ${uploadedFileName}`);
-      } catch (s3DeleteErr) {
-        console.error("Critical: Failed to clean up orphan S3 asset during rollback:", s3DeleteErr);
+      } catch (s3DeleteErr: unknown) {
+        const s3DeleteErrMsg = s3DeleteErr instanceof Error ? s3DeleteErr.message : String(s3DeleteErr);
+        console.error("Critical: Failed to clean up orphan S3 asset during rollback:", s3DeleteErrMsg);
       }
     }
 
     next(err);
   } finally {
-    // Crucial: Always release the database connection client back to the connection pool
     dbClient.release();
   }
 };
