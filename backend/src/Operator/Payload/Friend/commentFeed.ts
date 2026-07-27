@@ -1,9 +1,12 @@
+
+
 import type { Request, Response, NextFunction } from "express";
 import { executeInsertComment } from "@/Workshop/Payload/Friend/commentServices.js";
 import { getErrorMessage } from "../../../Toolkit/GetErrorMessage/getErrorMessage.js";
 
+// Use Express.User so it connects straight to our global UserProfile badge!
 interface CustomRequest<P = Record<string, any>, ResBody = any, ReqBody = any, ReqQuery = Record<string, any>> extends Request<P, ResBody, ReqBody, ReqQuery> {
-  user?: { id: string | number };
+  user?: Express.User & { id?: string | number };
 }
 
 interface CommentFeedParams {

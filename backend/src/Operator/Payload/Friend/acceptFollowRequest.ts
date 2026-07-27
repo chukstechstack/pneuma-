@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import type { Server as SocketServer } from "socket.io";
 import { executeAcceptFollowService } from "@Workshop/Payload/Friend/acceptFollowRequestServices.js";
-
+import type { UserProfile } from "@Workshop/Vip/passportService.js";
 interface AcceptFollowRequestParams {}
 
 interface AcceptFollowRequestBody {
@@ -9,12 +9,9 @@ interface AcceptFollowRequestBody {
   action?: 'accept' | 'decline';
 }
 
+// Connect straight to our global Passport UserProfile blueprint!
 interface AuthenticatedRequest<P, ResBody, ReqBody> extends Request<P, ResBody, ReqBody> {
-  user?: {
-    id: string;
-    uuid: string;
-    [key: string]: any;
-  };
+  user?: UserProfile
 }
 
 interface AcceptFollowResponseData {
@@ -31,25 +28,23 @@ export const acceptFollowRequest = async (
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const acceptorNumericId = Number(req.user.id);
+  // Get acceptor UUID from authenticated user
   const acceptorUuid = req.user.uuid;
+  const acceptorNumericId = req.user.id;
   const { targetUuid, action } = req.body;
 
-  if (!targetUuid || !action) {
+  if (!targetUuid || !action || !acceptorNumericId) {
     return res.status(400).json({ error: "Invalid request payload" });
   }
 
   try {
     await executeAcceptFollowService(
-      acceptorNumericId,
+      Number(acceptorNumericId),
       acceptorUuid,
       targetUuid,
       action
     );
 
-    // =================================================================
-    // 🧹 Socket Notification (Fully Typed)
-    // =================================================================
     const io: SocketServer = req.app.get("socketio");
 
     const requesterRoom = `current_Logged_In_User_Uuid:${targetUuid}`;

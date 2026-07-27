@@ -1,6 +1,6 @@
 import pool from "@/Terminal/Supabase/supabaseConfig.js";
 
-interface UserProfile {
+export interface UserProfile {
   id: number | string;
   uuid: string;
   username?: string | null;

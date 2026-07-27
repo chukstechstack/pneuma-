@@ -7,6 +7,7 @@ import { logoutUser } from "@/Operator/Vip/logoutUser.js";
 import { googleCallBack } from "@/Operator/Vip/googleCallback.js";
 import { googleLogin } from "@/Operator/Vip/googleLogin.js";
 
+
 const authRoute = express.Router();
 
 interface EmptyParams {

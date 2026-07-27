@@ -1,10 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { fetchSmartProfileFeedData, type SmartProfileFeedResult } from  "@Workshop/Payload/Friend/fetchProfileFeedServices.js";
 
-interface AuthenticatedRequest<P = Record<string, any>> extends Request<P> {
-  user?: {
-    id: number | string;
-  };
+interface AuthenticatedRequest<P = Record<string, string>> extends Request<P> {
+  user?: Express.User& { id?: string | number };
 }
 
 interface SmartProfileFeedParams {
@@ -41,3 +39,4 @@ export const getSmartProfileFeed = async (
     next(err);
   }
 };
+
