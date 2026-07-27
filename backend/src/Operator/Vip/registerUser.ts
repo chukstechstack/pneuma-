@@ -1,7 +1,7 @@
-import RegistrationError from "@Toolkits/Register/registrationError";
+import RegistrationError from "@Toolkits/Register/registrationError.js";
 import bcryptjs from "bcryptjs";
-import { findUserRegistration, registerNewUser } from "@Workshop/Vip/authService"
-import redisClient from "@Terminal/Redis/redisCreateClient";
+import { findUserRegistration, registerNewUser } from "@Workshop/Vip/authService.js"
+import redisClient from "@Terminal/Redis/redisCreateClient.js";
 import type { Request, Response, NextFunction } from "express";
 import type { Session, SessionData } from "express-session";
 

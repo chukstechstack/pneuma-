@@ -1,4 +1,4 @@
-import pool from "@/Terminal/Supabase/supabaseConfig";
+import pool from "@/Terminal/Supabase/supabaseConfig.js";
 
 interface FeedItemRow {
   id: number | string;

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { fetchCommentsQuery, fetchContentIdByUuid, CommentRow } from "@Workshop/Payload/Mutations/getComments";
+import { fetchCommentsQuery, fetchContentIdByUuid, CommentRow } from "@Workshop/Payload/Mutations/getComments.js";
 
 interface GetCommentsQuery {
   freeze_time?: string;

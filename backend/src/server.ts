@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import pool from "@/Terminal/Supabase/supabaseConfig";
-import redisClient from "@/Terminal/Redis/redisCreateClient"; 
+import pool from "@/Terminal/Supabase/supabaseConfig.js";
+import redisClient from "@/Terminal/Redis/redisCreateClient.js"; 
 import { createServer, Server as HttpServer } from "http";
 import { Server, Socket } from "socket.io";
-import app from "./app";
-import { getErrorMessage } from "./Types";
+import app from "./app.js";
+import { getErrorMessage } from "./Toolkit/GetErrorMessage/getErrorMessage.js";
 
 dotenv.config();
 

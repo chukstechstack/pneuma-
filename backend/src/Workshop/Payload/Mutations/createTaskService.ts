@@ -1,4 +1,4 @@
-import pool from "@/Terminal/Supabase/supabaseConfig";
+import pool from "@/Terminal/Supabase/supabaseConfig.js";
 import type { PoolClient, Pool } from "pg";
 
 interface ContentRow {

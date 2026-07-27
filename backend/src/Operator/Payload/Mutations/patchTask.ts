@@ -1,9 +1,9 @@
 import sharp from "sharp";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import s3 from "@/Terminal/Aws/AwsS3ClientConfig.js";
-import redisClient from "@/Terminal/Redis/redisCreateClient";
-import pool from "@/Terminal/Supabase/supabaseConfig";
-import { fetchOldTaskImage, executeDynamicTaskUpdate } from "@/Workshop/Payload/Mutations/patchTaskService";
+import redisClient from "@Terminal/Redis/redisCreateClient.js";
+import pool from "@Terminal/Supabase/supabaseConfig.js";
+import { fetchOldTaskImage, executeDynamicTaskUpdate } from "@/Workshop/Payload/Mutations/patchTaskService.js";
 import type { Request, Response, NextFunction } from "express";
 import type { Pool, PoolClient } from "pg";
 

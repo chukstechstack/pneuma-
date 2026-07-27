@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import LoginError from "@Toolkits/Login/loginError";
+import LoginError from "@Toolkits/Login/loginError.js";
 import passport from "@Terminal/Passport/serialize_deserialize.js";
 
 export const loginUser = (

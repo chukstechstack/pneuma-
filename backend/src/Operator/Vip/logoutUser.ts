@@ -1,4 +1,4 @@
-import LoginError from "@Toolkits/Login/loginError";
+import LoginError from "@Toolkits/Login/loginError.js";
 import { NextFunction, Request, Response } from "express";
 
 type LogoutRequest = Request & {

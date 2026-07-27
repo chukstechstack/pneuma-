@@ -1,24 +1,24 @@
 import express from "express";
-import { ensureAuthenticated } from "@/CheckPoint/Vip/authMiddleware";
-import { upload } from "@/Terminal/Multer/multerConfig";
+import { ensureAuthenticated } from "@/CheckPoint/Vip/authMiddleware.js";
+import { upload } from "@/Terminal/Multer/multerConfig.js";
 
 import { getTask } from "@/Operator/Payload/Mutations/getTask.js";
-import { createTask } from "@/Operator/Payload/Mutations/createTask";
-import { patchTask } from "@/Operator/Payload/Mutations/patchTask";
-import { deleteTask } from "@/Operator/Payload/Mutations/deleteTask";
+import { createTask } from "@/Operator/Payload/Mutations/createTask.js";
+import { patchTask } from "@/Operator/Payload/Mutations/patchTask.js";
+import { deleteTask } from "@/Operator/Payload/Mutations/deleteTask.js";
 
-import { journalFeed } from "@/Operator/Payload/Mutations/journalFeed";
-import { getComment } from "@/Operator/Payload/Friend/fetchComment";
+import { journalFeed } from "@/Operator/Payload/Mutations/journalFeed.js";
+import { getComment } from "@/Operator/Payload/Friend/fetchComment.js";
 
-import { acceptFollowRequest } from "@/Operator/Payload/Friend/acceptFollowRequest";
-import { getSmartProfileFeed } from "@/Operator/Payload/Friend/fetch_profileController";
-import { getPendingRequests } from "@/Operator/Payload/Friend/getPendingRequests";
+import { acceptFollowRequest } from "@/Operator/Payload/Friend/acceptFollowRequest.js";
+import { getSmartProfileFeed } from "@/Operator/Payload/Friend/fetch_profileController.js";
+import { getPendingRequests } from "@/Operator/Payload/Friend/getPendingRequests.js";
 import { connectRequest } from "@/Operator/Payload/Friend/connectRequest.js";
-import { fetch_Journal_When_Accepted } from "@/Operator/Payload/Friend/fetch_Journal_When_Accepted";
-import { fetchEngagementDetails } from "@/Operator/Payload/Friend/fetch_Inner_Circle";
+import { fetch_Journal_When_Accepted } from "@/Operator/Payload/Friend/fetch_Journal_When_Accepted.js";
+import { fetchEngagementDetails } from "@/Operator/Payload/Friend/fetch_Inner_Circle.js";
 
-import { toggleInteraction } from "@/Operator/Payload/Friend/toggle_L_R";
-import { commentFeed } from "@/Operator/Payload/Friend/commentFeed";
+import { toggleInteraction } from "@/Operator/Payload/Friend/toggle_L_R.js";
+import { commentFeed } from "@/Operator/Payload/Friend/commentFeed.js";
 
 
 const taskRoute = express.Router();

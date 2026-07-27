@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import LoginError from "@Toolkits/Login/loginError";
+import LoginError from "@Toolkits/Login/loginError.js";
 import passport from "passport";
 
 export const googleCallBack = (req: Request, res: Response, next: NextFunction) => {

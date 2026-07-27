@@ -1,4 +1,4 @@
-import TaskInputError from "@/Toolkit/Input/taskInputError";
+import TaskInputError from "@/Toolkit/Input/taskInputError.js";
 import type { Request, Response, NextFunction } from "express";
 
 export const ensureAuthenticated = (

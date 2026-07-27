@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { Server as SocketServer } from "socket.io";
-import { executeAcceptFollowService } from "@Workshop/Payload/Friend/acceptFollowRequestServices";
+import { executeAcceptFollowService } from "@Workshop/Payload/Friend/acceptFollowRequestServices.js";
 
 interface AcceptFollowRequestParams {}
 

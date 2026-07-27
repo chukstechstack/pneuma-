@@ -1,13 +1,13 @@
-import TaskInputError from "@Toolkits/Input/taskInputError"
+import TaskInputError from "@Toolkits/Input/taskInputError.js"
 import sharp from "sharp";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import s3 from "@Terminal/Aws/AwsS3ClientConfig";
-import redisClient from "@Terminal/Redis/redisCreateClient";
+import s3 from "@Terminal/Aws/AwsS3ClientConfig.js";
+import redisClient from "@Terminal/Redis/redisCreateClient.js";
 import pool from "@Terminal/Supabase/supabaseConfig.js";
 import type { Request, Response, NextFunction } from "express";
 import type { PoolClient } from "pg";
 
-import { insertNewTask, fetchHydratedTaskById } from "@Workshop/Payload/Mutations/createTaskService";
+import { insertNewTask, fetchHydratedTaskById } from "@Workshop/Payload/Mutations/createTaskService.js";
 
 interface CreateTaskParams {
   [key: string]: string;

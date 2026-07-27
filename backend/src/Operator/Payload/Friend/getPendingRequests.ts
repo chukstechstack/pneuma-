@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import { fetchPendingRequestsQuery, PendingRequestRow } from "@Workshop/Payload/Friend/pendingRequestsServices";
-import { getErrorMessage } from "@/Types";
+import { fetchPendingRequestsQuery, PendingRequestRow } from "@Workshop/Payload/Friend/pendingRequestsServices.js";
+import { getErrorMessage } from "@/Toolkit/GetErrorMessage/getErrorMessage.js";
 
 interface AuthenticatedRequest extends Request {
   user?: {

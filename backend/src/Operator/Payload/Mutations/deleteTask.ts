@@ -1,11 +1,11 @@
-import s3 from "@Terminal/Aws/AwsS3ClientConfig";
+import s3 from "@Terminal/Aws/AwsS3ClientConfig.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import redisClient from "@Terminal/Redis/redisCreateClient";
+import redisClient from "@Terminal/Redis/redisCreateClient.js";
 import pool from "@Terminal/Supabase/supabaseConfig.js";
 import type { Request, Response, NextFunction } from "express";
 import type { PoolClient } from "pg";
 
-import { findTaskImageForCleanup, executeTaskDeletion } from "@Workshop/Payload/Mutations/deleteTaskService";
+import { findTaskImageForCleanup, executeTaskDeletion } from "@Workshop/Payload/Mutations/deleteTaskService.js";
 
 interface DeleteTaskParams {
   uuid: string;

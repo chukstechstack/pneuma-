@@ -1,6 +1,6 @@
-import pool from "@/Terminal/Supabase/supabaseConfig";
+import pool from "@/Terminal/Supabase/supabaseConfig.js";
 import type { Request, Response } from "express";
-import type { PoolClient } from "pg";
+
 
 interface FetchEngagementRequestParams {
   targetProfileUuid: string;

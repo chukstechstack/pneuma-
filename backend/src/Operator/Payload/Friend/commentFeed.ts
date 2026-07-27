@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import { executeInsertComment } from "@/Workshop/Payload/Friend/commentServices";
-import { getErrorMessage } from "../../../Types";
+import { executeInsertComment } from "@/Workshop/Payload/Friend/commentServices.js";
+import { getErrorMessage } from "../../../Toolkit/GetErrorMessage/getErrorMessage.js";
 
 interface CustomRequest<P = Record<string, any>, ResBody = any, ReqBody = any, ReqQuery = Record<string, any>> extends Request<P, ResBody, ReqBody, ReqQuery> {
   user?: { id: string | number };

@@ -2,7 +2,7 @@ import type { PassportStatic } from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcryptjs from "bcryptjs";
 import { findUserByEmail } from "../../Workshop/Vip/passportService.js";
-import LoginError from "@Toolkits/Login/loginError";
+import LoginError from "@Toolkits/Login/loginError.js";
 
 export const initLocalStrategy = (passport: PassportStatic) => {
   passport.use(

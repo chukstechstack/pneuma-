@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { fetchSmartProfileFeedData, type SmartProfileFeedResult } from  "@Workshop/Payload/Friend/fetchProfileFeedServices";
+import { fetchSmartProfileFeedData, type SmartProfileFeedResult } from  "@Workshop/Payload/Friend/fetchProfileFeedServices.js";
 
 interface AuthenticatedRequest<P = Record<string, any>> extends Request<P> {
   user?: {

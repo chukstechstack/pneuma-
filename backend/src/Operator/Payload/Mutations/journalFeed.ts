@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
-import redisClient from "@/Terminal/Redis/redisCreateClient";
-import { fetchUserJournalFeed } from "@/Workshop/Payload/Mutations/journalFeed";
+import redisClient from "@/Terminal/Redis/redisCreateClient.js";
+import { fetchUserJournalFeed } from "@/Workshop/Payload/Mutations/journalFeed.js";
 
 interface JournalFeedRequestParams {
   journalUuid: string;

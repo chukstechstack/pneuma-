@@ -2,11 +2,11 @@ import express, { Request, Response, NextFunction } from "express";
 import session, { CookieOptions, SessionOptions } from "express-session";
 import pgSession from "connect-pg-simple";
 import cors from "cors";
-import passport from "@/Terminal/Passport/serialize_deserialize";
-import pool from "@/Terminal/Supabase/supabaseConfig";
-import authRoute from "@/Routes/Vip/authroute";
-import taskRoute from "@/Routes/Payload/taskroute.ts";
-import AppError from "@/Toolkit/AppError/appError";
+import passport from "@/Terminal/Passport/serialize_deserialize.js";
+import pool from "@/Terminal/Supabase/supabaseConfig.js";
+import authRoute from "@/Routes/Vip/authroute.js";
+import taskRoute from "@/Routes/Payload/taskroute.js";
+import AppError from "@/Toolkit/AppError/appError.js";
 
 const app = express();
 const PostgresStore = pgSession(session);
@@ -40,6 +40,7 @@ const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   throw new Error("SESSION_SECRET environment variable is missing!");
 }
+
 
 const sessionOptions: SessionOptions = {
   store: sessionStore,

@@ -3,11 +3,12 @@
     "module": "esnext",
     "target": "esnext",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
+    "noEmit": false,
     "skipLibCheck": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
     "types": [
       "node"
     ],

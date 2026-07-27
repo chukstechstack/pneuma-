@@ -1,5 +1,5 @@
-import redisClient from "@Terminal/Redis/redisCreateClient";
-import { fetchGlobalTasksFeed } from "@Workshop/Payload/Mutations/getTaskService";
+import redisClient from "@Terminal/Redis/redisCreateClient.js";
+import { fetchGlobalTasksFeed } from "@Workshop/Payload/Mutations/getTaskService.js";
 import type { Request, Response, NextFunction } from "express";
 
 interface GetTaskQuery {

@@ -7,7 +7,7 @@ import {
   findGoogleUserByEmail,
   updateGoogleIdByEmail,
   insertGoogleUser,
-} from "@Workshop/Vip/passportService";
+} from "@Workshop/Vip/passportService.js";
 
 dotenv.config();
 

@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import type { Server as SocketServer } from "socket.io";
-import { executeConnectRequestService, type ProfileRow, type FollowRow } from  "@Workshop/Payload/Friend/connectionRequestServices"
+import { executeConnectRequestService, type ProfileRow, type FollowRow } from  "@Workshop/Payload/Friend/connectionRequestServices.js"
 
 interface ConnectRequestParams {
   targetProfileUuid: string;
