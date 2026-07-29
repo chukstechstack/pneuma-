@@ -11,9 +11,9 @@ import Profile from "@/pages/Profile/Profile";
 import Pending_Request from "@/pages/PendingRequest/PendingRequest";
 import JournalPage from "@/pages/JournalFeed/Feed";
 
-import { SocketWatcher } from "@/components/App/SocketWatcher/SocketWatcher";
-import { AuthenticatedGuard } from "@/components/App/AuthenticateGuard/AuthenticatedGuard";
-import { PresenceContainer } from "@components/App/PresenceContainer/PresenceContainer";
+import { SocketWatcher } from "@/components/SocketWatcher/SocketWatcher";
+import { AuthenticatedGuard } from "@/components/AuthenticateGuard/AuthenticatedGuard";
+import { PresenceContainer } from "@/components/PresenceContainer/PresenceContainer";
 
 import "./styles/Profile.css";
 
