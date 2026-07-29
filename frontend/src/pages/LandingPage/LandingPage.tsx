@@ -7,7 +7,7 @@ interface AuthHomeProps {}
 
 type TimerId = number;
 
-const AuthHome: React.FC<AuthHomeProps> = () => {
+const LandingPage: React.FC<AuthHomeProps> = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isTitleAwake, setIsTitleAwake] = useState<boolean>(false);
@@ -181,4 +181,4 @@ const AuthHome: React.FC<AuthHomeProps> = () => {
   );
 };
 
-export default AuthHome;
+export default LandingPage;

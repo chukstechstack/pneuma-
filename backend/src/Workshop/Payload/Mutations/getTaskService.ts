@@ -85,7 +85,7 @@ export const fetchGlobalTasksFeed = async (
   
   queryText += ` ORDER BY c.created_at DESC LIMIT 40`;
 
-  const result = await pool.query<FeedItemRow>(queryText, queryParams);
+  const result = await pool.query<TaskItem>(queryText, queryParams);
   const tasksFeed = result.rows;
 
   let next_post_timestamp: number | null = null;

@@ -2,49 +2,27 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import api from "@/api/axios.js";
-import { loginSchema } from "../schemas/auth_Schema.js";
+import { loginSchema } from "../../schemas/auth_Schema.js";
 import LoginInput from "@/components/Login/LoginInput.js";
 import FullPageLoader from "@components/Loader.jsx";
 import doveLogoUrl from "../assets/pneuma.png";
-import { useAuthStore } from "@store/useAuthStore";
-import socket from "@/api/socketApi.js"
+
+import { LoginFormValues } from "./Login.types.js";
+import { useLoginMutation } from "./useLoginMutation.js";
 
 import "../styles/Loader.css";
 import "../styles/R_&_L_Inputs/R_Layout.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const { mutate: loginUser, isPending } = useMutation({
-    mutationFn: (credentials) => api.post("/auth/login", credentials),
-    onSuccess: async (response) => {
-      console.log("Registration successful! Server response:", response);
-      console.log("User data:", response.data);
-      const { id, uuid } = response.data.user || response.data;
-      useAuthStore.getState().setAuth(id, uuid);
-
-      socket.connect();
-      socket.emit("current_Logged_In_User_Uuid", { userUuid: uuid });
-      console.log(" 💤☢️ socket connected for User:", uuid);
-      await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
-      navigate("/home");
-    },
-    onError: (err: any) => {
-      const message = err?.response?.data?.error || (err instanceof Error ? err.message : String(err));
-      alert(`Login failed: ${message}`);
-      console.error(message);
-    },
-  });
+  const { mutate: loginUser, isPending } = useLoginMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
 

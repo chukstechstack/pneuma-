@@ -1,16 +1,10 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/api/axios.js";
-import TaskInput from "@components/CreateTaskInput.jsx";
-import "@styles/CreateTask.css";
+import { FormDataType } from "./CreateTask.types";
 
-interface FormDataType {
-  content: string;
-  img: File | null;
-}
-
-const CreateTask = () => {
+export const useCreateTask = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -44,11 +38,11 @@ const CreateTask = () => {
       return;
     }
 
-    // HTMLTextAreaElement
     const { name, value } = target as HTMLTextAreaElement;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const submitTask =(e: React.SubmitEvent<HTMLFormElement>)=> {
+
+  const submitTask = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const data = new FormData();
@@ -68,25 +62,11 @@ const CreateTask = () => {
     };
   }, [previewUrl]);
 
-  return (
-    <main className="create-task-layout">
-      <section className="create-task-container">
-        <header className="create-task-header">
-          <Link to="/home">← Back</Link>
-          <h1>Document a Testimony</h1>
-        </header>
-
-        <TaskInput
-          content={formData.content}
-          img={formData.img}
-          handleFormData={handleFormData}
-          submitTask={submitTask}
-          isPending={mutation.isPending}
-          previewUrl={previewUrl}
-        />
-      </section>
-    </main>
-  );
+  return {
+    formData,
+    previewUrl,
+    isPending: mutation.isPending,
+    handleFormData,
+    submitTask,
+  };
 };
-
-export default CreateTask;
