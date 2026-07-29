@@ -5,14 +5,12 @@ import { createServer, Server as HttpServer } from "http";
 import { Server, Socket } from "socket.io";
 import app from "./app.js";
 import { getErrorMessage } from "./Toolkit/GetErrorMessage/getErrorMessage.js";
-
-dotenv.config();
+import { UserUuidPayload } from "@shared/types.js";
+dotenv.config();``
 
 const PORT: string | number = process.env.PORT || 3000;
 
-interface UserUuidPayload {
-  userUuid?: string;
-}
+
 
 const startServer = async (): Promise<void> => {
   try {

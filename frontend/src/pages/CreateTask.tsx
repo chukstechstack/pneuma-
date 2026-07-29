@@ -1,42 +1,54 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/api/axios.js";
 import TaskInput from "@components/CreateTaskInput.jsx";
 import "@styles/CreateTask.css";
 
+interface FormDataType {
+  content: string;
+  img: File | null;
+}
+
 const CreateTask = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     content: "",
     img: null,
   });
 
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
-  const mutation = useMutation({
-    mutationFn: (data) => api.post("/task", data),
+  const mutation = useMutation<any, any, FormData>({
+    mutationFn: (data: FormData) => api.post("/task", data),
     onSuccess: () => {
- 
       queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
     },
   });
 
-  const handleFormData = (e) => {
-    const { name, value, files } = e.target;
+  const handleFormData = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const target = e.target as HTMLInputElement | HTMLTextAreaElement;
 
-    if (name === "img" && files?.length) {
-      const file = files[0];
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(URL.createObjectURL(file));
-      setFormData((prev) => ({ ...prev, img: file }));
-    } else {
+    if (target instanceof HTMLInputElement) {
+      const { name, value, files } = target;
+      if (name === "img" && files?.length) {
+        const file = files[0];
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(URL.createObjectURL(file));
+        setFormData((prev) => ({ ...prev, img: file }));
+        return;
+      }
       setFormData((prev) => ({ ...prev, [name]: value }));
+      return;
     }
+
+    // HTMLTextAreaElement
+    const { name, value } = target as HTMLTextAreaElement;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  const submitTask = (e) => {
+  const submitTask =(e: React.SubmitEvent<HTMLFormElement>)=> {
     e.preventDefault();
 
     const data = new FormData();
@@ -44,11 +56,8 @@ const CreateTask = () => {
       if (value) data.append(key, value);
     });
 
-    mutation.mutate(data, {
-      onSuccess: () => {
-        navigate("/home");
-      },
-    });
+    mutation.mutate(data);
+    navigate("/home");
   };
 
   useEffect(() => {

@@ -1,19 +1,10 @@
 import React from "react";
 import { ImagePlus, CheckSquare } from "lucide-react";
+import { TaskInputProps } from "./TaskInput.types";
+import { ImagePreviewCard } from "./ImagePreviewCard";
 import "@/styles/CreateTask.css";
 
-type Props = {
-  img: File | null;
-  submitTask: React.FormEventHandler<HTMLFormElement>;
-  content: string;
-  handleFormData: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  isPending: boolean;
-  previewUrl?: string | null;
-};
-
-const TaskInput: React.FC<Props> = ({
+const TaskInput: React.FC<TaskInputProps> = ({
   img,
   submitTask,
   content,
@@ -37,23 +28,7 @@ const TaskInput: React.FC<Props> = ({
         />
 
         {/* ==================== IMAGE PREVIEW CARD ==================== */}
-        {img && (
-          <div className="testimony-preview-image-card">
-            <span className="testimony-preview-label-badge">
-              Selected:{" "}
-              {img.name.length > 20
-                ? `${img.name.substring(0, 20)}...`
-                : img.name}
-            </span>
-            <div className="testimony-preview-frame">
-              <img
-                src={previewUrl ?? undefined}
-                alt="preview"
-                className="testimony-preview-actual-img"
-              />
-            </div>
-          </div>
-        )}
+        {img && <ImagePreviewCard img={img} previewUrl={previewUrl} />}
 
         {/* ==================== ACTION CONTROL ROW ==================== */}
         <div className="testimony-form-actions-row">
@@ -70,11 +45,7 @@ const TaskInput: React.FC<Props> = ({
             <span>Image</span>
           </label>
 
-          <button
-            type="submit"
-            className="testimony-submit-action-btn"
-            disabled={isPending}
-          >
+          <button type="submit" className="testimony-submit-action-btn" disabled={isPending}>
             <CheckSquare size={16} strokeWidth={2} />
             <span>{isPending ? "Publishing..." : "Publish"}</span>
           </button>

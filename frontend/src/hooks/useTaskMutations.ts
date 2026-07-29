@@ -1,34 +1,73 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "@/api/axios.js";
 
-export const useDeleteTask = (queryKey) => {
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import api from "@/api/axios";
+
+interface Task {
+    uuid: string;
+    content?: string;
+    [key: string]: any;
+}
+
+interface Page {
+    tasks: Task[];
+    [key: string]: any;
+}
+
+interface QueryData {
+    pages: Page[];
+    [key: string]: any;
+}
+
+interface DeleteContext {
+    previousData: QueryData | undefined;
+}
+
+interface UpdateTaskParams {
+    uuid: string;
+    formData?: any;
+    content?: string;
+}
+
+interface UpdateContext {
+    prevHome: QueryData | undefined;
+    prevJournal: QueryData | undefined;
+}
+
+interface UpdateResponse {
+    data: {
+        updatedTask: Task;
+    };
+}
+
+export const useDeleteTask = (queryKey: string[]) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (uuid) => api.delete(`/task/${uuid}`),
+        mutationFn: (uuid: string) => api.delete(`/task/${uuid}`),
 
-        onMutate: async (uuid) => {
+        onMutate: async (uuid: string) => {
             await queryClient.cancelQueries({ queryKey });
-            const previousData = queryClient.getQueryData(queryKey);
+            const previousData = queryClient.getQueryData<QueryData>(queryKey);
 
-            queryClient.setQueryData(queryKey, (old) => {
+            queryClient.setQueryData(queryKey, (old: QueryData | undefined) => {
                 if (!old) return old;
                 return {
                     ...old,
-                    pages: old.pages.map((page) => ({
+                    pages: old.pages.map((page: Page) => ({
                         ...page,
-                        tasks: page.tasks.filter((task) => task.uuid !== uuid),
+                        tasks: page.tasks.map((task: Task) => task).filter((task: Task) => task.uuid !== uuid),
                     })),
                 };
             });
             return { previousData };
         },
-        onError: (err, uuid, context) => {
-            queryClient.setQueryData(queryKey, context.previousData);
+        onError: (err: any, uuid: string, context: DeleteContext | undefined) => {
+            if (context?.previousData) {
+                queryClient.setQueryData(queryKey, context.previousData);
+            }
         },
-        onSuccess: (response) => {
+        onSuccess: (response: any) => {
             console.log("Delete successful! Server response:", response);
-
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey });
@@ -37,64 +76,68 @@ export const useDeleteTask = (queryKey) => {
 };
 
 
-export const useUpdateTask = (targetUserUuid) => {
+export interface UseUpdateTaskOptions {
+    targetUserUuid: string;
+}
+
+export const useUpdateTask = (targetUserUuid: string) => {
     const queryClient = useQueryClient();
-    const homeKey = ["homeFeed"];
-    const journalKey = ["journal", targetUserUuid];
+    const homeKey: string[] = ["homeFeed"];
+    const journalKey: (string | undefined)[] = ["journal", targetUserUuid];
 
-    return useMutation({
-        mutationFn: ({ uuid, formData }) => api.patch(`/task/${uuid}`, formData),
+    return useMutation<UpdateResponse, any, UpdateTaskParams, UpdateContext>({
+        mutationFn: ({ uuid, formData }: UpdateTaskParams) => api.patch(`/task/${uuid}`, formData),
 
-        onMutate: async ({ uuid, content }) => {
+        onMutate: async ({ uuid, content }: UpdateTaskParams): Promise<UpdateContext> => {
             await queryClient.cancelQueries({ queryKey: homeKey });
             await queryClient.cancelQueries({ queryKey: journalKey });
 
-            const prevHome = queryClient.getQueryData(homeKey);
-            const prevJournal = queryClient.getQueryData(journalKey);
+            const prevHome = queryClient.getQueryData<QueryData>(homeKey);
+            const prevJournal = queryClient.getQueryData<QueryData>(journalKey as unknown as string[]);
 
 
-            const updateTaskInPages = (old) => {
+            const updateTaskInPages = (old: QueryData | undefined): QueryData | undefined => {
                 if (!old) return old;
                 return {
                     ...old,
-                    pages: old.pages.map((page) => ({
+                    pages: old.pages.map((page: Page) => ({
                         ...page,
-                        tasks: page.tasks.map((t) => t.uuid === uuid ? { ...t, content } : t),
+                        tasks: page.tasks.map((t: Task) => t.uuid === uuid ? { ...t, content } : t),
                     })),
                 };
             };
 
-            queryClient.setQueryData(homeKey, updateTaskInPages);
-            queryClient.setQueryData(journalKey, updateTaskInPages);
+            queryClient.setQueryData<QueryData>(homeKey, updateTaskInPages);
+            queryClient.setQueryData<QueryData>(journalKey as unknown as string[], updateTaskInPages);
 
             return { prevHome, prevJournal };
         },
 
-        onSuccess: (response) => {
+        onSuccess: (response: UpdateResponse) => {
             console.log("Update successful! Server response:", response);
             console.log("Updated data:", response.data);
         },
-        onSettled: (data) => {
+        onSettled: (data?: UpdateResponse) => {
             if (data?.data?.updatedTask) {
-                const updatedTask = data.data.updatedTask;
-                const updateWithServerData = (old) => {
+                const updatedTask: Task = data.data.updatedTask;
+                const updateWithServerData = (old: QueryData | undefined): QueryData | undefined => {
                     if (!old) return old;
                     return {
                         ...old,
-                        pages: old.pages.map((page) => ({
+                        pages: old.pages.map((page: Page) => ({
                             ...page,
-                            tasks: page.tasks.map((t) => t.uuid === updatedTask.uuid ? updatedTask : t),
+                            tasks: page.tasks.map((t: Task) => t.uuid === updatedTask.uuid ? updatedTask : t),
                         })),
                     };
                 };
-                queryClient.setQueryData(homeKey, updateWithServerData);
-                queryClient.setQueryData(journalKey, updateWithServerData);
+                queryClient.setQueryData<QueryData>(homeKey, updateWithServerData);
+                queryClient.setQueryData<QueryData>(journalKey as unknown as string[], updateWithServerData);
             }
         },
 
-        onError: (err, variables, context) => {
-            queryClient.setQueryData(homeKey, context.prevHome);
-            queryClient.setQueryData(journalKey, context.prevJournal);
+        onError: (err: any, variables: UpdateTaskParams, context?: UpdateContext) => {
+            queryClient.setQueryData<QueryData>(homeKey, context?.prevHome);
+            queryClient.setQueryData<QueryData>(journalKey as unknown as string[], context?.prevJournal);
             alert("Failed to update task.");
         },
     });

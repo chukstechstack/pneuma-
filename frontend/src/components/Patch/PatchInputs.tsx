@@ -1,9 +1,10 @@
 import React from "react";
-import "@styles/CreateTask.css";
 import { ImagePlus, CheckSquare, Loader2 } from "lucide-react";
+import { PatchInputProps } from "./PatchInputs.types";
+import { TaskImagePreview } from "./TaskImagePreview";
+import "@styles/CreateTask.css";
 
-
-const TaskInput = ({
+const TaskInput: React.FC<PatchInputProps> = ({
   handleChange,
   content,
   img,
@@ -11,9 +12,6 @@ const TaskInput = ({
   previewUrl,
   isPending,
 }) => {
-  const imageName = img instanceof File ? img.name : "Current Image Asset";
-  const displaySrc = previewUrl || img;
-
   return (
     <div className="testimony-form-container">
       <form onSubmit={handleSubmit} className="testimony-form-wrapper">
@@ -23,35 +21,18 @@ const TaskInput = ({
           value={content}
           onChange={handleChange}
           placeholder="Share your journey with Christ, document a win, or map your insights..."
-          rows="6"
+          rows={6}
           className="testimony-textarea-field"
           required
-          disabled={isPending} // Prevent edits while saving
+          disabled={isPending}
         />
 
         {/* ==================== LIGHTWEIGHT LIVE IMAGE PREVIEW CARD ==================== */}
-        {img && (
-          <div className="testimony-preview-image-card">
-            <span className="testimony-preview-label-badge">
-              {imageName.length > 20
-                ? `${imageName.slice(0, 17)}...`
-                : imageName}
-            </span>
-            <div className="testimony-preview-frame">
-              <img
-                src={displaySrc}
-                alt="preview"
-                className="testimony-preview-actual-img"
-              />
-            </div>
-          </div>
-        )}
+        <TaskImagePreview img={img} previewUrl={previewUrl} />
 
         {/* ==================== ACTION HOVER CONTROL ROW ==================== */}
         <div className="testimony-form-actions-row">
-          <label
-            className={`testimony-custom-file-upload-btn ${isPending ? "disabled" : ""}`}
-          >
+          <label className={`testimony-custom-file-upload-btn ${isPending ? "disabled" : ""}`}>
             <input
               type="file"
               name="img"
@@ -64,11 +45,7 @@ const TaskInput = ({
             <span>Image</span>
           </label>
 
-          <button
-            type="submit"
-            className="testimony-submit-action-btn"
-            disabled={isPending}
-          >
+          <button type="submit" className="testimony-submit-action-btn" disabled={isPending}>
             {isPending ? (
               <>
                 <Loader2 size={16} className="animate-spin" />

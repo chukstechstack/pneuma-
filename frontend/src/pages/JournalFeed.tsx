@@ -1,38 +1,71 @@
 import React, { useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useParams, useNavigate, useParams as useParamsType } from "react-router-dom";
+import { useInfiniteQuery, InfiniteData } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import api from "@/api/axios.js";
 import Task from "@components/HomeTaskInput.jsx";
-import NavBar from "@components/NavBar";
+import NavBar from "@/pages/NavBar/NavBar";
 import FullPageLoader from "@components/Loader.jsx";
 import { useAuthStore } from "@store/useAuthStore";
 import { useDeleteTask } from "@hooks/useTaskMutations";
 
-const JournalPage = () => {
-  const { targetUserUuid } = useParams();
-  const { userUuid } = useAuthStore();
+interface JournalTask extends Record<string, any> {
+  uuid: string;
+  author_profile_uuid?: string | null;
+}
+
+interface JournalFeedPage {
+  tasks: JournalTask[];
+  next_post_timestamp?: string;
+}
+
+interface JournalPageParams extends Record<string, string | undefined> {
+  targetUserUuid?: string;
+}
+
+interface AuthStore {
+  userUuid: string | null | undefined;
+}
+
+interface TaskProps {
+  key: string;
+  task: JournalTask;
+  isOwner: boolean;
+  deleteTask: () => void;
+  onEdit: (uuid: string) => void;
+  handle_Like_Reply_Share_Interaction: () => void;
+  currentUserUuid: string | null | undefined;
+}
+
+interface UseInfiniteQueryParams {
+  pageParam?: unknown;
+}
+
+const JournalPage = (): React.ReactElement => {
+  const { targetUserUuid } = useParams<JournalPageParams>();
+  const { userUuid }: AuthStore = useAuthStore();
   const navigate = useNavigate();
-  const isOwner = userUuid === targetUserUuid;
+  const isOwner: boolean = userUuid === targetUserUuid;
 
   const { mutate: deleteSelectedTask } = useDeleteTask([
     "journal",
-    targetUserUuid,
+    targetUserUuid as string,
   ]);
 
   const { ref, inView } = useInView();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useInfiniteQuery({
+    useInfiniteQuery<JournalFeedPage, Error, InfiniteData<JournalFeedPage>, [string, string | undefined]>({
       queryKey: ["journal", targetUserUuid],
-      queryFn: async ({ pageParam = "Yes_Is_FreshLoad" }) => {
+      queryFn: async ({ pageParam = "Yes_Is_FreshLoad" }: UseInfiniteQueryParams) => {
         console.log(" 🔍 Attempting to Fetching Journal Feed");
-        const res = await api.get(
+        const res = await api.get<JournalFeedPage>(
           `/task/journalfeed/${targetUserUuid}?fresh_load=${pageParam}`,
         );
         console.log(" ✔️💥 Fecthed Journal data:", res);
         return res.data;
       },
+      initialPageParam: "Yes_Is_FreshLoad",
       getNextPageParam: (lastPage) => lastPage.next_post_timestamp || undefined,
       staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
@@ -43,8 +76,8 @@ const JournalPage = () => {
       fetchNextPage();
     }
   }, [inView, fetchNextPage, hasNextPage]);
-
-  const journalTasks = data?.pages.flatMap((page) => page.tasks) || [];
+  const TaskTyped = Task as React.ComponentType<TaskProps>;
+  const journalTasks: JournalTask[] = data?.pages.flatMap((page) => page.tasks) || [];
 
   if (isLoading) return <FullPageLoader />;
 
@@ -67,12 +100,14 @@ const JournalPage = () => {
               </div>
             ) : (
               journalTasks.map((task) => (
-                <Task
+                <TaskTyped
                   key={task.uuid}
-                  task={task}
+                  task={{ ...task, author_profile_uuid: task.author_profile_uuid ?? "" }}
                   isOwner={isOwner}
                   deleteTask={() => deleteSelectedTask(task.uuid)}
-                  onEdit={(uuid) => navigate(`/patchfeed/${uuid}`)}
+                  onEdit={(uuid: string) => navigate(`/patchfeed/${uuid}`)}
+                  handle_Like_Reply_Share_Interaction={() => {}}
+                  currentUserUuid={userUuid ?? ""}
                 />
               ))
             )}

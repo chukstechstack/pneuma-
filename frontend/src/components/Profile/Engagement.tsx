@@ -1,12 +1,16 @@
-import { Link } from "react-router-dom";
-
+type ProfileEngagementProps = {
+  isOwner: boolean;
+  active_Relationtionship_Request_Status: "active" | "pending" | string;
+  connect_Request_Handler: () => void;
+  onMessageClick: () => void;
+};
 
 const ProfileEngagement = ({
   isOwner,
   active_Relationtionship_Request_Status,
   connect_Request_Handler,
   onMessageClick,
-}) => {
+}: ProfileEngagementProps) => {
   return (
     <div className="profile-interaction-dock">
       {isOwner ? (

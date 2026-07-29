@@ -1,53 +1,33 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query"; 
 
-import api from "@/api/axios.js";
 import { registerSchema } from "@schemas/auth_Schema.js";
-import RegisterInput from "@components/RegisterInput.jsx";
+import RegisterInput from "@/components/Register/RegisterInput.js";
 import FullPageLoader from "@components/Loader.jsx";
 import doveLogoUrl from "@assets/pneuma.png";
-import { useAuthStore } from "@store/useAuthStore";
-import socket from "@/api/socketApi.js"
+
+import { RegisterFormValues } from "@pages/Register/Register.types";
+import { useRegisterMutation } from "@pages/Register/useRegisterMutation";
 
 import "../styles/Loader.css";
 import "../styles/R_&_L_Inputs/R_Layout.css";
 
 const Register = () => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const { mutate: registerUser, isPending } = useMutation({
-    mutationFn: (apiPayload) => api.post("/auth/register", apiPayload),
-    onSuccess: async (response) => {
-      console.log("Registration successful! Server response:", response);
-      const { id, uuid } = response.data.user;
-      useAuthStore.getState().setAuth(id, uuid);
-      socket.connect();
-      socket.emit("📤 Emitting_Registered_User_Uuid", { userUuid: uuid });
-      console.log(" 💤☢️ socket connected for User:", uuid);
-      await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
-      navigate("/home");
-    },
-    onError: (err) => {
-      const message = err?.response?.data?.error || err.message;
-      alert(`Registration failed: ${message}`);
-      console.error(message);
-    },
-  });
+  const { mutate: registerUser, isPending } = useRegisterMutation();
 
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({
+  } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: RegisterFormValues): void => {
     const { confirmPassword: _confirmPassword, ...apiPayload } = data;
     registerUser(apiPayload);
   };
@@ -60,11 +40,7 @@ const Register = () => {
         <header className="register-header">
           <Link to="/" className="register-brand-link">
             <span className="register-logo-wrapper">
-              <img
-                src={doveLogoUrl}
-                className="nav-logo-img-register"
-                alt="Pneuma Logo"
-              />
+              <img src={doveLogoUrl} className="nav-logo-img-register" alt="Pneuma Logo" />
             </span>
             Pneuma
           </Link>
@@ -75,7 +51,7 @@ const Register = () => {
         <RegisterInput
           register={register}
           errors={errors}
-          control={control}
+          control={control as any}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
         />

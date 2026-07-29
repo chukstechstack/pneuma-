@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "@styles/Landing.css";
-import doveLogoUrl from "@assets/pneuma.png";
+import doveLogoUrl from "../assets/pneuma.png";
 
-const AuthHome = () => {
+interface AuthHomeProps {}
+
+type TimerId = number;
+
+const AuthHome: React.FC<AuthHomeProps> = () => {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isTitleAwake, setIsTitleAwake] = useState(false);
-  const [isLitOnFire, setIsLitOnFire] = useState(false);
-  const [isNavAwake, setIsNavAwake] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isTitleAwake, setIsTitleAwake] = useState<boolean>(false);
+  const [isLitOnFire, setIsLitOnFire] = useState<boolean>(false);
+  const [isNavAwake, setIsNavAwake] = useState<boolean>(false);
 
   useEffect(() => {
-    const titleTimer = setTimeout(() => {
+    const titleTimer: TimerId = window.setTimeout(() => {
       setIsTitleAwake(true);
     }, 200);
-    const fireTimer = setTimeout(() => {
+    const fireTimer: TimerId = window.setTimeout(() => {
       setIsLitOnFire(true);
     }, 1100);
-    const navTimer = setTimeout(() => {
+    const navTimer: TimerId = window.setTimeout(() => {
       setIsNavAwake(true);
     }, 3100);
-    const coolTimer = setTimeout(() => {
+    const coolTimer: TimerId = window.setTimeout(() => {
       setIsLitOnFire(false);
     }, 4800);
 
@@ -32,9 +36,13 @@ const AuthHome = () => {
     };
   }, []);
 
-  const handleScroll = (id) => {
+  interface ScrollHandler {
+    (id: string): void;
+  }
+
+  const handleScroll: ScrollHandler = (id: string) => {
     setIsOpen(false);
-    const element = document.getElementById(id);
+    const element: HTMLElement | null = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
     }

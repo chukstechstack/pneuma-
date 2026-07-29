@@ -1,27 +1,8 @@
 import pool from "@/Terminal/Supabase/supabaseConfig.js";
+import { TaskItem } from "@shared/types";
 
-interface FeedItemRow {
-  id: number | string;
-  uuid: string;
-  title: string | null;
-  content: string | null;
-  img: string | null;
-  created_at: string | Date;
-  likes_count: number;
-  reposts_count: number;
-  shares_count: number;
-  author_name: string | null;
-  avatar_url: string | null;
-  author_profile_uuid: string;
-  user_id: number | string;
-  is_liked: boolean;
-  is_reposted: boolean;
-  relation_status: string | null;
-  comments_count: number;
-}
-
-interface FetchGlobalTasksFeedResult {
-  tasksFeed: FeedItemRow[];
+export interface FetchGlobalTasksFeedResult {
+  tasksFeed: TaskItem[];
   next_post_timestamp: number | null;
 }
 

@@ -12,7 +12,7 @@ import {
   Routes,
 } from "react-router-dom";
 
-import "@styles/Profile.css";
+
 import FullPageLoader from "@components/Loader";
 import Pending_Request from "@components/Pending-Requests";
 import CreateTask from "@pages/CreateTask";
@@ -20,39 +20,43 @@ import HomePage from "@pages/Home";
 import JournalPage from "@pages/JournalFeed";
 import AuthHome from "@pages/LandingPage";
 import Login from "@pages/Login";
-import PatchFeed from "@pages/PatchFeed";
-import Profile from "@/pages/Profile";
-import Register from "@pages/Register";
+import PatchFeed from "@/pages/PatchFeed/PatchFeed";
+import Profile from "@/pages/Profile/Profile";
+import Register from "@/pages/Register/Register";
+import {UserUuidPayload } from "@shared/types";
 
-
-
-
+import "./styles/Profile.css";
 const SocketWatcher = () => {
-  const { userUuid } = useAuthStore();
+  const { userUuid } = useAuthStore() as { userUuid: string | null };
 
   useEffect(() => {
     if (!userUuid) return;
-
 
     setupSocketListeners(queryClient);
 
     const onConnect = () => {
       console.log("✅ Socket Connected! ID:", socket.id);
-      socket.emit("current_Logged_In_User_Uuid", { userUuid });
+      
+      // Use your shared type right here!
+      const payload: UserUuidPayload = { userUuid };
+      socket.emit("current_Logged_In_User_Uuid", payload);
+      
       console.log("📤 Emitting UUID:", userUuid);
     };
-
 
     socket.on("connect", onConnect);
 
     if (socket.connected) {
       console.log("⚡ Already connected, emitting UUID directly");
-      socket.emit("current_Logged_In_User_Uuid", { userUuid });
-            console.log(" User Emmited", {userUuid});
+      
+
+      const payload: UserUuidPayload = { userUuid };
+      socket.emit("current_Logged_In_User_Uuid", payload);
+      
+      console.log(" User Emmited", { userUuid });
     } else {
       socket.connect();
     }
-
 
     return () => {
       socket.off("connect", onConnect);
@@ -61,8 +65,8 @@ const SocketWatcher = () => {
 
   return null;
 };
-const AuthenticatedGuard = ({ children }) => {
-  const { userUuid } = useAuthStore();
+const AuthenticatedGuard = ({ children }: { children: import("react").ReactNode }) => {
+  const { userUuid } = useAuthStore() as { userUuid: string | null };
   console.log("AuthGuard:", userUuid);
   useInitializeUser();
   if (userUuid === null) return <FullPageLoader />;

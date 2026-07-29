@@ -6,9 +6,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import api from "@/api/axios.js";
 import { loginSchema } from "../schemas/auth_Schema.js";
-import LoginInput from "@components/LoginInput.jsx";
+import LoginInput from "@/components/Login/LoginInput.js";
 import FullPageLoader from "@components/Loader.jsx";
-import doveLogoUrl from "@assets/pneuma.png";
+import doveLogoUrl from "../assets/pneuma.png";
 import { useAuthStore } from "@store/useAuthStore";
 import socket from "@/api/socketApi.js"
 
@@ -33,8 +33,8 @@ const Login = () => {
       await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
       navigate("/home");
     },
-    onError: (err) => {
-      const message = err?.response?.data?.error || err.message;
+    onError: (err: any) => {
+      const message = err?.response?.data?.error || (err instanceof Error ? err.message : String(err));
       alert(`Login failed: ${message}`);
       console.error(message);
     },

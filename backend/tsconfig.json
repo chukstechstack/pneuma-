@@ -7,12 +7,15 @@
     "isolatedModules": true,
     "noEmit": false,
     "skipLibCheck": true,
-    "rootDir": "./src",
-    "outDir": "./dist",
+    // "rootDir": "./",
+    // "outDir": "../dist",
     "types": [
       "node"
     ],
     "paths": {
+      "@shared/*": [
+        "../shared/*"
+      ],
       "@/*": [
         "./src/*"
       ],
@@ -42,13 +45,14 @@
       ],
       "@Operator/*": [
         "./src/Operator/*"
-      ]
+      ],
     },
     "sourceMap": true,
     "strict": true,
     "moduleDetection": "force"
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "../shared/**/*"
   ]
 }
