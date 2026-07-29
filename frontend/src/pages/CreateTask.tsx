@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "@api/axios.js";
+import api from "@/api/axios.js";
 import TaskInput from "@components/CreateTaskInput.jsx";
 import "@styles/CreateTask.css";
 

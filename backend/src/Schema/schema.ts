@@ -151,3 +151,4 @@ export const messages = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   }
 );
+

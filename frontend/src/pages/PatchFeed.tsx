@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
-import TaskInput from "@components/PatchInput.jsx";
+import TaskInput from "@/components/PatchInput.js";
 import { useUpdateTask } from "@hooks/useTaskMutations";
 import { useAuthStore } from "@store/useAuthStore.js";
 import "@styles/CreateTask.css";

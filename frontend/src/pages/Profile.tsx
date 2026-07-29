@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios.js";
 import "../styles/Profile.css";
 import { useConnectionMutation } from "@hooks/useConnections.js";
-import ProfileEngagement from "@components/Profile/Engagement.jsx";
+import ProfileEngagement from "@/components/Profile/Engagement.js";
 import ProfileJournal from "@components/Profile/Journal.jsx";
 import { useAuthStore } from "@store/useAuthStore.js";
 

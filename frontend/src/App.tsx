@@ -1,7 +1,7 @@
-import { queryClient } from "@api/queryClient";
-import { useInitializeUser } from "@hooks/useInitializeUser";
-import  { setupSocketListeners } from "@services/socketService.js";
-import socket from "@api/socketApi.js"
+import { queryClient } from "@/api/queryClient";
+import  useInitializeUser from "@/hooks/useInitializeUser";
+import  { setupSocketListeners } from "@services/socketService";
+import socket from "@/api/socketApi"
 import { useAuthStore } from "@store/useAuthStore";
 import  { useEffect } from "react";
 import {
@@ -12,19 +12,20 @@ import {
   Routes,
 } from "react-router-dom";
 
-import FullPageLoader from "@components/Loader.jsx";
-import Pending_Request from "@components/Pending-Requests.jsx";
-import CreateTask from "@pages/CreateTask.jsx";
-import HomePage from "@pages/Home.jsx";
-import JournalPage from "@pages/JournalFeed.jsx";
-import AuthHome from "@pages/LandingPage.jsx";
-import Login from "@pages/Login.jsx";
-import PatchFeed from "@pages/PatchFeed.jsx";
-import Profile from "@pages/Profile.jsx";
-import Register from "@pages/Register.jsx";
-
-
 import "@styles/Profile.css";
+import FullPageLoader from "@components/Loader";
+import Pending_Request from "@components/Pending-Requests";
+import CreateTask from "@pages/CreateTask";
+import HomePage from "@pages/Home";
+import JournalPage from "@pages/JournalFeed";
+import AuthHome from "@pages/LandingPage";
+import Login from "@pages/Login";
+import PatchFeed from "@pages/PatchFeed";
+import Profile from "@/pages/Profile";
+import Register from "@pages/Register";
+
+
+
 
 const SocketWatcher = () => {
   const { userUuid } = useAuthStore();

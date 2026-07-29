@@ -1,5 +1,5 @@
 
-import socket from "@api/socketApi.js"
+import socket from "@/api/socketApi.js"
 export const setupSocketListeners = (queryClient) => {
   socket.onAny((eventName, ...args) => {
     console.log(`📡 DEBUG: Received event: ${eventName}`, args);

@@ -2,38 +2,40 @@ import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query"; 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import api from "@api/axios.js";
-import { registerSchema } from "@schemas/auth_Schema.js";
-import RegisterInput from "@components/RegisterInput.jsx";
+import api from "@/api/axios.js";
+import { loginSchema } from "../schemas/auth_Schema.js";
+import LoginInput from "@components/LoginInput.jsx";
 import FullPageLoader from "@components/Loader.jsx";
 import doveLogoUrl from "@assets/pneuma.png";
 import { useAuthStore } from "@store/useAuthStore";
-import socket from "@api/socketApi.js"
+import socket from "@/api/socketApi.js"
 
 import "../styles/Loader.css";
 import "../styles/R_&_L_Inputs/R_Layout.css";
 
-const Register = () => {
+const Login = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { mutate: registerUser, isPending } = useMutation({
-    mutationFn: (apiPayload) => api.post("/auth/register", apiPayload),
+  const { mutate: loginUser, isPending } = useMutation({
+    mutationFn: (credentials) => api.post("/auth/login", credentials),
     onSuccess: async (response) => {
       console.log("Registration successful! Server response:", response);
-      const { id, uuid } = response.data.user;
+      console.log("User data:", response.data);
+      const { id, uuid } = response.data.user || response.data;
       useAuthStore.getState().setAuth(id, uuid);
+
       socket.connect();
-      socket.emit("📤 Emitting_Registered_User_Uuid", { userUuid: uuid });
+      socket.emit("current_Logged_In_User_Uuid", { userUuid: uuid });
       console.log(" 💤☢️ socket connected for User:", uuid);
       await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
       navigate("/home");
     },
     onError: (err) => {
       const message = err?.response?.data?.error || err.message;
-      alert(`Registration failed: ${message}`);
+      alert(`Login failed: ${message}`);
       console.error(message);
     },
   });
@@ -41,25 +43,20 @@ const Register = () => {
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(loginSchema),
   });
-
-  const onSubmit = (data) => {
-    const { confirmPassword: _confirmPassword, ...apiPayload } = data;
-    registerUser(apiPayload);
-  };
 
   return (
     <main className="register-layout">
       {isPending && <FullPageLoader />}
       <div className="register-ambient-glow"></div>
+
       <section className="register-container">
         <header className="register-header">
           <Link to="/" className="register-brand-link">
-            <span className="register-logo-wrapper">
+            <span className="register-logo-wrapper"> 
               <img
                 src={doveLogoUrl}
                 className="nav-logo-img-register"
@@ -68,26 +65,28 @@ const Register = () => {
             </span>
             Pneuma
           </Link>
-          <h1 className="register-title">Begin Your Journey</h1>
+          <h1 className="register-title">Welcome Back</h1>
           <div className="register-divider"></div>
+          <p className="register-subtitle">
+            Enter your sanctuary to document your journey.
+          </p>
         </header>
 
-        <RegisterInput
+        <LoginInput
           register={register}
           errors={errors}
-          control={control}
           handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
+          onSubmit={loginUser}
         />
 
         <footer className="register-footer">
-          <span>Already mapping your legacy?</span>
+          <span>New to the archive?</span>
           <span
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/register")}
             className="register-login-link"
             style={{ cursor: "pointer" }}
           >
-            Come On In
+            Join Us
           </span>
         </footer>
       </section>
@@ -95,4 +94,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

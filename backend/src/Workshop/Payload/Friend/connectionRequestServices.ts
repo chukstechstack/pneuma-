@@ -38,7 +38,7 @@ export const executeConnectRequestService = async (
 
     const followingNumericId = profileRes.rows[0].id;
 
-    // 2. Check existing follow status
+
     const checkRes = await dbClient.query<FollowRow>(
       "SELECT id FROM follows WHERE follower_id = $1 AND following_id = $2",
       [followerNumericId, followingNumericId]
@@ -46,14 +46,14 @@ export const executeConnectRequestService = async (
 
     let didFollow: boolean;
     if (checkRes.rows.length > 0) {
-      // Unfollow / Remove connection
+
       await dbClient.query(
         "DELETE FROM follows WHERE follower_id = $1 AND following_id = $2",
         [followerNumericId, followingNumericId]
       );
       didFollow = false;
     } else {
-      // Send connect request
+
       await dbClient.query(
         "INSERT INTO follows (follower_id, following_id, status) VALUES ($1, $2, 'pending')",
         [followerNumericId, followingNumericId]
