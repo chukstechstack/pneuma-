@@ -11,8 +11,8 @@ import doveLogoUrl from "@assets/pneuma.png";
 import { RegisterFormValues } from "@pages/Register/Register.types";
 import { useRegisterMutation } from "@pages/Register/useRegisterMutation";
 
-import "../styles/Loader.css";
-import "../styles/R_&_L_Inputs/R_Layout.css";
+import "@styles/Loader.css";
+import "@styles/R_&_L_Inputs/R_Layout.css";
 
 const Register = () => {
   const navigate = useNavigate();

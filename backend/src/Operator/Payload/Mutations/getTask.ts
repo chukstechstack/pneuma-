@@ -38,6 +38,9 @@ export const getTask = async (
     const redisFreshLoadData = await redisClient.get(redisFreshLoad);
     if (redisFreshLoadData) {
       console.log(`⚡ Redis Hit: [Time Snapshot: ${freeze_time}] [Pointer: ${fresh_load_pointer}]`);
+      // Uncomment the line below temporarily if you want to force bypass Redis during debugging:
+      // console.log("⚠️ Bypassing Redis cache for debugging...");
+      // instead of returning, let it fall through to Postgres
       return res.json(JSON.parse(redisFreshLoadData) as TaskResponseData);
     }
 

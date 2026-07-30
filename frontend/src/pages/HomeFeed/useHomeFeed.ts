@@ -21,14 +21,14 @@ export const useHomeFeed = () => {
     useInfiniteQuery<HomeFeedResponse>({
       queryKey: ["homeFeed"],
       queryFn: async ({ pageParam = "Yes_Is_FreshLoad" }) => {
-        console.log(" 🔍 Attempting to Fetching HomeFeed");
-        const res = await api.get(`/task?fresh_load=${pageParam}`);
+        const currentFreezeTime = Date.now();
+    console.log(" 🔍 Attempting to Fetching HomeFeed with freeze_time:", currentFreezeTime);
+     const res = await api.get(`/task?freeze_time=${currentFreezeTime}&fresh_load=${pageParam}`);
         console.log("🔄 HomeFeed Fetched", res);
         return res.data;
       },
       getNextPageParam: (lastPage: any) => lastPage.next_post_timestamp || undefined,
       initialPageParam: "Yes_Is_FreshLoad",
-      staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
     });
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "@styles/Landing.css";
-import doveLogoUrl from "../assets/pneuma.png";
+import doveLogoUrl from "@assets/pneuma.png";
 
 interface AuthHomeProps {}
 

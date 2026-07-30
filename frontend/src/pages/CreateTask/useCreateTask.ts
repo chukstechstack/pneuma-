@@ -19,7 +19,9 @@ export const useCreateTask = () => {
     mutationFn: (data: FormData) => api.post("/task", data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
+          navigate("/homefeed");
     },
+    
   });
 
   const handleFormData = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -51,7 +53,7 @@ export const useCreateTask = () => {
     });
 
     mutation.mutate(data);
-    navigate("/home");
+
   };
 
   useEffect(() => {

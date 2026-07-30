@@ -8,7 +8,7 @@ import { getErrorMessage } from "./Toolkit/GetErrorMessage/getErrorMessage.js";
 import { UserUuidPayload } from "@shared/types.js";
 dotenv.config();``
 
-const PORT: string | number = process.env.PORT || 3000;
+const PORT: string | number = process.env.PORT || 4000;
 
 
 
@@ -24,7 +24,7 @@ const startServer = async (): Promise<void> => {
 
     const io: Server = new Server(httpServer, {
       cors: {
-        origin: ['https://pneuma-frontend-oijl.onrender.com', 'http://localhost:5173', 'http://localhost:5174'],
+        origin: ['https://pneuma-frontend-oijl.onrender.com', 'http://localhost:5173', 'http://localhost:3000'],
         credentials: true
       }
     });

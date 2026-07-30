@@ -33,13 +33,13 @@ const App = () => {
               </AuthenticatedGuard>
             }
           >
-            <Route path="/home" element={<HomeFeed />} />
+            <Route path="/homefeed" element={<HomeFeed />} />
             <Route path="/createtask" element={<CreateTask />} />
             <Route path="/patchfeed/:uuid" element={<PatchFeed />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:targetProfileUuid" element={<Profile />} />
             <Route path="/pending-requests" element={<Pending_Request />} />
-            <Route path="/journalfeed/:targetUserUuid" element={<JournalPage />} />
+            <Route path="/feed/:targetUserUuid" element={<JournalPage />} />
           </Route>
         </Routes>
       </Router>

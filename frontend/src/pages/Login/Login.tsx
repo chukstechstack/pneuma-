@@ -6,13 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../../schemas/auth_Schema.js";
 import LoginInput from "@/components/Login/LoginInput.js";
 import FullPageLoader from "@components/Loader.jsx";
-import doveLogoUrl from "../assets/pneuma.png";
+import doveLogoUrl from "@assets/pneuma.png";
 
 import { LoginFormValues } from "./Login.types.js";
 import { useLoginMutation } from "./useLoginMutation.js";
 
-import "../styles/Loader.css";
-import "../styles/R_&_L_Inputs/R_Layout.css";
+import "@styles/Loader.css";
+import "@styles/R_&_L_Inputs/R_Layout.css";
 
 const Login = () => {
   const navigate = useNavigate();

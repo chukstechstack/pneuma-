@@ -17,7 +17,6 @@ export const fetchGlobalTasksFeed = async (
 ): Promise<FetchGlobalTasksFeedResult> => {
   let userId: number | string | null = null;
 
-
   if (user_uuid) {
     const user_Id_Res = await pool.query<UserProfileIdRow>("SELECT id FROM profiles WHERE uuid = $1", [user_uuid]);
     if (user_Id_Res.rows.length > 0) {
@@ -25,14 +24,12 @@ export const fetchGlobalTasksFeed = async (
     }
   }
 
-
   const freezeTimeValue = (freeze_time && !isNaN(Number(freeze_time))) 
     ? Number(freeze_time) 
     : Date.now();
     
   const Freeze_Time_Date = new Date(freezeTimeValue);
   const queryParams: (string | number | Date | null)[] = [userId, Freeze_Time_Date];
-
 
   let queryText = `
     SELECT 
@@ -75,17 +72,24 @@ export const fetchGlobalTasksFeed = async (
      LEFT JOIN profiles p ON c.user_id = p.id 
      WHERE c.created_at <= $2 `;
 
-
   if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad' && !isNaN(Number(fresh_load_pointer))) {
     const last_post_creation_date = new Date(Number(fresh_load_pointer));
     queryText += ` AND c.created_at < $3 `;
     queryParams.push(last_post_creation_date);
   }
 
-  
   queryText += ` ORDER BY c.created_at DESC LIMIT 40`;
 
+  // 🔍 DEBUG LOGS
+  console.log("🛠️ --- EXECUTING FEED QUERY ---");
+  console.log("Parameters [userId, Freeze_Time_Date, pagination]:", queryParams);
+  console.log("Freeze Time Date Object:", Freeze_Time_Date);
+
   const result = await pool.query<TaskItem>(queryText, queryParams);
+  
+  console.log(`📦 Rows returned from PostgreSQL: ${result.rows.length}`);
+  console.log("Tasks content preview:", result.rows.map(r => ({ id: r.id, title: r.title, created_at: r.created_at })));
+
   const tasksFeed = result.rows;
 
   let next_post_timestamp: number | null = null;

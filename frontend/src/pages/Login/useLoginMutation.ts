@@ -25,7 +25,7 @@ export const useLoginMutation = () => {
       console.log(" 💤☢️ socket connected for User:", uuid);
       
       await queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
-      navigate("/home");
+      navigate("/homefeed");
     },
     onError: (err: any) => {
       const message = err?.response?.data?.error || (err instanceof Error ? err.message : String(err));
