@@ -19,7 +19,7 @@ export const useProfileData = () => {
   const [isDockOpen, setIsDockOpen] = useState(false);
 
   const { data, isLoading, isError } = useQuery<ProfileQueryData>({
-    queryKey: ["profile", uuid],
+    queryKey: ["profileFeed", uuid],
     queryFn: async () => {
       const endpoint = targetProfileUuid ? `/task/profile/${targetProfileUuid}` : `/task/profile/me`;
       const res = await api.get(endpoint);
@@ -37,7 +37,6 @@ export const useProfileData = () => {
     },
     enabled: isDockOpen,
     initialData: () => queryClient.getQueryData(["innerCircle", uuid]),
-    staleTime: 5 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 

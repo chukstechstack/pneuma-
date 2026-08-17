@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import LandingPage from "@/pages/LandingPage/LandingPage"
+import {LandingPage}  from "@/pages/LandingPage/LandingPage"
 import Login from "@/pages/Login/Login";
 import Register from "@/pages/Register/Register";
 import HomeFeed from "@pages/HomeFeed/HomeFeed";
@@ -15,7 +15,7 @@ import { SocketWatcher } from "@/components/SocketWatcher/SocketWatcher";
 import { AuthenticatedGuard } from "@/components/AuthenticateGuard/AuthenticatedGuard";
 import { PresenceContainer } from "@/components/PresenceContainer/PresenceContainer";
 
-import "./styles/Profile.css";
+
 
 const App = () => {
   return (

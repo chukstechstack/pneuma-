@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import TaskInput from "@components/CreateTask/CreateTask";
 import { useCreateTask } from "@pages/CreateTask/useCreateTask";
-import "@styles/CreateTask.css";
+
 
 const CreateTask = () => {
   const { formData, previewUrl, isPending, handleFormData, submitTask } = useCreateTask();

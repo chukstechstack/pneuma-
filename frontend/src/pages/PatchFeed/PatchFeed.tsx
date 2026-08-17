@@ -1,7 +1,7 @@
 import React from "react";
 import TaskInput from "@/components/Patch/PatchInputs";
 import { usePatchFeed } from "@pages/PatchFeed/usePatchFeed"
-import "@styles/CreateTask.css";
+
 
 const PatchFeed: React.FC = () => {
   const {
@@ -18,7 +18,7 @@ const PatchFeed: React.FC = () => {
     return (
       <div className="error-container">
         <p>Task not found. Redirecting...</p>
-        <button onClick={() => navigate("/home")}>Back to Feed</button>
+        <button onClick={() => navigate("/homefeed")}>Back to Feed</button>
       </div>
     );
   }

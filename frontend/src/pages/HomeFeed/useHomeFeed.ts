@@ -14,21 +14,21 @@ export const useHomeFeed = () => {
   const { ref, inView } = useInView();
   const { userUuid } = useAuthStore() as { userUuid: string | null };
 
-  const { mutate: deleteSelectedTask } = useDeleteTask(["homeFeed"]);
+  const { mutate: deleteSelectedTask } = useDeleteTask(userUuid ?? '');
   const { mutate: interact } = useInteraction([["homeFeed"]]);
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery<HomeFeedResponse>({
       queryKey: ["homeFeed"],
       queryFn: async ({ pageParam = "Yes_Is_FreshLoad" }) => {
-        const currentFreezeTime = Date.now();
-    console.log(" 🔍 Attempting to Fetching HomeFeed with freeze_time:", currentFreezeTime);
-     const res = await api.get(`/task?freeze_time=${currentFreezeTime}&fresh_load=${pageParam}`);
+        console.log("🔍 Attempting to Fetching HomeFeed with pointer:", pageParam);
+        const res = await api.get(`/task?fresh_load=${pageParam}`);
         console.log("🔄 HomeFeed Fetched", res);
         return res.data;
       },
       getNextPageParam: (lastPage: any) => lastPage.next_post_timestamp || undefined,
       initialPageParam: "Yes_Is_FreshLoad",
+      staleTime: 1000 * 60 * 2,
       refetchOnWindowFocus: false,
     });
 

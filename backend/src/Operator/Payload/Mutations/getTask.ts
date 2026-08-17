@@ -3,7 +3,6 @@ import { fetchGlobalTasksFeed } from "@Workshop/Payload/Mutations/getTaskService
 import type { Request, Response, NextFunction } from "express";
 
 interface GetTaskQuery {
-  freeze_time?: string;
   fresh_load?: string;
 }
 
@@ -29,26 +28,21 @@ export const getTask = async (
   const user_uuid = req.user?.uuid;
   const user_Id = req.user?.id;
 
-  const freeze_time = req.query.freeze_time || String(Date.now());
   const fresh_load_pointer = req.query.fresh_load || 'Yes_Is_FreshLoad';
 
-  const redisFreshLoad = `tasks_feed:${user_uuid || 'guest'}:${freeze_time}:${fresh_load_pointer}`;
+  const redisFreshLoad = `tasks_feed:${user_uuid || 'guest'}:${fresh_load_pointer}`;
 
   try {
     const redisFreshLoadData = await redisClient.get(redisFreshLoad);
     if (redisFreshLoadData) {
-      console.log(`⚡ Redis Hit: [Time Snapshot: ${freeze_time}] [Pointer: ${fresh_load_pointer}]`);
-      // Uncomment the line below temporarily if you want to force bypass Redis during debugging:
-      // console.log("⚠️ Bypassing Redis cache for debugging...");
-      // instead of returning, let it fall through to Postgres
+      console.log(`⚡ Redis Hit: [Pointer: ${fresh_load_pointer}]`);
       return res.json(JSON.parse(redisFreshLoadData) as TaskResponseData);
     }
 
-    console.log(`🐢 Redis Miss: Querying Postgres [Time Snapshot: ${freeze_time}] [Pointer: ${fresh_load_pointer}]`);
+    console.log(`🐢 Redis Miss: Querying Postgres [Pointer: ${fresh_load_pointer}]`);
 
     const { tasksFeed, next_post_timestamp } = await fetchGlobalTasksFeed(
       user_uuid, 
-      freeze_time, 
       fresh_load_pointer
     );
 
@@ -66,3 +60,5 @@ export const getTask = async (
     next(err);
   }
 };
+
+

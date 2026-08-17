@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Sparkles, ShieldCheck, Feather, ArrowLeft } from "lucide-react";
 
 import { registerSchema } from "@schemas/auth_Schema.js";
 import RegisterInput from "@/components/Register/RegisterInput.js";
@@ -10,9 +11,6 @@ import doveLogoUrl from "@assets/pneuma.png";
 
 import { RegisterFormValues } from "@pages/Register/Register.types";
 import { useRegisterMutation } from "@pages/Register/useRegisterMutation";
-
-import "@styles/Loader.css";
-import "@styles/R_&_L_Inputs/R_Layout.css";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -33,40 +31,107 @@ const Register = () => {
   };
 
   return (
-    <main className="register-layout">
-      {isPending && <FullPageLoader />}
-      <div className="register-ambient-glow"></div>
-      <section className="register-container">
-        <header className="register-header">
-          <Link to="/" className="register-brand-link">
-            <span className="register-logo-wrapper">
-              <img src={doveLogoUrl} className="nav-logo-img-register" alt="Pneuma Logo" />
-            </span>
-            Pneuma
+    <main className="min-h-screen bg-[#010102] text-white flex flex-col lg:flex-row font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] relative overflow-x-hidden">
+      <style>{`
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px #0a0a0f inset !important;
+      -webkit-text-fill-color: #ffffff !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+  `}</style>
+
+  {isPending && <FullPageLoader />}
+
+
+      {/* ================= LEFT SIDE: CINEMATIC BRANDING PANEL ================= */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-[#07070a] via-[#010102] to-[#120f04] p-16 flex-col justify-between border-r border-white/[0.06] overflow-hidden">
+        
+        {/* Abstract Gold Light Orbs */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#d4af37]/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-[radial-gradient(ellipse_at_center,_rgba(212,175,55,0.07)_0%,_transparent_70%)] blur-[100px] pointer-events-none" />
+
+        {/* Top Header Link */}
+        <div className="relative z-10 flex items-center justify-between">
+          <Link to="/" className="inline-flex items-center gap-3 group text-white no-underline">
+            <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center group-hover:border-[#d4af37]/50 transition-colors shadow-lg">
+              <img src={doveLogoUrl} className="w-5 h-5 object-contain filter contrast-125 group-hover:scale-110 transition-transform" alt="Logo" />
+            </div>
+            <span className="font-serif text-lg tracking-[0.3em] font-bold">PNEUMA</span>
           </Link>
-          <h1 className="register-title">Begin Your Journey</h1>
-          <div className="register-divider"></div>
-        </header>
 
-        <RegisterInput
-          register={register}
-          errors={errors}
-          control={control as any}
-          handleSubmit={handleSubmit}
-          onSubmit={onSubmit}
-        />
+          <Link to="/" className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-white/50 hover:text-[#d4af37] transition-colors">
+            <ArrowLeft size={14} /> Return Home
+          </Link>
+        </div>
 
-        <footer className="register-footer">
-          <span>Already mapping your legacy?</span>
-          <span
-            onClick={() => navigate("/login")}
-            className="register-login-link"
-            style={{ cursor: "pointer" }}
-          >
-            Come On In
-          </span>
-        </footer>
-      </section>
+        {/* Center Editorial Statement */}
+        <div className="relative z-10 max-w-lg my-auto py-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 text-[#d4af37] text-xs font-semibold uppercase tracking-[0.3em] mb-8 shadow-sm">
+            <Sparkles size={14} /> The Generational Archive
+          </div>
+          <h2 className="font-serif text-4xl xl:text-5xl font-bold tracking-[0.05em] uppercase leading-[1.2] mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-[#d4af37]/80">
+            Write the vision. Secure your legacy.
+          </h2>
+          <p className="text-gray-400 text-base leading-relaxed font-light">
+            Step into a sacred digital sanctuary designed to archive your daily triumphs, resolve life's heaviest trials in fellowship, and compile your life story into a timeless book.
+          </p>
+        </div>
+
+        {/* Bottom Trust Indicators */}
+        <div className="relative z-10 flex items-center gap-8 text-xs text-white/40 uppercase tracking-[0.2em] font-medium border-t border-white/5 pt-6">
+          <span className="flex items-center gap-2"><ShieldCheck size={16} className="text-[#d4af37]" /> End-to-End Private</span>
+          <span className="flex items-center gap-2"><Feather size={16} className="text-[#d4af37]" /> Lifelong Memoir</span>
+        </div>
+      </div>
+
+      {/* ================= RIGHT SIDE: FORM CONTAINER ================= */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 lg:p-20 relative">
+        
+        {/* Mobile Header Banner (Visible only on mobile/tablet) */}
+        <div className="absolute top-6 left-6 lg:hidden">
+          <Link to="/" className="inline-flex items-center gap-2 text-white no-underline">
+            <img src={doveLogoUrl} className="w-6 h-6 object-contain filter contrast-125" alt="Logo" />
+            <span className="font-serif text-sm tracking-[0.3em] font-bold">PNEUMA</span>
+          </Link>
+        </div>
+
+        <div className="w-full max-w-[460px] relative z-10 mt-12 lg:mt-0">
+          
+          {/* Form Header */}
+          <header className="mb-10 text-center lg:text-left">
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-[0.08em] uppercase text-white mb-3">
+              Begin Your Journey
+            </h1>
+            <p className="text-gray-400 text-sm tracking-wide">
+              Create your account to unlock your daily diary and faith community.
+            </p>
+            <div className="w-12 h-[2px] bg-[#d4af37] mt-4 mx-auto lg:mx-0 shadow-[0_0_12px_#d4af37]"></div>
+          </header>
+
+          <RegisterInput
+            register={register}
+            errors={errors}
+            control={control as any}
+            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
+          />
+
+          {/* Form Footer */}
+          <footer className="text-center mt-10 pt-6 border-t border-white/[0.06] text-sm text-gray-400 flex items-center justify-center gap-2">
+            <span>Already mapping your legacy?</span>
+            <span
+              onClick={() => navigate("/login")}
+              className="text-[#d4af37] font-bold tracking-[0.1em] uppercase text-xs cursor-pointer hover:underline transition-all"
+            >
+              Sign In
+            </span>
+          </footer>
+
+        </div>
+      </div>
     </main>
   );
 };

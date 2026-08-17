@@ -1,6 +1,7 @@
 import RegistrationError from "@Toolkits/Register/registrationError.js";
 import bcryptjs from "bcryptjs";
-import { findUserRegistration, registerNewUser } from "@Workshop/Vip/authService.js"
+import { findUserRegistration, registerNewUser } from "@Workshop/Vip/authService.js";
+import { fetchGlobalTasksFeed } from "@Workshop/Payload/Mutations/getTaskService.js"; // Import your feed service
 import redisClient from "@Terminal/Redis/redisCreateClient.js";
 import type { Request, Response, NextFunction } from "express";
 import type { Session, SessionData } from "express-session";
@@ -74,13 +75,26 @@ export const registerUser = async (
         }
 
         try {
-          const responseData = { tasks: [], currentUserId: newUser.id };
-          const cacheKey = `tasks_feed:${newUser.uuid}`;
-          await redisClient.set(cacheKey, JSON.stringify(responseData), { EX: 600 });
-          console.log(`🔥 Redis Warmed Up for new user: ${newUser.uuid}`);
+          // 🚀 Warm up Redis with the actual initial feed data for this new user
+          const fresh_load_pointer = 'Yes_Is_FreshLoad';
+          const { tasksFeed, next_post_timestamp } = await fetchGlobalTasksFeed(
+            newUser.uuid,
+            fresh_load_pointer
+          );
+
+          const responseData = {
+            tasks: tasksFeed,
+            next_post_timestamp: next_post_timestamp !== undefined && next_post_timestamp !== null ? String(next_post_timestamp) : null,
+            currentUserId: newUser.id,
+            currentUserUuid: newUser.uuid
+          };
+
+          const cacheKey = `tasks_feed:${newUser.uuid}:${fresh_load_pointer}`;
+          await redisClient.set(cacheKey, JSON.stringify(responseData), { EX: 86400 });
+          console.log(`🔥 Redis Warmed Up with actual data for new user: ${newUser.uuid}`);
         } catch (cacheError: unknown) {
           const cacheErrMsg = cacheError instanceof Error ? cacheError.message : String(cacheError);
-          console.error("Failed to warm up Redis cache:", cacheErrMsg);
+          console.error("Failed to warm up Redis cache during registration:", cacheErrMsg);
         }
 
         const successResponse: RegisterResponseData = {

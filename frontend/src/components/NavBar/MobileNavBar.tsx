@@ -50,7 +50,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({ isVisible, userUuid,
 
       {/* ==================== 2. MOBILE BOTTOM FIXED NAVIGATION ==================== */}
       <nav className={`mobile-bottom-nav ${!isVisible ? "nav-hidden" : ""}`}>
-        <Link to="/home" className={isActive("/home")} onTouchEnd={(e) => e.currentTarget.blur()}>
+        <Link to="/homefeed" className={isActive("/homefeed")} onTouchEnd={(e) => e.currentTarget.blur()}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
             <polyline points="9 22 9 12 15 12 15 22" />
@@ -58,7 +58,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({ isVisible, userUuid,
           <span>Home</span>
         </Link>
 
-        <Link to={`/journalfeed/${userUuid || "sanctuary"}`} className={isActive("/journalfeed")} onTouchEnd={(e) => e.currentTarget.blur()}>
+        <Link to={userUuid ? `/feed/${userUuid}` : "#"} className={isActive("/feed")} onTouchEnd={(e) => e.currentTarget.blur()}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
             <path d="M6 6h10M6 10h10M6 14h10" />

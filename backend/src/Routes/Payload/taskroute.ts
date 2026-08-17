@@ -31,7 +31,7 @@ taskRoute.post("/", ensureAuthenticated, upload.single("img"), createTask);
 
 taskRoute.get<{ targetProfileUuid: string }>("/profile/:targetProfileUuid", ensureAuthenticated, getSmartProfileFeed);
 taskRoute.get<{ targetProfileUuid: string }>("/profile/innerCircle-details/:targetProfileUuid", ensureAuthenticated, fetchEngagementDetails);
-taskRoute.get<{ journalUuid: string }>("/journalfeed/:journalUuid", ensureAuthenticated, journalFeed);
+taskRoute.get<{ targetUserUuid: string }>("/journalfeed/:targetUserUuid", ensureAuthenticated, journalFeed);
 taskRoute.get<{ contentUuid: string }>("/:contentUuid/fetchComments", ensureAuthenticated, getComment);
 taskRoute.get<{ targetProfileUuid: string }>("/task/journal-posts/:targetProfileUuid", ensureAuthenticated, fetch_Journal_When_Accepted);
 

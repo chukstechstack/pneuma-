@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ThumbsUp, MessageSquare, Repeat2 } from "lucide-react";
-import CommentList from "../CommentDrawer/CommentList"; // Adjust path if needed
 
 interface TaskActionsProps {
   uuid: string;
@@ -24,10 +23,6 @@ export const TaskActions: React.FC<TaskActionsProps> = ({
   const [openDrawerId, setOpenDrawerId] = useState<string | null>(
     (localStorage.getItem("active_drawer") as string) || null,
   );
-
-  // Some CommentList prop types differ across usages; cast to any to avoid
-  // prop type mismatch here while keeping runtime behavior.
-  const CommentListAny = CommentList as unknown as React.ComponentType<any>;
 
   return (
     <>
@@ -65,16 +60,6 @@ export const TaskActions: React.FC<TaskActionsProps> = ({
           </button>
         </div>
       </div>
-
-      {openDrawerId === uuid && (
-        <CommentListAny
-          contentUuid={uuid}
-          onClose={() => {
-            setOpenDrawerId(null);
-            localStorage.removeItem("active_drawer");
-          }}
-        />
-      )}
     </>
   );
 };

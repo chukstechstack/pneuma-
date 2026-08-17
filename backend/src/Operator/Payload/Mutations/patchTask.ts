@@ -84,25 +84,21 @@ export const patchTask = async (
       newUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uploadedFileName}`;
     }
 
-    const finalUpdateResult = await executeDynamicTaskUpdate(
+    const  updatedRows = await executeDynamicTaskUpdate(
       uuid,
       user_id,
       req.body.content,
       newUrl,
       dbClientAsPool
-    ) as { rowCount: number; rows: unknown[] } | null;
+    ) as {  rows: unknown[] } | null;
 
-    if (!finalUpdateResult) {
+    if (!updatedRows) {
       await dbClient.query("ROLLBACK");
       dbClient.release();
       return res.status(400).json({ error: "No fields provided for update" });
     }
 
-    if (finalUpdateResult.rowCount === 0) {
-      await dbClient.query("ROLLBACK");
-      dbClient.release();
-      return res.status(404).json({ error: "Task not found or unauthorized" });
-    }
+
 
     await dbClient.query("COMMIT");
 
@@ -118,7 +114,7 @@ export const patchTask = async (
           console.log(`🧹 Cache Reset: Swept away ${homeKeys.length} paginated home feed chunks.`);
         }
 
-        const journalPattern = `journal_feed:${user_uuid}:*`;
+      const journalPattern = `journal_feed_cache:${user_uuid}:*`;
         const journalKeys = await redisClient.keys(journalPattern);
         if (journalKeys.length > 0) {
           await redisClient.del(journalKeys);
@@ -132,7 +128,7 @@ export const patchTask = async (
 
     const responseData: PatchTaskResponseData = {
       message: "Task updated successfully",
-      updatedTask: finalUpdateResult.rows[0]
+      updatedTask: updatedRows
     };
 
     return res.json(responseData);

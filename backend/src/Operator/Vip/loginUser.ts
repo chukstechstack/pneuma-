@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import LoginError from "@Toolkits/Login/loginError.js";
 import passport from "@Terminal/Passport/serialize_deserialize.js";
+import { fetchGlobalTasksFeed } from "@Workshop/Payload/Mutations/getTaskService.js";
+import redisClient from "@Terminal/Redis/redisCreateClient.js";
 
 export const loginUser = (
   req: Request & {
@@ -16,9 +18,32 @@ export const loginUser = (
     req.login(user, (err) => {
       if (err) return next(err);
 
-      // Explicitly wait until session database writes settle
-      req.session.save((sessionErr) => {
+      req.session.save(async (sessionErr) => {
         if (sessionErr) return next(sessionErr);
+
+        try {
+          const fresh_load_pointer = 'Yes_Is_FreshLoad';
+
+          const { tasksFeed, next_post_timestamp } = await fetchGlobalTasksFeed(
+            user.uuid,
+            fresh_load_pointer
+          );
+
+          const responseData = {
+            tasks: tasksFeed,
+            next_post_timestamp: next_post_timestamp !== undefined && next_post_timestamp !== null ? String(next_post_timestamp) : null,
+            currentUserId: user.id,
+            currentUserUuid: user.uuid
+          };
+
+          const cacheKey = `tasks_feed:${user.uuid}:${fresh_load_pointer}`;
+          await redisClient.set(cacheKey, JSON.stringify(responseData), { EX: 86400 });
+          console.log(`🔥 Redis Warmed Up on login for user: ${cacheKey}`);
+        } catch (cacheError: unknown) {
+          const cacheErrMsg = cacheError instanceof Error ? cacheError.message : String(cacheError);
+          console.error("Failed to warm up Redis cache on login:", cacheErrMsg);
+        }
+
         return res.status(200).json({
           message: "logged in successfully",
           user: {
@@ -28,5 +53,5 @@ export const loginUser = (
         });
       });
     });
-  })(req, res, next); // ✅ Fixed syntax error here: correctly closed bracket and passed parameters
+  })(req, res, next);
 };

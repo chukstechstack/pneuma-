@@ -12,7 +12,6 @@ interface UserProfileIdRow {
 
 export const fetchGlobalTasksFeed = async (
   user_uuid?: string | null,
-  freeze_time?: string | number | null,
   fresh_load_pointer?: string | number | null
 ): Promise<FetchGlobalTasksFeedResult> => {
   let userId: number | string | null = null;
@@ -22,30 +21,17 @@ export const fetchGlobalTasksFeed = async (
     if (user_Id_Res.rows.length > 0) {
       userId = user_Id_Res.rows[0].id;
     }
+    console.log("Resolved User ID:", userId);
   }
 
-  const freezeTimeValue = (freeze_time && !isNaN(Number(freeze_time))) 
-    ? Number(freeze_time) 
-    : Date.now();
-    
-  const Freeze_Time_Date = new Date(freezeTimeValue);
-  const queryParams: (string | number | Date | null)[] = [userId, Freeze_Time_Date];
+  const queryParams: (string | number | Date | null)[] = [userId];
 
   let queryText = `
     SELECT 
-      c.id,
-      c.uuid,
-      c.title,
-      c.content,
-      c.img,
-      c.created_at,
-      c.likes_count,    
-      c.reposts_count,  
-      c.shares_count,   
+      c.*,
       CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
       p.avatar_url,
       p.uuid AS author_profile_uuid, 
-      c.user_id,
 
       EXISTS (
         SELECT 1 FROM interactions 
@@ -68,34 +54,29 @@ export const fetchGlobalTasksFeed = async (
         WHERE content_id = c.id
       ) AS comments_count
        
-     FROM content c 
-     LEFT JOIN profiles p ON c.user_id = p.id 
-     WHERE c.created_at <= $2 `;
+    FROM content c 
+    LEFT JOIN profiles p ON c.user_id = p.id 
+    WHERE c.created_at <= NOW()`;
 
   if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad' && !isNaN(Number(fresh_load_pointer))) {
     const last_post_creation_date = new Date(Number(fresh_load_pointer));
-    queryText += ` AND c.created_at < $3 `;
+    queryText += ` AND c.created_at < $2 `;
     queryParams.push(last_post_creation_date);
   }
 
   queryText += ` ORDER BY c.created_at DESC LIMIT 40`;
 
-  // 🔍 DEBUG LOGS
-  console.log("🛠️ --- EXECUTING FEED QUERY ---");
-  console.log("Parameters [userId, Freeze_Time_Date, pagination]:", queryParams);
-  console.log("Freeze Time Date Object:", Freeze_Time_Date);
+  console.log("🛠️ --- EXECUTING Journal FEED QUERY ---");
+  console.log("Parameter for Journal Feeds [userId, pagination]:", queryParams);
 
   const result = await pool.query<TaskItem>(queryText, queryParams);
-  
-  console.log(`📦 Rows returned from PostgreSQL: ${result.rows.length}`);
-  console.log("Tasks content preview:", result.rows.map(r => ({ id: r.id, title: r.title, created_at: r.created_at })));
-
   const tasksFeed = result.rows;
+
+  console.log(`📌 Rows returned from PostgreSQL Journal Feed: ${tasksFeed.length}`);
 
   let next_post_timestamp: number | null = null;
   if (tasksFeed.length === 40) {
-    const lastItem = tasksFeed[tasksFeed.length - 1];
-    next_post_timestamp = new Date(lastItem.created_at).getTime();
+    next_post_timestamp = new Date(tasksFeed[tasksFeed.length - 1].created_at).getTime();
   }
 
   return {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { usePendingRequests } from "@/components/PendingRequests/usePendingRequests";
 import { PendingRequestList } from "@/components/PendingRequests/PendingRequestList";
-import "@styles/Profile.css";
+
 
 const Pending_Request: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);

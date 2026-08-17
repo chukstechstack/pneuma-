@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { useAuthStore } from "@store/useAuthStore";
 import { MobileNavBar } from "@components/NavBar/MobileNavBar";
 import { DesktopNavBar } from "@components/NavBar/DesktopNavBar";
-import "@styles/NavBar.css";
+
 
 const NavBar: React.FC = () => {
   const location = useLocation();
@@ -31,10 +31,11 @@ const NavBar: React.FC = () => {
 
   return (
     <>
-      <MobileNavBar isVisible={isVisible} userUuid={userUuid} pathname={location.pathname} />
-      <DesktopNavBar userUuid={userUuid} pathname={location.pathname} />
+      <MobileNavBar isVisible={isVisible} userUuid={userUuid ?? null} pathname={location.pathname} />
+      <DesktopNavBar userUuid={userUuid ?? null} pathname={location.pathname} />
     </>
   );
 };
 
 export default NavBar;
+

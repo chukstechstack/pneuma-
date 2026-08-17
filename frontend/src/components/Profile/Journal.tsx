@@ -1,6 +1,19 @@
 import React from "react";
 
-const ProfileJournal = ({
+type ProfileJournalProps = {
+  isOwner: boolean;
+  active_Relationtionship_Request_Status: string;
+  tasks: Array<{
+    uuid: string;
+    content: string;
+    created_at: string;
+    img?: string;
+  }>;
+  navigate: (path: string) => void;
+  currentUserUuid: string;
+};
+
+const ProfileJournal: React.FC<ProfileJournalProps> = ({
   isOwner,
   active_Relationtionship_Request_Status,
   tasks,
@@ -10,7 +23,7 @@ const ProfileJournal = ({
   const isAuthorized =
     isOwner || active_Relationtionship_Request_Status === "active";
 
-  const formatDate = (date) =>
+  const formatDate = (date: string) =>
     new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",

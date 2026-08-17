@@ -1,9 +1,10 @@
 import React from "react";
-import Task from "@components/CreateTask/CreateTask";
+import Task from "@components/Task/Task";
 import NavBar from "@/pages/NavBar/NavBar";
 import FullPageLoader from "@components/Loader.jsx";
 import { useJournalData } from "@/pages/JournalFeed/useJournalData";
 import { JournalTask } from "@/pages/JournalFeed/Page.types";
+
 
 interface TaskProps {
   key: string;
@@ -11,7 +12,7 @@ interface TaskProps {
   isOwner: boolean;
   deleteTask: () => void;
   onEdit: (uuid: string) => void;
-  handle_Like_Reply_Share_Interaction: () => void;
+  handle_Like_Reply_Share_Interaction: (taskUuid: string, type: string) => void;
   currentUserUuid: string | null | undefined;
 }
 
@@ -26,6 +27,13 @@ const JournalPage = (): React.ReactElement => {
     deleteSelectedTask,
     navigate,
   } = useJournalData();
+
+  const handle_Like_Reply_Share_Interaction = (
+    taskUuid: string,
+    type: string
+  ) => {
+    // no-op handler when interaction callback is not provided by the hook
+  };
 
   const TaskTyped = Task as unknown as React.ComponentType<TaskProps>;
 
@@ -54,13 +62,13 @@ const JournalPage = (): React.ReactElement => {
                   isOwner={isOwner}
                   deleteTask={() => deleteSelectedTask(task.uuid)}
                   onEdit={(uuid: string) => navigate(`/patchfeed/${uuid}`)}
-                  handle_Like_Reply_Share_Interaction={() => {}}
+                  handle_Like_Reply_Share_Interaction={handle_Like_Reply_Share_Interaction}
                   currentUserUuid={userUuid ?? ""}
                 />
               ))
             )}
 
-            <div ref={ref} style={{ height: "20px" }}>
+            <div ref= {ref} style={{ height: "20px" }}>
               {isFetchingNextPage && <p>Loading more...</p>}
             </div>
           </div>

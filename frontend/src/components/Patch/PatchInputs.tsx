@@ -2,7 +2,7 @@ import React from "react";
 import { ImagePlus, CheckSquare, Loader2 } from "lucide-react";
 import { PatchInputProps } from "./PatchInputs.types";
 import { TaskImagePreview } from "./TaskImagePreview";
-import "@styles/CreateTask.css";
+
 
 const TaskInput: React.FC<PatchInputProps> = ({
   handleChange,

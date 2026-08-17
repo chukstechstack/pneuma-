@@ -2,7 +2,7 @@ import React from "react";
 import { ImagePlus, CheckSquare } from "lucide-react";
 import { TaskInputProps } from "./TaskInput.types";
 import { ImagePreviewCard } from "./ImagePreviewCard";
-import "@/styles/CreateTask.css";
+
 
 const TaskInput: React.FC<TaskInputProps> = ({
   img,

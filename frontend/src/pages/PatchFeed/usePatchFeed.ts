@@ -6,14 +6,18 @@ import { useAuthStore } from "@store/useAuthStore.js";
 import { Task, PaginatedTasks, FormState } from "./PatchFeed.types";
 
 export const usePatchFeed = () => {
+  // ─── Routing & Auth ───────────────────────────────
   const navigate = useNavigate();
+  const { uuid } = useParams();
   const user = (useAuthStore() as any).user;
   const currentUserUuid: string | undefined = user?.uuid;
-  const { uuid } = useParams();
+  const userUuid = currentUserUuid ?? "";
+
+  // ─── Query Client & Task Lookup ───────────────────
   const queryClient = useQueryClient();
 
   const findTask = (): Task | undefined => {
-    const journalData = queryClient.getQueryData<PaginatedTasks | undefined>(["journal", currentUserUuid]);
+    const journalData = queryClient.getQueryData<PaginatedTasks | undefined>(["journalFeed", currentUserUuid]);
     const homeData = queryClient.getQueryData<PaginatedTasks | undefined>(["homeFeed"]);
 
     return (
@@ -24,21 +28,24 @@ export const usePatchFeed = () => {
 
   const taskToEdit = findTask();
 
+  // ─── Local Form State ─────────────────────────────
   const [formData, setFormData] = useState<FormState>({
     content: taskToEdit?.content || "",
     img: (taskToEdit?.img as unknown as File) || null,
   });
   const [previewUrl, setPreviewUrl] = useState("");
 
-  const userUuid = currentUserUuid ?? "";
+  // ─── Mutation ──────────────────────────────────────
   const { mutate: updateTask, isPending } = useUpdateTask(userUuid);
 
+  // ─── Effects ───────────────────────────────────────
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     };
   }, [previewUrl]);
 
+  // ─── Handlers ──────────────────────────────────────
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target as HTMLInputElement & HTMLTextAreaElement;
     const files = (e.target as HTMLInputElement).files;
@@ -64,15 +71,21 @@ export const usePatchFeed = () => {
     }
 
     updateTask(
-      { uuid: uuid!, formData: data, content: formData.content },
+      {
+        uuid: uuid!,
+        formData: data,
+        content: formData.content,
+        previewUrl,
+      },
       {
         onSuccess: () => {
-          navigate("/home");
+          navigate("/homefeed");
         },
       },
     );
   };
 
+  // ─── Return ────────────────────────────────────────
   return {
     taskToEdit,
     formData,

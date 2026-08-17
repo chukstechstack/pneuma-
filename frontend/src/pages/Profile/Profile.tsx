@@ -4,7 +4,7 @@ import ProfileEngagement from "@/components/Profile/Engagement.js";
 import ProfileJournal from "@components/Profile/Journal.jsx";
 import { useProfileData } from "@pages/Profile/useProfileData";
 import { InnerCircleUser } from "@pages/Profile/Profile.types";
-import "@/styles/Profile.css";
+
 
 const Profile = () => {
   const {

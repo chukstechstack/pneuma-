@@ -1,12 +1,10 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "@/api/axios.js";
+import { useAuthStore } from "@store/useAuthStore.js";
 import { FormDataType } from "./CreateTask.types";
+import { useCreateTaskMutation } from "./useMutation";
 
 export const useCreateTask = () => {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const { userUuid } = useAuthStore() as { userUuid: string | null };
 
   const [formData, setFormData] = useState<FormDataType>({
     content: "",
@@ -14,15 +12,7 @@ export const useCreateTask = () => {
   });
 
   const [previewUrl, setPreviewUrl] = useState<string>("");
-
-  const mutation = useMutation<any, any, FormData>({
-    mutationFn: (data: FormData) => api.post("/task", data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
-          navigate("/homefeed");
-    },
-    
-  });
+  const mutation = useCreateTaskMutation(userUuid, previewUrl);
 
   const handleFormData = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const target = e.target as HTMLInputElement | HTMLTextAreaElement;
@@ -53,7 +43,6 @@ export const useCreateTask = () => {
     });
 
     mutation.mutate(data);
-
   };
 
   useEffect(() => {

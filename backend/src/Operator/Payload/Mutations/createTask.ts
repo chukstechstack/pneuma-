@@ -90,11 +90,11 @@ export const createTask = async (
           console.log(`🧹 Creation Cache Reset: Swept away ${homeKeys.length} home feed chunks.`);
         }
 
-        const journalPattern = `journal_feed:${user_uuid}:*`;
+      const journalPattern = `journal_feed_cache:${user_uuid}:*`;
         const journalKeys = await redisClient.keys(journalPattern);
         if (journalKeys.length > 0) {
           await redisClient.del(journalKeys);
-          console.log(`🧹 Creation Cache Reset: Swept away ${journalKeys.length} private feed chunks.`);
+          console.log(` ☠️Journal Keys Cleared  ${journalKeys.length} private feed chunks.`);
         }
       }
     } catch (cacheErr: unknown) {

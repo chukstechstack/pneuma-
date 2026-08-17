@@ -21,8 +21,11 @@ export const useRegisterMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation<RegisterMutationResponse, unknown, RegisterPayload>({
+    
     mutationFn: (apiPayload: RegisterPayload) =>
+
       api.post<RegisterMutationResponse>("/auth/register", apiPayload).then((res) => res.data),
+
     onSuccess: async (response: RegisterMutationResponse) => {
       console.log("Registration successful! Server response:", response);
       const user = response?.user;
