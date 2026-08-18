@@ -24,8 +24,7 @@ export const profiles = pgTable(
     uuid: uuid("uuid").defaultRandom().unique(),
     username: text("username").notNull(),
     password: text("password"),
-    firstName: text("first_name").notNull(),
-    lastName: text("last_name").notNull(),
+    fullName: text("full_name").notNull(), // Combined into a single required column
     country: text("country"),
     email: text("email").notNull().unique(),
     googleId: text("google_id"),
@@ -60,7 +59,7 @@ export const content = pgTable(
   (table) => [
     index("idx_content_user_id").on(table.userId),
     index("idx_content_uuid").on(table.uuid),
-    index("idx_content_tags").on(table.tags), // GIN index handled by postgres/drizzle
+    index("idx_content_tags").on(table.tags),
     index("idx_content_created_at_desc").on(table.createdAt.desc()),
     index("idx_content_user_created_at").on(table.userId, table.createdAt.desc()),
   ]
@@ -151,4 +150,3 @@ export const messages = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   }
 );
-

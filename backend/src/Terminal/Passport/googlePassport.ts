@@ -31,7 +31,7 @@ export const initGoogleStrategy = (passport: PassportStatic) => {
         try {
           const email = profile.emails?.[0]?.value;
           const google_id = profile.id;
-          const [first_name, last_name] = profile.displayName.split(" ");
+          const full_name = profile.displayName; // Use full displayName directly
           
           if (!email) {
             return done(new Error("Email not found in Google profile"));
@@ -57,8 +57,7 @@ export const initGoogleStrategy = (passport: PassportStatic) => {
 
               user = await insertGoogleUser({
                 username,
-                first_name,
-                last_name,
+                full_name, // Pass full_name here
                 email,
                 google_id,
               });

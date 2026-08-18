@@ -7,6 +7,7 @@ interface ContentRow {
   title: string | null;
   content: string | null;
   img: string | null;
+  category: string | null;
   user_id: number | string;
   likes_count?: number;
   reposts_count?: number;
@@ -26,7 +27,6 @@ interface HydratedTaskRow extends ContentRow {
 
 type DbClient = Pool | PoolClient;
 
-
 export const insertNewTask = async (
   content: string | null,
   img_url: string | null,
@@ -34,9 +34,9 @@ export const insertNewTask = async (
   client: DbClient = pool
 ): Promise<ContentRow | null> => {
   const result = await client.query<ContentRow>(
-    `INSERT INTO content(title, content, img, user_id) 
-     VALUES($1, $2, $3, $4) RETURNING *`,
-    ['Insight', content, img_url, user_id]
+    `INSERT INTO content(title, content, img, category, user_id) 
+     VALUES($1, $2, $3, $4, $5) RETURNING *`,
+    [null, content, img_url, null, user_id]
   );
   return result.rows[0] || null;
 };
@@ -49,7 +49,7 @@ export const fetchHydratedTaskById = async (
   const result = await client.query<HydratedTaskRow>(
     `SELECT c.*,
             c.user_id,
-            CONCAT(p.first_name, ' ', p.last_name) AS author_name,
+p.full_name,
             p.avatar_url,
             p.uuid AS author_profile_uuid,
             c.likes_count,    

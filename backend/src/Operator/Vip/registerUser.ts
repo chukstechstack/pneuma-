@@ -1,7 +1,7 @@
 import RegistrationError from "@Toolkits/Register/registrationError.js";
 import bcryptjs from "bcryptjs";
 import { findUserRegistration, registerNewUser } from "@Workshop/Vip/authService.js";
-import { fetchGlobalTasksFeed } from "@Workshop/Payload/Mutations/getTaskService.js"; // Import your feed service
+import { fetchGlobalTasksFeed } from "@Workshop/Payload/Mutations/getTaskService.js";
 import redisClient from "@Terminal/Redis/redisCreateClient.js";
 import type { Request, Response, NextFunction } from "express";
 import type { Session, SessionData } from "express-session";
@@ -10,8 +10,7 @@ const saltRound = 10;
 
 interface RegisterRequestBody {
   password?: string;
-  first_name?: string;
-  last_name?: string;
+  full_name?: string; // Updated from first_name and last_name
   email?: string;
   google_id?: string;
   avatar_url?: string;
@@ -41,7 +40,7 @@ export const registerUser = async (
   res: Response<RegisterResponseData | { message: string; error?: string }>,
   next: NextFunction
 ) => {
-  const { password, first_name, last_name, email, google_id, avatar_url } = req.body;
+  const { password, full_name, email, google_id, avatar_url } = req.body;
 
   if (!password || !email) {
     return res.status(400).json({ message: "Email and password are required" });
@@ -55,14 +54,15 @@ export const registerUser = async (
 
     const hash = await bcryptjs.hash(password, saltRound);
 
-    const newUser = (await registerNewUser({
+    const registerPayload: Parameters<typeof registerNewUser>[0] = {
       password: hash,
-      first_name,
-      last_name,
+      full_name,
       email,
       google_id,
       avatar_url,
-    })) as RegisteredUser;
+    };
+
+    const newUser = (await registerNewUser(registerPayload)) as RegisteredUser;
 
     req.login(newUser, (loginErr: unknown) => {
       if (loginErr) {
@@ -75,7 +75,6 @@ export const registerUser = async (
         }
 
         try {
-          // 🚀 Warm up Redis with the actual initial feed data for this new user
           const fresh_load_pointer = 'Yes_Is_FreshLoad';
           const { tasksFeed, next_post_timestamp } = await fetchGlobalTasksFeed(
             newUser.uuid,

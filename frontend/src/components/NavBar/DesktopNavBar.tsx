@@ -1,89 +1,115 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import doveLogoUrl from "@assets/pneuma.png";
+import { 
+  Home, 
+  PlusSquare, 
+  BookOpen, 
+  MessageSquare, 
+  Bell, 
+  Search 
+} from "lucide-react";
 
 interface DesktopNavBarProps {
   userUuid: string | null;
   pathname: string;
+  onOpenCreate: () => void; // Added prop
 }
 
-export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ userUuid, pathname }) => {
-  const isActive = (path: string) => (pathname.startsWith(path) ? "nav-item active" : "nav-item");
+export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ userUuid, pathname, onOpenCreate }) => {
+  const isActive = (path: string) => pathname.startsWith(path);
+
+  const getLinkClasses = (path: string) => `
+    relative flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-medium tracking-wide transition-all duration-200
+    ${isActive(path) 
+      ? "text-[#d4af37] bg-[#d4af37]/10 font-semibold" 
+      : "text-white/60 hover:text-white hover:bg-white/[0.04]"
+    }
+  `;
 
   return (
-    <nav className="desktop-master-nav">
-      <div className="desktop-nav-inner-container">
-        <div className="desktop-nav-left-wing">
-          <Link to="/homefeed" className="desktop-nav-brand-title">
-            <span>
-              <img src={doveLogoUrl} className="nav-logo-img" alt="Pneuma Logo" />
-            </span>
-            Pneuma
-          </Link>
-          <div className="desktop-search-input-box-wrapper">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="desktop-search-svg-magnifier">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input id="desktop-search" name="desktop-search" type="text" placeholder="Search archive insights..." className="desktop-search-input-field" />
+    <header className="fixed top-5 left-0 right-0 z-50 px-6 hidden md:block">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 bg-[#121214]/80 backdrop-blur-2xl border border-white/[0.08] rounded-full px-5 py-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
+        
+        {/* Brand & Logo */}
+        <Link to="/homefeed" className="flex items-center gap-2.5 shrink-0 group">
+          <div className="w-8 h-8 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/30 flex items-center justify-center p-1 group-hover:border-[#d4af37] transition-all">
+            <img src={doveLogoUrl} className="w-full h-full object-contain filter drop-shadow" alt="Pneuma Logo" />
           </div>
+          <span className="font-serif text-base font-bold tracking-[0.15em] text-white/90 uppercase">
+            Pneuma
+          </span>
+        </Link>
+
+        {/* Minimal Integrated Search */}
+        <div className="relative max-w-xs w-full mx-2">
+          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+          <input
+            id="desktop-search"
+            name="desktop-search"
+            type="text"
+            placeholder="Search archive insights..."
+            className="w-full bg-[#09090b]/60 border border-white/10 rounded-full pl-9 pr-4 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#d4af37]/50 transition-all font-normal"
+          />
         </div>
 
-        <div className="desktop-nav-right-navigation-menu">
-          <Link to="/home" className={`desktop-menu-item-anchor ${pathname === "/home" ? "active" : ""}`}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="menu-svg-vector-icon">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-              <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-            <span className="menu-anchor-text-label">Home</span>
+        {/* Navigation Control Links */}
+        <nav className="flex items-center gap-1">
+          <Link to="/homefeed" className={getLinkClasses("/homefeed")}>
+            <Home size={15} strokeWidth={isActive("/homefeed") ? 2 : 1.5} />
+            <span>Home</span>
           </Link>
 
-          <Link to="/createtask" className="nav-item mobile-post-accent-btn" onTouchEnd={(e) => e.currentTarget.blur()}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect width="18" height="18" x="3" y="3" rx="2" />
-              <line x1="12" x2="12" y1="8" y2="16" />
-              <line x1="8" x2="16" y1="12" y2="12" />
-            </svg>
-            <span>Post</span>
-          </Link>
-
-          <Link to={`/feed/${userUuid || "sanctuary"}`} className={isActive("/journalfeed")} onTouchEnd={(e) => e.currentTarget.blur()}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
-              <path d="M6 6h10M6 10h10M6 14h10" />
-            </svg>
+          <Link to={`/feed/${userUuid || "sanctuary"}`} className={getLinkClasses("/feed")}>
+            <BookOpen size={15} strokeWidth={isActive("/feed") ? 2 : 1.5} />
             <span>Journal</span>
           </Link>
 
-          <Link to="/messages" className={`desktop-menu-item-anchor ${pathname === "/messages" ? "active" : ""}`}>
-            <div className="desktop-badge-relative-wrapper">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="menu-svg-vector-icon">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-              <span className="desktop-badge-counter-flag notification-red">9</span>
+          <Link to="/messages" className={getLinkClasses("/messages")}>
+            <div className="relative flex items-center">
+              <MessageSquare size={15} strokeWidth={isActive("/messages") ? 2 : 1.5} />
+              <span className="absolute -top-1.5 -right-2 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md">
+                9
+              </span>
             </div>
-            <span className="menu-anchor-text-label">Messaging</span>
+            <span className="ml-1">Messages</span>
           </Link>
 
-          <Link to="/notifications" className={`desktop-menu-item-anchor ${pathname === "/notifications" ? "active" : ""}`}>
-            <div className="desktop-badge-relative-wrapper">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="menu-svg-vector-icon">
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-              </svg>
-              <span className="desktop-badge-counter-flag notification-gold">3</span>
+          <Link to="/notifications" className={getLinkClasses("/notifications")}>
+            <div className="relative flex items-center">
+              <Bell size={15} strokeWidth={isActive("/notifications") ? 2 : 1.5} />
+              <span className="absolute -top-1.5 -right-2 bg-[#d4af37] text-black text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md">
+                3
+              </span>
             </div>
-            <span className="menu-anchor-text-label">Alerts</span>
+            <span className="ml-1">Alerts</span>
           </Link>
 
-          <Link to="/profile" className={isActive("/profile")}>
-            <div className="mobile-avatar-frame-bottom">
-              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysX8k1gABg8LHF0QSukobgjnwgnxqX1Pqjcxx6AafbTLSGRq8560Mz8I&s=10" className="mobile-avatar-img-bottom" alt="Me Profile" />
+          <Link to="/profile" className={getLinkClasses("/profile")}>
+            <div className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-[#d4af37]/50">
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysX8k1gABg8LHF0QSukobgjnwgnxqX1Pqjcxx6AafbTLSGRq8560Mz8I&s=10"
+                className="w-full h-full object-cover"
+                alt="Profile"
+              />
             </div>
             <span>Profile</span>
           </Link>
-        </div>
+
+          <div className="w-px h-4 bg-white/10 mx-1" />
+
+          {/* Primary Create Action Trigger Button */}
+    <Link
+  to="/createtask"
+  className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider bg-gradient-to-r from-[#d4af37] to-[#aa8c2c] text-black shadow-[0_0_15px_rgba(212,175,55,0.25)] hover:opacity-95 transition-all active:scale-95 ml-1"
+>
+  <PlusSquare size={15} strokeWidth={2.2} />
+  <span>Post</span>
+</Link>
+
+        </nav>
+
       </div>
-    </nav>
+    </header>
   );
 };

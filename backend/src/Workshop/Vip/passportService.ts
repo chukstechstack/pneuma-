@@ -6,8 +6,7 @@ export interface UserProfile {
   username?: string | null;
   email?: string | null;
   password?: string | null;
-  first_name?: string | null;
-  last_name?: string | null;
+  full_name?: string | null;
   google_id?: string | null;
   avatar_url?: string | null;
   created_at?: string | Date;
@@ -25,8 +24,7 @@ interface MinimalUserBasic {
 
 interface InsertGoogleUserParams {
   username?: string | null;
-  first_name?: string | null;
-  last_name?: string | null;
+  full_name?: string | null;
   email: string;
   google_id: string;
 }
@@ -80,20 +78,18 @@ export const updateGoogleIdByEmail = async (google_Id: string, email: string): P
 
 export const insertGoogleUser = async ({
   username,
-  first_name,
-  last_name,
+  full_name,
   email,
   google_id,
 }: InsertGoogleUserParams): Promise<InsertGoogleUserResult | null> => {
   const newUser = await pool.query<InsertGoogleUserResult>(
     `INSERT INTO profiles (
       username, 
-      first_name, 
-      last_name,
+      full_name, 
       email, 
       google_id
-    ) VALUES ($1, $2, $3, $4, $5) RETURNING uuid, id, username, email`,
-    [username ?? null, first_name ?? null, last_name ?? null, email, google_id]
+    ) VALUES ($1, $2, $3, $4) RETURNING uuid, id, username, email`,
+    [username ?? null, full_name ?? null, email, google_id]
   );
   return newUser.rows[0] || null;
 };

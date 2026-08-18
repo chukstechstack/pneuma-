@@ -2,8 +2,7 @@ import pool from "@/Terminal/Supabase/supabaseConfig.js";
 
 export interface PendingRequestRow {
   requested_User_Uuid: string;
-  firstName: string | null;
-  lastName: string | null;
+  full_name: string | null;
   avatarUrl: string | null;
 }
 
@@ -13,8 +12,7 @@ export const fetchPendingRequestsQuery = async (
   const query = `
     SELECT 
       p.uuid AS "requested_User_Uuid", 
-      p.first_name AS "firstName", 
-      p.last_name AS "lastName", 
+      p.full_name,
       p.avatar_url AS "avatarUrl"
     FROM follows f
     JOIN profiles p ON f.follower_id = p.id

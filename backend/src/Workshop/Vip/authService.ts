@@ -5,8 +5,7 @@ interface UserProfile {
   uuid: string;
   email: string;
   password?: string | null;
-  first_name?: string | null;
-  last_name?: string | null;
+  full_name?: string | null;
   google_id?: string | null;
   avatar_url?: string | null;
   created_at?: string | Date;
@@ -14,8 +13,7 @@ interface UserProfile {
 
 interface RegisterUserParams {
   password?: string | null;
-  first_name?: string | null;
-  last_name?: string | null;
+  full_name?: string | null;
   email: string;
   google_id?: string | null;
   avatar_url?: string | null;
@@ -36,8 +34,7 @@ export const findUserRegistration = async (email: string): Promise<UserProfile |
 
 export const registerNewUser = async ({
   password,
-  first_name,
-  last_name,
+  full_name,
   email,
   google_id,
   avatar_url,
@@ -45,13 +42,12 @@ export const registerNewUser = async ({
   const result = await pool.query<RegisteredUserResult>(
     `INSERT INTO profiles (  
       password,
-      first_name,
-      last_name,
+      full_name,
       email,
       google_id, 
       avatar_url
-    ) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, uuid`,
-    [password ?? null, first_name ?? null, last_name ?? null, email, google_id ?? null, avatar_url ?? null]
+    ) VALUES ($1, $2, $3, $4, $5) RETURNING id, uuid`,
+    [password ?? null, full_name ?? null, email, google_id ?? null, avatar_url ?? null]
   );
 
   return result.rows[0] || null;

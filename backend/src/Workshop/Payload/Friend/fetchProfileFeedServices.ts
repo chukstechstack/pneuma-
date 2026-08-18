@@ -37,13 +37,13 @@ export const fetchSmartProfileFeedData = async (
 
   if (targetProfileUuid && targetProfileUuid !== "undefined" && targetProfileUuid !== "me") {
     profileRes = await pool.query<ProfileRow>(
-      `SELECT id, uuid, username, first_name, last_name, avatar_url, created_at 
+      `SELECT id, uuid, username, full_name, avatar_url, created_at 
        FROM profiles WHERE uuid = $1`,
       [targetProfileUuid]
     );
   } else {
     profileRes = await pool.query<ProfileRow>(
-      `SELECT id, uuid, username, first_name, last_name, avatar_url, created_at 
+      `SELECT id, uuid, username, full_name,  avatar_url, created_at 
        FROM profiles WHERE id = $1`,
       [loggedInUserProfileId]
     );

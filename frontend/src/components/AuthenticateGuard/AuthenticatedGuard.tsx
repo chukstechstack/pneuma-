@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import useInitializeUser from "@/hooks/useInitializeUser";
 import { useAuthStore } from "@store/useAuthStore";
-import FullPageLoader from "@components/Loader";
+import { FullPageLoader } from "@/components/Loaders/FullPageLoader"; 
 
 export const AuthenticatedGuard = ({ children }: { children: React.ReactNode }) => {
   const { userUuid } = useAuthStore() as { userUuid: string | null | undefined };

@@ -26,7 +26,7 @@
         "./src/Routes/*"
       ],
       "@Schema/*": [
-        "./src/Schema/*"
+        "./src/db/*"
       ],
       "@drizzle/*": [
         "./src/drizzle/*"

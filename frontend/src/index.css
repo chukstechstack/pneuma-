@@ -1,4 +1,14 @@
 @import "tailwindcss";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@keyframes infiniteTickerSlow { 
+  0% { transform: translateX(0); } 
+  100% { transform: translateX(-50%); } 
+}
+
+.animate-ticker-slow { 
+  animation: infiniteTickerSlow 45s linear infinite; 
+}
+
+/* Pause animation on hover for a high-end interactive touch */
+.animate-ticker-slow:hover {
+  animation-play-state: paused;
+}

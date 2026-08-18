@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ThumbsUp, MessageSquare, Repeat2 } from "lucide-react";
+import { Heart, MessageCircle, Share2 } from "lucide-react";
 
 interface TaskActionsProps {
   uuid: string;
@@ -24,42 +24,59 @@ export const TaskActions: React.FC<TaskActionsProps> = ({
     (localStorage.getItem("active_drawer") as string) || null,
   );
 
+  const defaultActionClass = "text-white/40";
+  const textCounterClass = "text-xs font-medium";
+
   return (
-    <>
-      <div className="pneuma-post-action-dock">
-        <div className="action-buttons-left">
-          <button
-            onClick={() => handle_Like_Reply_Share_Interaction(uuid, "like")}
-            className={`actionButton like-btn ${is_liked ? "active" : ""}`}
-          >
-            <ThumbsUp size={16} strokeWidth={2} className={is_liked ? "icon-active" : ""} />
-            <span className="action-label">Support</span>
-            <span className="inline-action-counter">{likes_count || 0}</span>
-          </button>
+    <div className="flex items-center gap-8 pt-3 pb-2 sm:pb-0 border-t border-white/[0.04] mt-4">
+      
+      {/* Like Button */}
+      <button
+        onClick={() => handle_Like_Reply_Share_Interaction(uuid, "like")}
+        className={`flex items-center gap-2 transition-colors cursor-pointer group ${
+          is_liked ? "text-rose-500" : `hover:text-white ${defaultActionClass}`
+        }`}
+      >
+        <Heart 
+          size={18} 
+          strokeWidth={1.5}
+          className={`transition-transform duration-200 group-hover:scale-110 ${
+            is_liked ? "fill-rose-500 text-rose-500" : ""
+          }`} 
+        />
+        <span className={textCounterClass}>{likes_count || 0}</span>
+      </button>
 
-          <button
-            onClick={() => {
-              const nextState = openDrawerId === uuid ? null : uuid;
-              setOpenDrawerId(nextState);
-              nextState ? localStorage.setItem("active_drawer", uuid) : localStorage.removeItem("active_drawer");
-            }}
-            className="actionButton comment-btn"
-          >
-            <MessageSquare size={16} strokeWidth={2} />
-            <span className="action-label">Reply</span>
-            <span className="inline-action-counter">{comments_count || 0}</span>
-          </button>
+      {/* Comment Button */}
+      <button
+        onClick={() => {
+          const nextState = openDrawerId === uuid ? null : uuid;
+          setOpenDrawerId(nextState);
+          nextState ? localStorage.setItem("active_drawer", uuid) : localStorage.removeItem("active_drawer");
+        }}
+        className={`flex items-center gap-2 hover:text-white transition-colors cursor-pointer group ${defaultActionClass}`}
+      >
+        <MessageCircle size={18} strokeWidth={1.5} className="transition-transform duration-200 group-hover:scale-110" />
+        <span className={textCounterClass}>{comments_count || 0}</span>
+      </button>
 
-          <button
-            onClick={() => handle_Like_Reply_Share_Interaction(uuid, "repost")}
-            className={`actionButton repost-btn ${is_reposted ? "active" : ""}`}
-          >
-            <Repeat2 size={16} strokeWidth={2} className={is_reposted ? "icon-active" : ""} />
-            <span className="action-label">Re-Send</span>
-            <span className="inline-action-counter">{reposts_count || 0}</span>
-          </button>
-        </div>
-      </div>
-    </>
+      {/* Share / Repost Button */}
+      <button
+        onClick={() => handle_Like_Reply_Share_Interaction(uuid, "repost")}
+        className={`flex items-center gap-2 transition-colors cursor-pointer group ${
+          is_reposted ? "text-emerald-400" : `hover:text-white ${defaultActionClass}`
+        }`}
+      >
+        <Share2 
+          size={18} 
+          strokeWidth={1.5}
+          className={`transition-transform duration-200 group-hover:scale-110 ${
+            is_reposted ? "text-emerald-400" : ""
+          }`} 
+        />
+        <span className={textCounterClass}>{reposts_count || 0}</span>
+      </button>
+
+    </div>
   );
 };

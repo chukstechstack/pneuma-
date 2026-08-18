@@ -18,6 +18,14 @@ export const loginUser = (
     req.login(user, (err) => {
       if (err) return next(err);
 
+      // 👉 1. Set cookie lifetime based on the rememberDevice flag attached to the user object
+      if (req.session) {
+        const rememberDevice = user.rememberDevice === true;
+        req.session.cookie.maxAge = rememberDevice
+          ? 30 * 24 * 60 * 60 * 1000 // 30 Days if checked
+          : undefined;               // Session cookie (clears when browser closes)
+      }
+
       req.session.save(async (sessionErr) => {
         if (sessionErr) return next(sessionErr);
 

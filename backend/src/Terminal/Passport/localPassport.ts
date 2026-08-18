@@ -3,13 +3,16 @@ import { Strategy as LocalStrategy } from "passport-local";
 import bcryptjs from "bcryptjs";
 import { findUserByEmail } from "../../Workshop/Vip/passportService.js";
 import LoginError from "@Toolkits/Login/loginError.js";
-
 export const initLocalStrategy = (passport: PassportStatic) => {
   passport.use(
     "local",
     new LocalStrategy(
-      { usernameField: "email", passwordField: "password" },
-      async (email, password, done) => {
+      { 
+        usernameField: "email", 
+        passwordField: "password",
+        passReqToCallback: true // <-- 1. Enable request object here
+      },
+      async (req, email, password, done) => { // <-- 2. Grab req as first argument
         try {
           if (!email) throw new LoginError("email required", 400);
           if (!password) throw new LoginError("password required", 400);
@@ -22,8 +25,11 @@ export const initLocalStrategy = (passport: PassportStatic) => {
 
           const isValid = await bcryptjs.compare(password, user.password);
           if (isValid) {
-            delete user.password; // Strip the sensitive hash
-            return done(null, user);
+            delete user.password; 
+            
+            // 3. Attach rememberDevice temporarily to the user object so the controller can read it
+            const rememberDevice = req.body?.rememberDevice === true;
+            return done(null, { ...user, rememberDevice });
           } else {
             return done(null, false, { message: "incorrect Password" });
           }

@@ -29,7 +29,7 @@ export const fetchGlobalTasksFeed = async (
   let queryText = `
     SELECT 
       c.*,
-      CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
+      p.full_name AS author_name, 
       p.avatar_url,
       p.uuid AS author_profile_uuid, 
 

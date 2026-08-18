@@ -9,31 +9,32 @@ import { JournalFeedPage, JournalPageParams, JournalTask } from "./Page.types";
 import { useInteraction } from "@hooks/useInteraction";
 
 export const useJournalData = () => {
-  const { targetUserUuid } = useParams<JournalPageParams>();
+  const { targetUserUuid: routeTargetUuid } = useParams<JournalPageParams>();
   const userUuid = (useAuthStore() as any).userUuid;
   const navigate = useNavigate();
+
+  // 👉 Fallback to logged-in user's UUID if the route doesn't specify one or is "sanctuary"
+  const targetUserUuid = (!routeTargetUuid || routeTargetUuid === "sanctuary") 
+    ? userUuid 
+    : routeTargetUuid;
+
   const isOwner: boolean = userUuid === targetUserUuid;
   const { mutate: interact } = useInteraction([["journalFeed"]]);
-// Ensure a string is passed to useDeleteTask (avoid undefined)
-const { mutate: deleteSelectedTask } = useDeleteTask(targetUserUuid ?? "");
+  const { mutate: deleteSelectedTask } = useDeleteTask(targetUserUuid ?? "");
 
   const { ref, inView } = useInView();
-
-  console.log("TargetUserUuid" + targetUserUuid);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery<JournalFeedPage, Error, InfiniteData<JournalFeedPage>, [string, string | undefined]>({
       queryKey: ["journalFeed", targetUserUuid],
- 
-      enabled: Boolean(targetUserUuid && targetUserUuid !== "sanctuary"),
+      
+      // 👉 Enable query once targetUserUuid becomes available (either from route or auth store)
+      enabled: Boolean(targetUserUuid),
 
       queryFn: async ({ pageParam = "Yes_Is_FreshLoad" }: { pageParam?: unknown }) => {
-        console.log(" 🔍 Attempting to Fetching Journal Feed");
-        
         const res = await api.get<JournalFeedPage>(
           `/task/journalfeed/${targetUserUuid}?fresh_load=${pageParam}`,
         );
-        console.log(" ✔️💥 Fecthed Journal data:", res);
         return res.data;
       },
       initialPageParam: "Yes_Is_FreshLoad",

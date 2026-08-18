@@ -55,7 +55,7 @@ export const executeInsertComment = async (
     const newComment = result.rows[0];
     
     const profileUser = await dbClient.query<ProfileRow>(
-      "SELECT CONCAT(first_name, ' ', last_name) AS author_name, avatar_url FROM profiles WHERE id = $1", 
+      "SELECT full_name  AS author_name, avatar_url FROM profiles WHERE id = $1", 
       [user_id]
     );
 

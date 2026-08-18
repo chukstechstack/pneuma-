@@ -25,7 +25,7 @@ export const fetchCommentsQuery = async (
       c.parent_id,
       c.comment_text,
       c.created_at,
-      CONCAT(p.first_name, ' ', p.last_name) AS author_name,
+      p.full_name AS author_name,
       p.avatar_url
     FROM comments c
     LEFT JOIN profiles p ON c.user_id = p.id

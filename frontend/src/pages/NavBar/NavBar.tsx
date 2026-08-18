@@ -9,6 +9,7 @@ const NavBar: React.FC = () => {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const { userUuid } = useAuthStore();
 
   useEffect(() => {
@@ -31,11 +32,20 @@ const NavBar: React.FC = () => {
 
   return (
     <>
-      <MobileNavBar isVisible={isVisible} userUuid={userUuid ?? null} pathname={location.pathname} />
-      <DesktopNavBar userUuid={userUuid ?? null} pathname={location.pathname} />
+      <MobileNavBar 
+        isVisible={isVisible} 
+        userUuid={userUuid ?? null} 
+        pathname={location.pathname} 
+        onOpenCreate={() => setIsCreateOpen(true)}
+      />
+      <DesktopNavBar 
+        userUuid={userUuid ?? null} 
+        pathname={location.pathname} 
+        onOpenCreate={() => setIsCreateOpen(true)}
+      />
+
     </>
   );
 };
 
 export default NavBar;
-

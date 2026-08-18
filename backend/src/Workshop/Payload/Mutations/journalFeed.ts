@@ -32,7 +32,6 @@ export const fetchUserJournalFeed = async (
   loggedInUserUuid?: string | null,
   fresh_load_pointer?: string | number | null
 ): Promise<FetchUserJournalFeedResult> => {
-  // 1. Resolve UUIDs to numeric IDs in a single clean query lookup if possible, or parallel
   let loggedInNumericId: number | string | null = null;
   let journalOwnerNumericId: number | string | null = null;
 
@@ -53,13 +52,12 @@ export const fetchUserJournalFeed = async (
 
   const queryParams: (string | number | Date | null)[] = [loggedInNumericId, journalOwnerNumericId];
 
-  // 2. Streamlined query using a shared select wrapped in a UNION ALL
   let queryText = `
     SELECT * FROM (
       -- Layer 1: Original posts by the user
       SELECT 
         c.*, 
-        CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
+        p.full_name AS author_name, 
         p.avatar_url, 
         p.uuid AS author_profile_uuid,
         FALSE AS is_repost_badge, 
@@ -77,11 +75,11 @@ export const fetchUserJournalFeed = async (
       -- Layer 2: Reposted posts
       SELECT 
         c.*, 
-        CONCAT(p.first_name, ' ', p.last_name) AS author_name, 
+        p.full_name AS author_name, 
         p.avatar_url, 
         p.uuid AS author_profile_uuid,
         TRUE AS is_repost_badge, 
-        CONCAT(rp.first_name, ' ', rp.last_name) AS reposted_by_name,
+        rp.full_name AS reposted_by_name,
         (SELECT COUNT(*)::INT FROM comments WHERE content_id = c.id) AS comments_count,
         EXISTS(SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like') AS is_liked,
         EXISTS(SELECT 1 FROM interactions WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost') AS is_reposted,
@@ -112,3 +110,4 @@ export const fetchUserJournalFeed = async (
 
   return { journalFeedTasks, next_post_timestamp };
 };
+

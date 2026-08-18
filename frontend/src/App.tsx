@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import {LandingPage}  from "@/pages/LandingPage/LandingPage"
+import { LandingPage } from "@/pages/LandingPage/LandingPage";
 import Login from "@/pages/Login/Login";
 import Register from "@/pages/Register/Register";
 import HomeFeed from "@pages/HomeFeed/HomeFeed";
@@ -10,12 +10,11 @@ import PatchFeed from "@/pages/PatchFeed/PatchFeed";
 import Profile from "@/pages/Profile/Profile";
 import Pending_Request from "@/pages/PendingRequest/PendingRequest";
 import JournalPage from "@/pages/JournalFeed/Feed";
+import TermsPage from "./pages/Terms&Conditions/TermsPage"; // 👉 Make sure path matches your folder structure
 
 import { SocketWatcher } from "@/components/SocketWatcher/SocketWatcher";
 import { AuthenticatedGuard } from "@/components/AuthenticateGuard/AuthenticatedGuard";
 import { PresenceContainer } from "@/components/PresenceContainer/PresenceContainer";
-
-
 
 const App = () => {
   return (
@@ -23,9 +22,13 @@ const App = () => {
       <SocketWatcher />
       <Router>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/termspage" element={<TermsPage />} /> {/* 👉 Moved outside so anyone can view it */}
+
+          {/* Protected Routes */}
           <Route
             element={
               <AuthenticatedGuard>
