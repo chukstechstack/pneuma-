@@ -24,30 +24,18 @@ export const fetchGlobalTasksFeed = async (
     console.log("Resolved User ID:", userId);
   }
 
-  const queryParams: (string | number | Date | null)[] = [userId];
+  // Start with an empty parameters array since this is a global feed
+  const queryParams: (string | number | Date | null)[] = [];
 
   let queryText = `
     SELECT 
       c.*,
-      p.full_name AS author_name, 
+      p.full_name AS author_name,
       p.avatar_url,
       p.uuid AS author_profile_uuid, 
-
-      EXISTS (
-        SELECT 1 FROM interactions 
-        WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'like'
-      ) AS is_liked,
       
-      EXISTS (
-        SELECT 1 FROM interactions 
-        WHERE content_id = c.id AND user_id = $1 AND interaction_type = 'repost'
-      ) AS is_reposted,
-      
-      (
-        SELECT status FROM follows 
-        WHERE follower_id = $1 AND following_id = c.user_id
-        LIMIT 1
-      ) AS relation_status,
+      FALSE AS is_liked,
+      FALSE AS is_reposted,
       
       (
         SELECT COUNT(*)::INT FROM comments 
@@ -58,21 +46,22 @@ export const fetchGlobalTasksFeed = async (
     LEFT JOIN profiles p ON c.user_id = p.id 
     WHERE c.created_at <= NOW()`;
 
+  // Only add pagination parameter if a valid fresh_load_pointer exists
   if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad' && !isNaN(Number(fresh_load_pointer))) {
     const last_post_creation_date = new Date(Number(fresh_load_pointer));
-    queryText += ` AND c.created_at < $2 `;
     queryParams.push(last_post_creation_date);
+    queryText += ` AND c.created_at < $1 `;
   }
 
   queryText += ` ORDER BY c.created_at DESC LIMIT 40`;
 
-  console.log("🛠️ --- EXECUTING Journal FEED QUERY ---");
-  console.log("Parameter for Journal Feeds [userId, pagination]:", queryParams);
+  console.log("🛠️ --- EXECUTING Global Tasks FEED QUERY ---");
+  console.log("Parameter for Global Feeds [pagination]:", queryParams);
 
   const result = await pool.query<TaskItem>(queryText, queryParams);
   const tasksFeed = result.rows;
 
-  console.log(`📌 Rows returned from PostgreSQL Journal Feed: ${tasksFeed.length}`);
+  console.log(`📌 Rows returned from PostgreSQL Global Feed: ${tasksFeed.length}`);
 
   let next_post_timestamp: number | null = null;
   if (tasksFeed.length === 40) {

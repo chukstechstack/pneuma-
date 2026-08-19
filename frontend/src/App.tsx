@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 
 import { LandingPage } from "@/pages/LandingPage/LandingPage";
 import Login from "@/pages/Login/Login";
@@ -8,13 +8,12 @@ import HomeFeed from "@pages/HomeFeed/HomeFeed";
 import CreateTask from "@/pages/CreateTask/CreateTask";
 import PatchFeed from "@/pages/PatchFeed/PatchFeed";
 import Profile from "@/pages/Profile/Profile";
-import Pending_Request from "@/pages/PendingRequest/PendingRequest";
 import JournalPage from "@/pages/JournalFeed/Feed";
-import TermsPage from "./pages/Terms&Conditions/TermsPage"; // 👉 Make sure path matches your folder structure
+import TermsPage from "./pages/Terms&Conditions/TermsPage"; 
+import UpdatePassword from "../src/pages/UpdatePassword/UpdatePassword";
 
-import { SocketWatcher } from "@/components/SocketWatcher/SocketWatcher";
+import { SocketWatcher } from "@/services/SocketWatcher/SocketWatcher";
 import { AuthenticatedGuard } from "@/components/AuthenticateGuard/AuthenticatedGuard";
-import { PresenceContainer } from "@/components/PresenceContainer/PresenceContainer";
 
 const App = () => {
   return (
@@ -25,23 +24,17 @@ const App = () => {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/termspage" element={<TermsPage />} /> {/* 👉 Moved outside so anyone can view it */}
+          <Route path="/termspage" element={<TermsPage />} /> 
 
-          {/* Protected Routes */}
-          <Route
-            element={
-              <AuthenticatedGuard>
-                <PresenceContainer />
-              </AuthenticatedGuard>
-            }
-          >
+          {/* Protected Routes (Cleaned up and flattened) */}
+          <Route element={<AuthenticatedGuard><Outlet /></AuthenticatedGuard>}>
             <Route path="/homefeed" element={<HomeFeed />} />
             <Route path="/createtask" element={<CreateTask />} />
             <Route path="/patchfeed/:uuid" element={<PatchFeed />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:targetProfileUuid" element={<Profile />} />
-            <Route path="/pending-requests" element={<Pending_Request />} />
             <Route path="/feed/:targetUserUuid" element={<JournalPage />} />
           </Route>
         </Routes>

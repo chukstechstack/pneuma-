@@ -13,7 +13,7 @@ export const useJournalData = () => {
   const userUuid = (useAuthStore() as any).userUuid;
   const navigate = useNavigate();
 
-  // 👉 Fallback to logged-in user's UUID if the route doesn't specify one or is "sanctuary"
+
   const targetUserUuid = (!routeTargetUuid || routeTargetUuid === "sanctuary") 
     ? userUuid 
     : routeTargetUuid;

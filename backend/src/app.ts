@@ -12,7 +12,7 @@ const app = express();
 const PostgresStore = pgSession(session);
 
 app.use(cors({
-  origin: ['https://pneuma-frontend-oijl.onrender.com', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
+  origin: ['https://pneuma-frontend-oijl.onrender.com', 'http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:3001'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
   credentials: true
@@ -61,7 +61,7 @@ app.use("/task", taskRoute);
 
 app.use((err: Error | AppError, req: Request, res: Response, next: NextFunction): void => {
   console.error(err);
-  
+
   const statusCode = err instanceof AppError ? err.statusCode : 500;
   const message = err.message || "Something went wrong";
 

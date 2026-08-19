@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { queryClient } from "@/api/queryClient";
-import { setupSocketListeners } from "@services/socketService";
+
 import socket from "@/api/socketApi";
 import { useAuthStore } from "@store/useAuthStore";
 import { UserUuidPayload } from "@shared/types";
@@ -11,10 +11,9 @@ export const SocketWatcher = () => {
   useEffect(() => {
     if (!userUuid) return;
 
-    setupSocketListeners(queryClient);
-
     const onConnect = () => {
       console.log("✅ Socket Connected! ID:", socket.id);
+
       const payload: UserUuidPayload = { userUuid };
       socket.emit("current_Logged_In_User_Uuid", payload);
       console.log("📤 Emitting UUID:", userUuid);
@@ -24,7 +23,9 @@ export const SocketWatcher = () => {
 
     if (socket.connected) {
       console.log("⚡ Already connected, emitting UUID directly");
+
       const payload: UserUuidPayload = { userUuid };
+      
       socket.emit("current_Logged_In_User_Uuid", payload);
       console.log(" User Emmited", { userUuid });
     } else {

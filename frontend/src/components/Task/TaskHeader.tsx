@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Clock3, MoreHorizontal, UserPlus, UserCheck } from "lucide-react";
-import { useConnectionMutation } from "@hooks/useConnections.js";
+import { Clock3, MoreHorizontal } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../store/ReduxStore"; 
+import { toggleFollowStatus } from "../../hooks/followsSlice"; 
 
 interface TaskHeaderProps {
   task: {
     uuid: string;
     author_name?: string | null;
     author_profile_uuid: string;
-    relation_status?: string | null;
     created_at?: string | null;
   };
   isOwner: boolean;
@@ -26,9 +27,26 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
   deleteTask,
   fallbackUserAvatar,
 }) => {
-  const { uuid, author_name, author_profile_uuid, relation_status, created_at } = task;
-  const { mutate: toggleConnection } = useConnectionMutation(author_profile_uuid);
+  const { uuid, author_name, author_profile_uuid, created_at } = task;
   const [showMenu, setShowMenu] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
+
+  // 🔍 1. Checks if the author's card exists inside your Redux storage object
+  const isFollowing = useSelector(
+    (state: RootState) => !!state.follows.followingStatus[author_profile_uuid]
+  );
+
+  // 📦 2. Packs up the whole user details box and hands it to the dispatcher!
+  const handleToggleFollow = () => {
+    dispatch(
+      toggleFollowStatus({
+        uuid: author_profile_uuid,
+        full_name: author_name || "Sanctuary User",
+        avatar_url: fallbackUserAvatar,
+      })
+    );
+  };
 
   const formatTaskDate = (rawDateString: string | null | undefined): string => {
     if (!rawDateString) return "Now";
@@ -50,11 +68,9 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
   };
 
   return (
-    // Items center ensures everything aligns perfectly with the smaller avatar
     <div className="flex items-center justify-between gap-3 mb-5 relative">
       <div className="flex items-center gap-3">
         <Link to={`/profile/${author_profile_uuid}`} className="relative block shrink-0">
-          {/* Premium smaller avatar: 9 -> 8 (32px) */}
           <div className="w-9 h-9 rounded-full overflow-hidden ring-1 ring-white/10">
             <img 
               src={fallbackUserAvatar} 
@@ -63,37 +79,31 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
             />
           </div>
         </Link>
-
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
+
             <Link to={`/profile/${author_profile_uuid}`} className="font-semibold text-white text-sm hover:text-[#d4af37] transition-colors">
               {author_name || "Sanctuary User"}
             </Link>
+
             {currentUserUuid !== author_profile_uuid && (
               <>
                 <span className="text-white/20 font-light">·</span>
                 <button
-                  onClick={() => {
-                    const action = relation_status === "active" || relation_status === "pending" ? "disconnect" : "connect";
-                    toggleConnection(action as unknown as any);
-                  }}
-                  className={`text-xs font-medium transition-colors ${
-                    relation_status === "active" 
-                      ? "text-white/60 hover:text-red-400" 
-                      : relation_status === "pending" 
-                      ? "text-white/40 italic"
-                      : "text-[#d4af37] hover:text-[#e5c05e]"
+                  onClick={handleToggleFollow}
+                  className={`text-xs font-medium transition-colors cursor-pointer ${
+                    isFollowing 
+                      ? "text-emerald-400 hover:text-red-400"  // 👉 Green when connected
+                      : "text-[#d4af37] hover:text-[#e5c05e]"   // 👉 Gold/Yellow when not connected
                   }`}
                 >
-                  {relation_status === "active" && "Following"}
-                  {relation_status === "pending" && "Pending"}
-                  {(!relation_status || relation_status === "none") && "Follow"}
+                  {/* ✨ 3. Fixed labels: Shows Connected when true, Connect when false */}
+                  {isFollowing ? "Connected" : "Connect"}
                 </button>
               </>
             )}
           </div>
-          
-          {/* Tighter timestamp */}
+
           <div className="flex items-center gap-1.5 text-xs text-white/30">
             <Clock3 size={10} />
             <span>{formatTaskDate(created_at)}</span>

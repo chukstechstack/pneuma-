@@ -10,7 +10,7 @@ interface TaskProps {
   isOwner: boolean;
   onDelete: () => void;
   onEdit: (uuid: string) => void;
-  onInteraction: (uuid: string, action: string) => void;
+  handle_Like_Reply_Share_Interaction?: (uuid: string, action: string) => void;
 }
 
 const fallbackAvatar =
@@ -22,7 +22,6 @@ const Task: React.FC<TaskProps> = ({
   isOwner,
   onDelete,
   onEdit,
-  onInteraction,
 }) => {
   const {
     uuid,
@@ -32,11 +31,6 @@ const Task: React.FC<TaskProps> = ({
     created_at,
     content,
     img,
-    is_liked,
-    is_reposted,
-    likes_count,
-    comments_count,
-    reposts_count,
   } = task;
 
   const taskHeaderInfo = {
@@ -51,14 +45,7 @@ const Task: React.FC<TaskProps> = ({
   };
 
   return (
-    // PREMIUM 2026 MODE:
-    // 1. sm:bg-[#0e0e10]: Softens the heavy deep black to a rich carbon.
-    // 2. sm:border sm:border-white/[0.04]: Keeps card structure on desktop.
-    // 3. sm:rounded-3xl sm:p-7: Desktop retains card look.
-    // 4. Mobile: ZERO background, ZERO border, ZERO padding. Fluid screen.
     <article className="bg-transparent sm:bg-[#0e0e10] sm:border sm:border-white/[0.04] transition-all duration-300 sm:rounded-3xl p-0 sm:p-7 mb-10 sm:shadow-xl overflow-hidden">
-      
-      {/* Added px-5 to mobile so text doesn't touch absolute edges, but images do. */}
       <div className="px-5 sm:px-0">
         <TaskHeader
           task={taskHeaderInfo}
@@ -71,20 +58,9 @@ const Task: React.FC<TaskProps> = ({
 
         <TaskBody content={content} img={img} />
 
-        <TaskActions
-          uuid={uuid}
-          is_liked={is_liked}
-          is_reposted={is_reposted}
-          likes_count={likes_count}
-          comments_count={comments_count}
-          reposts_count={reposts_count}
-          handle_Like_Reply_Share_Interaction={onInteraction}
-        />
+        {/* TaskActions now talks straight to Redux using only the task uuid */}
+        <TaskActions uuid={uuid} />
       </div>
-      
-      {/* Optional: subtle separator line only visible on desktop between posts, like Unsplash 
-      <div className="hidden sm:block h-px bg-white/5 mt-7" />
-      */}
     </article>
   );
 };

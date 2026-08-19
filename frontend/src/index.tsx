@@ -3,6 +3,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import App from "@/App";
 import { queryClient } from '@/api/queryClient';
 import './index.css' // <--- Ensure this line exists
+import { Provider } from "react-redux"
+import { store   } from "../src/store/ReduxStore"
 
 
 
@@ -15,6 +17,11 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
     <App />
+    </Provider>
+
   </QueryClientProvider>
 );
+
+

@@ -141,3 +141,25 @@ CREATE TABLE messages (
 
 ALTER TABLE follows 
 ADD COLUMN status TEXT NOT NULL DEFAULT 'pending';
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  sender_uuid UUID NOT NULL,
+  recipient_uuid UUID NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  sender_uuid UUID NOT NULL,
+  recipient_uuid UUID NOT NULL,
+  content TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Optional: Add an index for lightning-fast conversation lookups between two users
+CREATE INDEX IF NOT EXISTS idx_messages_participants 
+ON messages (sender_uuid, recipient_uuid);

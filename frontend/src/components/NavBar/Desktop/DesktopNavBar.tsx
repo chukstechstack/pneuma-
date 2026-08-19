@@ -1,22 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import doveLogoUrl from "@assets/pneuma.png";
-import { 
-  Home, 
-  PlusSquare, 
-  BookOpen, 
-  MessageSquare, 
-  Bell, 
-  Search 
-} from "lucide-react";
+import { Home, PlusSquare, BookOpen, Bell, Search } from "lucide-react";
+import { DesktopMessagesDropdown } from "./MessagesDropdown";
 
 interface DesktopNavBarProps {
   userUuid: string | null;
   pathname: string;
-  onOpenCreate: () => void; // Added prop
+  onOpenCreate: () => void;
+  onSelectConversation: (partnerUuid: string) => void;
 }
 
-export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ userUuid, pathname, onOpenCreate }) => {
+export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ 
+  userUuid, 
+  pathname, 
+  onOpenCreate,
+  onSelectConversation 
+}) => {
+  const [isInboxOpen, setIsInboxOpen] = useState(false);
+
   const isActive = (path: string) => pathname.startsWith(path);
 
   const getLinkClasses = (path: string) => `
@@ -41,7 +43,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ userUuid, pathname
           </span>
         </Link>
 
-        {/* Minimal Integrated Search */}
+        {/* Search */}
         <div className="relative max-w-xs w-full mx-2">
           <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
           <input
@@ -53,7 +55,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ userUuid, pathname
           />
         </div>
 
-        {/* Navigation Control Links */}
+        {/* Nav Links */}
         <nav className="flex items-center gap-1">
           <Link to="/homefeed" className={getLinkClasses("/homefeed")}>
             <Home size={15} strokeWidth={isActive("/homefeed") ? 2 : 1.5} />
@@ -65,15 +67,14 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ userUuid, pathname
             <span>Journal</span>
           </Link>
 
-          <Link to="/messages" className={getLinkClasses("/messages")}>
-            <div className="relative flex items-center">
-              <MessageSquare size={15} strokeWidth={isActive("/messages") ? 2 : 1.5} />
-              <span className="absolute -top-1.5 -right-2 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md">
-                9
-              </span>
-            </div>
-            <span className="ml-1">Messages</span>
-          </Link>
+          {/* ✅ Clean integration without wrapper bubbling bugs */}
+          <DesktopMessagesDropdown
+            isOpen={isInboxOpen}
+            onToggle={() => setIsInboxOpen((prev) => !prev)}
+            onClose={() => setIsInboxOpen(false)}
+            onSelectConversation={onSelectConversation}
+            getLinkClasses={getLinkClasses}
+          />
 
           <Link to="/notifications" className={getLinkClasses("/notifications")}>
             <div className="relative flex items-center">
@@ -98,14 +99,13 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ userUuid, pathname
 
           <div className="w-px h-4 bg-white/10 mx-1" />
 
-          {/* Primary Create Action Trigger Button */}
-    <Link
-  to="/createtask"
-  className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider bg-gradient-to-r from-[#d4af37] to-[#aa8c2c] text-black shadow-[0_0_15px_rgba(212,175,55,0.25)] hover:opacity-95 transition-all active:scale-95 ml-1"
->
-  <PlusSquare size={15} strokeWidth={2.2} />
-  <span>Post</span>
-</Link>
+          <Link
+            to="/createtask"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider bg-gradient-to-r from-[#d4af37] to-[#aa8c2c] text-black shadow-[0_0_15px_rgba(212,175,55,0.25)] hover:opacity-95 transition-all active:scale-95 ml-1"
+          >
+            <PlusSquare size={15} strokeWidth={2.2} />
+            <span>Post</span>
+          </Link>
 
         </nav>
 

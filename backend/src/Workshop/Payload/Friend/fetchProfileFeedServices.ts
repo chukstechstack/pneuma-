@@ -4,15 +4,12 @@ export interface ProfileRow {
   id: number | string;
   uuid: string;
   username: string;
-  first_name: string | null;
-  last_name: string | null;
+  full_name: string | null; 
   avatar_url: string | null;
   created_at: string | Date;
 }
 
-export interface FollowRow {
-  status: string;
-}
+// 🛒 FollowRow is no longer needed since we aren't querying the follows table!
 
 export interface TaskRow {
   id: number | string;
@@ -43,7 +40,7 @@ export const fetchSmartProfileFeedData = async (
     );
   } else {
     profileRes = await pool.query<ProfileRow>(
-      `SELECT id, uuid, username, full_name,  avatar_url, created_at 
+      `SELECT id, uuid, username, full_name, avatar_url, created_at 
        FROM profiles WHERE id = $1`,
       [loggedInUserProfileId]
     );
@@ -57,43 +54,19 @@ export const fetchSmartProfileFeedData = async (
   const targetProfileNumericId = targetProfileData.id;
   const isOwner = String(loggedInUserProfileId) === String(targetProfileNumericId);
 
-  let relationStatus: string | null = null;
-  let visibleTasks: TaskRow[] = [];
-
-  if (!isOwner) {
-    const followCheck = await pool.query<FollowRow>(
-      `SELECT status 
-       FROM follows 
-       WHERE (
-          (follower_id = $1 AND following_id = $2) 
-          OR 
-          (follower_id = $2 AND following_id = $1)
-       ) 
-       AND status = 'active'
-       LIMIT 1`,
-      [loggedInUserProfileId, targetProfileNumericId]
-    );
-
-    if (followCheck.rows.length > 0) {
-      relationStatus = "active";
-    }
-  }
-
-  if (isOwner || relationStatus === "active") {
-    const taskRes = await pool.query<TaskRow>(`
-        SELECT id, uuid, content, img, created_at
-        FROM content
-        WHERE user_id = $1
-        ORDER BY created_at DESC
-        LIMIT 5
-    `, [targetProfileNumericId]);
-    visibleTasks = taskRes.rows;
-  }
+  // 🔓 ALL LOCKS DELETED: Always fetch the 5 newest journal scrolls for everyone!
+  const taskRes = await pool.query<TaskRow>(`
+      SELECT id, uuid, content, img, created_at
+      FROM content
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      LIMIT 5
+  `, [targetProfileNumericId]);
 
   return {
     profile: targetProfileData,
     isOwner,
-    relationStatus,
-    tasks: visibleTasks,
+    relationStatus: null, // Hardcoded fallback since frontend handles tracking via Redux now
+    tasks: taskRes.rows,
   };
 };
