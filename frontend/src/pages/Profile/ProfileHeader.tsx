@@ -1,6 +1,7 @@
 import React from "react";
 import ProfileEngagement from "@/components/Profile/Engagement.js";
 import ProfileJournal from "@components/Profile/Journal.jsx";
+import ProfileShareButton from "@/components/Profile/ProfileShareButton"; // 👈 Import the new file
 import NavBar from "@/pages/NavBar/NavBar";
 import { Users, Sparkles, Shield } from "lucide-react";
 
@@ -73,17 +74,22 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
               isOwner={isOwner}
               targetProfileUuid={profile.uuid} 
               targetFullName={profile.full_name || "Sanctuary Citizen"} 
-              targetAvatarUrl={profileAvatarUrl}           
+              targetAvatarUrl={profileAvatarUrl}          
               onMessageClick={onOpenMessageDock}
             />
 
-            <button 
-              onClick={onOpenInnerCircle}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-white/15 bg-white/[0.03] hover:border-[#d4af37] text-xs font-mono uppercase tracking-wider text-gray-200 hover:text-[#d4af37] transition-all shadow-md cursor-pointer"
-            >
-              <Users size={15} />
-              <span>{isOwner ? "My Inner Circle" : "Inner Circle"}</span>
-            </button>
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              {/* 👈 Clean extracted component */}
+              <ProfileShareButton profileUuid={profile.uuid} />
+
+              <button 
+                onClick={onOpenInnerCircle}
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-white/15 bg-white/[0.03] hover:border-[#d4af37] text-xs font-mono uppercase tracking-wider text-gray-200 hover:text-[#d4af37] transition-all shadow-md cursor-pointer"
+              >
+                <Users size={15} />
+                <span>{isOwner ? "My Inner Circle" : "Inner Circle"}</span>
+              </button>
+            </div>
           </div>
         </div>
 

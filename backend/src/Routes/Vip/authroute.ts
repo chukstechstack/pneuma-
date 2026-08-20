@@ -6,7 +6,7 @@ import { loginUser } from "@/Operator/Vip/loginUser.js";
 import { logoutUser } from "@/Operator/Vip/logoutUser.js";
 import { googleCallBack } from "@/Operator/Vip/googleCallback.js";
 import { googleLogin } from "@/Operator/Vip/googleLogin.js";
-
+import { forgotPassword } from "../../Operator/Vip/forgot-password"
 
 const authRoute = express.Router();
 
@@ -22,9 +22,11 @@ interface AuthenticatedRequest extends express.Request<EmptyParams> {
 }
 authRoute.post<EmptyParams>("/register", registerUser as express.RequestHandler<EmptyParams>);
 authRoute.post<EmptyParams>("/login", loginUser as express.RequestHandler<EmptyParams>);
-
+authRoute.post<EmptyParams>("/forgot-password",  forgotPassword as express.RequestHandler<EmptyParams>);
 authRoute.post<EmptyParams>("/logout", logoutUser);
 authRoute.get<EmptyParams>("/google/callback", googleCallBack);
+
+
 
 authRoute.get<EmptyParams>(
   "/me",

@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/store/ReduxStore"; 
 import { toggleFollowStatus } from "@/hooks/followsSlice"; 
 import { UserPlus, UserCheck, MessageSquare, PenSquare } from "lucide-react";
+import { LogoutButton } from "./LogoutButton"; // Adjust path as needed
 
 type ProfileEngagementProps = {
   isOwner: boolean;
@@ -10,6 +11,7 @@ type ProfileEngagementProps = {
   targetFullName: string;  
   targetAvatarUrl: string;  
   onMessageClick: () => void;
+  onEditClick?: () => void;
 };
 
 const ProfileEngagement = ({
@@ -18,6 +20,7 @@ const ProfileEngagement = ({
   targetFullName,
   targetAvatarUrl,
   onMessageClick,
+  onEditClick,
 }: ProfileEngagementProps) => {
   const dispatch = useDispatch(); 
   
@@ -27,14 +30,21 @@ const ProfileEngagement = ({
 
   return (
     <div className="flex items-center gap-3 w-full sm:w-auto">
-      {/* ============================ */}
       {isOwner ? (
-        <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/10 text-[#d4af37] text-xs font-mono uppercase tracking-wider hover:bg-[#d4af37] hover:text-[#010102] transition-all cursor-pointer shadow-sm">
-          <PenSquare size={15} />
-          <span>Edit Journal</span>
-        </button>
-        // ================================
+        /* Owner View: Edit Journal & Modular Logout Button */
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <button 
+            onClick={onEditClick}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/10 text-[#d4af37] text-xs font-mono uppercase tracking-wider hover:bg-[#d4af37] hover:text-[#010102] transition-all cursor-pointer shadow-sm"
+          >
+            <PenSquare size={15} />
+            <span>Edit Journal</span>
+          </button>
+
+          <LogoutButton className="flex-1 sm:flex-none" />
+        </div>
       ) : (
+        /* Visitor View: Connect & Message */
         <>
           <button
             onClick={() => 

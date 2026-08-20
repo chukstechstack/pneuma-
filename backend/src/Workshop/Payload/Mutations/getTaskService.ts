@@ -24,7 +24,6 @@ export const fetchGlobalTasksFeed = async (
     console.log("Resolved User ID:", userId);
   }
 
-  // Start with an empty parameters array since this is a global feed
   const queryParams: (string | number | Date | null)[] = [];
 
   let queryText = `
@@ -33,20 +32,12 @@ export const fetchGlobalTasksFeed = async (
       p.full_name AS author_name,
       p.avatar_url,
       p.uuid AS author_profile_uuid, 
-      
       FALSE AS is_liked,
-      FALSE AS is_reposted,
-      
-      (
-        SELECT COUNT(*)::INT FROM comments 
-        WHERE content_id = c.id
-      ) AS comments_count
-       
+      FALSE AS is_reposted
     FROM content c 
     LEFT JOIN profiles p ON c.user_id = p.id 
     WHERE c.created_at <= NOW()`;
 
-  // Only add pagination parameter if a valid fresh_load_pointer exists
   if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad' && !isNaN(Number(fresh_load_pointer))) {
     const last_post_creation_date = new Date(Number(fresh_load_pointer));
     queryParams.push(last_post_creation_date);

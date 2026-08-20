@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import api from "@/api/axios.js";
 import { useAuthStore } from "@store/useAuthStore";
 import { useDeleteTask } from "@hooks/useTaskMutations";
-import { useInteraction } from "@hooks/useInteraction";
 import { TaskItem } from "@shared/types";
 import { HomeFeedResponse } from "@pages/HomeFeed/Feed.Types";
 
@@ -15,15 +14,12 @@ export const useHomeFeed = () => {
   const { userUuid } = useAuthStore() as { userUuid: string | null };
 
   const { mutate: deleteSelectedTask } = useDeleteTask(userUuid ?? '');
-  const { mutate: interact } = useInteraction([["homeFeed"]]);
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery<HomeFeedResponse>({
       queryKey: ["homeFeed"],
       queryFn: async ({ pageParam = "Yes_Is_FreshLoad" }) => {
-        console.log("🔍 Attempting to Fetching HomeFeed with pointer:", pageParam);
         const res = await api.get(`/task?fresh_load=${pageParam}`);
-        console.log("🔄 HomeFeed Fetched", res);
         return res.data;
       },
       getNextPageParam: (lastPage: any) => lastPage.next_post_timestamp || undefined,
@@ -42,10 +38,6 @@ export const useHomeFeed = () => {
     }
   }, [inView, hasNextPage, fetchNextPage]);
 
-  const handle_Like_Reply_Share_Interaction = (taskUuid: string, type: string): void => {
-    interact({ taskUuid, type });
-  };
-
   return {
     tasks,
     userUuid,
@@ -54,7 +46,6 @@ export const useHomeFeed = () => {
     ref,
     isOwner,
     deleteSelectedTask,
-    handle_Like_Reply_Share_Interaction,
     navigate,
   };
 };

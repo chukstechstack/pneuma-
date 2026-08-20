@@ -3,7 +3,7 @@ import Task from "@components/Task/Task";
 import NavBar from "@/pages/NavBar/NavBar";
 import { TaskItem } from "@shared/types";
 import { useHomeFeed } from "@pages/HomeFeed/useHomeFeed";
-import { Sparkles } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 type NavBarProps = { currentUserUuid: string | null };
 const NavBarTyped = NavBar as React.ComponentType<NavBarProps>;
@@ -17,20 +17,18 @@ const HomeFeed: React.FC = () => {
     ref,
     isOwner,
     deleteSelectedTask,
-    handle_Like_Reply_Share_Interaction,
     navigate,
   } = useHomeFeed();
 
-
-if (isLoading && tasks.length === 0) {
-  return (
-    <div className="min-h-screen bg-[#030305] flex items-center justify-center">
-      <div className="text-[#d4af37] animate-pulse font-mono text-xs tracking-[0.25em]">
-        ENTERING SANCTUARY...
+  if (isLoading && tasks.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#030305] flex items-center justify-center">
+        <div className="text-[#d4af37] animate-pulse font-mono text-xs tracking-[0.25em]">
+          ENTERING SANCTUARY...
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#030305] text-white font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] relative overflow-x-hidden">
@@ -41,21 +39,30 @@ if (isLoading && tasks.length === 0) {
       <NavBarTyped currentUserUuid={userUuid} />
 
       <div className="max-w-[720px] mx-auto px-4 sm:px-6 pt-28 pb-36 relative z-10">
-        
-
-        {/* Central Feed Stream */}
         <main className="flex flex-col gap-6">
-          {tasks.map((task: TaskItem) => (
-            <Task
-              key={task.uuid || task.id}
-              task={task}
-              currentUserUuid={userUuid}
-              isOwner={isOwner(task)}
-              onDelete={() => deleteSelectedTask(task.uuid)}
-              onEdit={(uuid) => navigate(`/patchfeed/${uuid}`)}
-              onInteraction={handle_Like_Reply_Share_Interaction}
-            />
-          ))}
+          
+          {tasks.length === 0 ? (
+            <div className="text-center py-20 px-6 rounded-3xl border border-white/[0.06] bg-[#030305]/40 backdrop-blur-sm">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#d4af37]/10 border border-[#d4af37]/30 flex items-center justify-center text-[#d4af37]">
+                <BookOpen size={28} />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-white mb-1">No Testimonies in Stream</h3>
+              <p className="text-gray-400 text-sm max-w-sm mx-auto">
+                Your feed is currently quiet. Follow others or share your walk to populate your sanctuary feed.
+              </p>
+            </div>
+          ) : (
+            tasks.map((task: TaskItem) => (
+              <Task
+                key={task.uuid || task.id}
+                task={task}
+                currentUserUuid={userUuid}
+                isOwner={isOwner(task)}
+                onDelete={() => deleteSelectedTask(task.uuid)}
+                onEdit={(uuid) => navigate(`/patchfeed/${uuid}`)}
+              />
+            ))
+          )}
 
           {/* Infinite Scroll Trigger */}
           <div ref={ref} className="h-14 flex items-center justify-center mt-2">
@@ -66,6 +73,7 @@ if (isLoading && tasks.length === 0) {
               </div>
             )}
           </div>
+
         </main>
       </div>
     </div>

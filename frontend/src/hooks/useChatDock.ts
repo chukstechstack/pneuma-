@@ -13,12 +13,12 @@ export const useChatDock = (targetProfileUuid: string, isOpen: boolean) => {
   // Local message state
   const [messages, setMessages] = useState<Array<any>>([]);
 
-  // Sync initial fetched messages into local state when they load
+// ✅ FIX: Only sync when initialMessages load or when the chat opens/target changes
   useEffect(() => {
-    if (initialMessages) {
+    if (initialMessages && initialMessages.length > 0) {
       setMessages(initialMessages);
     }
-  }, [initialMessages]);
+  }, [targetProfileUuid, isOpen]); // Depend on chat identity/open state, not the array reference itself
 
   // Listen for live incoming messages and acknowledgments
   useEffect(() => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { TaskHeader } from "./TaskHeader";
 import { TaskBody } from "./TaskBody";
-import { TaskActions } from "./TaskActions";
+import { ActionContainer } from "./TaskAction/ActionContainer"; 
 import { TaskItem } from "@shared/types";
 
 interface TaskProps {
@@ -58,8 +58,8 @@ const Task: React.FC<TaskProps> = ({
 
         <TaskBody content={content} img={img} />
 
-        {/* TaskActions now talks straight to Redux using only the task uuid */}
-        <TaskActions uuid={uuid} />
+        {/* Just pass the uuid; the container fetches the counts automatically */}
+        <ActionContainer uuid={uuid} />
       </div>
     </article>
   );

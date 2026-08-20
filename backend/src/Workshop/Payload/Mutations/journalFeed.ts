@@ -7,16 +7,12 @@ interface JournalFeedItemRow {
   content: string | null;
   img: string | null;
   created_at: string | Date;
-  likes_count: number;
-  reposts_count: number;
-  shares_count: number;
   author_name: string | null;
   avatar_url: string | null;
   author_profile_uuid: string;
   user_id: number | string;
   is_repost_badge: boolean;
   reposted_by_name: string | null;
-  comments_count: number;
   is_liked: boolean;
   is_reposted: boolean;
 }
@@ -60,7 +56,6 @@ export const fetchUserJournalFeed = async (
       p.uuid AS author_profile_uuid,
       FALSE AS is_repost_badge, 
       NULL AS reposted_by_name,
-      (SELECT COUNT(*)::INT FROM comments WHERE content_id = c.id) AS comments_count,
       FALSE AS is_liked,
       FALSE AS is_reposted
     FROM content c 

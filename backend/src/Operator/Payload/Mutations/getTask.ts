@@ -60,5 +60,3 @@ export const getTask = async (
     next(err);
   }
 };
-
-

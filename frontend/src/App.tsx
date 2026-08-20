@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Outlet } from "react-router-dom";
 
-import { LandingPage } from "@/pages/LandingPage/LandingPage";
+import { LandingPage } from "./pages/LandingPage/LandingPage"
 import Login from "@/pages/Login/Login";
 import Register from "@/pages/Register/Register";
 import HomeFeed from "@pages/HomeFeed/HomeFeed";
@@ -9,8 +9,9 @@ import CreateTask from "@/pages/CreateTask/CreateTask";
 import PatchFeed from "@/pages/PatchFeed/PatchFeed";
 import Profile from "@/pages/Profile/Profile";
 import JournalPage from "@/pages/JournalFeed/Feed";
-import TermsPage from "./pages/Terms&Conditions/TermsPage"; 
+import TermsPage from "./pages/Terms&Conditions/TermsPage";
 import UpdatePassword from "../src/pages/UpdatePassword/UpdatePassword";
+import ForgotPassword from "./components/Login/ForgotPassword";
 
 import { SocketWatcher } from "@/services/SocketWatcher/SocketWatcher";
 import { AuthenticatedGuard } from "@/components/AuthenticateGuard/AuthenticatedGuard";
@@ -24,9 +25,10 @@ const App = () => {
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/update-password" element={<UpdatePassword />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/updatepassword" element={<UpdatePassword />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/termspage" element={<TermsPage />} /> 
+          <Route path="/termspage" element={<TermsPage />} />
 
           {/* Protected Routes (Cleaned up and flattened) */}
           <Route element={<AuthenticatedGuard><Outlet /></AuthenticatedGuard>}>
@@ -36,6 +38,7 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:targetProfileUuid" element={<Profile />} />
             <Route path="/feed/:targetUserUuid" element={<JournalPage />} />
+
           </Route>
         </Routes>
       </Router>

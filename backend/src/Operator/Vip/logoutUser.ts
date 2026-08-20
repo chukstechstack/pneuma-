@@ -1,20 +1,20 @@
 import LoginError from "@Toolkits/Login/loginError.js";
 import { NextFunction, Request, Response } from "express";
 
-type LogoutRequest = Request & {
-  logout: (callback: (err: any) => void) => void;
-};
-
 export const logoutUser = (req: Request, res: Response, next: NextFunction) => {
-  const logoutReq = req as LogoutRequest;
+  // Passport adds the logout method to Express Request automatically when configured
+  req.logout((err) => {
+    if (err) {
+      return next(new LoginError("log out failed", 500));
+    }
 
-  logoutReq.logout((err) => {
-    if (err) return next(new LoginError("log out failed", 500));
-
-    req.session.destroy((err) => {
-      if (err) return next(err);
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        return next(destroyErr);
+      }
+      
       res.clearCookie("connect.sid");
-      return res.json({ message: "logged out successfully" });
+      return res.status(200).json({ message: "logged out successfully" });
     });
   });
 };

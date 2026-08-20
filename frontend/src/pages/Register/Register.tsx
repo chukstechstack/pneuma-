@@ -41,8 +41,8 @@ const RegisterPage: React.FC = () => {
 
   return (
     <AuthLayout 
-      title="Begin Your Journey" 
-      subtitle="Create your account to start journaling daily and publishing your life book."
+      title="" 
+      subtitle=""
     >
       {serverError && (
         <div className="mb-6 p-4 rounded-xl bg-red-950/40 border border-red-500/40 text-red-200 text-sm">

@@ -104,8 +104,9 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
             )}
           </div>
 
-          <div className="flex items-center gap-1.5 text-xs text-white/30">
-            <Clock3 size={10} />
+          {/* Date & Time with clean, subtle muted styling */}
+          <div className="flex items-center gap-1.5 text-xs text-white/40 font-medium">
+            <Clock3 size={11} className="text-white/30" />
             <span>{formatTaskDate(created_at)}</span>
           </div>
         </div>

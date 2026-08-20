@@ -36,7 +36,7 @@ export const forgotPassword = async (req: Request<{}, {}, ForgotPasswordBody>, r
 
         // Tell Supabase where to redirect the user after clicking the email link
         const { error } = await supabase.auth.resetPasswordForEmail(email!.trim(), {
-            redirectTo: `${baseOrigin}/update-password`,
+            redirectTo: `${baseOrigin}/updatepassword`,
         });
 
         if (error) {

@@ -1,11 +1,29 @@
--- EXTENSIONS
+-- ========================================================
+-- 🗑️ SAFE CLEANUP (Drops old/conflicting tables)
+-- ========================================================
+DROP TABLE IF EXISTS comments CASCADE;
+DROP TABLE IF EXISTS task_interactions CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS conversation_participants CASCADE;
+DROP TABLE IF EXISTS conversations CASCADE;
+DROP TABLE IF EXISTS interactions CASCADE;
+DROP TABLE IF EXISTS follows CASCADE;
+DROP TABLE IF EXISTS content CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
+DROP TABLE IF EXISTS "session" CASCADE;
+DROP TYPE IF EXISTS interaction_type_enum CASCADE;
+
+-- ========================================================
+-- ⚙️ EXTENSIONS & ENUMS
+-- ========================================================
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
--- ENUMS
 CREATE TYPE interaction_type_enum AS ENUM ('like', 'repost', 'share');
 
 
+-- ========================================================
 -- 1. PROFILES TABLE
+-- ========================================================
 CREATE TABLE profiles (
     id SERIAL PRIMARY KEY,
     uuid UUID DEFAULT gen_random_uuid() UNIQUE,
@@ -23,7 +41,9 @@ CREATE TABLE profiles (
 );
 
 
--- 2. CONTENT TABLE
+-- ========================================================
+-- 2. CONTENT TABLE (Tasks / Posts / Sanctuary Logs)
+-- ========================================================
 CREATE TABLE content (
     id SERIAL PRIMARY KEY,
     uuid UUID DEFAULT gen_random_uuid() UNIQUE,
@@ -40,7 +60,9 @@ CREATE TABLE content (
 );
 
 
--- 3. SESSION TABLE
+-- ========================================================
+-- 3. EXPRESS SESSION TABLE
+-- ========================================================
 CREATE TABLE "session" (
     "sid" VARCHAR NOT NULL COLLATE "default",
     "sess" JSON NOT NULL,
@@ -50,7 +72,9 @@ CREATE TABLE "session" (
 ALTER TABLE "session" ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
--- 4. INTERACTIONS TABLE
+-- ========================================================
+-- 4. INTERACTIONS TABLE (Likes, Reposts, Shares)
+-- ========================================================
 CREATE TABLE interactions (
     id SERIAL PRIMARY KEY,
     uuid UUID DEFAULT gen_random_uuid() UNIQUE,
@@ -59,107 +83,84 @@ CREATE TABLE interactions (
     interaction_type interaction_type_enum NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     
-    -- Safety constraint to prevent duplication of identical actions
+    -- Prevents duplicate identical actions from the same user on the same post
     UNIQUE(user_id, content_id, interaction_type)
 );
 
 
--- 5. FOLLOWS TABLE
+-- ========================================================
+-- 5. COMMENTS TABLE (Fully Relational to Profiles & Content)
+-- ========================================================
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    uuid UUID DEFAULT gen_random_uuid() UNIQUE,
+    content_id INT REFERENCES content(id) ON DELETE CASCADE,
+    user_id INT REFERENCES profiles(id) ON DELETE CASCADE, -- Exact profile mapping!
+    content TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- ========================================================
+-- 6. FOLLOWS TABLE (With Request Status)
+-- ========================================================
 CREATE TABLE follows (
     id SERIAL PRIMARY KEY,
     follower_id INT REFERENCES profiles(id) ON DELETE CASCADE,  
     following_id INT REFERENCES profiles(id) ON DELETE CASCADE, 
+    status TEXT NOT NULL DEFAULT 'approved', -- 'pending' or 'approved'
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
-    -- Safety constraint to prevent repetitive follow pairings
+    -- Prevents duplicate follow pairings
     UNIQUE(follower_id, following_id)
 );
 
 
-
 -- ========================================================
--- 🛡️ BULLETPROOF BLUEPRINT INDEXES (SAFE FOR RE-RUNS)
+-- 7. MESSAGES TABLE (Direct 1-on-1 Chat Stream)
 -- ========================================================
-
--- PROFILE INDEXES
-CREATE INDEX IF NOT EXISTS idx_profiles_email ON profiles(email);
-CREATE INDEX IF NOT EXISTS idx_profiles_uuid ON profiles(uuid);
-
--- CONTENT INDEXES
-CREATE INDEX IF NOT EXISTS idx_content_user_id ON content(user_id);
-CREATE INDEX IF NOT EXISTS idx_content_uuid ON content(uuid);
-CREATE INDEX IF NOT EXISTS idx_content_tags ON content USING GIN(tags);
-CREATE INDEX IF NOT EXISTS idx_content_created_at_desc ON content(created_at DESC); 
-
--- ADVANCED TIMELINE COMPOSITE PAGINATION (Pre-sorts your scroll feeds)
-CREATE INDEX IF NOT EXISTS idx_content_user_created_at ON content (user_id, created_at DESC);
-
--- SESSION INDEXES
-CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire");
-
--- INTERACTION INDEXES
-CREATE INDEX IF NOT EXISTS idx_interactions_user_id ON interactions(user_id);
-CREATE INDEX IF NOT EXISTS idx_interactions_content_id ON interactions(content_id);
-
--- ADVANCED HIGH-SPEED SWITCH LOGS (Speeds up your Support/Forward clicks)
-CREATE INDEX IF NOT EXISTS idx_interactions_lookup_composite ON interactions (user_id, content_id, interaction_type);
-
--- FOLLOWS INDEXES
-CREATE INDEX IF NOT EXISTS idx_follows_follower_following ON follows(follower_id, following_id);
-CREATE INDEX IF NOT EXISTS idx_follows_reverse_lookup ON follows (following_id, follower_id);
-
-
-CREATE TABLE conversations (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
-
-CREATE TABLE conversation_participants (
-    id SERIAL PRIMARY KEY,
-    conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-    -- 🎯 NOTE: Change 'profiles(id)' if your profile table uses a different name or UUID type
-    user_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-    joined_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
-    -- Safety constraint: Prevents accidentally adding the exact same user to the same room twice
-    UNIQUE (conversation_id, user_id)
-);
-
-
 CREATE TABLE messages (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
-    -- 🎯 NOTE: Change 'profiles(id)' if your profile table uses a different column name or UUID type
-    sender_id INT NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
-    message_text TEXT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    uuid UUID DEFAULT gen_random_uuid() UNIQUE,
+    sender_id INT REFERENCES profiles(id) ON DELETE CASCADE,
+    recipient_id INT REFERENCES profiles(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 
-ALTER TABLE follows 
-ADD COLUMN status TEXT NOT NULL DEFAULT 'pending';
-CREATE TABLE IF NOT EXISTS messages (
-  id SERIAL PRIMARY KEY,
-  sender_uuid UUID NOT NULL,
-  recipient_uuid UUID NOT NULL,
-  content TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- ========================================================
+-- 🚀 PERFORMANCE INDEXES
+-- ========================================================
 
+-- Profile Indexes
+CREATE INDEX idx_profiles_email ON profiles(email);
+CREATE INDEX idx_profiles_uuid ON profiles(uuid);
 
+-- Content Indexes
+CREATE INDEX idx_content_user_id ON content(user_id);
+CREATE INDEX idx_content_uuid ON content(uuid);
+CREATE INDEX idx_content_tags ON content USING GIN(tags);
+CREATE INDEX idx_content_created_at_desc ON content(created_at DESC); 
+CREATE INDEX idx_content_user_created_at ON content (user_id, created_at DESC);
 
+-- Session Index
+CREATE INDEX "IDX_session_expire" ON "session" ("expire");
 
-CREATE TABLE IF NOT EXISTS messages (
-  id SERIAL PRIMARY KEY,
-  sender_uuid UUID NOT NULL,
-  recipient_uuid UUID NOT NULL,
-  content TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- Interaction Indexes
+CREATE INDEX idx_interactions_user_id ON interactions(user_id);
+CREATE INDEX idx_interactions_content_id ON interactions(content_id);
+CREATE INDEX idx_interactions_lookup_composite ON interactions (user_id, content_id, interaction_type);
 
--- Optional: Add an index for lightning-fast conversation lookups between two users
-CREATE INDEX IF NOT EXISTS idx_messages_participants 
-ON messages (sender_uuid, recipient_uuid);
+-- Comments Indexes
+CREATE INDEX idx_comments_content_id ON comments(content_id);
+CREATE INDEX idx_comments_user_id ON comments(user_id);
+
+-- Follows Indexes
+CREATE INDEX idx_follows_follower_following ON follows(follower_id, following_id);
+CREATE INDEX idx_follows_reverse_lookup ON follows (following_id, follower_id);
+
+-- Messages Indexes (Optimized for bidirectional chat threads)
+CREATE INDEX idx_messages_sender_recipient ON messages (sender_id, recipient_id);
+CREATE INDEX idx_messages_chat_history ON messages (sender_id, recipient_id, created_at DESC);
