@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useAuthStore } from "@store/useAuthStore";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/api/axios.js";
+import { useAuthStore } from "@store/useAuthStore.js";
 import { MobileNavBar } from "@components/NavBar/Mobile/MobileNavBar";
 import { DesktopNavBar } from "@/components/NavBar/Desktop/DesktopNavBar";
 import { ChatDock } from "@/components/NavBar/ChatDock";
@@ -11,10 +13,24 @@ const NavBar: React.FC = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  // 💬 State to track which user's chat box should be opened when clicked from the inbox dropdown
   const [activeChatTargetUuid, setActiveChatTargetUuid] = useState<string | null>(null);
 
   const { userUuid } = useAuthStore();
+
+  // 👉 Matches the query key and endpoint structure used in your profile page
+  const { data: profileData } = useQuery({
+    queryKey: ["profileFeed", "me"],
+    queryFn: async () => {
+      const res = await api.get(`/task/profile/me`);
+      return res.data;
+    },
+    enabled: !!userUuid,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  // Extract avatar URL safely from your backend profile response payload
+  const userAvatar = profileData?.profile?.avatar_url;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +55,7 @@ const NavBar: React.FC = () => {
       <MobileNavBar
         isVisible={isVisible}
         userUuid={userUuid ?? null}
+        userAvatar={userAvatar}
         pathname={location.pathname}
         onOpenCreate={() => setIsCreateOpen(true)}
         onSelectConversation={(partnerUuid) => {
@@ -48,11 +65,11 @@ const NavBar: React.FC = () => {
 
       <DesktopNavBar
         userUuid={userUuid ?? null}
+        userAvatar={userAvatar} // 👉 Live connected to the shared cache!
         pathname={location.pathname}
         onOpenCreate={() => setIsCreateOpen(true)}
         onSelectConversation={(partnerUuid) => {
           setActiveChatTargetUuid(partnerUuid);
-          console.log("Opening chat box for user:", partnerUuid);
         }}
       />
       
@@ -63,7 +80,6 @@ const NavBar: React.FC = () => {
           onClose={() => setActiveChatTargetUuid(null)} 
         />
       )} 
-    
     </>
   );
 };

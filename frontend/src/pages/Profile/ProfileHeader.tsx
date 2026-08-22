@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import ProfileEngagement from "@/components/Profile/Engagement.js";
 import ProfileJournal from "@components/Profile/Journal.jsx";
-import ProfileShareButton from "@/components/Profile/ProfileShareButton"; // 👈 Import the new file
+import ProfileShareButton from "@/components/Profile/ProfileShareButton";
+import { AvatarUploadModal } from "./AvatarUploadModal"; // 👉 Import the modal
+import { useUpdateAvatar } from "@/hooks/useUpdateAvatar"; // 👉 Import your avatar mutation hook
 import NavBar from "@/pages/NavBar/NavBar";
-import { Users, Sparkles, Shield } from "lucide-react";
+import { Users, Sparkles, Shield, Camera } from "lucide-react";
 
 type ProfileContentProps = {
   data: {
@@ -27,9 +29,18 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
   onOpenMessageDock,
 }) => {
   const { profile, tasks, isOwner } = data;
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+
+  // 👉 Pass profile.uuid so the hook targets the correct query key cache
+  const { mutateAsync: updateAvatar, isPending: isUpdatingAvatar } = useUpdateAvatar(profile.uuid);
+
   const profileAvatarUrl =
     profile.avatar_url ||
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80";
+
+  const handleAvatarUpload = async (file: File) => {
+    await updateAvatar(file);
+  };
 
   return (
     <div className="min-h-screen bg-[#010102] text-white font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37]">
@@ -43,12 +54,25 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
 
           {/* User Bio Header Section */}
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left relative z-10">
-            <div className="relative shrink-0">
+            
+            {/* Clickable Avatar Container (Only triggers modal if you are the owner) */}
+            <div 
+              className="relative shrink-0 group cursor-pointer"
+              onClick={() => isOwner && setIsAvatarModalOpen(true)}
+            >
               <img 
                 src={profileAvatarUrl} 
                 alt={profile.full_name || "Sanctuary Citizen"}
-                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-[#d4af37]/50 shadow-[0_0_20px_rgba(212,175,55,0.2)]"
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border-2 border-[#d4af37]/50 shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-transform group-hover:scale-[1.02]"
               />
+              
+              {/* Hover Camera Icon Badge for Owners */}
+              {isOwner && (
+                <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[#d4af37]">
+                  <Camera size={24} />
+                </div>
+              )}
+
               <div className="absolute bottom-0 right-0 p-1.5 bg-[#010102] border border-[#d4af37]/40 rounded-full text-[#d4af37]">
                 <Shield size={14} />
               </div>
@@ -79,7 +103,6 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
             />
 
             <div className="flex items-center gap-3 w-full sm:w-auto">
-              {/* 👈 Clean extracted component */}
               <ProfileShareButton profileUuid={profile.uuid} />
 
               <button 
@@ -97,6 +120,15 @@ export const ProfileContent: React.FC<ProfileContentProps> = ({
         <ProfileJournal tasks={tasks} />
 
       </div>
+
+      {/* 👉 Avatar Preview & Confirmation Modal */}
+      <AvatarUploadModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        currentAvatarUrl={profileAvatarUrl}
+        onUpload={handleAvatarUpload}
+        isPending={isUpdatingAvatar}
+      />
     </div>
   );
 };

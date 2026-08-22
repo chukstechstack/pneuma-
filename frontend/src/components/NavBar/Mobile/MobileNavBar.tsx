@@ -13,6 +13,7 @@ import { MobileMessagesModal } from "../Mobile/MessagesModal"; // Import the mod
 interface MobileNavBarProps {
   isVisible: boolean;
   userUuid: string | null;
+  userAvatar?: string | null;
   pathname: string;
   onOpenCreate: () => void;
   onSelectConversation: (partnerUuid: string) => void; // Added prop to handle opening chat
@@ -21,6 +22,7 @@ interface MobileNavBarProps {
 export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   isVisible,
   userUuid,
+  userAvatar,
   pathname,
   onOpenCreate,
   onSelectConversation
@@ -96,7 +98,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
         <Link to="/profile" className={getMobileLinkClass("/profile")}>
           <div className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-[#d4af37]/60">
             <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysX8k1gABg8LHF0QSukobgjnwgnxqX1Pqjcxx6AafbTLSGRq8560Mz8I&s=10"
+              src={userAvatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
               className="w-full h-full object-cover"
               alt="Me Profile"
             />

@@ -30,7 +30,7 @@ export const fetchGlobalTasksFeed = async (
     SELECT 
       c.*,
       p.full_name AS author_name,
-      p.avatar_url,
+       p.avatar_url AS author_avatar_url,
       p.uuid AS author_profile_uuid, 
       FALSE AS is_liked,
       FALSE AS is_reposted

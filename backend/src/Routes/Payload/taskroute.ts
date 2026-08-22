@@ -6,6 +6,7 @@ import { getTask } from "@/Operator/Payload/Mutations/getTask.js";
 import { createTask } from "@/Operator/Payload/Mutations/createTask.js";
 import { patchTask } from "@/Operator/Payload/Mutations/patchTask.js";
 import { deleteTask } from "@/Operator/Payload/Mutations/deleteTask.js";
+import { updateAvatar } from "@/Operator/Payload/Mutations/updateAvatarService"; // Import your new avatar controller
 
 import { journalFeed } from "@/Operator/Payload/Mutations/journalFeed.js";
 
@@ -15,6 +16,7 @@ import { fetchConversationsList } from "../Gateway/fetchConversationList";
 
 import { getTaskInteractions } from "../../Operator/Payload/Friend/getTaskInteractions "
 import { postTaskInteractions } from "../../Operator/Payload/Friend/postTaskInteractions"
+
 const taskRoute = express.Router();
 
 taskRoute.get("/", ensureAuthenticated, getTask);
@@ -22,6 +24,9 @@ taskRoute.get("/fetchConversation", ensureAuthenticated, fetchConversation);
 taskRoute.get("/fetchConversationsList", ensureAuthenticated, fetchConversationsList);
 
 taskRoute.post("/", ensureAuthenticated, upload.single("img"), createTask);
+
+// 1. New Avatar Upload Route
+taskRoute.put("/profile/avatar", ensureAuthenticated, upload.single("avatar"), updateAvatar);
 
 taskRoute.get<{ targetProfileUuid: string }>("/profile/:targetProfileUuid", ensureAuthenticated, getSmartProfileFeed);
 taskRoute.get<{ targetUserUuid: string }>("/journalfeed/:targetUserUuid", ensureAuthenticated, journalFeed);

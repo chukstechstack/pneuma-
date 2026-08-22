@@ -128,7 +128,23 @@ CREATE TABLE messages (
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+-- 1. Create a dedicated table for profile avatars and history
+CREATE TABLE IF NOT EXISTS user_avatars (
+    uuid UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    profile_uuid UUID NOT NULL REFERENCES profiles(uuid) ON DELETE CASCADE,
+    image_url TEXT NOT NULL,
+    file_size INT,
+    mime_type VARCHAR(50),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
 
+-- 2. Create an index for fast lookups by profile
+
+
+-- 3. (Optional Convenience) Add or ensure an avatar reference column exists on profiles 
+-- if you want a quick sync point without joining every time:
+-- ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
 
 -- ========================================================
 -- 🚀 PERFORMANCE INDEXES
@@ -164,3 +180,5 @@ CREATE INDEX idx_follows_reverse_lookup ON follows (following_id, follower_id);
 -- Messages Indexes (Optimized for bidirectional chat threads)
 CREATE INDEX idx_messages_sender_recipient ON messages (sender_id, recipient_id);
 CREATE INDEX idx_messages_chat_history ON messages (sender_id, recipient_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_user_avatars_profile_uuid ON user_avatars(profile_uuid);
+

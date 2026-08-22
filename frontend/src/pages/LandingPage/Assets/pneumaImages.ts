@@ -14,169 +14,166 @@ export const PNEUMA_IMAGES: PneumaImage[] = [
     title: "Global Medical Vanguard",
     location: "Sector 01 // Field Response HQ",
     category: "Vanguard",
-    url:"https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=1600&auto=format&fit=crop",
-    caption: "Emergency medical teams deploying rapid-response care into high-impact operational zones."
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+22%2C+2026%2C+11_42_55+AM.jpg",
+    caption: "We didn’t build this to escape the world. We built it to remember what it feels like to live in it unmasked, unfiltered, and wide awake."
   },
   {
     id: 2,
     title: "Humanitarian Relief Network",
     location: "Sector 02 // Global Aid Grid",
     category: "Vanguard",
-    url: "https://images.unsplash.com/photo-1594824813578-8314545582c5?q=80&w=1600&auto=format&fit=crop",
-    caption: "Physicians and coordinators uniting across borders to deliver unvarnished logistical support."
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+22%2C+2026%2C+11_44_01+AM.jpg",
+    caption: "The old systems were designed to contain us. The next iteration is built to expand us—turning raw noise into crystal-clear intent."
   },
   {
     id: 3,
     title: "Frontline Triage Operations",
     location: "Sector 03 // Active Stabilization",
     category: "Vanguard",
-    url: "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=1600&auto=format&fit=crop",
-    caption: "Real-time clinical coordination ensuring critical care reaches vulnerable populations instantly."
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+22%2C+2026%2C+11_45_39+AM.jpg",
+    caption: "Evolution isn't a destination; it's a constant recalibration. Stand at the edge, look forward, and build the reality you refuse to wait for."
   },
 
-
-
   // --- Rural Collapse / Outposts (3 - 6) ---
+
   {
     id: 4,
-    title: "Abandoned Outpost Alpha",
-    location: "Sector 04 // Rust Belt Divide",
+    title: "Rapid Air-Support & Field Triage",
+    location: "Sector 01 // Air-Bridge Corridor",
     category: "Outposts",
-    url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop",
-    caption: "Documenting structural decay and infrastructural abandonment in forgotten provincial zones."
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/OutPost/ChatGPT+Image+Aug+22%2C+2026%2C+01_46_51+PM.jpg",
+    caption: "Emergency medical transport units deploying tents and stabilization gear directly into isolated collapse zones where ground routes are impassable."
   },
   {
     id: 5,
-    title: "Forgotten Grid Point",
-    location: "Sector 05 // Highland Void",
+    title: "Secure Comms & Live Dispatch",
+    location: "Sector 02 // Command Outpost",
     category: "Outposts",
-    url: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1600&auto=format&fit=crop",
-    caption: "Dormant relays waiting for decentralized peer-to-peer node activation."
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/OutPost/ChatGPT+Image+Aug+22%2C+2026%2C+01_47_01+PM.jpg",
+    caption: "Field operators monitoring live telemetry, verifying coordinates, and routing real-time supply requests to active ground teams."
   },
   {
     id: 6,
-    title: "Silent Horizon",
-    location: "Sector 06 // Eastern Steppes",
+    title: "Operational Briefing & Protocol",
+    location: "Sector 03 // Headquarters Node",
     category: "Outposts",
-    url: "https://images.unsplash.com/photo-1444703686981-a3bb64d85a62?q=80&w=1600&auto=format&fit=crop",
-    caption: "Miles of uninterrupted solitude highlighting the critical need for resilient regional links."
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/OutPost/ChatGPT+Image+Aug+22%2C+2026%2C+01_48_19+PM+(1).jpg",
+    caption: "Direct briefing on Pneuma’s operational standards, focusing on transparency, frontline accountability, and decentralized coordination."
   },
   {
     id: 7,
-    title: "The Hollow Station",
-    location: "Sector 07 // Southern Badlands",
+    title: "Direct-Action Palliative Distribution",
+    location: "Sector 04 // Community Grid",
     category: "Outposts",
-    url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1600&auto=format&fit=crop",
-    caption: "An empty weather tracking station repurposed into a local emergency waypoint."
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/OutPost/ChatGPT+Image+Aug+22%2C+2026%2C+01_58_58+PM.jpg",
+    caption: "Unfiltered delivery of emergency medical palliatives and essential provisions directly to community members, bypassing institutional red tape."
   },
 
-  // --- Breaking Chains / Chronicle (7 - 10) ---
-  {
+  // --- Who Are We / Mission (Indices 7 - 11) ---
+{
     id: 8,
-    title: "Breaking Behavioral Chains",
-    location: "Sector 08 // Cognitive Lab",
-    category: "Chronicle",
+    title: "The Restoration of Agency",
+    location: "Sector 08 // Grassroots Support",
+    category: "Grassroots Support",
     url: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1600&auto=format&fit=crop",
-    caption: "Breaking loops of digital dependency and restructuring daily routines for hyper-focus."
+    caption: "Rebuilding fractured local bonds and empowering grassroots populations to stand resilient against systemic neglect."
   },
   {
     id: 9,
-    title: "Clarity Matrix",
-    location: "Sector 09 // Focus Hub",
-    category: "Chronicle",
+    title: "The Reclaiming of Humanity",
+    location: "Sector 09 // Core Mission",
+    category: "Core Mission",
     url: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1600&auto=format&fit=crop",
-    caption: "Mapping out user workflows on physical boundaries to build friction against bad habits."
+    caption: "Rejecting digital isolation and commercial apathy to restore genuine human empathy, dignity, and shared presence."
   },
   {
     id: 10,
-    title: "The Friction Point",
-    location: "Sector 10 // Discipline Core",
-    category: "Chronicle",
+    title: "The Eradication of Silence",
+    location: "Sector 10 // Medical Relief",
+    category: "Medical Relief",
     url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1600&auto=format&fit=crop",
-    caption: "Collaborative sessions focused on deep work endurance and absolute distraction control."
+    caption: "Bypassing institutional red tape to deliver life-saving financial relief and medical palliatives to those suffering in the dark."
   },
   {
     id: 11,
-    title: "Neural Realignment",
-    location: "Sector 11 // Apex Terminal",
-    category: "Chronicle",
+    title: "The Illumination of the Lost",
+    location: "Sector 11 // Behavioral Recovery",
+    category: "Behavioral Recovery",
     url: "https://images.unsplash.com/photo-1531403009284-440f080d1e12?q=80&w=1600&auto=format&fit=crop",
-    caption: "Executing rigid block timers to completely eliminate procrastination cycles."
+    caption: "Guiding individuals out of digital despair and destructive behavioral loops through high-friction discipline and real human rescue."
   },
 
-  // --- Emergency Triage (11 - 14) ---
+// --- Problem Section  / The Human Crisis (Indices 11 - 14 / IDs 12 - 15) ---
   {
     id: 12,
-    title: "Emergency Telemetry Node",
-    location: "Sector 12 // Central Command",
-    category: "Triage",
+    title: "Abandoned in Hospital Wards",
+    location: "Sector 12 // Medical Isolation",
+    category: "Crisis",
     url: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1600&auto=format&fit=crop",
-    caption: "Instant alert dispatch protocols designed for high-stress operational breakdowns."
+    caption: "Thousands suffer without financial means for critical care, left trapped behind bureaucratic health barriers."
   },
   {
     id: 13,
-    title: "Red Alert Protocol",
-    location: "Sector 13 // Watchtower Beta",
-    category: "Triage",
+    title: "The Digital Doom-Loop",
+    location: "Sector 13 // Behavioral Trap",
+    category: "Crisis",
     url: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1600&auto=format&fit=crop",
-    caption: "Real-time anomaly detection flagging sudden spikes in local system latency."
+    caption: "Addiction and isolation tearing communities apart from the inside out with no immediate rescue in sight."
   },
   {
     id: 14,
-    title: "Crisis Response Unit",
-    location: "Sector 14 // Rapid Field",
-    category: "Triage",
+    title: "Fractured Societies",
+    location: "Sector 14 // Community Collapse",
+    category: "Crisis",
     url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1600&auto=format&fit=crop",
-    caption: "Global data stream monitoring deployed to isolate critical network failures instantly."
+    caption: "Nations and neighborhoods left stranded without boots-on-the-ground support or emergency infrastructure."
   },
   {
     id: 15,
-    title: "System Overdrive",
-    location: "Sector 15 // Core Lab",
-    category: "Triage",
+    title: "The Silent Suffering",
+    location: "Sector 15 // Systemic Neglect",
+    category: "Crisis",
     url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1600&auto=format&fit=crop",
-    caption: "Pushing architecture limits to test fail-safe redundancy under heavy loads."
-  },
-
-  // --- Archival Vault / Global (15 - 19) ---
+    caption: "Vulnerable individuals slipping through the cracks of institutional apathy while waiting for help that never comes."
+  },// --- Solution Section / Direct Intervention (Indices 15 - 20 / IDs 16 - 20) ---
   {
     id: 16,
-    title: "Vault Record 01",
-    location: "Global Archive // Vault A",
-    category: "Archives",
+    title: "Direct Medical Funding",
+    location: "Sector 16 // Emergency Relief",
+    category: "Medical Action",
     url: "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?q=80&w=1600&auto=format&fit=crop",
-    caption: "Permanent cryptographic logging of historical system states and milestones."
+    caption: "Bypassing hospital red tape to clear financial bottlenecks and fund urgent patient care immediately."
   },
   {
     id: 17,
-    title: "Vault Record 02",
-    location: "Global Archive // Vault B",
-    category: "Archives",
-    url: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1600&auto=format&fit=crop",
-    caption: "Encrypted schematic backups stored across distributed node clusters."
+    title: "Boots on the Ground",
+    location: "Sector 17 // Field Operations",
+    category: "Community Aid",
+    url: "https://pnuema-optimizzed-images.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+22%2C+2026%2C+11_44_01+AM.jpg",
+    caption: "Delivering physical supplies, palliatives, and direct support straight to vulnerable neighborhoods."
   },
   {
     id: 18,
-    title: "Vault Record 03",
-    location: "Global Archive // Vault C",
-    category: "Archives",
-    url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1600&auto=format&fit=crop",
-    caption: "Visualized data flow representations from early network iterations."
+    title: "Breaking Behavioral Loops",
+    location: "Sector 18 // Recovery Node",
+    category: "Human Rescue",
+    url: "https://pnuema-optimizzed-images.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+22%2C+2026%2C+11_45_39+AM.jpg",
+    caption: "Guiding individuals out of isolation and digital addiction through rigorous personal presence and discipline."
   },
   {
     id: 19,
-    title: "Vault Record 04",
-    location: "Global Archive // Vault D",
-    category: "Archives",
-    url: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=1600&auto=format&fit=crop",
-    caption: "Deep analytical snapshots capturing operator engagement and telemetry logs."
+    title: "Restoring Local Sovereignty",
+    location: "Sector 19 // Grassroots Core",
+    category: "Empowerment",
+    url: "https://pnuema-optimizzed-images.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+22%2C+2026%2C+11_42_55+AM.jpg",
+    caption: "Rebuilding broken societal bonds and empowering communities to stand resilient against institutional neglect."
   },
   {
     id: 20,
-    title: "The Final Ledger",
-    location: "Global Archive // Omega Node",
-    category: "Archives",
+    title: "The Covenant of Empathy",
+    location: "Sector 20 // Omega Node",
+    category: "Mission Absolute",
     url: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1600&auto=format&fit=crop",
-    caption: "The ultimate compendium record sealing the 2026 operational phase."
-  }
+    caption: "An uncompromising commitment to changing humanity and standing by those suffering in silence."
+  },
 ];

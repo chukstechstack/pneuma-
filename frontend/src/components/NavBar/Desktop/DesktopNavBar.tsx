@@ -6,16 +6,18 @@ import { DesktopMessagesDropdown } from "./MessagesDropdown";
 
 interface DesktopNavBarProps {
   userUuid: string | null;
+  userAvatar?: string | null;
   pathname: string;
   onOpenCreate: () => void;
   onSelectConversation: (partnerUuid: string) => void;
 }
 
-export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({ 
-  userUuid, 
-  pathname, 
+export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
+  userUuid,
+  userAvatar,
+  pathname,
   onOpenCreate,
-  onSelectConversation 
+  onSelectConversation
 }) => {
   const [isInboxOpen, setIsInboxOpen] = useState(false);
 
@@ -23,8 +25,8 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
 
   const getLinkClasses = (path: string) => `
     relative flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-medium tracking-wide transition-all duration-200
-    ${isActive(path) 
-      ? "text-[#d4af37] bg-[#d4af37]/10 font-semibold" 
+    ${isActive(path)
+      ? "text-[#d4af37] bg-[#d4af37]/10 font-semibold"
       : "text-white/60 hover:text-white hover:bg-white/[0.04]"
     }
   `;
@@ -32,7 +34,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
   return (
     <header className="fixed top-5 left-0 right-0 z-50 px-6 hidden md:block">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 bg-[#121214]/80 backdrop-blur-2xl border border-white/[0.08] rounded-full px-5 py-2.5 shadow-[0_20px_50px_rgba(0,0,0,0.6)]">
-        
+
         {/* Brand & Logo */}
         <Link to="/homefeed" className="flex items-center gap-2.5 shrink-0 group">
           <div className="w-8 h-8 rounded-full bg-[#d4af37]/10 border border-[#d4af37]/30 flex items-center justify-center p-1 group-hover:border-[#d4af37] transition-all">
@@ -89,7 +91,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
           <Link to="/profile" className={getLinkClasses("/profile")}>
             <div className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-[#d4af37]/50">
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSysX8k1gABg8LHF0QSukobgjnwgnxqX1Pqjcxx6AafbTLSGRq8560Mz8I&s=10"
+                src={userAvatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
                 className="w-full h-full object-cover"
                 alt="Profile"
               />
