@@ -5,7 +5,7 @@ import api from "@/api/axios.js";
 import { useAuthStore } from "@store/useAuthStore.js";
 import { MobileNavBar } from "@components/NavBar/Mobile/MobileNavBar";
 import { DesktopNavBar } from "@/components/NavBar/Desktop/DesktopNavBar";
-import { ChatDock } from "@/components/NavBar/ChatDock";
+import { ChatDock } from "@/pages/NavBar/ChatDock";
 
 const NavBar: React.FC = () => {
   const location = useLocation();
@@ -25,11 +25,10 @@ const NavBar: React.FC = () => {
       return res.data;
     },
     enabled: !!userUuid,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
     refetchOnWindowFocus: false,
   });
 
-  // Extract avatar URL safely from your backend profile response payload
   const userAvatar = profileData?.profile?.avatar_url;
 
   useEffect(() => {

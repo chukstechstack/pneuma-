@@ -34,13 +34,13 @@ export const Navigation: React.FC = () => {
       {/* Action Buttons: Login & Register */}
       <div className="flex items-center gap-4">
         <Link 
-          to="/auth?mode=login" 
+          to="/login" 
           className="px-5 py-2 rounded-md border border-white/15 bg-white/[0.03] backdrop-blur-md text-sm uppercase tracking-widest font-black text-white hover:bg-white hover:text-black transition-all not-italic shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
         >
           Login
         </Link>
         <Link 
-          to="/auth?mode=signup" 
+          to="/register" 
           className="text-sm uppercase tracking-widest bg-white hover:bg-rose-500 text-black hover:text-white px-6 py-2.5 rounded-md font-black not-italic transition-all shadow-[0_10px_25px_rgba(0,0,0,0.4)] hover:scale-105"
         >
           Register

@@ -24,24 +24,24 @@ export const useChatDock = (targetProfileUuid: string, isOpen: boolean) => {
   useEffect(() => {
     if (!isOpen) return;
 
-    const handleReceiveMessage = (incoming: any) => {
+    const handleIncomingMessageLive  = (incoming: any) => {
       if (incoming.senderUuid === targetProfileUuid || incoming.senderUuid === currentUserUuid) {
         setMessages((prev) => [...prev, incoming]);
       }
     };
 
-    const handleMessageAcknowledged = ({ tempId, messageId, createdAt }: any) => {
+    const handleOutgoingMessageConfirmed = ({ tempId, messageId, createdAt }: any) => {
       setMessages((prev) =>
         prev.map((msg) => (msg.tempId === tempId ? { ...msg, id: messageId, createdAt, pending: false } : msg))
       );
     };
 
-    socket.on("server:receive_message", handleReceiveMessage);
-    socket.on("server:message_acknowledged", handleMessageAcknowledged);
+    socket.on("server:incoming_msg", handleIncomingMessageLive);
+    socket.on("server:outgoing_msg_confirmed", handleOutgoingMessageConfirmed);
 
     return () => {
-      socket.off("server:receive_message", handleReceiveMessage);
-      socket.off("server:message_acknowledged", handleMessageAcknowledged);
+      socket.off("server:incoming_msg", handleIncomingMessageLive);
+      socket.off("server:outgoing_msg_confirmed",  handleOutgoingMessageConfirmed);
     };
   }, [isOpen, targetProfileUuid, currentUserUuid]);
 

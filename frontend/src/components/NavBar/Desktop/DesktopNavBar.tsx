@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import doveLogoUrl from "@assets/pneuma.png";
-import { Home, PlusSquare, BookOpen, Bell, Search } from "lucide-react";
+import { Home, PlusSquare, BookOpen, Search } from "lucide-react";
 import { DesktopMessagesDropdown } from "./MessagesDropdown";
+import { DesktopAlertsDropdown } from "./DesktopAlertsDropdown"; // 👈 Imported our new alerts dropdown
 
 interface DesktopNavBarProps {
   userUuid: string | null;
@@ -20,6 +21,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
   onSelectConversation
 }) => {
   const [isInboxOpen, setIsInboxOpen] = useState(false);
+  const [isAlertsOpen, setIsAlertsOpen] = useState(false); // 👈 State for alerts drawer
 
   const isActive = (path: string) => pathname.startsWith(path);
 
@@ -69,7 +71,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
             <span>Journal</span>
           </Link>
 
-          {/* ✅ Clean integration without wrapper bubbling bugs */}
+          {/* Messages Dropdown */}
           <DesktopMessagesDropdown
             isOpen={isInboxOpen}
             onToggle={() => setIsInboxOpen((prev) => !prev)}
@@ -78,20 +80,18 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
             getLinkClasses={getLinkClasses}
           />
 
-          <Link to="/notifications" className={getLinkClasses("/notifications")}>
-            <div className="relative flex items-center">
-              <Bell size={15} strokeWidth={isActive("/notifications") ? 2 : 1.5} />
-              <span className="absolute -top-1.5 -right-2 bg-[#d4af37] text-black text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md">
-                3
-              </span>
-            </div>
-            <span className="ml-1">Alerts</span>
-          </Link>
+          {/* 🔔 Alerts Dropdown (Replaces static link) */}
+          <DesktopAlertsDropdown
+            isOpen={isAlertsOpen}
+            onToggle={() => setIsAlertsOpen((prev) => !prev)}
+            onClose={() => setIsAlertsOpen(false)}
+            getLinkClasses={getLinkClasses}
+          />
 
           <Link to="/profile" className={getLinkClasses("/profile")}>
             <div className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-[#d4af37]/50">
               <img
-                src={userAvatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
+                src={userAvatar || "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+24%2C+2026%2C+04_24_39+PM.jpg"}
                 className="w-full h-full object-cover"
                 alt="Profile"
               />

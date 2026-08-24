@@ -55,7 +55,17 @@ export const updateAvatar = async (
       })
     );
 
-    avatar_url = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${uploadedFileName}`;
+    console.log("⚙️ [Backend] AWS Config Check:", {
+      bucket: process.env.AWS_BUCKET_NAME,
+      region: process.env.AWS_REGION
+    });
+
+    // Safely construct URL avoiding template corruption
+    const bucketName = process.env.AWS_BUCKET_NAME;
+    const region = process.env.AWS_REGION;
+    avatar_url = `https://${bucketName}.s3.${region}.amazonaws.com/${uploadedFileName}`;
+    
+    console.log("🔗 [Backend] Explicitly Built Avatar URL:", avatar_url);
 
     // 3. Optional: Insert into dedicated user_avatars history table
     await dbClient.query(

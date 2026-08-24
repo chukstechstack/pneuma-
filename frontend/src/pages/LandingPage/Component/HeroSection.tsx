@@ -4,23 +4,27 @@ import { PNEUMA_IMAGES } from "../Assets/pneumaImages";
 import { Navigation } from "./Navigation"; // <-- Import the new navbar component
 
 // Hero story configuration featuring your favorite headlines and captions
+// Hero story configuration perfectly synced to your image loop sequence
+// Hero story configuration perfectly synced to your image loop sequence
 const heroStory = [
   {
-    location: "",
-    headingLines: ["Raw", "Reality"],
-    caption: "We didn’t build this to escape the world. We built it to remember what it feels like to live in it unmasked, unfiltered, and wide awake."
+    location: "Chapter 01 // The Human Crisis",
+    headingLines: ["THE WAR", "ZONES"],
+    caption: "Where bombs shatter communities, we refuse to look away. Bloodied soil and human collapse demand an immediate, unfiltered response. Silence is a betrayal."
   },
   {
-    location: "",
-    headingLines: ["Clear", "Vision"],
-    caption: "The old systems were designed to contain us. The next iteration is built to expand us—turning raw noise into crystal-clear intent."
+    location: "Chapter 02 // The Way Forward",
+    headingLines: ["BUILDING", "BRIDGES"],
+    caption: "The broken-hearted are cut off from survival by walls of conflict and cold institutional neglect. We are laying down an unbreakable highway straight into the trenches."
   },
   {
-    location: "",
-    headingLines: ["Own", "Tomorrow"],
-    caption: "Evolution isn't a destination; it's a constant recalibration. Stand at the edge, look forward, and build the reality you refuse to wait for."
+    location: "Chapter 03 // The Quickening",
+    headingLines: ["PNEUMA", "ARRIVES"],
+    caption: "Where mechanical systems collapse and human strength breaks down, the spirit moves. Establishing field bases, raising leaders, and breaking isolation instantly."
   }
 ];
+
+
 
 export const HeroSection: React.FC = () => {
   const [activeHeroImg, setActiveHeroImg] = useState<number>(0);

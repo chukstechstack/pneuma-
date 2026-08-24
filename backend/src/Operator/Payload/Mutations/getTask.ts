@@ -25,12 +25,12 @@ export const getTask = async (
   res: Response<TaskResponseData | { error: string }>,
   next: NextFunction
 ) => {
-  const user_uuid = req.user?.uuid;
+  const  current_User_uuid = req.user?.uuid;
   const user_Id = req.user?.id;
 
   const fresh_load_pointer = req.query.fresh_load || 'Yes_Is_FreshLoad';
 
-  const redisFreshLoad = `tasks_feed:${user_uuid || 'guest'}:${fresh_load_pointer}`;
+  const redisFreshLoad = `tasks_feed:${   current_User_uuid || 'guest'}:${fresh_load_pointer}`;
 
   try {
     const redisFreshLoadData = await redisClient.get(redisFreshLoad);
@@ -42,7 +42,7 @@ export const getTask = async (
     console.log(`🐢 Redis Miss: Querying Postgres [Pointer: ${fresh_load_pointer}]`);
 
     const { tasksFeed, next_post_timestamp } = await fetchGlobalTasksFeed(
-      user_uuid, 
+       current_User_uuid , 
       fresh_load_pointer
     );
 
@@ -50,7 +50,7 @@ export const getTask = async (
       tasks: tasksFeed,
       next_post_timestamp: next_post_timestamp !== undefined && next_post_timestamp !== null ? String(next_post_timestamp) : null,
       currentUserId: user_Id,
-      currentUserUuid: user_uuid
+      currentUserUuid:  current_User_uuid 
     };
 
     await redisClient.set(redisFreshLoad, JSON.stringify(responseData), { EX: 86400 });

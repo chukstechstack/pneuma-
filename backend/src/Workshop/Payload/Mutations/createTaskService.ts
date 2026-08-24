@@ -33,6 +33,7 @@ export const insertNewTask = async (
   user_id: number | string,
   client: DbClient = pool
 ): Promise<ContentRow | null> => {
+
   const result = await client.query<ContentRow>(
     `INSERT INTO content(title, content, img, category, user_id) 
      VALUES($1, $2, $3, $4, $5) RETURNING *`,
@@ -49,8 +50,8 @@ export const fetchHydratedTaskById = async (
   const result = await client.query<HydratedTaskRow>(
     `SELECT c.*,
             c.user_id,
-p.full_name,
-            p.avatar_url,
+            p.full_name AS author_name,      -- 👉 Alias to match TaskHeader
+            p.avatar_url AS author_avatar_url,  -- 👉 Alias to match TaskHeader
             p.uuid AS author_profile_uuid,
             c.likes_count,    
             c.reposts_count,  
@@ -64,4 +65,41 @@ p.full_name,
     [newPostId]
   );
   return result.rows[0] || null;
+};
+
+// 3. Fan out alerts to all connections when a task is published 🚀
+export const createConnectionAlertsForTask = async (
+  actorUserUuid: string,
+  newPostId: number | string,
+  client: DbClient = pool
+): Promise<void> => {
+  // Find all accepted connections where this user is either sender or receiver
+  const connectionsResult = await client.query<{ connection_uuid: string }>(
+    `SELECT 
+       CASE 
+         WHEN sender_uuid = $1 THEN receiver_uuid 
+         ELSE sender_uuid 
+       END AS connection_uuid 
+     FROM connections 
+     WHERE (sender_uuid = $1 OR receiver_uuid = $1) 
+       AND status = 'accepted'`,
+    [actorUserUuid]
+  );
+
+  const connections = connectionsResult.rows;
+  if (connections.length === 0) return;
+
+  const insertQuery = `
+    INSERT INTO alerts (recipient_uuid, actor_uuid, type, reference_id)
+    VALUES 
+  `;
+
+  const values: any[] = [];
+  const placeholders = connections.map((conn, index) => {
+    const base = index * 4;
+    values.push(conn.connection_uuid, actorUserUuid, 'new_post', newPostId);
+    return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4})`;
+  });
+
+  await client.query(insertQuery + placeholders.join(', '), values);
 };

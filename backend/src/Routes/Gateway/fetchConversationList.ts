@@ -4,32 +4,47 @@ import { getErrorMessage } from "../../Toolkit/GetErrorMessage/getErrorMessage";
 
 export const fetchConversationsList = async (req: Request, res: Response): Promise<void> => {
   try {
-    const currentUserId = (req as any).user?.uuid || (req as any).user?.id;
+    const currentUserUuid = (req as any).user?.uuid;
+    const currentUserIdInput = (req as any).user?.id;
 
-    if (!currentUserId) {
+    if (!currentUserUuid && !currentUserIdInput) {
       res.status(401).json({ error: "Unauthorized" });
       return;
     }
 
-    // SQL Window function to get the latest message per conversation partner
+    // 1. Resolve to the integer profile ID if we only have the UUID
+    let currentUserId = currentUserIdInput;
+    if (!currentUserId && currentUserUuid) {
+      const profileRes = await pool.query("SELECT id FROM profiles WHERE uuid = $1", [currentUserUuid]);
+      if (profileRes.rows.length > 0) {
+        currentUserId = profileRes.rows[0].id;
+      }
+    }
+
+    if (!currentUserId) {
+      res.status(401).json({ error: "User profile not found" });
+      return;
+    }
+
+    // 2. Query using integer IDs (sender_id & recipient_id) and join profiles to get partner info
     const query = `
       WITH RankedMessages AS (
         SELECT 
-          id,
-          content,
-          created_at,
-          sender_uuid,
-          recipient_uuid,
+          m.id,
+          m.content,
+          m.created_at,
+          m.sender_id,
+          m.recipient_id,
           CASE 
-            WHEN sender_uuid = $1 THEN recipient_uuid 
-            ELSE sender_uuid 
-          END AS partner_uuid,
+            WHEN m.sender_id = $1 THEN m.recipient_id 
+            ELSE m.sender_id 
+          END AS partner_internal_id,
           ROW_NUMBER() OVER (
-            PARTITION BY CASE WHEN sender_uuid = $1 THEN recipient_uuid ELSE sender_uuid END 
-            ORDER BY created_at DESC
+            PARTITION BY CASE WHEN m.sender_id = $1 THEN m.recipient_id ELSE m.sender_id END 
+            ORDER BY m.created_at DESC
           ) as rn
-        FROM messages
-        WHERE sender_uuid = $1 OR recipient_uuid = $1
+        FROM messages m
+        WHERE m.sender_id = $1 OR m.recipient_id = $1
       )
       SELECT 
         rm.id,
@@ -39,7 +54,7 @@ export const fetchConversationsList = async (req: Request, res: Response): Promi
         p.full_name AS "partnerName",
         p.avatar_url AS "partnerAvatarUrl"
       FROM RankedMessages rm
-      JOIN profiles p ON p.uuid = rm.partner_uuid
+      JOIN profiles p ON p.id = rm.partner_internal_id
       WHERE rm.rn = 1
       ORDER BY rm.created_at DESC;
     `;

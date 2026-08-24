@@ -1,7 +1,7 @@
 import React from "react";
 import { TaskHeader } from "./TaskHeader";
-import { TaskBody } from "./TaskBody";
-import { ActionContainer } from "./TaskAction/ActionContainer"; 
+import { TaskBody } from "./TaskBody/TaskBody";
+import { ActionContainer } from "./TaskAction/ActionContainer";
 import { TaskItem } from "@shared/types";
 
 interface TaskProps {
@@ -27,17 +27,19 @@ const Task: React.FC<TaskProps> = ({
     uuid,
     author_name,
     author_profile_uuid,
-    relation_status,
+    is_connected, // 👈 Updated from relation_status to match the backend query
     created_at,
     content,
     img,
+    author_avatar_url
   } = task;
 
   const taskHeaderInfo = {
     uuid,
     author_name,
     author_profile_uuid,
-    relation_status,
+    is_connected: typeof is_connected === 'boolean' ? is_connected : undefined, // 👈 Passed down to TaskHeader so it knows whether to show "Connected" or "Connect"
+    author_avatar_url: typeof author_avatar_url === 'string' ? author_avatar_url : null,
     created_at:
       created_at instanceof Date
         ? created_at.toISOString()
@@ -58,7 +60,6 @@ const Task: React.FC<TaskProps> = ({
 
         <TaskBody content={content} img={img} />
 
-        {/* Just pass the uuid; the container fetches the counts automatically */}
         <ActionContainer uuid={uuid} />
       </div>
     </article>

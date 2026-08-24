@@ -36,8 +36,8 @@ export const registerMessagingGateway = (socketServerCors: Server, socket: Socke
 
     const createdAt = new Date().toISOString();
 
-    // ⚡ STEP A: INSTANT SOCKET BROADCAST (Zero Latency)
-    socketServerCors.to(`current_Logged_In_User_Uuid:${recipientUuid}`).emit("server:receive_message", {
+    // ⚡ STEP A: INSTANT SOCKET BROADCAST (Zero Latency) -> Matches frontend "server:incoming_msg"
+    socketServerCors.to(`current_Logged_In_User_Uuid:${recipientUuid}`).emit("server:incoming_msg", {
       tempId,
       senderUuid,
       content,
@@ -55,8 +55,8 @@ export const registerMessagingGateway = (socketServerCors: Server, socket: Socke
 
       const savedMessage = dbRes.rows[0];
 
-      // Confirm saved state back to sender
-      socket.emit("server:message_acknowledged", {
+      // Confirm saved state back to sender -> Matches frontend "server:outgoing_msg_confirmed"
+      socket.emit("server:outgoing_msg_confirmed", {
         tempId,
         messageId: savedMessage.id,
         createdAt: savedMessage.created_at,

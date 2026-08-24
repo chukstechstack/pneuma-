@@ -8,7 +8,9 @@ import {
   Search,
   MessageSquare
 } from "lucide-react";
-import { MobileMessagesModal } from "../Mobile/MessagesModal"; // Import the modal we created
+import { MobileMessagesModal } from "../Mobile/MessagesModal";
+import { MobileAlertsModal } from "./MobileAlertsModal"; // 👈 Imported our new mobile alerts modal
+import { useAlerts } from "@/hooks/useAlerts"; // 👈 Imported alerts hook
 
 interface MobileNavBarProps {
   isVisible: boolean;
@@ -16,7 +18,7 @@ interface MobileNavBarProps {
   userAvatar?: string | null;
   pathname: string;
   onOpenCreate: () => void;
-  onSelectConversation: (partnerUuid: string) => void; // Added prop to handle opening chat
+  onSelectConversation: (partnerUuid: string) => void;
 }
 
 export const MobileNavBar: React.FC<MobileNavBarProps> = ({
@@ -27,8 +29,11 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   onOpenCreate,
   onSelectConversation
 }) => {
-  // Local state to manage whether the mobile messages modal is open
   const [isInboxOpen, setIsInboxOpen] = useState(false);
+  const [isAlertsOpen, setIsAlertsOpen] = useState(false); // 👈 State for mobile alerts modal
+  
+  // Fetch unread indicator state via hook
+  const { hasUnread } = useAlerts();
 
   const isActive = (path: string) => pathname.startsWith(path);
 
@@ -88,17 +93,23 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
           <Plus size={22} strokeWidth={2.5} />
         </Link>
 
-        <Link to="/notifications" className={getMobileLinkClass("/notifications")}>
+        {/* 🔔 Mobile Notifications Button Trigger */}
+        <button
+          onClick={() => setIsAlertsOpen(true)}
+          className={getMobileLinkClass("/notifications")}
+        >
           <div className="relative">
             <Bell size={20} strokeWidth={isActive("/notifications") ? 2 : 1.5} />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#d4af37]" />
+            {hasUnread && (
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#d4af37] animate-pulse" />
+            )}
           </div>
-        </Link>
+        </button>
 
         <Link to="/profile" className={getMobileLinkClass("/profile")}>
           <div className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-[#d4af37]/60">
             <img
-              src={userAvatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80"}
+              src={userAvatar || "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+24%2C+2026%2C+04_24_39+PM.jpg"}
               className="w-full h-full object-cover"
               alt="Me Profile"
             />
@@ -111,6 +122,12 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
         isOpen={isInboxOpen}
         onClose={() => setIsInboxOpen(false)}
         onSelectConversation={onSelectConversation}
+      />
+
+      {/* 🔔 Modular Mobile Alerts Drawer Modal */}
+      <MobileAlertsModal
+        isOpen={isAlertsOpen}
+        onClose={() => setIsAlertsOpen(false)}
       />
 
     </div>

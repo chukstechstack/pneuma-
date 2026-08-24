@@ -11,15 +11,18 @@ export const SolutionSection: React.FC = () => {
     <section id="solutions" ref={solutionRef} className={`py-40 px-6 md:px-12 max-w-[1700px] mx-auto transition-opacity duration-700 ${solutionVisible ? "opacity-100" : "opacity-0"}`}>
       
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-20">
-        <span className="text-emerald-400 text-xs font-black tracking-[0.3em] uppercase flex items-center justify-center gap-2 mb-3">
-          <ShieldCheck size={14} /> Sector 06 // Direct Intervention
+      <div className="text-center max-w-4xl mx-auto mb-28">
+        <span className="text-emerald-400 text-xs font-black tracking-[0.3em] uppercase flex items-center justify-center gap-2 mb-4">
+          <ShieldCheck size={14} className="stroke-[2.5]" /> Section 06 // Our Covenant
         </span>
-        <h2 className="text-5xl md:text-8xl font-black tracking-tight text-white uppercase mb-4">
-          The Solution Protocol
+        <h2 className="text-5xl md:text-8xl font-black tracking-tight text-white uppercase mb-6 leading-none">
+          The Fierce Urgency <br className="hidden md:block"/> Of Now
         </h2>
-        <p className="text-gray-300 font-sans text-sm leading-relaxed">
-          Bypassing bureaucratic delays to deliver immediate financial relief, medical funding, and boots-on-the-ground rescue.
+        <p className="text-xl text-gray-400 font-serif italic max-w-2xl mx-auto leading-relaxed mb-4">
+          "Darkness cannot drive out darkness; only light can do that."
+        </p>
+        <p className="text-gray-300 font-sans text-sm max-w-xl mx-auto leading-relaxed">
+          We do not wait for committees, permits, or corporate permission. Where there is pain, we deploy. Where there is isolation, we stand. We break the machine to save the soul.
         </p>
       </div>
 
@@ -38,16 +41,16 @@ export const SolutionSection: React.FC = () => {
                 alt={img.title} 
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-90 group-hover:brightness-100" 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 brightness-[0.75] group-hover:brightness-90" 
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/40 to-transparent p-6 flex flex-col justify-end pointer-events-none">
+              <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/60 to-transparent p-6 flex flex-col justify-end pointer-events-none">
                 <span className="text-emerald-400 text-[10px] font-black tracking-widest uppercase mb-1">
-                  Protocol 0{idx + 1} // {img.category || "Action"}
+                  Covenant 0{idx + 1} // {img.category || "Action"}
                 </span>
-                <h3 className="text-base font-black text-white uppercase tracking-wide mb-1 leading-snug">
+                <h3 className="text-lg font-black text-white uppercase tracking-wide mb-1 leading-snug">
                   {img.title}
                 </h3>
-                <p className="text-[11px] text-gray-300 font-sans line-clamp-2">
+                <p className="text-[12px] text-gray-300 font-sans leading-relaxed line-clamp-3">
                   {img.caption}
                 </p>
               </div>

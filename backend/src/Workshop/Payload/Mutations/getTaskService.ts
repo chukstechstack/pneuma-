@@ -6,48 +6,46 @@ export interface FetchGlobalTasksFeedResult {
   next_post_timestamp: number | null;
 }
 
-interface UserProfileIdRow {
-  id: number | string;
-}
-
 export const fetchGlobalTasksFeed = async (
-  user_uuid?: string | null,
+  currentUserUuid?: string | null,
   fresh_load_pointer?: string | number | null
 ): Promise<FetchGlobalTasksFeedResult> => {
-  let userId: number | string | null = null;
-
-  if (user_uuid) {
-    const user_Id_Res = await pool.query<UserProfileIdRow>("SELECT id FROM profiles WHERE uuid = $1", [user_uuid]);
-    if (user_Id_Res.rows.length > 0) {
-      userId = user_Id_Res.rows[0].id;
-    }
-    console.log("Resolved User ID:", userId);
-  }
-
+  
   const queryParams: (string | number | Date | null)[] = [];
+  let paramIndex = 1;
+
+  // 1. Push currentUserUuid as the first parameter if it exists, otherwise use null
+  queryParams.push(currentUserUuid || null);
+  const currentUserUuidParamIndex = paramIndex++; // This will be $1
 
   let queryText = `
     SELECT 
       c.*,
       p.full_name AS author_name,
-       p.avatar_url AS author_avatar_url,
+      p.avatar_url AS author_avatar_url,
       p.uuid AS author_profile_uuid, 
       FALSE AS is_liked,
-      FALSE AS is_reposted
+      FALSE AS is_reposted,
+      -- Plain and simple check: if con.connector_uuid is not null, then true, else false
+      (con.connector_uuid IS NOT NULL) AS is_connected
     FROM content c 
     LEFT JOIN profiles p ON c.user_id = p.id 
+    LEFT JOIN connections con 
+      ON con.connector_uuid = $${currentUserUuidParamIndex}::uuid 
+      AND con.connected_uuid = p.uuid
     WHERE c.created_at <= NOW()`;
 
+  // 2. Handle pagination pointer if it exists
   if (fresh_load_pointer && fresh_load_pointer !== 'Yes_Is_FreshLoad' && !isNaN(Number(fresh_load_pointer))) {
     const last_post_creation_date = new Date(Number(fresh_load_pointer));
     queryParams.push(last_post_creation_date);
-    queryText += ` AND c.created_at < $1 `;
+    queryText += ` AND c.created_at < $${paramIndex++} `;
   }
 
   queryText += ` ORDER BY c.created_at DESC LIMIT 40`;
 
   console.log("🛠️ --- EXECUTING Global Tasks FEED QUERY ---");
-  console.log("Parameter for Global Feeds [pagination]:", queryParams);
+  console.log("Parameters for Global Feeds:", queryParams);
 
   const result = await pool.query<TaskItem>(queryText, queryParams);
   const tasksFeed = result.rows;

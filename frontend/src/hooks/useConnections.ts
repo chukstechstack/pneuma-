@@ -1,113 +1,36 @@
-import { useMutation, useQueryClient, UseMutationResult } from "@tanstack/react-query";
-import api from "@/api/axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
-interface Task {
-    author_profile_uuid: string;
-    relation_status: string;
-    [key: string]: unknown;
-}
+// 1. Hook to fetch the list of connections (for the Inner Circle drawer)
+export const useConnections = (profileUuid: string) => {
+    return useQuery({
+        queryKey: ["connections", profileUuid],
+        queryFn: async () => {
+            if (!profileUuid) return [];
+            const response = await axios.get(`/api/profile/${profileUuid}/connections`);
+            return response.data.connections || [];
+        },
+        enabled: !!profileUuid,
+    });
+};
 
-interface Page {
-    tasks: Task[];
-    [key: string]: unknown;
-}
-
-interface HomeFeedData {
-    pages: Page[];
-    [key: string]: unknown;
-}
-
-interface ProfileData {
-    relationStatus: string;
-    [key: string]: unknown;
-}
-
-interface JournalFeedData {
-    relationStatus: string;
-    [key: string]: unknown;
-}
-
-interface ConnectionResponse {
-    isFollowing: boolean;
-    [key: string]: unknown;
-}
-
-interface MutateContext {
-    previousHomeFeed: HomeFeedData | undefined;
-    previousProfile: ProfileData | undefined;
-    previousJournal: JournalFeedData | undefined;
-}
-
-export const useConnectionMutation = (targetUuid: string): UseMutationResult<ConnectionResponse, Error, void, MutateContext> => {
+// 2. Hook to toggle Connect/Disconnect
+export const useToggleConnection = (targetProfileUuid: string) => {
     const queryClient = useQueryClient();
 
-    return useMutation<ConnectionResponse, Error, void, MutateContext>({
+    return useMutation({
         mutationFn: async () => {
-            const res = await api.post(`/task/profile/connect/${targetUuid}`);
-            return res.data;
+            const response = await axios.post(`/api/profile/${targetProfileUuid}/connect`);
+            return response.data;
         },
-        onMutate: async () => {
-            // Cancel all related queries
-            await queryClient.cancelQueries({ queryKey: ['homeFeed'] });
-            await queryClient.cancelQueries({ queryKey: ['profile', targetUuid] });
-            await queryClient.cancelQueries({ queryKey: ['journalFeed', targetUuid] });
+        onSuccess: () => {
+            // 🌟 Invalidate profile feeds
+            queryClient.invalidateQueries({ queryKey: ["profileFeed", targetProfileUuid] });
+            queryClient.invalidateQueries({ queryKey: ["profileFeed", "me"] });
+            queryClient.invalidateQueries({ queryKey: ["homeFeed"] });
 
-            const previousHomeFeed = queryClient.getQueryData<HomeFeedData>(['homeFeed']);
-            const previousProfile = queryClient.getQueryData<ProfileData>(['profile', targetUuid]);
-            const previousJournal = queryClient.getQueryData<JournalFeedData>(['journalFeed', targetUuid]);
-
-
-            const newStatus = 'pending';
-
- 
-            queryClient.setQueryData<HomeFeedData>(['homeFeed'], (old) => old ? ({
-                ...old,
-                pages: old.pages.map(p => ({
-                    ...p,
-                     tasks: p.tasks.map(t =>
-                        t.author_profile_uuid === targetUuid ? { ...t, relation_status: newStatus } : t
-                    )
-                }))
-            }) : old);
-
-            queryClient.setQueryData<ProfileData>(['profile', targetUuid], (old) => old ? ({
-                ...old,
-                relationStatus: newStatus
-            }) : old);
-
-            queryClient.setQueryData<JournalFeedData>(['journalFeed', targetUuid], (old) => old ? ({
-                ...old,
-                relationStatus: newStatus
-            }) : old);
-
-            return { previousHomeFeed, previousProfile, previousJournal };
+            // Refresh the connections list drawer
+            queryClient.invalidateQueries({ queryKey: ["connections", targetProfileUuid] });
         },
-        onSuccess: (data) => {
-            const newStatus = data.isFollowing ? 'pending' : 'none';
-
-            queryClient.setQueryData<HomeFeedData>(['homeFeed'], (old) => old ? ({
-                ...old,
-                pages: old.pages.map(p => ({
-                    ...p, tasks: p.tasks.map(t =>
-                        t.author_profile_uuid === targetUuid ? { ...t, relation_status: newStatus } : t
-                    )
-                }))
-            }) : old);
-
-            queryClient.setQueryData<ProfileData>(['profile', targetUuid], (old) => old ? ({
-                ...old,
-                relationStatus: newStatus
-            }) : old);
-
-            queryClient.setQueryData<JournalFeedData>(['journalFeed', targetUuid], (old) => old ? ({
-                ...old,
-                relationStatus: newStatus
-            }) : old);
-        },
-        onError: (err, action, context) => {
-            if (context?.previousHomeFeed) queryClient.setQueryData(['homeFeed'], context.previousHomeFeed);
-            if (context?.previousProfile) queryClient.setQueryData(['profile', targetUuid], context.previousProfile);
-            if (context?.previousJournal) queryClient.setQueryData(['journalFeed', targetUuid], context.previousJournal);
-        }
     });
 };

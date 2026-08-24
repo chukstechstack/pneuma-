@@ -9,8 +9,6 @@ export interface ProfileRow {
   created_at: string | Date;
 }
 
-// 🛒 FollowRow is no longer needed since we aren't querying the follows table!
-
 export interface TaskRow {
   id: number | string;
   uuid: string;
@@ -22,7 +20,7 @@ export interface TaskRow {
 export interface SmartProfileFeedResult {
   profile: ProfileRow;
   isOwner: boolean;
-  relationStatus: string | null;
+  is_connected: boolean; // 👈 Updated from relationStatus to match the database boolean
   tasks: TaskRow[];
 }
 
@@ -32,6 +30,7 @@ export const fetchSmartProfileFeedData = async (
 ): Promise<SmartProfileFeedResult> => {
   let profileRes;
 
+  // 1. Fetch the target profile (or your own profile if "me" / undefined)
   if (targetProfileUuid && targetProfileUuid !== "undefined" && targetProfileUuid !== "me") {
     profileRes = await pool.query<ProfileRow>(
       `SELECT id, uuid, username, full_name, avatar_url, created_at 
@@ -52,9 +51,32 @@ export const fetchSmartProfileFeedData = async (
 
   const targetProfileData = profileRes.rows[0];
   const targetProfileNumericId = targetProfileData.id;
+  const targetProfileUuidValue = targetProfileData.uuid;
   const isOwner = String(loggedInUserProfileId) === String(targetProfileNumericId);
 
-  // 🔓 ALL LOCKS DELETED: Always fetch the 5 newest journal scrolls for everyone!
+  // 2. Fetch the logged-in user's UUID so we can check connections
+  let isConnected = false;
+  if (!isOwner) {
+    const userUuidRes = await pool.query(
+      `SELECT uuid FROM profiles WHERE id = $1`,
+      [loggedInUserProfileId]
+    );
+
+    if (userUuidRes.rows.length > 0) {
+      const loggedInUserUuid = userUuidRes.rows[0].uuid;
+
+      // 3. Check if a connection exists in the database table
+      const connectionCheck = await pool.query(
+        `SELECT 1 FROM connections 
+         WHERE connector_uuid = $1 AND connected_uuid = $2`,
+        [loggedInUserUuid, targetProfileUuidValue]
+      );
+
+      isConnected = connectionCheck.rows.length > 0;
+    }
+  }
+
+  // 4. Fetch the 5 newest journal scrolls for this profile
   const taskRes = await pool.query<TaskRow>(`
       SELECT id, uuid, content, img, created_at
       FROM content
@@ -66,7 +88,7 @@ export const fetchSmartProfileFeedData = async (
   return {
     profile: targetProfileData,
     isOwner,
-    relationStatus: null, // Hardcoded fallback since frontend handles tracking via Redux now
+    is_connected: isConnected, // 👈 Returns true or false dynamically from PostgreSQL!
     tasks: taskRes.rows,
   };
 };

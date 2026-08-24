@@ -33,17 +33,17 @@ export const postTaskInteractions = async (req: Request<TaskParams, any, Interac
             const result = await handleToggleLike(contentId, payload);
             return res.status(200).json({ success: true, message: "Like updated", ...result });
         }
-        
+
         if (type === 'TOGGLE_SHARE') {
             const result = await handleToggleShare(contentId, payload);
             return res.status(200).json({ success: true, message: "Share updated", ...result });
         }
-        
+
         if (type === 'ADD_COMMENT') {
             const comment = await handleAddComment(contentId, payload);
             return res.status(200).json({ success: true, message: "Comment added successfully", comment });
         }
-        
+
         if (type === 'DELETE_COMMENT') {
             await handleDeleteComment(payload);
             return res.status(200).json({ success: true, message: "Comment deleted successfully" });
@@ -52,7 +52,7 @@ export const postTaskInteractions = async (req: Request<TaskParams, any, Interac
         return res.status(400).json({ error: "Invalid interaction type" });
     } catch (error: any) {
         console.error("Error updating interaction:", error);
-        
+
         // Handle specific thrown validation errors cleanly
         if (error.message.includes("not found") || error.message.includes("required")) {
             return res.status(400).json({ error: error.message });

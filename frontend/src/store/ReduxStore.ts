@@ -1,11 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import interactionsReducer from "../hooks/interactionsSlice";
-import followsReducer from "../hooks/followsSlice";
+
 
 export const store = configureStore({
   reducer: {
     interactions: interactionsReducer,
-    follows: followsReducer,
   },
 });
 

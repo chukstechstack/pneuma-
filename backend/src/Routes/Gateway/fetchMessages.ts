@@ -1,28 +1,48 @@
 import { Request, Response } from "express";
-import pool from "@/Terminal/Supabase/supabaseConfig.js"; // Adjust path to your Supabase pool
+import pool from "@/Terminal/Supabase/supabaseConfig.js";
 import { getErrorMessage } from "../../Toolkit/GetErrorMessage/getErrorMessage";
 
 export const fetchConversation = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Assuming your auth middleware populates req.user or you pass user uuid
-    const currentUserId = (req as any).user?.uuid || req.query.currentUserId; 
+    const currentUserUuid = (req as any).user?.uuid || req.query.currentUserId; 
     const { recipientUuid } = req.query;
 
-    if (!recipientUuid) {
-      res.status(400).json({ error: "Recipient UUID is required" });
+    if (!currentUserUuid || !recipientUuid) {
+      res.status(400).json({ error: "Both current user UUID and recipient UUID are required" });
       return;
     }
 
-    // Query messages where either user is sender and the other is recipient
+    // 1. Resolve both UUIDs to their integer profile IDs
+    const profilesQuery = `SELECT id, uuid FROM profiles WHERE uuid = ANY($1::uuid[])`;
+    const profileResult = await pool.query(profilesQuery, [[currentUserUuid, recipientUuid]]);
+
+    const profileMap = new Map();
+    profileResult.rows.forEach(row => profileMap.set(row.uuid, row.id));
+
+    const currentUserId = profileMap.get(currentUserUuid);
+    const recipientId = profileMap.get(recipientUuid);
+
+    if (!currentUserId || !recipientId) {
+      res.status(404).json({ error: "One or both user profiles not found" });
+      return;
+    }
+
+    // 2. Query messages using sender_id and recipient_id integers, and join back to return sender UUIDs for the frontend
     const query = `
-      SELECT id, sender_uuid AS "senderUuid", content, created_at AS "createdAt"
-      FROM messages
-      WHERE (sender_uuid = $1 AND recipient_uuid = $2)
-         OR (sender_uuid = $2 AND recipient_uuid = $1)
-      ORDER BY created_at ASC;
+      SELECT 
+        m.id, 
+        m.uuid,
+        sender_p.uuid AS "senderUuid", 
+        m.content, 
+        m.created_at AS "createdAt"
+      FROM messages m
+      JOIN profiles sender_p ON m.sender_id = sender_p.id
+      WHERE (m.sender_id = $1 AND m.recipient_id = $2)
+         OR (m.sender_id = $2 AND m.recipient_id = $1)
+      ORDER BY m.created_at ASC;
     `;
 
-    const { rows } = await pool.query(query, [currentUserId, recipientUuid]);
+    const { rows } = await pool.query(query, [currentUserId, recipientId]);
 
     res.status(200).json({ messages: rows });
   } catch (err: unknown) {

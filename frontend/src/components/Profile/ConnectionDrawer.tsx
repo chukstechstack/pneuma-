@@ -1,22 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { Users, X } from "lucide-react";
-import { RootState } from "../../store/ReduxStore"; // Adjust this import path if needed
+import { Users, X, Loader2 } from "lucide-react";
+import { useConnections } from "@/hooks/useConnections"; // 👈 Your new database hook
 
-interface InnerCircleDockProps {
+interface ConnectionDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  targetProfileUuid: string; // 👈 Pass the profile whose connections we want to view
 }
 
-export const InnerCircleDock: React.FC<InnerCircleDockProps> = ({ isOpen, onClose }) => {
+export const ConnectionDrawer: React.FC<ConnectionDrawerProps> = ({ 
+  isOpen, 
+  onClose, 
+  targetProfileUuid 
+}) => {
   // 🛡️ Safety Guard: If it's not open, render absolutely nothing
   if (!isOpen) return null;
 
-  // 🪄 Gather all connected profiles straight out of Redux memory
-  const myConnections = useSelector((state: RootState) => 
-    Object.values(state.follows.followingStatus).filter(Boolean)
-  );
+  // 📦 Fetch connections straight from PostgreSQL via React Query
+  const { data: myConnections = [], isLoading, isError } = useConnections(targetProfileUuid);
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
@@ -40,7 +42,16 @@ export const InnerCircleDock: React.FC<InnerCircleDockProps> = ({ isOpen, onClos
 
         {/* Scrolling List Frame */}
         <div className="max-h-[60vh] overflow-y-auto space-y-3 pr-2">
-          {myConnections.length === 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-10">
+              <Loader2 size={24} className="text-[#d4af37] animate-spin mb-2" />
+              <p className="text-gray-400 text-xs font-mono">Loading connections...</p>
+            </div>
+          ) : isError ? (
+            <p className="text-center py-10 text-red-400 text-sm font-mono">
+              Failed to load connections.
+            </p>
+          ) : myConnections.length === 0 ? (
             <p className="text-center py-10 text-gray-400 text-sm font-mono">
               No connections found in this inner circle yet.
             </p>
@@ -52,7 +63,7 @@ export const InnerCircleDock: React.FC<InnerCircleDockProps> = ({ isOpen, onClos
               >
                 <Link 
                   to={`/profile/${connectedUser.uuid}`} 
-                  onClick={onClose} // Closes the drawer automatically when you hop to their profile
+                  onClick={onClose} 
                   className="flex items-center gap-3.5 group"
                 >
                   <img

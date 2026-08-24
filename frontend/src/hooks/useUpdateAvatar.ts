@@ -13,6 +13,13 @@ export const useUpdateAvatar = (targetUserUuid?: string) => {
         mutationFn: (file: File) => {
             const formData = new FormData();
             formData.append("avatar", file);
+
+            console.log("📤 [useUpdateAvatar] Sending file payload:", {
+                name: file.name,
+                size: file.size,
+                type: file.type,
+            });
+
             return api.put("/task/profile/avatar", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
@@ -25,7 +32,7 @@ export const useUpdateAvatar = (targetUserUuid?: string) => {
 
             const prevProfile = queryClient.getQueryData(profileKey);
 
-            // Optional: Optimistically update the avatar preview locally if desired
+            // Optimistic preview via local object URL
             const previewUrl = URL.createObjectURL(file);
             queryClient.setQueryData(profileKey, (old: any) => {
                 if (!old) return old;
@@ -45,13 +52,17 @@ export const useUpdateAvatar = (targetUserUuid?: string) => {
             if (context?.prevProfile) {
                 queryClient.setQueryData(profileKey, context.prevProfile);
             }
-            console.error("Failed to update avatar:", err);
+            console.error("❌ [useUpdateAvatar] Failed to update avatar:", err);
         },
 
         onSuccess: (response: any) => {
-            console.log("Avatar updated successfully:", response);
-            // If backend returns the definitive server URL, update cache with it
-            const newAvatarUrl = response?.data?.avatar_url || response?.avatar_url;
+            // Axios places response body inside response.data
+            const responseData = response?.data || response;
+            console.log("📥 [useUpdateAvatar] Success response data:", responseData);
+
+            const newAvatarUrl = responseData?.avatar_url || responseData?.profile?.avatar_url;
+            console.log("🔗 [useUpdateAvatar] Extracted new avatar URL:", newAvatarUrl);
+
             if (newAvatarUrl) {
                 queryClient.setQueryData(profileKey, (old: any) => {
                     if (!old) return old;
@@ -67,7 +78,7 @@ export const useUpdateAvatar = (targetUserUuid?: string) => {
         },
 
         onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: profileKey });
+            queryClient.invalidateQueries({ queryKey: ["profileFeed"] });
         },
     });
 };

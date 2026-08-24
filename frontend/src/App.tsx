@@ -12,7 +12,7 @@ import JournalPage from "@/pages/JournalFeed/Feed";
 import TermsPage from "./pages/Terms&Conditions/TermsPage";
 import UpdatePassword from "../src/pages/UpdatePassword/UpdatePassword";
 import ForgotPassword from "./components/Login/ForgotPassword";
-
+import { TaskDetailView } from "@/pages/TaskDetailView/TaskDetailView"; 
 import { SocketWatcher } from "@/services/SocketWatcher/SocketWatcher";
 import { AuthenticatedGuard } from "@/components/AuthenticateGuard/AuthenticatedGuard";
 
@@ -38,6 +38,7 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:targetProfileUuid" element={<Profile />} />
             <Route path="/feed/:targetUserUuid" element={<JournalPage />} />
+            <Route path="/task/:taskId" element={<TaskDetailView />} />
 
           </Route>
         </Routes>

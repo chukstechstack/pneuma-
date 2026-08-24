@@ -7,7 +7,11 @@ import pool from "@Terminal/Supabase/supabaseConfig.js";
 import type { Request, Response, NextFunction } from "express";
 import type { PoolClient } from "pg";
 
-import { insertNewTask, fetchHydratedTaskById } from "@Workshop/Payload/Mutations/createTaskService.js";
+import { 
+  insertNewTask, 
+  fetchHydratedTaskById, 
+  createConnectionAlertsForTask 
+} from "@Workshop/Payload/Mutations/createTaskService.js";
 
 interface CreateTaskParams {
   [key: string]: string;
@@ -39,7 +43,7 @@ export const createTask = async (
   const user_uuid = req.user?.uuid;
   const user_id = req.user?.id;
 
-  if (user_id === undefined || user_id === null) {
+  if (user_id === undefined || user_id === null || !user_uuid) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
@@ -79,6 +83,9 @@ export const createTask = async (
 
     const resultWithUser = await fetchHydratedTaskById(savedTaskData.id, dbClient);
 
+    // 🚀 Fan out alerts to inner circle connections using the transaction client
+    await createConnectionAlertsForTask(user_uuid, savedTaskData.id, dbClient);
+
     await dbClient.query("COMMIT");
 
     try {
@@ -90,11 +97,11 @@ export const createTask = async (
           console.log(`🧹 Creation Cache Reset: Swept away ${homeKeys.length} home feed chunks.`);
         }
 
-      const journalPattern = `journal_feed_cache:${user_uuid}:*`;
+        const journalPattern = `journal_feed_cache:${user_uuid}:*`;
         const journalKeys = await redisClient.keys(journalPattern);
         if (journalKeys.length > 0) {
           await redisClient.del(journalKeys);
-          console.log(` ☠️Journal Keys Cleared  ${journalKeys.length} private feed chunks.`);
+          console.log(`☠️ Journal Keys Cleared ${journalKeys.length} private feed chunks.`);
         }
       }
     } catch (cacheErr: unknown) {

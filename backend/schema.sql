@@ -139,16 +139,32 @@ CREATE TABLE IF NOT EXISTS user_avatars (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Create an index for fast lookups by profile
+CREATE TABLE connections (
+  connector_uuid UUID REFERENCES profiles(uuid),
+  connected_uuid UUID REFERENCES profiles(uuid),
+  created_at TIMESTAMP DEFAULT NOW(),
+  PRIMARY KEY (connector_uuid, connected_uuid)
+);
 
 
--- 3. (Optional Convenience) Add or ensure an avatar reference column exists on profiles 
--- if you want a quick sync point without joining every time:
--- ALTER TABLE profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+CREATE TABLE alerts (
+  id SERIAL PRIMARY KEY,
+  recipient_uuid UUID REFERENCES profiles(uuid), -- Who gets the alert
+  actor_uuid UUID REFERENCES profiles(uuid),     -- Who made the post/action
+  type VARCHAR(50) DEFAULT 'new_post',           -- e.g., 'new_post'
+  reference_id INT,                              -- The ID of the post created
+  is_read BOOLEAN DEFAULT FALSE,                 -- For badge counting
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 
 -- ========================================================
 -- 🚀 PERFORMANCE INDEXES
 -- ========================================================
+
+-- Connections and Alerts
+CREATE INDEX idx_connections_connected ON connections(connected_uuid);
+CREATE INDEX idx_alerts_recipient_unread ON alerts(recipient_uuid, is_read);
 
 -- Profile Indexes
 CREATE INDEX idx_profiles_email ON profiles(email);
