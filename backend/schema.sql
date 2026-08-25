@@ -29,8 +29,7 @@ CREATE TABLE profiles (
     uuid UUID DEFAULT gen_random_uuid() UNIQUE,
     username TEXT NOT NULL,
     password TEXT NULL,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
+    full_name TEXT NOT NULL,
     country TEXT NULL,
     email TEXT NOT NULL UNIQUE,
     google_id TEXT, 
@@ -147,17 +146,23 @@ CREATE TABLE connections (
 );
 
 
+
+-- 1. Drop the old table completely
+DROP TABLE IF EXISTS alerts CASCADE;
+
+-- 2. Recreate the table with clean numeric ID column names linked to profiles(id)
 CREATE TABLE alerts (
   id SERIAL PRIMARY KEY,
-  recipient_uuid UUID REFERENCES profiles(uuid), -- Who gets the alert
-  actor_uuid UUID REFERENCES profiles(uuid),     -- Who made the post/action
-  type VARCHAR(50) DEFAULT 'new_post',           -- e.g., 'new_post'
-  reference_id INT,                              -- The ID of the post created
-  is_read BOOLEAN DEFAULT FALSE,                 -- For badge counting
+  recipient_id INT REFERENCES profiles(id) ON DELETE CASCADE,
+  actor_id INT REFERENCES profiles(id) ON DELETE CASCADE,
+  type VARCHAR(50) DEFAULT 'new_post',
+  reference_id INT,
+  is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW()
 );
 
-
+-- 3. Create an index for fast lookups by recipient
+CREATE INDEX idx_alerts_recipient ON alerts(recipient_id, is_read, created_at DESC);
 -- ========================================================
 -- 🚀 PERFORMANCE INDEXES
 -- ========================================================

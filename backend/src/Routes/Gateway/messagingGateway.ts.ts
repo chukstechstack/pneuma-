@@ -44,13 +44,28 @@ export const registerMessagingGateway = (socketServerCors: Server, socket: Socke
       createdAt,
     });
 
-    // 🐢 STEP B: BACKGROUND DB PERSISTENCE (Direct UUID Insertion)
+    // 🐢 STEP B: BACKGROUND DB PERSISTENCE (Resolve UUIDs to Integer IDs & Insert)
     try {
+      // Look up integer IDs for both sender and recipient using their UUIDs
+      const userLookup = await pool.query(
+        `SELECT uuid, id FROM profiles WHERE uuid = ANY($1::uuid[])`,
+        [[senderUuid, recipientUuid]]
+      );
+
+      const idMap = new Map(userLookup.rows.map(row => [row.uuid, row.id]));
+      const senderIntId = idMap.get(senderUuid);
+      const recipientIntId = idMap.get(recipientUuid);
+
+      if (!senderIntId || !recipientIntId) {
+        throw new Error("Sender or recipient profile ID not found in database.");
+      }
+
+      // Insert using sender_id and recipient_id as expected by your foreign keys
       const dbRes = await pool.query(
-        `INSERT INTO messages (sender_uuid, recipient_uuid, content, created_at) 
+        `INSERT INTO messages (sender_id, recipient_id, content, created_at) 
          VALUES ($1, $2, $3, NOW()) 
          RETURNING id, created_at`,
-        [senderUuid, recipientUuid, content]
+        [senderIntId, recipientIntId, content]
       );
 
       const savedMessage = dbRes.rows[0];

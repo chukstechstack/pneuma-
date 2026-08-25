@@ -4,7 +4,8 @@ import { fetchUserAlerts, markAlertAsRead } from "../../../../Workshop/Payload/F
 
 export const getAlerts = async (req: Request, res: Response) => {
     try {
-        const userId = (req.user as any)?.id;
+// In getAlerts and markRead:
+const userId = (req.user as any)?.uuid || (req.user as any)?.id || (req.user as any)?.user_uuid;
         if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
         const alerts = await fetchUserAlerts(userId);
@@ -17,7 +18,8 @@ export const getAlerts = async (req: Request, res: Response) => {
 
 export const markRead = async (req: Request, res: Response) => {
     try {
-        const userId = (req.user as any)?.id;
+     // In getAlerts and markRead:
+const userId = (req.user as any)?.uuid || (req.user as any)?.id || (req.user as any)?.user_uuid;
         // req.params fields can be string | string[]; normalize to a single string
         let alertIdParam = req.params.alertId as string | string[] | undefined;
         if (Array.isArray(alertIdParam)) alertIdParam = alertIdParam[0];

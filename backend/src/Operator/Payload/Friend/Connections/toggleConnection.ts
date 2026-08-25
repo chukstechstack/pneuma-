@@ -11,8 +11,8 @@ interface AuthenticatedUser {
 }
 
 interface ConnectionRow {
-    user_uuid: string;
-    connected_user_uuid: string;
+    connector_uuid: string;
+    connected_uuid: string;
     created_at?: string;
 }
 
@@ -21,7 +21,6 @@ export const toggleConnection = async (
     res: Response
 ) => {
     try {
-        // req.user contains the authenticated user's info set by ensureAuthenticated middleware
         const user = req.user as AuthenticatedUser | undefined;
         const currentUserUuid = user?.uuid || user?.id;
         const { targetProfileUuid } = req.params;
@@ -36,17 +35,17 @@ export const toggleConnection = async (
 
         // 1. Check if a connection already exists
         const checkQuery = `
-      SELECT * FROM connections 
-      WHERE user_uuid = $1 AND connected_user_uuid = $2
-    `;
+            SELECT * FROM connections 
+            WHERE connector_uuid = $1 AND connected_uuid = $2
+        `;
         const existingConnection = await pool.query(checkQuery, [currentUserUuid, targetProfileUuid]) as { rows: ConnectionRow[] };
 
         if (existingConnection.rows.length > 0) {
             // 2. If it exists, delete it (Disconnect)
             const deleteQuery = `
-        DELETE FROM connections 
-        WHERE user_uuid = $1 AND connected_user_uuid = $2
-      `;
+                DELETE FROM connections 
+                WHERE connector_uuid = $1 AND connected_uuid = $2
+            `;
             await pool.query(deleteQuery, [currentUserUuid, targetProfileUuid]);
 
             return res.status(200).json({
@@ -57,9 +56,9 @@ export const toggleConnection = async (
         } else {
             // 3. If it doesn't exist, insert it (Connect)
             const insertQuery = `
-        INSERT INTO connections (user_uuid, connected_user_uuid, created_at)
-        VALUES ($1, $2, NOW())
-      `;
+                INSERT INTO connections (connector_uuid, connected_uuid, created_at)
+                VALUES ($1, $2, NOW())
+            `;
             await pool.query(insertQuery, [currentUserUuid, targetProfileUuid]);
 
             return res.status(200).json({

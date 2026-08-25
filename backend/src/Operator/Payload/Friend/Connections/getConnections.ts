@@ -14,6 +14,7 @@ interface ConnectionProfile {
 interface GetConnectionsSuccessResponse {
     success: true;
     connections: ConnectionProfile[];
+    connection_count: number;
 }
 
 interface GetConnectionsErrorResponse {
@@ -34,23 +35,25 @@ export const getConnections = async (
         }
 
         /* 
-          SQL Query: 
-          Fetches profiles of users that the target user is connected to/following.
-          (Assumes your table is named 'connections' or 'follows' with columns like 'follower_uuid' / 'following_uuid' 
-          or 'user_uuid' / 'connected_user_uuid'. Adjust column names to match your exact schema!)
+          Query to fetch all profiles connected to or from the target user.
+          This maps bi-directional connections so nothing gets missed.
         */
         const query = `
-      SELECT p.uuid, p.full_name, p.avatar_url
-      FROM connections c
-      JOIN profiles p ON p.uuid = c.connected_user_uuid
-      WHERE c.user_uuid = $1
-    `;
+            SELECT DISTINCT p.uuid, p.full_name, p.avatar_url
+            FROM connections c
+            JOIN profiles p ON (
+                (c.connector_uuid = $1 AND p.uuid = c.connected_uuid) OR 
+                (c.connected_uuid = $1 AND p.uuid = c.connector_uuid)
+            )
+            WHERE c.connector_uuid = $1 OR c.connected_uuid = $1;
+        `;
 
         const { rows } = await pool.query<ConnectionProfile>(query, [targetProfileUuid]);
 
         return res.status(200).json({
             success: true,
             connections: rows,
+            connection_count: rows.length,
         });
     } catch (error) {
         console.error("Error fetching connections:", error);

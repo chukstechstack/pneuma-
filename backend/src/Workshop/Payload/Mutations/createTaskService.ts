@@ -73,16 +73,15 @@ export const createConnectionAlertsForTask = async (
   newPostId: number | string,
   client: DbClient = pool
 ): Promise<void> => {
-  // Find all accepted connections where this user is either sender or receiver
+  // Find all connected users where this user is either connector or connected
   const connectionsResult = await client.query<{ connection_uuid: string }>(
     `SELECT 
        CASE 
-         WHEN sender_uuid = $1 THEN receiver_uuid 
-         ELSE sender_uuid 
+         WHEN connector_uuid = $1 THEN connected_uuid 
+         ELSE connector_uuid 
        END AS connection_uuid 
      FROM connections 
-     WHERE (sender_uuid = $1 OR receiver_uuid = $1) 
-       AND status = 'accepted'`,
+     WHERE (connector_uuid = $1 OR connected_uuid = $1)`,
     [actorUserUuid]
   );
 

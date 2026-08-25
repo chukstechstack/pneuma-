@@ -7,6 +7,7 @@ export interface ProfileRow {
   full_name: string | null; 
   avatar_url: string | null;
   created_at: string | Date;
+  connection_count?: number;
 }
 
 export interface TaskRow {
@@ -20,7 +21,7 @@ export interface TaskRow {
 export interface SmartProfileFeedResult {
   profile: ProfileRow;
   isOwner: boolean;
-  is_connected: boolean; // 👈 Updated from relationStatus to match the database boolean
+  is_connected: boolean;
   tasks: TaskRow[];
 }
 
@@ -54,7 +55,17 @@ export const fetchSmartProfileFeedData = async (
   const targetProfileUuidValue = targetProfileData.uuid;
   const isOwner = String(loggedInUserProfileId) === String(targetProfileNumericId);
 
-  // 2. Fetch the logged-in user's UUID so we can check connections
+  // 2. Fetch total connection count for this target profile
+  const countRes = await pool.query(
+    `SELECT COUNT(*) AS total 
+     FROM connections 
+     WHERE connector_uuid = $1 OR connected_uuid = $1`,
+    [targetProfileUuidValue]
+  );
+  
+  targetProfileData.connection_count = parseInt(countRes.rows[0]?.total || "0", 10);
+
+  // 3. Fetch the logged-in user's UUID so we can check connections
   let isConnected = false;
   if (!isOwner) {
     const userUuidRes = await pool.query(
@@ -65,7 +76,7 @@ export const fetchSmartProfileFeedData = async (
     if (userUuidRes.rows.length > 0) {
       const loggedInUserUuid = userUuidRes.rows[0].uuid;
 
-      // 3. Check if a connection exists in the database table
+      // Check if a connection exists in the database table
       const connectionCheck = await pool.query(
         `SELECT 1 FROM connections 
          WHERE connector_uuid = $1 AND connected_uuid = $2`,
@@ -88,7 +99,7 @@ export const fetchSmartProfileFeedData = async (
   return {
     profile: targetProfileData,
     isOwner,
-    is_connected: isConnected, // 👈 Returns true or false dynamically from PostgreSQL!
+    is_connected: isConnected,
     tasks: taskRes.rows,
   };
 };
