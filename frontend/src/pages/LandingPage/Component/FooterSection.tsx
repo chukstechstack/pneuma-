@@ -1,70 +1,169 @@
-import React from "react";
-import { Heart, ArrowUpRight } from "lucide-react";
+import React, { useState } from "react";
+import { ArrowUpRight, Terminal, Plus, Minus, ShieldAlert } from "lucide-react";
 
 export const FooterSection: React.FC = () => {
+  const [activeFaq, setActiveFaq] = useState<number | null>(0);
+
+  const faqs = [
+    {
+      code: "PROTOCOL_01",
+      question: "WHAT IS PNEUMA'S CORE MISSION?",
+      answer:
+        "Direct-action humanitarian deployment. We override bureaucracy to land aid, resources, and human defense directly into war zones, extreme poverty, and isolated crises.",
+    },
+    {
+      code: "PROTOCOL_02",
+      question: "HOW DO FIELD DEPLOYMENTS WORK?",
+      answer:
+        "We operate outside corporate committees. Tactical volunteers and funds deploy within hours of alert confirmation directly to boots on the ground.",
+    },
+    {
+      code: "PROTOCOL_03",
+      question: "IS PNEUMA AFFILIATED WITH ANY GOVERNMENT?",
+      answer:
+        "Zero political binding. Zero corporate oversight. Complete operational independence focused 100% on preserving human lives.",
+    },
+    {
+      code: "PROTOCOL_04",
+      question: "WHERE DOES CAPITAL ALLOCATION GO?",
+      answer:
+        "100% to field assets, emergency trauma medical kits, food lines, and rapid extraction/shelter infrastructure.",
+    },
+  ];
+
   return (
-    <footer className="pt-28 pb-16 px-6 md:px-12 max-w-[1700px] mx-auto z-20 relative border-t border-white/10">
+    <footer className="w-full bg-[#030305] text-white pt-20 pb-12 border-t border-white/10 font-mono relative overflow-hidden select-none">
       
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 mb-20">
+      {/* 1. CRAZY GIANT SCROLLING MARQUEE HEADER */}
+      <div className="w-full border-b border-white/10 pb-8 overflow-hidden whitespace-nowrap opacity-90">
+        <div className="inline-block animate-marquee tracking-tighter font-black text-[14vw] leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-200 to-white">
+          NO PERMISSION REQUIRED // DEFEND HUMANITY // DISPATCH NOW //
+        </div>
+      </div>
+
+      <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-16">
         
-        {/* Brand & Statement */}
-        <div className="max-w-xl">
-          <span className="text-emerald-400 text-xs font-black tracking-[0.3em] uppercase block mb-4">
-            // Pneuma Protocol Matrix
-          </span>
-          <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-4">
-            Changing Humanity.
-          </h2>
-          <p className="text-gray-400 font-sans text-sm leading-relaxed">
-            An uncompromising mission to eradicate silence, fund critical medical care, rescue those trapped in isolation, and restore genuine human agency.
-          </p>
-        </div>
+        {/* 2. UNCONVENTIONAL ASYMMETRIC COMMAND SYSTEM */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          
+          {/* LEFT: MONOLITHIC FAQ MANIFEST (7 COLS) */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="flex items-center gap-3 text-emerald-400 text-xs font-bold tracking-[0.3em] uppercase mb-8">
+              <Terminal size={16} /> [SYSTEM DECLASSIFIED MANIFEST]
+            </div>
 
-        {/* Quick Navigation Links */}
-        <div className="flex flex-wrap gap-8 md:gap-16 font-sans text-xs uppercase font-bold tracking-widest">
-          <div className="flex flex-col gap-3">
-            <span className="text-gray-500 font-mono">// Directory</span>
-            <a href="#about-us" className="text-gray-300 hover:text-white transition-colors flex items-center gap-1 group">
-              <span>04 // Who We Are</span>
-              <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
-            <a href="#triage" className="text-gray-300 hover:text-white transition-colors flex items-center gap-1 group">
-              <span>05 // The Crisis</span>
-              <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
-            <a href="#solutions" className="text-gray-300 hover:text-white transition-colors flex items-center gap-1 group">
-              <span>06 // Solutions</span>
-              <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
+            <div className="space-y-3">
+              {faqs.map((faq, idx) => {
+                const isOpen = activeFaq === idx;
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => setActiveFaq(isOpen ? null : idx)}
+                    className={`cursor-pointer transition-all duration-200 border-l-2 p-6 bg-[#07070c] ${
+                      isOpen
+                        ? "border-emerald-400 bg-emerald-950/10"
+                        : "border-white/10 hover:border-white/40"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <span className="text-[10px] text-emerald-500 font-bold tracking-widest">
+                          {faq.code}
+                        </span>
+                        <h4 className="text-sm sm:text-base font-black tracking-wider text-white uppercase">
+                          {faq.question}
+                        </h4>
+                      </div>
+                      <div className="text-emerald-400">
+                        {isOpen ? <Minus size={18} /> : <Plus size={18} />}
+                      </div>
+                    </div>
+
+                    {isOpen && (
+                      <p className="mt-4 text-xs sm:text-sm font-sans text-gray-300 leading-relaxed pl-16 border-t border-white/5 pt-3">
+                        {faq.answer}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <span className="text-gray-500 font-mono">// External</span>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors flex items-center gap-1 group">
-              <span>GitHub Source</span>
-              <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors flex items-center gap-1 group">
-              <span>Network / X</span>
-              <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
-            <a href="mailto:contact@pneuma.org" className="text-gray-300 hover:text-white transition-colors flex items-center gap-1 group">
-              <span>Contact Dispatch</span>
-              <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </a>
+          {/* RIGHT: MASSIVE TACTICAL DISPATCH CTA TERMINAL (5 COLS) */}
+          <div className="lg:col-span-5 bg-[#080a0f] border-2 border-emerald-500/40 p-8 sm:p-10 rounded-none relative flex flex-col justify-between min-h-[500px]">
+            {/* Top Status Lights */}
+            <div className="flex justify-between items-center border-b border-white/10 pb-6 mb-8">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                <span className="text-[10px] text-emerald-400 font-bold tracking-widest uppercase">
+                  DISPATCH_LIVE // READY
+                </span>
+              </div>
+              <ShieldAlert size={18} className="text-emerald-400" />
+            </div>
+
+            {/* Core Direct Message */}
+            <div className="space-y-6">
+              <h3 className="text-4xl sm:text-6xl font-black text-white uppercase leading-[0.85] tracking-tighter">
+                OVERRIDE <br />
+                <span className="text-emerald-400">THE SILENCE.</span>
+              </h3>
+              <p className="text-xs sm:text-sm font-sans text-gray-400 leading-relaxed">
+                We don't do newsletter footers or generic email signups. If you want to stand on the front lines, support field triage, or fund active deployments, enter the matrix immediately.
+              </p>
+            </div>
+
+            {/* Giant Action Button */}
+            <div className="mt-10 pt-6 border-t border-white/10">
+              <a
+                href="mailto:contact@pneuma.org?subject=DIRECT%20FIELD%20ACTION"
+                className="w-full py-6 bg-emerald-400 hover:bg-emerald-300 text-black font-black text-sm tracking-[0.2em] uppercase flex items-center justify-between px-8 transition-colors duration-150"
+              >
+                <span>INITIATE DEPLOYMENT</span>
+                <ArrowUpRight size={22} strokeWidth={3} />
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        {/* 3. HARDWARE INDUSTRIAL DIRECTORY BAR */}
+        <div className="mt-24 pt-12 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-8 text-xs uppercase font-bold tracking-widest">
+          <div>
+            <span className="text-gray-600 block mb-3">// NAVIGATION</span>
+            <ul className="space-y-2 text-gray-300">
+              <li><a href="#about-us" className="hover:text-emerald-400">[02] WHO WE ARE</a></li>
+              <li><a href="#triage" className="hover:text-emerald-400">[03] THE CRISIS</a></li>
+              <li><a href="#solutions" className="hover:text-emerald-400">[04] SOLUTIONS</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <span className="text-gray-600 block mb-3">// NETWORK</span>
+            <ul className="space-y-2 text-gray-300">
+              <li><a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-emerald-400">GITHUB_SRC</a></li>
+              <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-emerald-400">NETWORK_X</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <span className="text-gray-600 block mb-3">// ENCRYPTION</span>
+            <p className="text-gray-500 font-mono text-[10px]">
+              AES_256_GCM <br />
+              PNEUMA_PROTOCOL_V4
+            </p>
+          </div>
+
+          <div className="text-right flex flex-col justify-between">
+            <span className="text-emerald-500">// ALL SYSTEMS NOMINAL</span>
+            <p className="text-gray-600 text-[10px]">
+              &copy; {new Date().getFullYear()} PNEUMA PROTOCOL
+            </p>
           </div>
         </div>
 
       </div>
-
-      {/* Bottom Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 font-mono gap-4 pt-8 border-t border-white/5">
-        <p>&copy; {new Date().getFullYear()} Pneuma Protocol. All rights reserved.</p>
-        <p className="flex items-center gap-1.5">
-          BUILT WITH <Heart size={12} className="text-rose-500 fill-rose-500" /> FOR HUMANITY
-        </p>
-      </div>
-
     </footer>
   );
 };

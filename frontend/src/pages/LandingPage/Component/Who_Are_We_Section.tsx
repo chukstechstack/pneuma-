@@ -1,58 +1,96 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { PNEUMA_IMAGES } from "../Assets/pneumaImages";
-import { useScrollReveal } from "../hooks/useScrollReveal";
-import { Heart } from "lucide-react";
+import { Heart, ArrowUpRight } from "lucide-react";
 
 export const WhoWeAre: React.FC = () => {
-  const [aboutRef, aboutVisible] = useScrollReveal(0.05);
-  
-  // Sliced from 7 to 11 (adjust these indices if your array slice needs to be 11 to 15)
-  const aboutCards = PNEUMA_IMAGES.slice(7, 11);
+  // Memoize card images with proper resolution constraints
+  const aboutCards = useMemo(() => {
+    return PNEUMA_IMAGES.slice(7, 11).map((img) => ({
+      ...img,
+      optimizedUrl:
+        img.url && img.url.includes("unsplash.com")
+          ? `${img.url}?auto=format&fit=crop&w=800&q=75`
+          : img.url,
+    }));
+  }, []);
 
   return (
-    <section id="about-us" ref={aboutRef} className="py-40 px-6 md:px-12 max-w-[1700px] mx-auto z-20 relative">
-      
-      {/* Section Header */}
-      <div className={`text-center max-w-4xl mx-auto mb-24 transition-opacity duration-500 ${aboutVisible ? "opacity-100" : "opacity-0"}`}>
-        <span className="text-emerald-400 text-xs font-black tracking-[0.3em] uppercase bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20">
-          Section 04 // The Moral Line
-        </span>
-        <h2 className="text-5xl md:text-8xl font-black tracking-tight text-white uppercase mt-6 mb-6 leading-[0.95]">
-          We Are Our <br className="hidden md:block" /> Brother's Keeper
-        </h2>
-        <p className="text-xl text-gray-400 font-serif italic max-w-2xl mx-auto leading-relaxed mb-4">
-          "We must learn to live together as brothers or perish together as fools."
-        </p>
-        <p className="text-gray-300 font-sans text-sm max-w-xl mx-auto leading-relaxed">
-          Pneuma is not a company, a product, or a tech showcase. We are a decentralized line of defense for human dignity. If a bomb falls, if a soul struggles in addiction, or if a community is left in darkness—we show up.
-        </p>
-      </div>
+    <section 
+      id="about-us" 
+      className="py-20 md:py-32 px-6 md:px-12 max-w-[1700px] mx-auto relative z-20 overflow-hidden transform-gpu"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        
+        {/* LEFT COLUMN: Massive Sticky Header (Desktop) */}
+        <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-6">
+          <span className="inline-flex items-center gap-2 text-emerald-400 text-xs font-black tracking-[0.3em] uppercase bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20">
+            Section 04 // The Moral Line
+          </span>
+          
+          <h2 className="text-6xl sm:text-7xl md:text-8xl xl:text-9xl font-black tracking-tighter text-white uppercase leading-[0.88] select-none">
+            WHO <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-200 to-white">
+              WE ARE
+            </span>
+          </h2>
 
-      {/* 4-Column Clean Straight Grid with Layout Containment */}
-      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 transition-opacity duration-500 delay-100 ${aboutVisible ? "opacity-100" : "opacity-0"}`}>
-        {aboutCards.map((img, idx) => {
-          return (
-            <div 
-              key={img.id || idx} 
-              className="relative h-[480px] rounded-3xl overflow-hidden border border-white/15 group bg-[#0d0d14] shadow-2xl transition-all duration-500 [contain:paint] translate-z-0"
-            >
-              <img 
-                src={img.url} 
-                alt={img.title} 
-                loading="lazy"
-                decoding="async"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 brightness-[0.75] group-hover:brightness-90" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-8 flex flex-col justify-end pointer-events-none">
-                <span className="text-emerald-400 text-xs font-black tracking-widest uppercase mb-2 flex items-center gap-2">
-                  <Heart size={14} className="fill-emerald-500/10" /> 0{idx + 1} // Sacred Duty
-                </span>
-                <h3 className="text-2xl font-black text-white uppercase tracking-wide mb-2">{img.title}</h3>
-                <p className="text-gray-300 font-sans text-xs md:text-sm leading-relaxed line-clamp-3">{img.caption}</p>
+          <div className="border-l-2 border-emerald-500/40 pl-6 space-y-4 pt-2">
+            <p className="text-lg md:text-xl text-gray-300 font-serif italic leading-relaxed">
+              "A decentralized line of defense for human dignity."
+            </p>
+            <p className="text-gray-400 font-sans text-xs sm:text-sm md:text-base leading-relaxed">
+              Pneuma is not a company, a product, or a tech showcase. If a bomb falls, if a soul struggles in addiction, or if a community is left in darkness—we show up.
+            </p>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Asymmetric 2x2 Dynamic Card Grid */}
+        <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+          {aboutCards.map((img, idx) => {
+            // Apply slight vertical offset on desktop for an asymmetric editorial feel
+            const offsetClass = idx % 2 === 1 ? "sm:translate-y-8" : "";
+
+            return (
+              <div 
+                key={img.id || idx} 
+                className={`group relative h-[420px] sm:h-[480px] rounded-3xl overflow-hidden border border-white/10 bg-[#0d0d14] [transform:translateZ(0)] [backface-visibility:hidden] transition-transform duration-300 ${offsetClass}`}
+              >
+                {/* Background Image */}
+                <img 
+                  src={img.optimizedUrl} 
+                  alt={img.title || "Who We Are"} 
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover brightness-[0.7] group-hover:scale-105 group-hover:brightness-90 transition-all duration-500 ease-out" 
+                />
+
+                {/* Top Corner Badge */}
+                <div className="absolute top-5 left-5 z-10 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10 text-emerald-400 text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5">
+                  <Heart size={12} className="fill-emerald-400/20" /> 0{idx + 1}
+                </div>
+
+                {/* Hover Arrow Icon */}
+                <div className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ArrowUpRight size={16} />
+                </div>
+
+                {/* Content Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/60 to-transparent p-6 sm:p-8 flex flex-col justify-end pointer-events-none">
+                  <span className="text-emerald-400 text-[11px] font-black tracking-widest uppercase mb-1">
+                    Sacred Duty
+                  </span>
+                  <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight mb-2 leading-none">
+                    {img.title}
+                  </h3>
+                  <p className="text-gray-300 font-sans text-xs sm:text-sm leading-relaxed line-clamp-3">
+                    {img.caption}
+                  </p>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );
