@@ -20,7 +20,7 @@ export const useAlerts = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["user-alerts"],
     queryFn: async () => {
-      const response = await api.get("/alerts");
+      const response = await api.get("/task/alerts");
       return response.data as { success: boolean; alerts: ConnectionAlert[]; hasUnread: boolean };
     },
     refetchInterval: 60000, // Optional: auto-poll every 60s
@@ -29,7 +29,7 @@ export const useAlerts = () => {
   // Mark alert as read mutation
   const { mutate: markAsRead } = useMutation({
     mutationFn: async (alertId: number | string) => {
-      await api.patch(`/alerts/${alertId}/read`);
+      await api.patch(`/task/alerts/${alertId}/read`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-alerts"] });
