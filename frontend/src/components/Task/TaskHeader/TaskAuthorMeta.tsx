@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Clock3, Loader2 } from "lucide-react";
 import { useToggleConnection } from "@/hooks/useConnections";
@@ -16,10 +16,32 @@ export const TaskAuthorMeta: React.FC<TaskAuthorMetaProps> = ({
   authorProfileUuid,
   authorName,
   currentUserUuid,
-  isConnected,
+  isConnected: initialIsConnected,
   createdAt,
 }) => {
+  const [isConnected, setIsConnected] = useState(initialIsConnected);
+
+  // Keep local state in sync if parent prop updates later
+  useEffect(() => {
+    setIsConnected(initialIsConnected);
+  }, [initialIsConnected]);
+
   const { mutate: toggleConnect, isPending } = useToggleConnection(authorProfileUuid);
+
+  const handleClick = () => {
+    if (isPending) return;
+
+    // Optimistically toggle state immediately for snappy UI response
+    const previousState = isConnected;
+    setIsConnected(!previousState);
+
+    toggleConnect(undefined, {
+      onError: () => {
+        // Rollback if the server mutation fails
+        setIsConnected(previousState);
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col">
@@ -33,17 +55,17 @@ export const TaskAuthorMeta: React.FC<TaskAuthorMetaProps> = ({
             <span className="text-white/20 font-light">·</span>
             <button
               disabled={isPending}
-              onClick={() => toggleConnect()}
+              onClick={handleClick}
               className={`text-xs font-medium transition-colors cursor-pointer inline-flex items-center gap-1 ${
                 isConnected
                   ? "text-emerald-400 hover:text-red-400"  
-                  : "text-[#d4af37] hover:text-[#e5c05e]"   
+                  : "text-[#d4af37] hover:text-[#e5c05e]"  
               }`}
             >
               {isPending ? (
                 <Loader2 size={12} className="animate-spin" />
               ) : (
-                isConnected ? "Connected" : "Connect"
+                isConnected ? "Connect" : "Connected"
               )}
             </button>
           </>

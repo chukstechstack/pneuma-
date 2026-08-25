@@ -33,7 +33,7 @@ export const PNEUMA_IMAGES: PneumaImage[] = [
     title: "Frontline Triage Operations",
     location: "Sector 03 // Active Stabilization",
     category: "Vanguard",
-    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/Auth+Image/Authentication+Image+Aug+24%2C+2026%2C+06_04_42+PM.jpg",
+    url: "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+22%2C+2026%2C+11_45_39+AM.jpg",
     caption: "Evolution isn't a destination; it's a constant recalibration. Stand at the edge, look forward, and build the reality you refuse to wait for.",
     isPriority: true,
   },

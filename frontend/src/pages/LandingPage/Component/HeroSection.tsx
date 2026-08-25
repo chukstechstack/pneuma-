@@ -69,8 +69,7 @@ export const HeroSection: React.FC = () => {
             src={img.url}
             alt={img.title}
             loading="eager"
-            // @ts-ignore
-            fetchpriority={idx === 0 ? "high" : "auto"}
+            fetchPriority={idx === 0 ? "high" : "auto"}
             decoding="async"
             className="w-full h-full object-cover brightness-[1.05]"
           />

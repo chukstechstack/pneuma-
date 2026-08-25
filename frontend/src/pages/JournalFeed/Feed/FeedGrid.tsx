@@ -55,8 +55,8 @@ export const JournalGrid: React.FC<JournalGridProps> = ({ tasks, onSelectTask, f
               </span>
             </div>
 
-            {/* Middle Content Preview */}
-            <div className="relative z-10 my-auto">
+            {/* Bottom Content Preview (Changed from my-auto to mt-auto) */}
+            <div className="relative z-10 mt-auto">
               <p className="text-xs sm:text-sm text-gray-200 line-clamp-3 font-medium group-hover:text-white transition-colors">
                 {content}
               </p>

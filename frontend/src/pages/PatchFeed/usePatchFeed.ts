@@ -29,9 +29,10 @@ export const usePatchFeed = () => {
   const taskToEdit = findTask();
 
   // ─── Local Form State ─────────────────────────────
+  // We keep content pre-filled, but img starts null so user explicitly re-uploads if desired
   const [formData, setFormData] = useState<FormState>({
     content: taskToEdit?.content || "",
-    img: (taskToEdit?.img as unknown as File) || null,
+    img: null,
   });
   const [previewUrl, setPreviewUrl] = useState("");
 

@@ -21,6 +21,5 @@ export const useFetchMessages = (targetProfileUuid: string, isOpen: boolean) => 
     },
     // Only fetch when the dock is actually open and we have a valid UUID
     enabled: isOpen && !!targetProfileUuid,
-    staleTime: 1000 * 60 * 2, // Cache for 2 minutes
   });
 };

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import api from "../api/axios"
 
 // 1. Hook to fetch the list of connections (for the Inner Circle drawer)
 export const useConnections = (profileUuid: string) => {
@@ -7,7 +7,8 @@ export const useConnections = (profileUuid: string) => {
         queryKey: ["connections", profileUuid],
         queryFn: async () => {
             if (!profileUuid) return [];
-            const response = await axios.get(`/api/profile/${profileUuid}/connections`);
+            // Using custom 'api' instance + '/task' prefix
+            const response = await api.get(`/task/profile/${profileUuid}/connections`);
             return response.data.connections || [];
         },
         enabled: !!profileUuid,
@@ -20,7 +21,8 @@ export const useToggleConnection = (targetProfileUuid: string) => {
 
     return useMutation({
         mutationFn: async () => {
-            const response = await axios.post(`/api/profile/${targetProfileUuid}/connect`);
+            // Using custom 'api' instance + '/task' prefix
+            const response = await api.post(`/task/profile/${targetProfileUuid}/connect`);
             return response.data;
         },
         onSuccess: () => {

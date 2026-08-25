@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Eye, EyeOff, Loader2, Terminal, ShieldCheck, KeyRound } from "lucide-react";
+import { Eye, EyeOff, Loader2, Terminal, ShieldCheck } from "lucide-react";
 import { GoogleIcon } from "./GoogleIcon";
 import { Link } from "react-router-dom";
 import { UseFormRegister, FieldErrors, UseFormHandleSubmit } from "react-hook-form";
@@ -29,18 +29,18 @@ const LoginInput: React.FC<LoginInputProps> = ({
       {/* Terminal HUD Header Status */}
       <div className="flex items-center justify-between mb-6 pb-3 border-b border-white/10 font-mono text-[10px] tracking-[0.3em] text-emerald-400 uppercase">
         <span className="flex items-center gap-2">
-          <Terminal size={12} className="animate-pulse" /> SYS_AUTH_GATEWAY
+          <Terminal size={12} className="animate-pulse" /> AUTH_GATEWAY
         </span>
-        <span className="text-gray-500 font-bold">[NODE_SECURE]</span>
+        <span className="text-gray-500 font-bold">[SECURE]</span>
       </div>
 
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-black text-3xl sm:text-4xl tracking-tight text-white uppercase mb-2 leading-none">
-          Access <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-emerald-400">Terminal</span>
+          Sign <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-emerald-400">In</span>
         </h1>
         <p className="text-gray-400 font-sans text-xs sm:text-sm tracking-wide leading-relaxed">
-          Authenticate credentials to resume your session on the global Pneuma secure network.
+          Enter your credentials to resume your session on Pneuma.
         </p>
       </div>
 
@@ -49,11 +49,12 @@ const LoginInput: React.FC<LoginInputProps> = ({
         {/* Email */}
         <div className="flex flex-col gap-1.5 w-full">
           <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
-            Email Address // Comms Route
+            Email Address
           </label>
           <input
             {...register("email")}
             type="email"
+            autoComplete="username"
             placeholder="name@domain.com"
             className={`w-full px-4 py-3.5 bg-black/90 border rounded-none text-white text-xs font-mono outline-none transition-all placeholder:text-gray-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 shadow-inner ${
               errors.email ? "border-rose-500 bg-rose-500/10" : "border-white/20 hover:border-white/40"
@@ -66,16 +67,17 @@ const LoginInput: React.FC<LoginInputProps> = ({
         <div className="flex flex-col gap-1.5 w-full">
           <div className="flex items-center justify-between">
             <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
-              Cipher Key // Password
+              Password
             </label>
             <Link to="/forgotpassword" className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 hover:text-emerald-300 hover:underline">
-              [ Reset Cipher? ]
+              [ Forgot password? ]
             </Link>
           </div>
           <div className="relative w-full flex items-center">
             <input
               {...register("password")}
               type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
               placeholder="••••••••••••"
               className={`w-full px-4 py-3.5 pr-12 bg-black/90 border rounded-none text-white text-xs font-mono outline-none transition-all placeholder:text-gray-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 shadow-inner ${
                 errors.password ? "border-rose-500 bg-rose-500/10" : "border-white/20 hover:border-white/40"
@@ -94,7 +96,7 @@ const LoginInput: React.FC<LoginInputProps> = ({
           )}
         </div>
 
-        {/* Remember Device Toggle */}
+        {/* Remember Me Checkbox */}
         <div className="flex items-center gap-2.5 py-1">
           <input
             type="checkbox"
@@ -103,7 +105,7 @@ const LoginInput: React.FC<LoginInputProps> = ({
             className="w-4 h-4 rounded-none border-white/20 bg-black/90 text-emerald-500 focus:ring-0 cursor-pointer accent-emerald-500"
           />
           <label htmlFor="rememberDevice" className="text-xs text-gray-400 font-mono tracking-wider cursor-pointer select-none">
-            Persist Session Token
+            Remember me
           </label>
         </div>
 
@@ -119,7 +121,7 @@ const LoginInput: React.FC<LoginInputProps> = ({
               <Loader2 size={16} className="animate-spin text-black" />
             ) : (
               <span className="flex items-center gap-2 font-mono font-bold">
-                <ShieldCheck size={14} /> AUTHORIZE ENTRY
+                <ShieldCheck size={14} /> SIGN IN
               </span>
             )}
           </button>
@@ -128,7 +130,7 @@ const LoginInput: React.FC<LoginInputProps> = ({
         {/* OAuth Divider */}
         <div className="flex items-center gap-4 my-2">
           <span className="flex-1 h-[1px] bg-white/15"></span>
-          <span className="text-[9px] uppercase tracking-[0.3em] text-gray-500 font-mono">Alternative Protocol</span>
+          <span className="text-[9px] uppercase tracking-[0.3em] text-gray-500 font-mono">Or</span>
           <span className="flex-1 h-[1px] bg-white/15"></span>
         </div>
 
@@ -138,14 +140,14 @@ const LoginInput: React.FC<LoginInputProps> = ({
           className="w-full flex items-center justify-center gap-3 bg-black/90 border border-white/20 py-3.5 text-white/90 text-xs font-mono tracking-wider no-underline transition-all hover:bg-white hover:text-black hover:border-white shadow-lg group"
         >
           <GoogleIcon />
-          <span>AUTH // GOOGLE_SSO</span>
+          <span>Continue with Google</span>
         </a>
 
         <div className="text-center pt-4 border-t border-white/10 mt-2">
           <p className="text-xs text-gray-400 font-sans">
-            No operative clearance?{" "}
+            Don't have an account?{" "}
             <Link to="/register" className="text-emerald-400 font-bold font-mono tracking-wider hover:text-emerald-300 hover:underline uppercase ml-1">
-              [ ESTABLISH IDENTITY ]
+              [ Sign up ]
             </Link>
           </p>
         </div>

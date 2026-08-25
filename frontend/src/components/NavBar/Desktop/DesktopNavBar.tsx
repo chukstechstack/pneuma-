@@ -106,7 +106,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
             className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider bg-gradient-to-r from-[#d4af37] to-[#aa8c2c] text-black shadow-[0_0_15px_rgba(212,175,55,0.25)] hover:opacity-95 transition-all active:scale-95 ml-1"
           >
             <PlusSquare size={15} strokeWidth={2.2} />
-            <span>Post</span>
+            <span> share</span>
           </Link>
 
         </nav>

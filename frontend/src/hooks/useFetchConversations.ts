@@ -19,6 +19,5 @@ export const useFetchConversations = (isOpen: boolean) => {
     },
     // ⚡ Magic part: Only fetches when the user clicks to open the pop-up!
     enabled: isOpen,
-    staleTime: 1000 * 60 * 2, // Cache for 2 minutes
   });
 };
