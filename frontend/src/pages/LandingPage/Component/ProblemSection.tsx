@@ -56,13 +56,7 @@ export const ProblemSection: React.FC = () => {
           <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#030305] to-transparent pointer-events-none" />
         </div>
 
-        {/* Minimal Header Badge */}
-        <div className="relative z-10 flex items-center justify-between">
-          <div className="inline-flex items-center gap-2 text-rose-400 text-xs font-black tracking-[0.3em] uppercase bg-black/30 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
-            <ShieldAlert size={14} className="text-rose-500 animate-pulse" />
-            SECTION 04 // CRISIS LOGISTICS
-          </div>
-        </div>
+   
 
         {/* Floating Minimalist Headline */}
         <div className="relative z-10 max-w-3xl space-y-3 mb-10">

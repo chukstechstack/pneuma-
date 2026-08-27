@@ -96,9 +96,6 @@ export const FooterSection: React.FC = () => {
             <div className="flex justify-between items-center border-b border-white/10 pb-6 mb-8">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                <span className="text-[10px] text-emerald-500 font-bold tracking-widest uppercase">
-                  DISPATCH_LIVE // READY
-                </span>
               </div>
               <ShieldAlert size={18} className="text-emerald-500" />
             </div>

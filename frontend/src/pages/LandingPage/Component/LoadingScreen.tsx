@@ -40,9 +40,6 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onComplete }) => {
 
         {/* Brand Flash */}
         <div className="flex flex-col items-center">
-          <span className="text-[10px] font-mono tracking-[0.4em] text-emerald-400 uppercase animate-pulse">
-            // INITIALIZING SECURE LINK
-          </span>
           <h1 className="text-3xl sm:text-4xl font-black uppercase tracking-tight text-white mt-1 drop-shadow-[0_0_20px_rgba(16,185,129,0.3)]">
             Pneuma
           </h1>

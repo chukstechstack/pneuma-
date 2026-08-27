@@ -27,9 +27,6 @@ export const OutpostsSection: React.FC = () => {
       {/* Section Header */}
       <div className="flex flex-col xl:flex-row xl:items-end justify-between mb-12 md:mb-16 gap-8">
         <div className="max-w-4xl">
-          <span className="text-emerald-500 text-xs font-black tracking-[0.3em] uppercase bg-emerald-500/10 px-4 py-2 rounded-full border border-emerald-500/20 flex items-center gap-2 w-fit mb-4">
-            <ShieldCheck size={14} /> Section 03 // The Quickening
-          </span>
           <h2 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-white uppercase leading-[0.95]">
             PNEUMA
           </h2>

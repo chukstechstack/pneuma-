@@ -16,7 +16,6 @@ export const ChapterTwoSection: React.FC = () => {
         {/* System Cut-Off Marker */}
         <div className="inline-flex items-center gap-3 text-gray-400 text-[10px] sm:text-xs tracking-[0.4em] uppercase mb-12 border border-rose-500/30 px-6 py-2 bg-[#08080c]">
           <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-          <span>CHAPTER_02 // THE SEVERED VOID // BLACKOUT ZONE</span>
         </div>
 
         {/* MONSTER STACKED TEXT THAT CLIPS OFF THE SCREEN EDGES */}

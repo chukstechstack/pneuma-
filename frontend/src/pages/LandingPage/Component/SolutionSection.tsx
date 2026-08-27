@@ -25,9 +25,6 @@ export const SolutionSection: React.FC = () => {
       <div className="px-6 md:px-16 max-w-[1700px] mx-auto space-y-8 relative z-10 mb-20 md:mb-28">
         
         {/* Minimal Pill Badge */}
-        <div className="inline-flex items-center gap-2 text-emerald-400 text-xs font-black tracking-[0.3em] uppercase bg-emerald-500/10 px-4 py-2 rounded-full">
-          <ShieldCheck size={14} className="stroke-[2.5]" /> SECTION 05 // THE COVENANT
-        </div>
 
         {/* Huge Asymmetric Title */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
