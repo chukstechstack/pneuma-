@@ -34,7 +34,7 @@ export const FooterSection: React.FC = () => {
 
   return (
     <footer className="w-full bg-[#030305] text-white pt-20 pb-12 border-t border-white/10 font-mono relative overflow-hidden select-none">
-      
+
       {/* 1. CRAZY GIANT SCROLLING MARQUEE HEADER */}
       <div className="w-full border-b border-white/10 pb-8 overflow-hidden whitespace-nowrap opacity-90">
         <div className="inline-block animate-marquee tracking-tighter font-black text-[14vw] leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-200 to-white">
@@ -43,10 +43,10 @@ export const FooterSection: React.FC = () => {
       </div>
 
       <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-16">
-        
+
         {/* 2. UNCONVENTIONAL ASYMMETRIC COMMAND SYSTEM */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-          
+
           {/* LEFT: MONOLITHIC FAQ MANIFEST (7 COLS) */}
           <div className="lg:col-span-7 space-y-6">
             <div className="flex items-center gap-3 text-emerald-500 text-xs font-bold tracking-[0.3em] uppercase mb-8">
@@ -60,11 +60,10 @@ export const FooterSection: React.FC = () => {
                   <div
                     key={idx}
                     onClick={() => setActiveFaq(isOpen ? null : idx)}
-                    className={`cursor-pointer transition-all duration-200 border-l-2 p-6 bg-[#07070c] ${
-                      isOpen
+                    className={`cursor-pointer transition-all duration-200 border-l-2 p-6 bg-[#07070c] ${isOpen
                         ? "border-emerald-500 bg-emerald-950/10"
                         : "border-white/10 hover:border-white/40"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
@@ -121,7 +120,7 @@ export const FooterSection: React.FC = () => {
                 to="/register"
                 className="w-full py-6 bg-red-600 hover:bg-red-500 text-white font-black text-sm tracking-[0.2em] uppercase flex items-center justify-between px-8 transition-colors duration-150"
               >
-                <span>  Register  </span>
+                <span>  Join us   </span>
                 <ArrowUpRight size={22} strokeWidth={3} />
               </Link>
             </div>
