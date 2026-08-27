@@ -1,7 +1,20 @@
 import { io } from "socket.io-client";
 
+declare global {
+  interface ImportMetaEnv {
+    readonly VITE_SOCKET_URL?: string;
+    readonly PROD?: boolean;
+  }
 
-const SOCKET_URL =  "http://localhost:4000";
+  interface ImportMeta {
+    readonly env: ImportMetaEnv;
+  }
+}
+
+// Use Vite's import.meta.env for production/local URL switching
+const SOCKET_URL = 
+  import.meta.env.VITE_SOCKET_URL || 
+  (import.meta.env.PROD ? "https://pneuma-frontend-oijl.onrender.com" : "http://localhost:4000");
 
 const socket = io(SOCKET_URL, {
   withCredentials: true,
@@ -10,6 +23,3 @@ const socket = io(SOCKET_URL, {
 });
 
 export default socket;
-
-
-// ((globalThis as any).process?.env?.REACT_APP_SOCKET_URL) ||
