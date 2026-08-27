@@ -1,0 +1,1 @@
+{"version":3,"file":"registrationError.js","sourceRoot":"","sources":["registrationError.ts"],"names":[],"mappings":"AAAA,OAAO,QAAQ,MAAM,yBAAyB,CAAC;AAC/C,MAAM,CAAC,OAAO,OAAO,iBAAkB,SAAQ,QAAQ;IACnD,YAAY,OAAe,EAAE,UAAU,GAAW,GAAG;QACjD,KAAK,CAAC,OAAO,EAAE,UAAU,CAAC,CAAC;QAC3B,IAAI,CAAC,IAAI,GAAE,mBAAmB,CAAA;IACrC,CAAC;CACD"}

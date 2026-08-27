@@ -16,7 +16,6 @@
         "noEmit": true,
         "jsx": "react-jsx",
         "strict": true,
-        /* Modern paths mapping without baseUrl */
         "paths": {
             "@/*": [
                 "./src/*"
@@ -54,6 +53,7 @@
         }
     },
     "include": [
-        "src"
+        "src",
+        "../shared"
     ]
 }

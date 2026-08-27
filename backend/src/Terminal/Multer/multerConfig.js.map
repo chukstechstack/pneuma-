@@ -1,0 +1,1 @@
+{"version":3,"file":"multerConfig.js","sourceRoot":"","sources":["multerConfig.ts"],"names":[],"mappings":"AAAA,OAAO,MAAM,MAAM,QAAQ,CAAC;AAE5B,MAAM,CAAC,MAAM,MAAM,GAAG,MAAM,CAAC;IAC3B,OAAO,EAAE,MAAM,CAAC,aAAa,EAAE;IAC/B,MAAM,EAAE,EAAE,QAAQ,EAAE,CAAC,GAAG,IAAI,GAAG,IAAI,EAAE;CACtC,CAAC,CAAC"}

@@ -5,10 +5,8 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": false,
+    "noEmit": true,
     "skipLibCheck": true,
-    // "rootDir": "./",
-    // "outDir": "../dist",
     "types": [
       "node"
     ],
@@ -45,7 +43,7 @@
       ],
       "@Operator/*": [
         "./src/Operator/*"
-      ],
+      ]
     },
     "sourceMap": true,
     "strict": true,

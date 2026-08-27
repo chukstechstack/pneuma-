@@ -40,11 +40,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "scripts": {
-    "build": "tsc && tsc-alias",
-    "start": "node dist/server.js",
-    "dev": "tsx  --watch --import tsconfig-paths/register src/server.ts"
-  },
+"scripts": {
+  "build": "cp -r ../shared ./src/shared && tsc --noEmit",
+  "start": "tsx --import tsconfig-paths/register src/server.ts",
+  "dev": "tsx --watch --import tsconfig-paths/register src/server.ts"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
