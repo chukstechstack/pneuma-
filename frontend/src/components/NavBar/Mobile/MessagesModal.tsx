@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { MessageSquare, Loader2, X } from "lucide-react";
-import { useFetchConversations } from "../../../hooks/useFetchConversations";// Adjust path to your hook
+import { useFetchConversations } from "../../../hooks/useFetchConversations";
+import socket from "@/api/socketApi";
+import { useAuthStore } from "@store/useAuthStore";
 
 interface MobileMessagesModalProps {
   isOpen: boolean;
@@ -13,8 +15,34 @@ export const MobileMessagesModal: React.FC<MobileMessagesModalProps> = ({
   onClose,
   onSelectConversation,
 }) => {
-  // Fetches data only when the mobile messages modal is opened
-  const { data: conversations = [], isLoading, isError } = useFetchConversations(isOpen);
+  const { userUuid: currentUserUuid } = useAuthStore() as { userUuid: string | null };
+  const { data: conversations = [], isLoading, isError, refetch } = useFetchConversations(isOpen);
+
+  // 🔴 Live Unread Count State for Mobile
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+
+  // Listen for incoming messages globally to increment unread counter
+  useEffect(() => {
+    const handleGlobalIncomingMessage = (incoming: any) => {
+      if (incoming.senderUuid !== currentUserUuid) {
+        setUnreadCount((prev) => prev + 1);
+        refetch();
+      }
+    };
+
+    socket.on("server:incoming_msg", handleGlobalIncomingMessage);
+
+    return () => {
+      socket.off("server:incoming_msg", handleGlobalIncomingMessage);
+    };
+  }, [currentUserUuid, refetch]);
+
+  // When closing the modal or selecting a chat, you can clear unread if desired, 
+  // or clear it when the modal is fully opened/viewed.
+  const handleCloseModal = () => {
+    setUnreadCount(0);
+    onClose();
+  };
 
   if (!isOpen) return null;
 
@@ -27,9 +55,14 @@ export const MobileMessagesModal: React.FC<MobileMessagesModalProps> = ({
           <div className="flex items-center gap-2">
             <MessageSquare size={18} className="text-[#d4af37]" />
             <span className="font-serif text-sm font-semibold text-white tracking-wide">Messages</span>
+            {unreadCount > 0 && (
+              <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse">
+                {unreadCount} new
+              </span>
+            )}
           </div>
           <button
-            onClick={onClose}
+            onClick={handleCloseModal}
             className="text-white/50 hover:text-white p-2 rounded-full bg-white/[0.04] transition-colors"
           >
             <X size={16} />
@@ -62,6 +95,7 @@ export const MobileMessagesModal: React.FC<MobileMessagesModalProps> = ({
               <div
                 key={conv.id}
                 onClick={() => {
+                  setUnreadCount(0);
                   onSelectConversation(conv.partnerUuid);
                   onClose();
                 }}

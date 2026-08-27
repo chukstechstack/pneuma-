@@ -7,6 +7,7 @@ import { useAuthStore } from "@store/useAuthStore";
 import { useDeleteTask } from "@hooks/useTaskMutations";
 import { TaskItem } from "@shared/types";
 import { HomeFeedResponse } from "@pages/HomeFeed/Feed.Types";
+import { usePostEditSocket } from "../../PatchFeed/SocketPatch";
 
 export const useHomeFeed = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export const useHomeFeed = () => {
   const { userUuid } = useAuthStore() as { userUuid: string | null };
 
   const { mutate: deleteSelectedTask } = useDeleteTask(userUuid ?? '');
+  usePostEditSocket();
 
   const { data, fetchNextPage, hasNextPage, isLoading, isFetchingNextPage } =
     useInfiniteQuery<HomeFeedResponse>({
@@ -24,12 +26,10 @@ export const useHomeFeed = () => {
       },
       getNextPageParam: (lastPage: any) => lastPage.next_post_timestamp || undefined,
       initialPageParam: "Yes_Is_FreshLoad",
-      staleTime: 1000 * 60 * 2,
       refetchOnWindowFocus: false,
     });
 
   const tasks: TaskItem[] = data?.pages.flatMap((page) => page.tasks) || [];
-
   const isOwner = (task: TaskItem): boolean => userUuid === task.author_profile_uuid;
 
   useEffect(() => {

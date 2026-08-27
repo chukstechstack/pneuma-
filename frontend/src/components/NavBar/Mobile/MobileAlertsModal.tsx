@@ -1,6 +1,6 @@
 import React from "react";
 import { X, Sparkles, Bell } from "lucide-react";
-import { useAlerts } from "@/hooks/useAlerts"; // Adjust path to your hook
+import { useAlerts } from "@/hooks/useAlerts";
 import { useNavigate } from "react-router-dom";
 
 interface MobileAlertsModalProps {
@@ -40,7 +40,8 @@ export const MobileAlertsModal: React.FC<MobileAlertsModalProps> = ({ isOpen, on
             <h3 className="font-serif font-bold text-xs uppercase tracking-wider text-white">
               Inner Circle Activity
             </h3>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white/70">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white/70 flex items-center gap-1.5">
+              {unreadCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />}
               {unreadCount} unread
             </span>
           </div>
@@ -92,8 +93,9 @@ export const MobileAlertsModal: React.FC<MobileAlertsModalProps> = ({ isOpen, on
                   </p>
                 </div>
 
+                {/* 👉 Red pulsing indicator dot for unread alerts */}
                 {!alert.is_read && (
-                  <span className="w-2 h-2 rounded-full bg-[#d4af37] shrink-0 self-center" />
+                  <span className="w-2 h-2 rounded-full bg-red-500 shrink-0 self-center animate-pulse" />
                 )}
               </div>
             ))

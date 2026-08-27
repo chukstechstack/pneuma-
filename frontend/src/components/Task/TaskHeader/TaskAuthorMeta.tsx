@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Clock3, Loader2 } from "lucide-react";
 import { useToggleConnection } from "@/hooks/useConnections";
+import { useTaskProfile } from "../../../hooks/useProfileSettings"; // 👈 Import your new task profile hook
 import { formatTaskDate } from "./utils";
 
 interface TaskAuthorMetaProps {
@@ -14,12 +15,18 @@ interface TaskAuthorMetaProps {
 
 export const TaskAuthorMeta: React.FC<TaskAuthorMetaProps> = ({
   authorProfileUuid,
-  authorName,
+  authorName: initialAuthorName,
   currentUserUuid,
   isConnected: initialIsConnected,
   createdAt,
 }) => {
   const [isConnected, setIsConnected] = useState(initialIsConnected);
+
+  // 🌟 Fetch live profile data & listen for real-time socket updates
+  const { data: profile } = useTaskProfile(authorProfileUuid);
+
+  // Fallback to the initial prop if profile hasn't loaded or isn't cached yet
+  const authorName = profile?.full_name || initialAuthorName;
 
   // Keep local state in sync if parent prop updates later
   useEffect(() => {
@@ -65,7 +72,7 @@ export const TaskAuthorMeta: React.FC<TaskAuthorMetaProps> = ({
               {isPending ? (
                 <Loader2 size={12} className="animate-spin" />
               ) : (
-                isConnected ? "Connect" : "Connected"
+                isConnected ? "Connected" : "Connect"
               )}
             </button>
           </>

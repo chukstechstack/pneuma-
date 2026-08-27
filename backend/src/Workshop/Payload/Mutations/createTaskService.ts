@@ -73,6 +73,11 @@ export const createConnectionAlertsForTask = async (
   newPostId: number | string,
   client: DbClient = pool
 ): Promise<void> => {
+  // 1. Resolve the actor's numeric ID and get all connected user UUIDs in one clean step
+  const actorRes = await client.query(`SELECT id FROM profiles WHERE uuid = $1`, [actorUserUuid]);
+  if (actorRes.rows.length === 0) return;
+  const actorId = actorRes.rows[0].id;
+
   // Find all connected users where this user is either connector or connected
   const connectionsResult = await client.query<{ connection_uuid: string }>(
     `SELECT 
@@ -85,18 +90,25 @@ export const createConnectionAlertsForTask = async (
     [actorUserUuid]
   );
 
-  const connections = connectionsResult.rows;
-  if (connections.length === 0) return;
+  const connectionUuids = connectionsResult.rows.map(r => r.connection_uuid);
+  if (connectionUuids.length === 0) return;
+
+  // 2. Resolve the connected users' UUIDs to their numeric IDs
+const profilesRes = await client.query<{ id: number; uuid: string }>(
+    `SELECT id, uuid FROM profiles WHERE uuid = ANY($1::uuid[])`, // 👈 Changed text[] to uuid[]
+    [connectionUuids]
+  );
+  if (profilesRes.rows.length === 0) return;
 
   const insertQuery = `
-    INSERT INTO alerts (recipient_uuid, actor_uuid, type, reference_id)
+    INSERT INTO alerts (recipient_id, actor_id, type, reference_id)
     VALUES 
   `;
 
   const values: any[] = [];
-  const placeholders = connections.map((conn, index) => {
+  const placeholders = profilesRes.rows.map((profile, index) => {
     const base = index * 4;
-    values.push(conn.connection_uuid, actorUserUuid, 'new_post', newPostId);
+    values.push(profile.id, actorId, 'new_post', newPostId);
     return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4})`;
   });
 

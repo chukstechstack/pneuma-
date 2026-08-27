@@ -8,10 +8,12 @@ import NavBar from "@/pages/NavBar/NavBar";
 import { Loader2 } from "lucide-react";
 import { ProfileHeader } from "../../components/Profile/ProfileHeader";
 import { ConnectionDrawer } from "@/components/Profile/ConnectionDrawer";
+import { SettingsDrawer } from "../../components/Profile/SettingsDrawer"; // 🌟 1. Import Settings Drawer
 
 const Profile = () => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // 🌟 2. Add Settings state
 
   const {
     currentUserUuid,
@@ -27,7 +29,7 @@ const Profile = () => {
   const profile = data?.profile;
   const tasks = data?.tasks || [];
   const isOwner = data?.isOwner ?? false;
-  const isConnected = (data as { is_connected?: boolean } | undefined)?.is_connected ?? false; // 👈 Real DB connection state!
+  const isConnected = (data as { is_connected?: boolean } | undefined)?.is_connected ?? false;
 
   const typedProfile = profile as {
     uuid: string;
@@ -76,30 +78,27 @@ const Profile = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-20 space-y-8">
 
-        {/* 🌟 Centralized Profile Header Component passing props cleanly */}
+        {/* 🌟 Centralized Profile Header Component */}
         <ProfileHeader
           typedProfile={typedProfile}
           isOwner={isOwner}
-          isConnected={isConnected} // 👈 Passed down to engagement toolbar
+          isConnected={isConnected}
           profileAvatarUrl={profileAvatarUrl}
           setIsAvatarModalOpen={setIsAvatarModalOpen}
           setIsMessageOpen={setIsMessageOpen}
           setIsDockOpen={setIsDockOpen}
+          setIsSettingsOpen={setIsSettingsOpen} // 🌟 3. Pass down settings opener
         />
 
         {/* Profile Journal Scrolls */}
         <ProfileJournal tasks={tasks} />
-
-
 
         {/* Connection Drawer */}
         <ConnectionDrawer
           isOpen={isDockOpen}
           onClose={() => setIsDockOpen(false)}
           targetProfileUuid={typedProfile.uuid}
-
         />
-
 
         {/* Message Inbox Dock / Drawer */}
         <MessageInboxDock
@@ -117,6 +116,15 @@ const Profile = () => {
           currentAvatarUrl={profileAvatarUrl}
           onUpload={handleAvatarUpload}
           isPending={isUpdatingAvatar}
+        />
+
+        {/* 🌟 4. Render Settings Drawer Modal */}
+        <SettingsDrawer
+          isOpen={isSettingsOpen}
+          onClose={() => setIsSettingsOpen(false)}
+          onProfileUpdated={() => {
+            // Optional: triggers any re-fetching if needed when updated
+          }}
         />
 
       </div>

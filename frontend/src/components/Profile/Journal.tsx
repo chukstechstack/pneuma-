@@ -25,13 +25,7 @@ const ProfileJournal: React.FC<ProfileJournalProps> = ({ tasks }) => {
     <div className="w-full">
       <div className="space-y-6">
         <div className="flex items-center justify-between pb-4 border-b border-white/[0.08]">
-          <div className="flex items-center gap-2.5">
-            <BookOpen size={20} className="text-[#d4af37]" />
-            <h3 className="font-serif text-xl font-bold uppercase tracking-wider text-white">
-              Rolling Journal Scrolls (5 Newest)
-            </h3>
-          </div>
-          <span className="text-xs font-mono text-gray-500 uppercase tracking-widest">Sanctuary Archive</span>
+
         </div>
 
         {tasks.length === 0 ? (

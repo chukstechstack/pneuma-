@@ -4,10 +4,12 @@ import { useFetchConversations } from "../../../hooks/useFetchConversations";
 
 interface DesktopMessagesDropdownProps {
   isOpen: boolean;
-  onToggle: () => void; // ⚡ Explicit toggle function
+  onToggle: () => void;
   onClose: () => void;
   onSelectConversation: (partnerUuid: string) => void;
   getLinkClasses: (path: string) => string;
+  unreadCount: number;
+  setUnreadCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const DesktopMessagesDropdown: React.FC<DesktopMessagesDropdownProps> = ({
@@ -16,21 +18,35 @@ export const DesktopMessagesDropdown: React.FC<DesktopMessagesDropdownProps> = (
   onClose,
   onSelectConversation,
   getLinkClasses,
+  unreadCount,
+  setUnreadCount,
 }) => {
   const { data: conversations = [], isLoading, isError } = useFetchConversations(isOpen);
 
+  const handleToggleClick = () => {
+    if (!isOpen) {
+      setUnreadCount(0); // Reset unread badge when opened
+    }
+    onToggle();
+  };
+
+  const hasUnread = unreadCount > 0;
+
   return (
     <div className="relative">
-      {/* ✅ Clean click handler directly on the button */}
+      {/* ✅ Desktop Navbar Button with Red/Yellow Unread Badge */}
       <button
-        onClick={onToggle}
+        onClick={handleToggleClick}
         className={getLinkClasses("/messages")}
       >
         <div className="relative flex items-center">
-          <MessageSquare size={15} strokeWidth={isOpen ? 2 : 1.5} />
-          <span className="absolute -top-1.5 -right-2 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md">
-            9
-          </span>
+          <MessageSquare size={15} strokeWidth={isOpen ? 2 : 1.5} className={hasUnread ? "text-[#d4af37]" : ""} />
+          
+          {hasUnread && (
+            <span className="absolute -top-1.5 -right-2 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md animate-pulse pointer-events-none">
+              {unreadCount}
+            </span>
+          )}
         </div>
         <span className="ml-1">Messages</span>
       </button>
@@ -44,7 +60,7 @@ export const DesktopMessagesDropdown: React.FC<DesktopMessagesDropdownProps> = (
             <span className="font-serif text-xs font-semibold text-white tracking-wide">Conversations</span>
             <button 
               onClick={(e) => {
-                e.stopPropagation(); // Prevent bubbling up to toggle
+                e.stopPropagation();
                 onClose();
               }} 
               className="text-white/40 hover:text-white p-1 rounded-full transition-colors"
@@ -79,6 +95,7 @@ export const DesktopMessagesDropdown: React.FC<DesktopMessagesDropdownProps> = (
                 <div
                   key={conv.id}
                   onClick={() => {
+                    setUnreadCount(0);
                     onSelectConversation(conv.partnerUuid);
                     onClose();
                   }}

@@ -26,15 +26,15 @@ interface CreateContext {
   prevProfile: QueryData | undefined;
 }
 
-
-
 export const useCreateTaskMutation = (userUuid: string | null, previewUrl: string) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const homeKey: string[] = ["homeFeed"];
   const journalKey: (string | null)[] = ["journalFeed", userUuid];
-  const profileKey: (string | null)[] = ["profileFeed", userUuid]
+  const profileKey: (string | null)[] = ["profileFeed", userUuid];
+  const alertsKey: string[] = ["user-alerts"];
+
   return useMutation<any, any, FormData, CreateContext>({
     mutationFn: (data: FormData) => api.post("/task", data),
 
@@ -97,6 +97,9 @@ export const useCreateTaskMutation = (userUuid: string | null, previewUrl: strin
         queryClient.setQueryData<QueryData>(profileKey as unknown as string[], swapTempForReal);
       }
 
+      // 🚀 Invalidate user alerts so your drop-down refreshes connection activities
+      queryClient.invalidateQueries({ queryKey: alertsKey });
+
       navigate("/homefeed");
     },
 
@@ -108,7 +111,8 @@ export const useCreateTaskMutation = (userUuid: string | null, previewUrl: strin
         queryClient.setQueryData(journalKey as unknown as string[], context.prevJournal);
       }
       if (context?.prevProfile) {
-        queryClient.setQueryData(journalKey as unknown as string[], context.prevProfile);
+        // Fixed: was incorrectly pointing back to journalKey instead of profileKey
+        queryClient.setQueryData(profileKey as unknown as string[], context.prevProfile);
       }
       alert("Failed to create task.");
     },

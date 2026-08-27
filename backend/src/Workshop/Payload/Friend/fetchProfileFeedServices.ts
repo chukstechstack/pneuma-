@@ -6,6 +6,7 @@ export interface ProfileRow {
   username: string;
   full_name: string | null; 
   avatar_url: string | null;
+  bio: string | null; // 👈 Added bio field
   created_at: string | Date;
   connection_count?: number;
 }
@@ -31,16 +32,16 @@ export const fetchSmartProfileFeedData = async (
 ): Promise<SmartProfileFeedResult> => {
   let profileRes;
 
-  // 1. Fetch the target profile (or your own profile if "me" / undefined)
+  // 1. Fetch the target profile (or your own profile if "me" / undefined) including bio
   if (targetProfileUuid && targetProfileUuid !== "undefined" && targetProfileUuid !== "me") {
     profileRes = await pool.query<ProfileRow>(
-      `SELECT id, uuid, username, full_name, avatar_url, created_at 
+      `SELECT id, uuid, username, full_name, avatar_url, bio, created_at 
        FROM profiles WHERE uuid = $1`,
       [targetProfileUuid]
     );
   } else {
     profileRes = await pool.query<ProfileRow>(
-      `SELECT id, uuid, username, full_name, avatar_url, created_at 
+      `SELECT id, uuid, username, full_name, avatar_url, bio, created_at 
        FROM profiles WHERE id = $1`,
       [loggedInUserProfileId]
     );

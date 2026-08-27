@@ -1,7 +1,6 @@
 import React from "react";
-import { UserPlus, UserCheck, MessageSquare, PenSquare, Users, Loader2 } from "lucide-react";
-import { LogoutButton } from "./LogoutButton";
-import { useToggleConnection } from "@/hooks/useConnections"; // 👈 Import your DB mutation hook
+import { UserPlus, UserCheck, MessageSquare, Users, Loader2 } from "lucide-react";
+import { useToggleConnection, useConnections } from "@/hooks/useConnections";
 
 type ProfileEngagementProps = {
   isOwner: boolean;
@@ -12,7 +11,7 @@ type ProfileEngagementProps = {
   onMessageClick: () => void;
   onEditClick?: () => void;
   onOpenInnerCircle: () => void;
-  onToggleConnect?: (uuid: string) => void; // Optional custom override handler
+  onToggleConnect?: (uuid: string) => void;
 };
 
 export const ProfileEngagement = ({
@@ -20,18 +19,18 @@ export const ProfileEngagement = ({
   isConnected,
   targetProfileUuid,
   onMessageClick,
-  onEditClick,
   onOpenInnerCircle,
   onToggleConnect,
 }: ProfileEngagementProps) => {
   
-  // 🚀 Hook directly into your PostgreSQL mutation hook
   const { mutate: toggleConnect, isPending } = useToggleConnection(targetProfileUuid);
+  
+  // 🌟 Fetch connections for the live count badge
+  const { data: myConnections = [] } = useConnections(targetProfileUuid);
 
   const handleConnectClick = () => {
     if (isPending) return;
     
-    // If a custom parent handler was provided, use it. Otherwise, use the DB hook directly!
     if (onToggleConnect) {
       onToggleConnect(targetProfileUuid);
     } else {
@@ -42,28 +41,22 @@ export const ProfileEngagement = ({
   return (
     <div className="flex items-center gap-3 w-full sm:w-auto">
       {isOwner ? (
-        /* Owner View: Edit Journal, Connections, & Logout */
+        /* Owner View: Connections */
         <div className="flex items-center gap-3 w-full sm:w-auto flex-wrap">
-          <button 
-            onClick={onEditClick}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/10 text-[#d4af37] text-xs font-mono uppercase tracking-wider hover:bg-[#d4af37] hover:text-[#010102] transition-all cursor-pointer shadow-sm"
-          >
-            <PenSquare size={15} />
-            <span>Edit Journal</span>
-          </button>
-
           <button
             onClick={onOpenInnerCircle}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.03] hover:border-[#d4af37] text-xs font-mono uppercase tracking-wider text-gray-200 hover:text-[#d4af37] transition-all shadow-md cursor-pointer"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.03] hover:border-red-500 text-xs font-mono uppercase tracking-wider text-gray-200 hover:text-red-400 transition-all shadow-md cursor-pointer"
           >
             <Users size={15} />
-            <span>Connections</span>
+            <span className="hidden sm:inline">Connections</span>
+            {/* Red Live Count Badge */}
+            <span className="px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-[10px]">
+              {myConnections.length}
+            </span>
           </button>
-
-          <LogoutButton className="flex-1 sm:flex-none" />
         </div>
       ) : (
-        /* Visitor View: Connect, Message, & Inner Circle */
+        /* Visitor View: Connect, Message, & Connections */
         <div className="flex items-center gap-3 w-full sm:w-auto flex-wrap">
           <button
             disabled={isPending}
@@ -79,30 +72,34 @@ export const ProfileEngagement = ({
             ) : isConnected ? (
               <>
                 <UserCheck size={15} />
-                <span>Connected</span>
+                <span className="hidden sm:inline">Connected</span>
               </>
             ) : (
               <>
                 <UserPlus size={15} />
-                <span>Connect</span>
+                <span className="hidden sm:inline">Connect</span>
               </>
             )}
           </button>
           
           <button 
             onClick={onMessageClick} 
-            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.04] text-gray-200 hover:border-[#d4af37] hover:text-[#d4af37] text-xs font-mono uppercase tracking-wider transition-all cursor-pointer shadow-sm"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.04] text-gray-200 hover:border-red-500 hover:text-red-400 text-xs font-mono uppercase tracking-wider transition-all cursor-pointer shadow-sm"
           >
             <MessageSquare size={15} />
-            <span>Message</span>
+            <span className="hidden sm:inline">Message</span>
           </button>
 
           <button
             onClick={onOpenInnerCircle}
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.03] hover:border-[#d4af37] text-xs font-mono uppercase tracking-wider text-gray-200 hover:text-[#d4af37] transition-all shadow-md cursor-pointer"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.03] hover:border-red-500 text-xs font-mono uppercase tracking-wider text-gray-200 hover:text-red-400 transition-all shadow-md cursor-pointer"
           >
             <Users size={15} />
-            <span> Connections </span>
+            <span className="hidden sm:inline">Connections</span>
+            {/* Red Live Count Badge */}
+            <span className="px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-[10px]">
+              {myConnections.length}
+            </span>
           </button>
         </div>
       )}

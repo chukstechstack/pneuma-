@@ -19,10 +19,10 @@ export const JournalHeader: React.FC<JournalHeaderProps> = ({ isOwner, navigate 
           </div>
           
           <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-wide uppercase text-white mb-1.5">
-            Journal Feed
+            Arhcive
           </h1>
           <p className="text-gray-400 text-xs sm:text-base max-w-xl leading-relaxed">
-            Your secure collection of testimonies and milestones. <span className="hidden sm:inline">Preserving your life book page by page.</span>
+            
           </p>
         </div>
 

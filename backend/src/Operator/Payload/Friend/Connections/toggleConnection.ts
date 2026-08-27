@@ -33,7 +33,18 @@ export const toggleConnection = async (
             return res.status(400).json({ error: "You cannot connect with yourself." });
         }
 
-        // 1. Check if a connection already exists
+        // 1. Look up the integer profile IDs for both users using their UUIDs
+        const currentUserQuery = await pool.query(`SELECT id FROM profiles WHERE uuid = $1`, [currentUserUuid]);
+        const targetUserQuery = await pool.query(`SELECT id FROM profiles WHERE uuid = $1`, [targetProfileUuid]);
+
+        const currentProfileId = currentUserQuery.rows[0]?.id;
+        const targetProfileId = targetUserQuery.rows[0]?.id;
+
+        if (!currentProfileId || !targetProfileId) {
+            return res.status(404).json({ error: "One or both user profiles could not be found." });
+        }
+
+        // 2. Check if a connection already exists using UUIDs
         const checkQuery = `
             SELECT * FROM connections 
             WHERE connector_uuid = $1 AND connected_uuid = $2
@@ -41,7 +52,7 @@ export const toggleConnection = async (
         const existingConnection = await pool.query(checkQuery, [currentUserUuid, targetProfileUuid]) as { rows: ConnectionRow[] };
 
         if (existingConnection.rows.length > 0) {
-            // 2. If it exists, delete it (Disconnect)
+            // 3. If it exists, delete it (Disconnect)
             const deleteQuery = `
                 DELETE FROM connections 
                 WHERE connector_uuid = $1 AND connected_uuid = $2
@@ -54,12 +65,12 @@ export const toggleConnection = async (
                 message: "Successfully disconnected.",
             });
         } else {
-            // 3. If it doesn't exist, insert it (Connect)
+            // 4. If it doesn't exist, insert both integer IDs and UUIDs (Connect)
             const insertQuery = `
-                INSERT INTO connections (connector_uuid, connected_uuid, created_at)
-                VALUES ($1, $2, NOW())
+                INSERT INTO connections (connector_id, connected_id, connector_uuid, connected_uuid, created_at)
+                VALUES ($1, $2, $3, $4, NOW())
             `;
-            await pool.query(insertQuery, [currentUserUuid, targetProfileUuid]);
+            await pool.query(insertQuery, [currentProfileId, targetProfileId, currentUserUuid, targetProfileUuid]);
 
             return res.status(200).json({
                 success: true,

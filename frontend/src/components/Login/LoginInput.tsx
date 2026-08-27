@@ -69,7 +69,8 @@ const LoginInput: React.FC<LoginInputProps> = ({
             <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
               Password
             </label>
-            <Link to="/forgotpassword" className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 hover:text-emerald-300 hover:underline">
+            {/* Forgot Password Link in Red */}
+            <Link to="/forgotpassword" className="text-[10px] font-mono uppercase tracking-wider text-red-500 hover:text-red-400 hover:underline">
               [ Forgot password? ]
             </Link>
           </div>
@@ -143,10 +144,11 @@ const LoginInput: React.FC<LoginInputProps> = ({
           <span>Continue with Google</span>
         </a>
 
+        {/* Sign Up Link in Red */}
         <div className="text-center pt-4 border-t border-white/10 mt-2">
           <p className="text-xs text-gray-400 font-sans">
             Don't have an account?{" "}
-            <Link to="/register" className="text-emerald-400 font-bold font-mono tracking-wider hover:text-emerald-300 hover:underline uppercase ml-1">
+            <Link to="/register" className="text-red-500 font-bold font-mono tracking-wider hover:text-red-400 hover:underline uppercase ml-1">
               [ Sign up ]
             </Link>
           </p>

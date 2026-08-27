@@ -32,15 +32,14 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
   const getErrMsg = (err: any) => (typeof err === "string" ? err : err?.message);
 
   return (
-    // Changed max-w-[420px] mx-auto to max-w-md w-full (no mx-auto to anchor it left)
     <div className="w-full max-w-md relative">
       
-      {/* Terminal HUD Header Status */}
+      {/* Header Status */}
       <div className="flex items-center justify-between mb-6 pb-3 border-b border-white/10 font-mono text-[10px] tracking-[0.3em] text-emerald-400 uppercase">
         <span className="flex items-center gap-2">
-          <Terminal size={12} className="animate-pulse" /> SYS_REGISTRATION_INIT
+          <Terminal size={12} className="animate-pulse" /> ACCOUNT REGISTRATION
         </span>
-        <span className="text-gray-500 font-bold">[SECURE_NODE]</span>
+        <span className="text-gray-500 font-bold">[SECURE]</span>
       </div>
 
       {/* Main Form Title Area */}
@@ -49,7 +48,7 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
           Establish <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-300 to-emerald-400">Identity</span>
         </h1>
         <p className="text-gray-400 font-sans text-xs sm:text-sm tracking-wide leading-relaxed">
-          Initialize your credentials to sync with the global Pneuma secure network.
+          Initialize your credentials to join our community network.
         </p>
       </div>
 
@@ -58,7 +57,7 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
         {/* Full Name Input Box */}
         <div className="flex flex-col gap-1.5 w-full">
           <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
-            Full Name // Operative ID
+            Full Name
           </label>
           <input 
             {...register("full_name")} 
@@ -73,7 +72,7 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
         {/* Email Input Box */}
         <div className="flex flex-col gap-1.5 w-full">
           <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
-            Email Address // Comms Route
+            Email Address
           </label>
           <input 
             {...register("email")} 
@@ -88,9 +87,18 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
 
         {/* Password Input Box */}
         <div className="flex flex-col gap-1.5 w-full">
-          <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
-            Cipher Key // Password
-          </label>
+          <div className="flex items-center justify-between">
+            <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
+              Password
+            </label>
+            {/* Forgot Password Link in Red */}
+            <Link 
+              to="/forgot-password" 
+              className="text-[10px] font-mono text-red-500 hover:text-red-400 tracking-wider uppercase transition-colors"
+            >
+              [ Forgot Password? ]
+            </Link>
+          </div>
           <div className="relative w-full flex items-center">
             <input 
               {...register("password")} 
@@ -118,7 +126,7 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
         {/* Confirm Password Input Box */}
         <div className="flex flex-col gap-1.5 w-full">
           <label className="block text-[10px] font-mono uppercase tracking-[0.2em] text-gray-400">
-            Verify Cipher // Confirm Password
+            Confirm Password
           </label>
           <div className="relative w-full flex items-center">
             <input 
@@ -140,12 +148,12 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
           {errors.confirmPassword && <p className="text-[10px] font-mono text-rose-400 mt-0.5">{getErrMsg(errors.confirmPassword)}</p>}
         </div>
 
-        {/* Terms and Conditions Checkbox Slot */}
-        <div className="py-1">
+        {/* Terms of Service / Privacy Slot in Red */}
+        <div className="py-1 text-red-500 [&_a]:text-red-500 [&_a]:underline hover:[&_a]:text-red-400">
           {children}
         </div>
 
-        {/* High-Voltage Action Trigger (Emerald Green) */}
+        {/* Emerald Green Action Trigger */}
         <div className="mt-2">
           <button 
             type="submit"
@@ -157,7 +165,7 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
               <Loader2 size={16} className="animate-spin text-black" />
             ) : (
               <span className="flex items-center gap-2 font-mono font-bold">
-                <Cpu size={14} /> AUTHORIZE & EXECUTE
+                <Cpu size={14} /> REGISTER ACCOUNT
               </span>
             )}
           </button>
@@ -166,7 +174,7 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
         {/* Divider */}
         <div className="flex items-center gap-4 my-2">
           <span className="flex-1 h-[1px] bg-white/15"></span>
-          <span className="text-[9px] uppercase tracking-[0.3em] text-gray-500 font-mono">Alternative Protocol</span>
+          <span className="text-[9px] uppercase tracking-[0.3em] text-gray-500 font-mono">Or</span>
           <span className="flex-1 h-[1px] bg-white/15"></span>
         </div>
 
@@ -176,14 +184,15 @@ const RegisterInput: React.FC<ExtendedRegisterInputProps> = ({
           className="w-full flex items-center justify-center gap-3 bg-black/90 border border-white/20 py-3.5 text-white/90 text-xs font-mono tracking-wider no-underline transition-all hover:bg-white hover:text-black hover:border-white shadow-lg group"
         >
           <GoogleIcon />
-          <span>AUTH // GOOGLE_SSO</span>
+          <span>Continue with Google</span>
         </a>
 
+        {/* Login Link in Red */}
         <div className="text-center pt-4 border-t border-white/10 mt-2">
           <p className="text-xs text-gray-400 font-sans">
             Already registered?{" "}
-            <Link to="/login" className="text-emerald-400 font-bold font-mono tracking-wider hover:text-emerald-300 hover:underline uppercase ml-1">
-              [ COME ON IN ]
+            <Link to="/login" className="text-red-500 font-bold font-mono tracking-wider hover:text-red-400 hover:underline uppercase ml-1">
+              [ Login ]
             </Link>
           </p>
         </div>

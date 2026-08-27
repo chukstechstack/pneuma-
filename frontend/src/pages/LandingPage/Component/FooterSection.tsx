@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { ArrowUpRight, Terminal, Plus, Minus, ShieldAlert } from "lucide-react";
 
 export const FooterSection: React.FC = () => {
@@ -36,7 +37,7 @@ export const FooterSection: React.FC = () => {
       
       {/* 1. CRAZY GIANT SCROLLING MARQUEE HEADER */}
       <div className="w-full border-b border-white/10 pb-8 overflow-hidden whitespace-nowrap opacity-90">
-        <div className="inline-block animate-marquee tracking-tighter font-black text-[14vw] leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-teal-200 to-white">
+        <div className="inline-block animate-marquee tracking-tighter font-black text-[14vw] leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-200 to-white">
           NO PERMISSION REQUIRED // DEFEND HUMANITY // DISPATCH NOW //
         </div>
       </div>
@@ -48,7 +49,7 @@ export const FooterSection: React.FC = () => {
           
           {/* LEFT: MONOLITHIC FAQ MANIFEST (7 COLS) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="flex items-center gap-3 text-emerald-400 text-xs font-bold tracking-[0.3em] uppercase mb-8">
+            <div className="flex items-center gap-3 text-red-500 text-xs font-bold tracking-[0.3em] uppercase mb-8">
               <Terminal size={16} /> [SYSTEM DECLASSIFIED MANIFEST]
             </div>
 
@@ -61,20 +62,20 @@ export const FooterSection: React.FC = () => {
                     onClick={() => setActiveFaq(isOpen ? null : idx)}
                     className={`cursor-pointer transition-all duration-200 border-l-2 p-6 bg-[#07070c] ${
                       isOpen
-                        ? "border-emerald-400 bg-emerald-950/10"
+                        ? "border-red-500 bg-red-950/10"
                         : "border-white/10 hover:border-white/40"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-4">
-                        <span className="text-[10px] text-emerald-500 font-bold tracking-widest">
+                        <span className="text-[10px] text-red-500 font-bold tracking-widest">
                           {faq.code}
                         </span>
                         <h4 className="text-sm sm:text-base font-black tracking-wider text-white uppercase">
                           {faq.question}
                         </h4>
                       </div>
-                      <div className="text-emerald-400">
+                      <div className="text-red-500">
                         {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                       </div>
                     </div>
@@ -91,23 +92,23 @@ export const FooterSection: React.FC = () => {
           </div>
 
           {/* RIGHT: MASSIVE TACTICAL DISPATCH CTA TERMINAL (5 COLS) */}
-          <div className="lg:col-span-5 bg-[#080a0f] border-2 border-emerald-500/40 p-8 sm:p-10 rounded-none relative flex flex-col justify-between min-h-[500px]">
+          <div className="lg:col-span-5 bg-[#080a0f] border-2 border-red-500/40 p-8 sm:p-10 rounded-none relative flex flex-col justify-between min-h-[500px]">
             {/* Top Status Lights */}
             <div className="flex justify-between items-center border-b border-white/10 pb-6 mb-8">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-                <span className="text-[10px] text-emerald-400 font-bold tracking-widest uppercase">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
+                <span className="text-[10px] text-red-500 font-bold tracking-widest uppercase">
                   DISPATCH_LIVE // READY
                 </span>
               </div>
-              <ShieldAlert size={18} className="text-emerald-400" />
+              <ShieldAlert size={18} className="text-red-500" />
             </div>
 
             {/* Core Direct Message */}
             <div className="space-y-6">
               <h3 className="text-4xl sm:text-6xl font-black text-white uppercase leading-[0.85] tracking-tighter">
                 OVERRIDE <br />
-                <span className="text-emerald-400">THE SILENCE.</span>
+                <span className="text-red-500">JOIN OUR COMMUNITY.</span>
               </h3>
               <p className="text-xs sm:text-sm font-sans text-gray-400 leading-relaxed">
                 We don't do newsletter footers or generic email signups. If you want to stand on the front lines, support field triage, or fund active deployments, enter the matrix immediately.
@@ -116,13 +117,13 @@ export const FooterSection: React.FC = () => {
 
             {/* Giant Action Button */}
             <div className="mt-10 pt-6 border-t border-white/10">
-              <a
-                href="mailto:contact@pneuma.org?subject=DIRECT%20FIELD%20ACTION"
-                className="w-full py-6 bg-emerald-400 hover:bg-emerald-300 text-black font-black text-sm tracking-[0.2em] uppercase flex items-center justify-between px-8 transition-colors duration-150"
+              <Link
+                to="/register"
+                className="w-full py-6 bg-red-600 hover:bg-red-500 text-white font-black text-sm tracking-[0.2em] uppercase flex items-center justify-between px-8 transition-colors duration-150"
               >
-                <span>INITIATE DEPLOYMENT</span>
+                <span>  Register  </span>
                 <ArrowUpRight size={22} strokeWidth={3} />
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -133,17 +134,17 @@ export const FooterSection: React.FC = () => {
           <div>
             <span className="text-gray-600 block mb-3">// NAVIGATION</span>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#about-us" className="hover:text-emerald-400">[02] WHO WE ARE</a></li>
-              <li><a href="#triage" className="hover:text-emerald-400">[03] THE CRISIS</a></li>
-              <li><a href="#solutions" className="hover:text-emerald-400">[04] SOLUTIONS</a></li>
+              <li><a href="#about-us" className="hover:text-red-500">[02] WHO WE ARE</a></li>
+              <li><a href="#triage" className="hover:text-red-500">[03] THE CRISIS</a></li>
+              <li><a href="#solutions" className="hover:text-red-500">[04] SOLUTIONS</a></li>
             </ul>
           </div>
 
           <div>
             <span className="text-gray-600 block mb-3">// NETWORK</span>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-emerald-400">GITHUB_SRC</a></li>
-              <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-emerald-400">NETWORK_X</a></li>
+              <li><a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-red-500">GITHUB_SRC</a></li>
+              <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-red-500">NETWORK_X</a></li>
             </ul>
           </div>
 
@@ -156,7 +157,7 @@ export const FooterSection: React.FC = () => {
           </div>
 
           <div className="text-right flex flex-col justify-between">
-            <span className="text-emerald-500">// ALL SYSTEMS NOMINAL</span>
+            <span className="text-red-500">// ALL SYSTEMS NOMINAL</span>
             <p className="text-gray-600 text-[10px]">
               &copy; {new Date().getFullYear()} PNEUMA PROTOCOL
             </p>

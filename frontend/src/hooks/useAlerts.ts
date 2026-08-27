@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import api from "../../src/api/axios"
+import api from "../../src/api/axios";
+import socket from "@/api/socketApi"; // 👈 Import your socket instance
 
 export interface ConnectionAlert {
   id: number | string;
@@ -23,8 +25,26 @@ export const useAlerts = () => {
       const response = await api.get("/task/alerts");
       return response.data as { success: boolean; alerts: ConnectionAlert[]; hasUnread: boolean };
     },
-    refetchInterval: 60000, // Optional: auto-poll every 60s
   });
+
+useEffect(() => {
+    console.log("🔌 [Socket Status] Current socket ID:", socket.id, "Connected:", socket.connected);
+
+    socket.on("connect", () => {
+        console.log("🟢 [Socket Connected] ID:", socket.id);
+    });
+
+    const handleNewPostAlert = (eventData: any) => {
+      console.log("🔔 [useAlerts Socket] Caught event!", eventData);
+      queryClient.invalidateQueries({ queryKey: ["user-alerts"] });
+    };
+
+    socket.on("server:new_post_available", handleNewPostAlert);
+
+    return () => {
+      socket.off("server:new_post_available", handleNewPostAlert);
+    };
+}, [queryClient]);
 
   // Mark alert as read mutation
   const { mutate: markAsRead } = useMutation({

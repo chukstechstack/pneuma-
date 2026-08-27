@@ -29,7 +29,7 @@ export const ProfileShareButton: React.FC<ProfileShareButtonProps> = ({ profileU
         }`}
       >
         <Share2 size={15} />
-        <span>{copied ? "Copied!" : "Share Profile"}</span>
+        <span>{copied ? "Copied!" : ""}</span>
       </button>
 
       <ShareModal

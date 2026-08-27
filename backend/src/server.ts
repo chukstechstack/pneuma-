@@ -33,6 +33,13 @@ const startServer = async (): Promise<void> => {
     socketServerCors.on("connection", (socket: Socket) => {
       console.log(`⚡ User connected to WebSocket: ${socket.id}`);
 
+      // 🌟 Allow clients to join their personal user UUID room for broadcasting
+      socket.on("join_user_room", (userUuid: string) => {
+        if (userUuid) {
+          socket.join(userUuid);
+          console.log(`🏠 Socket ${socket.id} joined personal room: ${userUuid}`);
+        }
+      });
 
       registerMessagingGateway(socketServerCors, socket);
 
