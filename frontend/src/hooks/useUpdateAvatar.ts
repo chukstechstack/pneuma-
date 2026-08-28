@@ -20,7 +20,7 @@ export const useUpdateAvatar = (targetUserUuid?: string) => {
                 type: file.type,
             });
 
-            return api.put("/task/profile/update", formData, {
+            return api.put("/task/profile/avatar", formData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
