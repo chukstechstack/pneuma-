@@ -48,7 +48,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             <img
               src={profileAvatarUrl}
               alt={typedProfile.full_name || "Sanctuary Citizen"}
-              className="w-15 h-15 sm:w-24 sm:h-24 rounded-full object-cover object-center bg-black/50 border-2 border-[#d4af37]/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-transform group-hover:scale-[1.02]"
+              className="w-15 h-15 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-[#d4af37]/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-transform group-hover:scale-[1.02]"
             />
 
             {isOwner && (
@@ -64,6 +64,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
 
           {/* Name & Bio Area */}
           <div className="space-y-1 min-w-0 flex-1">
+            {/* 🌟 Swapped font-serif to font-sans with a cleaner social profile weight */}
             <h1 className="font-sans text-base sm:text-xl font-bold tracking-tight text-white leading-snug break-words">
               {typedProfile.full_name || "Sanctuary Citizen"}
             </h1>
