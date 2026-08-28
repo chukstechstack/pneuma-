@@ -4,7 +4,7 @@ import { PNEUMA_IMAGES } from "../Assets/pneumaImages";
 const heroStory = [
   {
     code: "01",
-    headingLines: ["HUMANITY"],
+    headingLines: ["KOINONIA"],
     caption:
       "Where bombs shatter communities, we refuse to look away. Bloodied soil and human collapse demand an immediate, unfiltered response. Silence is a betrayal.",
   },
@@ -16,7 +16,7 @@ const heroStory = [
   },
   {
     code: "03",
-    headingLines: ["KOINONIA"],
+    headingLines: ["HUMANITY"],
     caption:
       "Where mechanical systems collapse and human strength breaks down, the spirit moves. Establishing field bases, raising leaders, and breaking isolation instantly.",
   },
