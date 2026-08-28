@@ -1,7 +1,8 @@
 import React from "react";
-import { Shield, Camera, Settings } from "lucide-react";
+import { Shield, Camera, Settings, Users } from "lucide-react";
 import { ProfileEngagement } from "@/components/Profile/Engagement.js";
 import ProfileShareButton from "@/components/Profile/ProfileShareButton";
+import { useConnections } from "@/hooks/useConnections";
 
 interface ProfileHeaderProps {
   typedProfile: {
@@ -30,15 +31,18 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   setIsDockOpen,
   setIsSettingsOpen,
 }) => {
+  // Fetch connections count for the inline name badge
+  const { data: myConnections = [] } = useConnections(typedProfile.uuid);
+
   return (
     <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#09090b] via-[#121008] to-[#010102] border border-white/[0.08] relative overflow-hidden shadow-2xl flex flex-col gap-4 w-full box-border">
-      
+
       {/* Background Glow */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#d4af37]/15 via-transparent to-transparent blur-[40px] pointer-events-none" />
 
       {/* Top Row: Avatar on left, Action Controls (Share/Settings) on right */}
       <div className="flex items-center justify-between relative z-10 w-full">
-        
+
         {/* Clickable Avatar Container */}
         <div
           className="relative shrink-0 group cursor-pointer"
@@ -64,7 +68,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         {/* Action Controls (Settings / Share in top right corner) */}
         <div className="flex items-center gap-2 shrink-0 self-start">
           <ProfileShareButton profileUuid={typedProfile.uuid} />
-          
+
           {isOwner && (
             <button
               onClick={() => setIsSettingsOpen(true)}
@@ -77,19 +81,32 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         </div>
       </div>
 
-      {/* Identity & Bio Stacked Below (Instagram / Twitter Style) */}
+      {/* Identity, Inline Connections Badge & Bio Stacked */}
       <div className="space-y-1.5 relative z-10 w-full text-left">
-        <h1 className="font-sans text-lg sm:text-xl font-bold tracking-tight text-white leading-snug break-words">
-          {typedProfile.full_name || "Sanctuary Citizen"}
-        </h1>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <h1 className="font-sans text-lg sm:text-xl font-bold tracking-tight text-white leading-snug break-words">
+            {typedProfile.full_name || "Sanctuary Citizen"}
+          </h1>
+
+          {/* Inline Connections / Inner Circle Count Badge */}
+          <button
+            onClick={() => setIsDockOpen(true)}
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-white/15 bg-white/[0.03] hover:border-red-500/50 text-gray-300 hover:text-red-400 transition-all cursor-pointer text-xs font-mono"
+            title="View Connections"
+          >
+            <Users size={12} className="text-[#d4af37]" />
+            <span>{myConnections.length}</span>
+          </button>
+        </div>
+
         <p className="text-gray-300 text-xs sm:text-sm font-sans leading-relaxed break-words">
           {typedProfile.bio || "Building a legacy of faith, daily records, and spiritual growth."}
         </p>
       </div>
 
-      {/* Bottom Bar: Engagement Buttons */}
-      <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between relative z-10 w-full overflow-x-auto">
-        <div className="w-full flex items-center justify-between gap-2">
+      {/* Bottom Bar: Clean Action Buttons (Connect / Message) */}
+      <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between relative z-10 w-full">
+        <div className="w-full flex items-center gap-2">
           <ProfileEngagement
             isOwner={isOwner}
             isConnected={isConnected}
