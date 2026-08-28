@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { LoadingScreen } from "./Component/LoadingScreen";
 import { Navigation } from "./Component/Navigation";
-import { ScrollBadge } from "./Component/ScrollBadge";
 import { HeroSection } from "./Component/HeroSection";
 import { ChapterTwoSection } from "./Component/ChapterTwoSection";
 import { OutpostsSection } from "./Component/OutpostsSection";
@@ -17,12 +16,7 @@ export const LandingPage: React.FC = () => {
     <div className="bg-[#030305] text-[#F4F4F5] font-mono selection:bg-rose-500/30 selection:text-white antialiased min-h-screen relative transform-gpu">
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
-      {!isLoading && (
-        <>
-          <ScrollBadge message="PNEUMA // ACTIVE SYSTEM" />
-          <Navigation />
-        </>
-      )}
+      {!isLoading && <Navigation />}
 
       <HeroSection />
       <ChapterTwoSection />

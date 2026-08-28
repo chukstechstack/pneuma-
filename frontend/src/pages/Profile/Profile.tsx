@@ -8,12 +8,12 @@ import NavBar from "@/pages/NavBar/NavBar";
 import { Loader2 } from "lucide-react";
 import { ProfileHeader } from "../../components/Profile/ProfileHeader";
 import { ConnectionDrawer } from "@/components/Profile/ConnectionDrawer";
-import { SettingsDrawer } from "../../components/Profile/SettingsDrawer"; // 🌟 1. Import Settings Drawer
+import { SettingsDrawer } from "../../components/Profile/SettingsDrawer";
 
 const Profile = () => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // 🌟 2. Add Settings state
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const {
     currentUserUuid,
@@ -53,7 +53,7 @@ const Profile = () => {
     return (
       <div className="min-h-screen bg-[#010102] text-white flex flex-col items-center justify-center p-6">
         <Loader2 size={36} className="text-[#d4af37] animate-spin mb-4" />
-        <p className="text-gray-400 font-mono tracking-widest text-sm">Reflecting on profile journal...</p>
+        <p className="text-gray-400 font-mono tracking-widest text-xs sm:text-sm text-center">Reflecting on profile journal...</p>
       </div>
     );
   }
@@ -61,7 +61,7 @@ const Profile = () => {
   if (isError || !typedProfile) {
     return (
       <div className="min-h-screen bg-[#010102] text-white flex flex-col items-center justify-center p-6 text-center">
-        <p className="text-red-400 font-mono tracking-widest text-sm mb-4">Error loading profile data.</p>
+        <p className="text-red-400 font-mono tracking-widest text-xs sm:text-sm mb-4">Error loading profile data.</p>
         <button
           onClick={() => navigate("/homefeed")}
           className="border border-[#d4af37]/60 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37] hover:text-[#010102] transition-all rounded-xl cursor-pointer"
@@ -73,25 +73,29 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#010102] text-white font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37]">
+    <div className="min-h-screen bg-[#010102] text-white font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-x-hidden w-full max-w-[100vw]">
       <NavBar />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-28 pb-20 space-y-8">
+      <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 pt-20 sm:pt-28 pb-20 space-y-6 sm:space-y-8 box-border">
 
         {/* 🌟 Centralized Profile Header Component */}
-        <ProfileHeader
-          typedProfile={typedProfile}
-          isOwner={isOwner}
-          isConnected={isConnected}
-          profileAvatarUrl={profileAvatarUrl}
-          setIsAvatarModalOpen={setIsAvatarModalOpen}
-          setIsMessageOpen={setIsMessageOpen}
-          setIsDockOpen={setIsDockOpen}
-          setIsSettingsOpen={setIsSettingsOpen} // 🌟 3. Pass down settings opener
-        />
+        <div className="w-full overflow-hidden">
+          <ProfileHeader
+            typedProfile={typedProfile}
+            isOwner={isOwner}
+            isConnected={isConnected}
+            profileAvatarUrl={profileAvatarUrl}
+            setIsAvatarModalOpen={setIsAvatarModalOpen}
+            setIsMessageOpen={setIsMessageOpen}
+            setIsDockOpen={setIsDockOpen}
+            setIsSettingsOpen={setIsSettingsOpen}
+          />
+        </div>
 
         {/* Profile Journal Scrolls */}
-        <ProfileJournal tasks={tasks} />
+        <div className="w-full overflow-hidden">
+          <ProfileJournal tasks={tasks} />
+        </div>
 
         {/* Connection Drawer */}
         <ConnectionDrawer
@@ -118,13 +122,11 @@ const Profile = () => {
           isPending={isUpdatingAvatar}
         />
 
-        {/* 🌟 4. Render Settings Drawer Modal */}
+        {/* Render Settings Drawer Modal */}
         <SettingsDrawer
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}
-          onProfileUpdated={() => {
-            // Optional: triggers any re-fetching if needed when updated
-          }}
+          onProfileUpdated={() => {}}
         />
 
       </div>

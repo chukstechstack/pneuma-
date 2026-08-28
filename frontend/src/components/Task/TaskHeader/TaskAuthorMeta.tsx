@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Clock3, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useToggleConnection } from "@/hooks/useConnections";
-import { useTaskProfile } from "../../../hooks/useProfileSettings"; // 👈 Import your new task profile hook
+import { useTaskProfile } from "../../../hooks/useProfileSettings";
 import { formatTaskDate } from "./utils";
 
 interface TaskAuthorMetaProps {
@@ -21,14 +21,9 @@ export const TaskAuthorMeta: React.FC<TaskAuthorMetaProps> = ({
   createdAt,
 }) => {
   const [isConnected, setIsConnected] = useState(initialIsConnected);
-
-  // 🌟 Fetch live profile data & listen for real-time socket updates
   const { data: profile } = useTaskProfile(authorProfileUuid);
-
-  // Fallback to the initial prop if profile hasn't loaded or isn't cached yet
   const authorName = profile?.full_name || initialAuthorName;
 
-  // Keep local state in sync if parent prop updates later
   useEffect(() => {
     setIsConnected(initialIsConnected);
   }, [initialIsConnected]);
@@ -37,51 +32,58 @@ export const TaskAuthorMeta: React.FC<TaskAuthorMetaProps> = ({
 
   const handleClick = () => {
     if (isPending) return;
-
-    // Optimistically toggle state immediately for snappy UI response
     const previousState = isConnected;
     setIsConnected(!previousState);
 
     toggleConnect(undefined, {
       onError: () => {
-        // Rollback if the server mutation fails
         setIsConnected(previousState);
       },
     });
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center gap-2">
-        <Link to={`/profile/${authorProfileUuid}`} className="font-semibold text-white text-sm hover:text-[#d4af37] transition-colors">
+    <div className="flex flex-col justify-center min-h-[38px] font-sans">
+      {/* Top Line: Username -> Separator -> Timestamp/Follow Action */}
+      <div className="flex items-center flex-wrap gap-x-1.5 gap-y-0.5 leading-none">
+        <Link 
+          to={`/profile/${authorProfileUuid}`} 
+          className="font-semibold text-white text-[14px] hover:text-white/80 transition-colors tracking-normal"
+        >
           {authorName || "Sanctuary User"}
         </Link>
 
+        {/* Inline Instagram-style dynamic timestamp */}
+        {createdAt && (
+          <>
+            <span className="text-white/30 text-[13px] font-normal select-none">·</span>
+            <span className="text-white/40 text-[13px] font-normal tracking-normal">
+              {formatTaskDate(createdAt)}
+            </span>
+          </>
+        )}
+
+        {/* Dynamic Connection/Follow Button */}
         {currentUserUuid !== authorProfileUuid && (
           <>
-            <span className="text-white/20 font-light">·</span>
+            <span className="text-white/30 text-[13px] font-normal select-none">·</span>
             <button
               disabled={isPending}
               onClick={handleClick}
-              className={`text-xs font-medium transition-colors cursor-pointer inline-flex items-center gap-1 ${
+              className={`text-[13px] font-semibold transition-colors bg-transparent border-none p-0 cursor-pointer inline-flex items-center gap-1 ${
                 isConnected
-                  ? "text-emerald-400 hover:text-red-400"  
-                  : "text-[#d4af37] hover:text-[#e5c05e]"  
+                  ? "text-white/60 hover:text-red-400"  
+                  : "text-[#3897f0] hover:text-[#287dc5]" // Classic IG feed blue highlight
               }`}
             >
               {isPending ? (
-                <Loader2 size={12} className="animate-spin" />
+                <Loader2 size={11} className="animate-spin text-white/40" />
               ) : (
-                isConnected ? "Connected" : "Connect"
+                isConnected ? "Following" : "Follow"
               )}
             </button>
           </>
         )}
-      </div>
-
-      <div className="flex items-center gap-1.5 text-xs text-white/40 font-medium">
-        <Clock3 size={11} className="text-white/30" />
-        <span>{formatTaskDate(createdAt)}</span>
       </div>
     </div>
   );

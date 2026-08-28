@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @keyframes infiniteTickerSlow { 
   0% { transform: translateX(0); } 
   100% { transform: translateX(-50%); } 
@@ -6,6 +7,9 @@
 
 .animate-ticker-slow { 
   animation: infiniteTickerSlow 45s linear infinite; 
+  /* SPEED BOOST: Tells the mobile GPU to handle this layer separately */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* Pause animation on hover for a high-end interactive touch */
@@ -13,6 +17,20 @@
   animation-play-state: paused;
 }
 
+/* Global mobile performance & scroll smoothing */
+html, body {
+  background-color: #030305;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* Stops rubber-band jitter on mobile touch screens */
+  overscroll-behavior-y: none; 
+}
+
+/* Force sections to render on the phone's hardware GPU instead of the CPU */
+section {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 
 /* Fix Chrome/Safari autofill white background flash */
 input:-webkit-autofill,

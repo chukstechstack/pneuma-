@@ -22,14 +22,17 @@ export const ProfileShareButton: React.FC<ProfileShareButtonProps> = ({ profileU
     <>
       <button 
         onClick={() => setIsModalOpen(true)}
-        className={`flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-all shadow-md cursor-pointer text-xs font-mono uppercase tracking-wider ${
+        className={`inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all shadow-md cursor-pointer text-xs font-mono uppercase tracking-wider shrink-0 ${
           copied 
             ? "border-emerald-500 text-emerald-400 bg-emerald-500/10" 
             : "border-white/15 bg-white/[0.03] hover:border-[#d4af37] text-gray-200 hover:text-[#d4af37]"
         }`}
+        title="Share Profile"
       >
-        <Share2 size={15} />
-        <span>{copied ? "Copied!" : ""}</span>
+        <Share2 size={14} className="sm:w-[15px] sm:h-[15px]" />
+        <span className="text-[10px] sm:text-xs">
+          {copied ? "Copied!" : "Share"}
+        </span>
       </button>
 
       <ShareModal

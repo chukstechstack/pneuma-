@@ -29,9 +29,10 @@ const ProfileJournal: React.FC<ProfileJournalProps> = ({ tasks }) => {
         </div>
 
         {tasks.length === 0 ? (
-          <div className="text-center py-16 px-6 rounded-3xl border border-white/[0.06] bg-[#09090b]/40">
-            <p className="text-gray-400 text-sm font-mono tracking-wider">
-              This author hasn't recorded any public scrolls yet.
+          // 🌟 Completely removed the box, background, and border—just clean text
+          <div className="py-6 text-center">
+            <p className="text-gray-500 text-xs sm:text-sm font-mono tracking-wider">
+              No record
             </p>
           </div>
         ) : (
@@ -39,8 +40,8 @@ const ProfileJournal: React.FC<ProfileJournalProps> = ({ tasks }) => {
             {tasks.slice(0, 5).map((task) => {
               const { uuid, content, created_at, img } = task;
               return (
-                <div 
-                  key={uuid} 
+                <div
+                  key={uuid}
                   onClick={() => setSelectedTask(task)}
                   className="group relative h-60 sm:h-72 rounded-2xl overflow-hidden border border-white/10 bg-[#09090b] cursor-pointer shadow-lg hover:border-[#d4af37] transition-all duration-300 transform hover:-translate-y-1"
                 >
@@ -76,9 +77,9 @@ const ProfileJournal: React.FC<ProfileJournalProps> = ({ tasks }) => {
         )}
 
         {/* Clean Extracted Full Screen Modal Component */}
-        <ProfileJournalModal 
-          task={selectedTask} 
-          onClose={() => setSelectedTask(null)} 
+        <ProfileJournalModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
         />
       </div>
     </div>

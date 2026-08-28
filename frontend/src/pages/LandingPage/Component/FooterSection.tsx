@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, Terminal, Plus, Minus, ShieldAlert } from "lucide-react";
+import { ArrowUpRight, ShieldAlert, Plus, Minus } from "lucide-react";
 
 export const FooterSection: React.FC = () => {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);
@@ -33,13 +33,13 @@ export const FooterSection: React.FC = () => {
   ];
 
   return (
-    <footer className="w-full bg-[#030305] text-white pt-16 md:pt-20 pb-10 md:pb-12 border-t border-white/10 font-mono relative overflow-hidden select-none">
+    <footer className="w-full bg-[#030305] text-white pt-12 md:pt-16 pb-10 md:pb-12 border-t border-white/10 font-mono relative overflow-hidden select-none">
 
-      {/* 1. CRAZY GIANT SCROLLING MARQUEE HEADER */}
-      <div className="w-full border-b border-white/10 pb-6 md:pb-8 overflow-hidden whitespace-nowrap opacity-90">
-        <div className="inline-block animate-marquee tracking-tighter font-black text-[12vw] sm:text-[14vw] leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-200 to-white">
-          NO PERMISSION REQUIRED // DEFEND HUMANITY // DISPATCH NOW //
-        </div>
+      {/* 1. STATIC HEADER (Animations removed completely for zero skipping) */}
+      <div className="w-full border-b border-white/15 py-6 md:py-8 px-6 md:px-12 opacity-90">
+        <h2 className="tracking-wider font-black text-xl sm:text-2xl md:text-3xl uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-200 to-white">
+          NO PERMISSION REQUIRED  |  DEFEND HUMANITY  
+        </h2>
       </div>
 
       <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-12 md:py-16">
@@ -49,8 +49,6 @@ export const FooterSection: React.FC = () => {
 
           {/* LEFT: MONOLITHIC FAQ MANIFEST (7 COLS) */}
           <div className="lg:col-span-7 space-y-6">
-    
-
             <div className="space-y-3">
               {faqs.map((faq, idx) => {
                 const isOpen = activeFaq === idx;
@@ -58,7 +56,7 @@ export const FooterSection: React.FC = () => {
                   <div
                     key={idx}
                     onClick={() => setActiveFaq(isOpen ? null : idx)}
-                    className={`cursor-pointer transition-all duration-200 border-l-2 p-4 sm:p-6 bg-[#07070c] ${
+                    className={`cursor-pointer transition-all duration-150 border-l-2 p-4 sm:p-6 bg-[#07070c] ${
                       isOpen
                         ? "border-emerald-500 bg-emerald-950/10"
                         : "border-white/10 hover:border-white/40"
@@ -94,14 +92,14 @@ export const FooterSection: React.FC = () => {
             {/* Top Status Lights */}
             <div className="flex justify-between items-center border-b border-white/10 pb-4 sm:pb-6 mb-6 sm:mb-8">
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
               </div>
               <ShieldAlert size={18} className="text-emerald-500" />
             </div>
 
             {/* Core Direct Message */}
             <div className="space-y-4 sm:space-y-6">
-              <h3 className="text-3xl sm:text-6xl font-black text-white uppercase leading-[0.9] tracking-tighter">
+              <h3 className="text-2xl sm:text-4xl font-black text-white uppercase leading-[0.95] tracking-tighter">
                 OVERRIDE <br />
                 <span className="text-emerald-500">JOIN OUR COMMUNITY.</span>
               </h3>
@@ -127,7 +125,7 @@ export const FooterSection: React.FC = () => {
         {/* 3. HARDWARE INDUSTRIAL DIRECTORY BAR */}
         <div className="mt-16 md:mt-24 pt-10 md:pt-12 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-8 text-xs uppercase font-bold tracking-widest">
           <div>
-            <span className="text-gray-600 block mb-3">// NAVIGATION</span>
+            <span className="text-gray-600 block mb-3"> NAVIGATION</span>
             <ul className="space-y-2 text-gray-300">
               <li><a href="#about-us" className="hover:text-emerald-500">[02] WHO WE ARE</a></li>
               <li><a href="#triage" className="hover:text-emerald-500">[03] THE CRISIS</a></li>
@@ -136,7 +134,7 @@ export const FooterSection: React.FC = () => {
           </div>
 
           <div>
-            <span className="text-gray-600 block mb-3">// NETWORK</span>
+            <span className="text-gray-600 block mb-3"> NETWORK</span>
             <ul className="space-y-2 text-gray-300">
               <li><a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-emerald-500">GITHUB_SRC</a></li>
               <li><a href="https://twitter.com" target="_blank" rel="noreferrer" className="hover:text-emerald-500">NETWORK_X</a></li>
@@ -144,15 +142,15 @@ export const FooterSection: React.FC = () => {
           </div>
 
           <div>
-            <span className="text-gray-600 block mb-3">// ENCRYPTION</span>
+            <span className="text-gray-600 block mb-3"> ENCRYPTION</span>
             <p className="text-gray-500 font-mono text-[10px]">
               AES_256_GCM <br />
-              PNEUMA_PROTOCOL_V4
+              PNEUMA
             </p>
           </div>
 
           <div className="text-left md:text-right flex flex-col justify-between gap-4 md:gap-0">
-            <span className="text-emerald-500">// ALL SYSTEMS NOMINAL</span>
+
             <p className="text-gray-600 text-[10px]">
               &copy; {new Date().getFullYear()} PNEUMA PROTOCOL
             </p>

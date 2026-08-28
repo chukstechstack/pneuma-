@@ -4,32 +4,30 @@ export const ChapterTwoSection: React.FC = () => {
   return (
     <section
       id="chapter-two"
-      className="relative w-full bg-[#030305] text-white z-30 border-t border-white/10 pt-20 md:pt-40 pb-20 overflow-hidden font-mono select-none"
+      className="relative w-full bg-[#030305] text-white z-30 border-t border-white/10 py-20 md:py-32 px-6 md:px-12 overflow-hidden font-mono select-none"
     >
-      {/* Static Background Glow (No blur shifting) */}
+      {/* Static Background Glow */}
       <div className="absolute inset-0 bg-black flex items-center justify-center pointer-events-none overflow-hidden">
         <div className="w-[300px] h-[300px] sm:w-[900px] sm:h-[900px] bg-rose-600/10 rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative z-10 max-w-[1900px] mx-auto px-4 md:px-8 flex flex-col items-center">
+      <div className="relative z-10 max-w-[1700px] mx-auto flex flex-col items-center">
         
-        {/* System Cut-Off Marker */}
-        <div className="inline-flex items-center gap-3 text-gray-400 text-[10px] sm:text-xs tracking-[0.4em] uppercase mb-8 md:mb-12 border border-rose-500/30 px-6 py-2 bg-[#08080c]">
-          <span className="w-2 h-2 rounded-full bg-rose-500" />
-        </div>
+     
 
-        {/* STABILIZED TEXT WRAPPER (Solid colors, safe line-heights, zero jitter) */}
+
+        {/* STABILIZED TEXT WRAPPER (Swapped vw for fixed responsive classes to stop mobile jitter) */}
         <div className="w-full text-center space-y-2 sm:space-y-4 overflow-hidden py-2">
-          <div className="text-[12vw] sm:text-[15vw] font-black uppercase tracking-tighter text-white leading-none">
+          <div className="text-6xl sm:text-8xl lg:text-[11rem] font-black uppercase tracking-tighter text-white leading-[0.9]">
             CHAOS
           </div>
-          <div className="text-[12vw] sm:text-[15vw] font-black uppercase tracking-tighter text-rose-500 leading-none">
+          <div className="text-6xl sm:text-8xl lg:text-[11rem] font-black uppercase tracking-tighter text-rose-500 leading-[0.9]">
             PAIN
           </div>
-          <div className="text-[12vw] sm:text-[15vw] font-black uppercase tracking-tighter text-white/90 leading-none">
+          <div className="text-6xl sm:text-8xl lg:text-[11rem] font-black uppercase tracking-tighter text-white/90 leading-[0.9]">
             SUFFERING
           </div>
-          <div className="text-[12vw] sm:text-[15vw] font-black uppercase tracking-tighter text-rose-600 leading-none">
+          <div className="text-6xl sm:text-8xl lg:text-[11rem] font-black uppercase tracking-tighter text-rose-600 leading-[0.9]">
             POVERTY
           </div>
         </div>

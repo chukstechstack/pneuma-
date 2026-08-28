@@ -30,14 +30,19 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
   const { uuid, author_name, author_profile_uuid, is_connected = false, created_at, author_avatar_url } = task;
 
   return (
-    <div className="flex items-center justify-between gap-3 mb-5 relative">
-      <div className="flex items-center gap-3">
-        <TaskAuthorAvatar
-          authorProfileUuid={author_profile_uuid}
-          authorAvatarUrl={author_avatar_url}
-          fallbackUserAvatar={fallbackUserAvatar}
-        />
+    // Reduced spacing and forced a crisp height to mimic the Instagram post header
+    <div className="flex items-center justify-between gap-2 h-14 pb-3 mb-1 border-b border-white/[0.02] relative">
+      <div className="flex items-center gap-2.5">
+        {/* Instagram style avatar usually has tighter padding/margins */}
+        <div className="flex-shrink-0 scale-95 origin-left">
+          <TaskAuthorAvatar
+            authorProfileUuid={author_profile_uuid}
+            authorAvatarUrl={author_avatar_url}
+            fallbackUserAvatar={fallbackUserAvatar}
+          />
+        </div>
         
+        {/* Metabar handles the bold username and subtle inline timestamp */}
         <TaskAuthorMeta
           authorProfileUuid={author_profile_uuid}
           authorName={author_name}
@@ -48,11 +53,14 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
       </div>
 
       {isOwner && (
-        <TaskActionsMenu
-          taskUuid={uuid}
-          onEdit={onEdit}
-          deleteTask={deleteTask}
-        />
+        // Adjusted padding to sit perfectly flush against the right edge of the card container
+        <div className="-mr-2 flex items-center justify-center text-white/80 hover:text-white transition-colors">
+          <TaskActionsMenu
+            taskUuid={uuid}
+            onEdit={onEdit}
+            deleteTask={deleteTask}
+          />
+        </div>
       )}
     </div>
   );

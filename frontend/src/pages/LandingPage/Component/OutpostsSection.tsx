@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { PNEUMA_IMAGES } from "../Assets/pneumaImages";
-import { ShieldCheck, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export const OutpostsSection: React.FC = () => {
   // Memoize card image array and downsample resolution to reduce decoding weight
@@ -27,7 +27,7 @@ export const OutpostsSection: React.FC = () => {
       {/* Section Header */}
       <div className="flex flex-col xl:flex-row xl:items-end justify-between mb-10 md:mb-16 gap-6 md:gap-8">
         <div className="max-w-4xl">
-          <h2 className="text-4xl sm:text-7xl md:text-8xl font-black tracking-tight text-white uppercase leading-[0.95]">
+          <h2 className="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight text-white uppercase leading-[0.95]">
             PNEUMA
           </h2>
         </div>
@@ -41,11 +41,12 @@ export const OutpostsSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Asymmetric Bento Grid Gallery (Cleaned of heavy composite triggers) */}
+      {/* Asymmetric Bento Grid Gallery */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6">
+        
         {/* Card 1 - Active Outpost */}
         {outposts[0] && (
-          <div className="md:col-span-8 relative h-[380px] sm:h-[420px] md:h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-[#0d0d14]">
+          <div className="md:col-span-8 relative h-[380px] sm:h-[450px] md:h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-[#0d0d14]">
             <img
               src={outposts[0].optimizedUrl}
               alt={outposts[0].title || "Frontline Outpost"}
@@ -53,13 +54,12 @@ export const OutpostsSection: React.FC = () => {
               decoding="async"
               className="w-full h-full object-cover brightness-[0.75]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-5 sm:p-6 md:p-10 flex flex-col justify-end pointer-events-none">
-         
+            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-6 sm:p-8 md:p-10 flex flex-col justify-end pointer-events-none">
               <h3 className="text-xl sm:text-2xl md:text-4xl font-black text-white uppercase tracking-wide mb-1.5 md:mb-3">
                 {outposts[0].title || "Establishing The Base"}
               </h3>
               <p className="text-gray-300 font-sans text-xs sm:text-sm md:text-base max-w-xl leading-relaxed line-clamp-3">
-                {outposts[0].caption || "We place physical hubs directly where conflict and crisis strike. No waiting for permission. We secure the perimeter and deploy help instantly."}
+                {outposts[0].caption || "We place physical hubs directly where conflict and crisis strike."}
               </p>
             </div>
             <div className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/40 border border-white/20 flex items-center justify-center">
@@ -70,7 +70,7 @@ export const OutpostsSection: React.FC = () => {
 
         {/* Card 2 - Community Leader */}
         {outposts[1] && (
-          <div className="md:col-span-4 relative h-[380px] sm:h-[420px] md:h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-[#0d0d14]">
+          <div className="md:col-span-4 relative h-[380px] sm:h-[450px] md:h-[500px] rounded-2xl sm:rounded-3xl overflow-hidden border border-white/10 bg-[#0d0d14]">
             <img
               src={outposts[1].optimizedUrl}
               alt={outposts[1].title || "Rural Sovereignty"}
@@ -78,13 +78,12 @@ export const OutpostsSection: React.FC = () => {
               decoding="async"
               className="w-full h-full object-cover brightness-[0.75]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-5 sm:p-6 md:p-10 flex flex-col justify-end pointer-events-none">
-             
+            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-6 sm:p-8 md:p-10 flex flex-col justify-end pointer-events-none">
               <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-wide mb-1.5 md:mb-3">
                 {outposts[1].title || "Voices In The Wilderness"}
               </h3>
               <p className="text-gray-300 font-sans text-xs md:text-sm leading-relaxed line-clamp-3">
-                {outposts[1].caption || "We empower voices on the ground to speak life back into broken regions. True recovery starts when community leaders are given the platform to guide their own people."}
+                {outposts[1].caption || "We empower voices on the ground to speak life back into broken regions."}
               </p>
             </div>
           </div>
@@ -100,13 +99,12 @@ export const OutpostsSection: React.FC = () => {
               decoding="async"
               className="w-full h-full object-cover brightness-[0.75]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-5 sm:p-6 md:p-10 flex flex-col justify-end pointer-events-none">
-        
+            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-6 sm:p-8 md:p-10 flex flex-col justify-end pointer-events-none">
               <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-wide mb-1.5">
                 {outposts[2].title || "Tearing Down Isolation"}
               </h3>
               <p className="text-gray-300 font-sans text-xs md:text-sm leading-relaxed line-clamp-3">
-                {outposts[2].caption || "No one is out of reach. We place digital and physical anchors in forgotten sectors, connecting vulnerable souls to a global ecosystem of care."}
+                {outposts[2].caption || "No one is out of reach."}
               </p>
             </div>
           </div>
@@ -122,17 +120,17 @@ export const OutpostsSection: React.FC = () => {
               decoding="async"
               className="w-full h-full object-cover brightness-[0.75]"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-5 sm:p-6 md:p-10 flex flex-col justify-end pointer-events-none">
-        
+            <div className="absolute inset-0 bg-gradient-to-t from-[#030305] via-[#030305]/50 to-transparent p-6 sm:p-8 md:p-10 flex flex-col justify-end pointer-events-none">
               <h3 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-wide mb-1.5">
                 {outposts[3].title || "Sprinting Across The Chasm"}
               </h3>
               <p className="text-gray-300 font-sans text-xs md:text-sm leading-relaxed line-clamp-3">
-                {outposts[3].caption || "We don't stand at a distance and watch neighborhoods fall apart. Pneuma is the moving wind—we push into the crisis, bridge the gap, and build immediate sanctuaries."}
+                {outposts[3].caption || "Pneuma is the moving wind—we push into crisis."}
               </p>
             </div>
           </div>
         )}
+
       </div>
     </section>
   );

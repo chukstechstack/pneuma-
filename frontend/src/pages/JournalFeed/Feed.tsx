@@ -34,17 +34,18 @@ const JournalPage = (): React.ReactElement => {
   if (isLoading) return <FullPageLoader />;
 
   return (
-    <div className="min-h-screen bg-[#010102] text-white font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37]">
+    <div className="min-h-screen bg-[#010102] text-white font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-x-hidden">
       <NavBar />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-28 pb-20">
-        <main className="w-full">
+      {/* Mobile-optimized spacing and padding */}
+      <div className="max-w-6xl mx-auto px-3.5 sm:px-6 pt-24 sm:pt-28 pb-16 sm:pb-20">
+        <main className="w-full flex flex-col gap-6">
           
           {/* 1. Header Banner Section */}
           <JournalHeader isOwner={isOwner} navigate={navigate} />
 
           {/* 2. Cards Grid Section */}
-          <div>
+          <div className="w-full space-y-6">
             <JournalGrid 
               tasks={journalTasks} 
               onSelectTask={(task) => setSelectedTask(task)} 

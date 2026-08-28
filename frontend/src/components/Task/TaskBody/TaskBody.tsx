@@ -7,39 +7,39 @@ interface TaskBodyProps {
 
 export const TaskBody: React.FC<TaskBodyProps> = ({ content, img }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-  // Upped the limit slightly to make the text block feel more substantial
-  const textLimit = 280; 
+  const textLimit = 120; // Lowered to feel like an Instagram-style truncated caption
   const safeContent = content || "";
   const shouldShowMore = safeContent.length > textLimit;
 
   return (
-    // Removed mt-3, letting the header handle spacing for a tighter grip
-    <div className="space-y-4">
-      {/* Typography: Slightly larger base size for premium readability, less stark white */}
-      <div className="text-white/90 text-[15px] sm:text-[16px] leading-relaxed font-normal tracking-wide whitespace-pre-wrap">
-        <span>
-          {!isExpanded && shouldShowMore ? `${safeContent.substring(0, textLimit)}...` : safeContent}
-        </span>
-        {shouldShowMore && (
-          <button 
-            onClick={() => setIsExpanded(!isExpanded)} 
-            className="ml-2 text-sm font-medium text-white/40 hover:text-white transition-colors bg-transparent border-none cursor-pointer inline-flex items-center"
-          >
-            {isExpanded ? "read less" : "read more"}
-          </button>
-        )}
-      </div>
-
-      {/* Edge-to-Edge Photo: Unsplash style. No radius on mobile, rounded on desktop */}
+    <div className="flex flex-col w-full font-sans">
+      {/* 1. Edge-to-Edge Photo (Top like Instagram) */}
       {img && (
-        // Negative margins pull image outside of the content padding defined in Task.tsx
-        <div className="-mx-5 sm:-mx-7 md:rounded-2xl overflow-hidden bg-[#09090b] border-y sm:border border-white/[0.04] my-5">
+        <div className="-mx-5 sm:-mx-7 overflow-hidden bg-black aspect-square sm:aspect-auto max-h-[500px] sm:max-h-[600px] flex items-center justify-center border-b border-white/[0.04]">
           <img 
             src={img} 
             alt="media" 
-            className="block w-full h-auto max-h-[480px] sm:max-h-[60
-            0px] object-cover transition-transform duration-700 ease-out hover:scale-[1.01]" 
+            className="w-full h-full object-cover transition-transform duration-700 ease-out hover:scale-[1.01]" 
           />
+        </div>
+      )}
+
+      {/* 2. Caption Text Block (Bottom like Instagram) */}
+      {safeContent && (
+        <div className="mt-4 px-1 text-white/90 text-[14px] sm:text-[15px] leading-relaxed font-normal tracking-normal whitespace-pre-wrap">
+          <span>
+            {!isExpanded && shouldShowMore 
+              ? `${safeContent.substring(0, textLimit).trim()}...` 
+              : safeContent}
+          </span>
+          {shouldShowMore && (
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)} 
+              className="ml-1 text-xs font-semibold text-white/50 hover:text-white transition-colors bg-transparent border-none cursor-pointer inline"
+            >
+              {isExpanded ? " less" : " more"}
+            </button>
+          )}
         </div>
       )}
     </div>

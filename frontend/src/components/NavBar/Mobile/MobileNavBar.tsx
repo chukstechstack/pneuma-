@@ -76,12 +76,12 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
 
       {/* MOBILE TOP SLIM BAR: Search + 💬 Messages Button */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-40 bg-[#09090b]/85 backdrop-blur-xl border-b border-white/[0.06] px-4 py-2.5 flex items-center justify-between gap-3 transition-transform duration-300 ${!isVisible ? "-translate-y-full" : "translate-y-0"
+        className={`fixed top-0 left-0 right-0 z-40 bg-[#09090b]/85 backdrop-blur-xl border-b border-white/[0.06] px-3.5 py-2 flex items-center justify-between gap-3 transition-transform duration-300 ${!isVisible ? "-translate-y-full" : "translate-y-0"
           }`}
       >
         <div className="flex-1">
-          <div className="flex items-center gap-2 w-full bg-[#121214] border border-white/10 rounded-full px-3.5 py-1.5 text-white/40 text-xs font-light">
-            <Search size={14} className="text-[#d4af37]" />
+          <div className="flex items-center gap-2 w-full bg-[#121214] border border-white/10 rounded-full px-3 py-1.5 text-white/40 text-xs font-light">
+            <Search size={14} className="text-[#d4af37] shrink-0" />
             <span className="truncate">Search archive insights...</span>
           </div>
         </div>
@@ -103,32 +103,32 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
 
       {/* MOBILE BOTTOM FLOATING DOCK: Home, Feed, Create, 🔔 Notifications, Profile */}
       <nav
-        className={`fixed bottom-5 left-4 right-4 z-40 bg-[#121214]/90 backdrop-blur-2xl border border-white/[0.08] rounded-full px-3 py-2 flex items-center justify-between shadow-[0_15px_35px_rgba(0,0,0,0.8)] transition-transform duration-300 ${!isVisible ? "translate-y-28" : "translate-y-0"
+        className={`fixed bottom-4 left-3 right-3 z-40 bg-[#121214]/90 backdrop-blur-2xl border border-white/[0.08] rounded-full px-2.5 py-1.5 flex items-center justify-around shadow-[0_15px_35px_rgba(0,0,0,0.8)] transition-transform duration-300 ${!isVisible ? "translate-y-28" : "translate-y-0"
           }`}
       >
         <Link to="/homefeed" className={getMobileLinkClass("/homefeed")}>
-          <Home size={20} strokeWidth={isActive("/homefeed") ? 2 : 1.5} />
+          <Home size={19} strokeWidth={isActive("/homefeed") ? 2 : 1.5} />
         </Link>
 
         <Link to={userUuid ? `/feed/${userUuid}` : "#"} className={getMobileLinkClass("/feed")}>
-          <BookOpen size={20} strokeWidth={isActive("/feed") ? 2 : 1.5} />
+          <BookOpen size={19} strokeWidth={isActive("/feed") ? 2 : 1.5} />
         </Link>
 
         {/* Floating Center Create Action Link */}
         <Link
           to="/createtask"
-          className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#d4af37] to-[#aa8c2c] text-black shadow-[0_0_20px_rgba(212,175,55,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shrink-0"
+          className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#d4af37] to-[#aa8c2c] text-black shadow-[0_0_15px_rgba(212,175,55,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shrink-0 my-0.5"
         >
-          <Plus size={20} strokeWidth={2.5} />
+          <Plus size={19} strokeWidth={2.5} />
         </Link>
 
-        {/* 🔔 Notifications / Alerts Button (BOTTOM next to Profile) */}
+        {/* 🔔 Notifications / Alerts Button */}
         <button
           onClick={() => setIsAlertsOpen(true)}
           className="relative flex items-center justify-center p-2 rounded-full text-white/40 hover:text-white/80 transition-all cursor-pointer"
           aria-label="Alerts"
         >
-          <Bell size={20} strokeWidth={1.5} className={hasUnreadAlerts ? "text-[#d4af37]" : ""} />
+          <Bell size={19} strokeWidth={1.5} className={hasUnreadAlerts ? "text-[#d4af37]" : ""} />
           {hasUnreadAlerts && (
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-[#121214] animate-pulse pointer-events-none" />
           )}

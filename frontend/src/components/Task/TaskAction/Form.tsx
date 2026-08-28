@@ -33,21 +33,21 @@ export const TaskActionForm: React.FC<TaskActionFormProps> = ({
   onCloseDrawer,
   onShare,
 }) => {
-  const textCounterClass = "text-xs font-medium text-white/80";
+  const textCounterClass = "text-xs font-medium text-white/80 font-sans";
 
   return (
     <>
-      <div className="flex items-center gap-8 pt-3 pb-2 sm:pb-0 border-t border-white/[0.04] mt-4">
+      <div className="flex items-center justify-between sm:justify-start sm:gap-8 pt-3 pb-2 sm:pb-0 border-t border-white/[0.04] mt-4 font-sans">
         
         {/* Like Button: Unfilled Red Outline -> Clicked Solid Red Fill */}
         <button
           onClick={onLike}
-          className={`flex items-center gap-2 transition-colors cursor-pointer group ${
+          className={`flex items-center gap-2 py-1 px-2 sm:px-0 sm:py-0 transition-colors cursor-pointer group rounded-lg active:bg-white/5 ${
             isLiked ? "text-rose-500" : "text-rose-500/70 hover:text-rose-500"
           }`}
         >
           <Heart
-            size={18}
+            size={19}
             strokeWidth={1.75}
             className={`transition-transform duration-200 group-hover:scale-110 ${
               isLiked ? "fill-rose-500 text-rose-500" : "fill-transparent text-rose-500"
@@ -59,12 +59,12 @@ export const TaskActionForm: React.FC<TaskActionFormProps> = ({
         {/* Comment Button: White icon & text */}
         <button
           onClick={onOpenDrawer}
-          className={`flex items-center gap-2 transition-all duration-300 cursor-pointer group text-white/90 hover:text-white`}
+          className="flex items-center gap-2 py-1 px-2 sm:px-0 sm:py-0 transition-all duration-300 cursor-pointer group text-white/90 hover:text-white rounded-lg active:bg-white/5"
         >
           <MessageCircle
-            size={18}
+            size={19}
             strokeWidth={1.75}
-            className={`transition-transform duration-200 group-hover:scale-110 text-white fill-white/10`}
+            className="transition-transform duration-200 group-hover:scale-110 text-white fill-white/10"
           />
           <span className={textCounterClass}>{commentsCount}</span>
         </button>
@@ -72,12 +72,12 @@ export const TaskActionForm: React.FC<TaskActionFormProps> = ({
         {/* Share Button: Unfilled Green Outline -> Clicked Solid Green Fill */}
         <button
           onClick={onShare}
-          className={`flex items-center gap-2 transition-colors cursor-pointer group ${
+          className={`flex items-center gap-2 py-1 px-2 sm:px-0 sm:py-0 transition-colors cursor-pointer group rounded-lg active:bg-white/5 ${
             isShared || copied ? "text-emerald-400" : "text-emerald-400/70 hover:text-emerald-400"
           }`}
         >
           <Share2
-            size={18}
+            size={19}
             strokeWidth={1.75}
             className={`transition-transform duration-200 group-hover:scale-110 ${
               isShared || copied ? "fill-emerald-400 text-emerald-400" : "fill-transparent text-emerald-400"
