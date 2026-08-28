@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   Home,
@@ -6,7 +6,8 @@ import {
   Plus,
   Bell,
   Search,
-  MessageSquare
+  MessageSquare,
+  X
 } from "lucide-react";
 import { MobileMessagesModal } from "../Mobile/MessagesModal";
 import { MobileAlertsModal } from "./MobileAlertsModal";
@@ -20,6 +21,7 @@ interface MobileNavBarProps {
   pathname: string;
   onOpenCreate: () => void;
   onSelectConversation: (partnerUuid: string) => void;
+  onSearchQuery?: (query: string) => void; // Optional handler if you want to pass search value up
 }
 
 export const MobileNavBar: React.FC<MobileNavBarProps> = ({
@@ -28,13 +30,26 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   userAvatar,
   pathname,
   onOpenCreate,
-  onSelectConversation
+  onSelectConversation,
+  onSearchQuery
 }) => {
   const [isInboxOpen, setIsInboxOpen] = useState(false);
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
   
+  // 🔍 Interactive Search State
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   // 🔴 Live unread message count state
   const [unreadMsgCount, setUnreadMsgCount] = useState<number>(0);
+
+  // Focus input automatically when search opens
+  useEffect(() => {
+    if (isSearchOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isSearchOpen]);
 
   // Listen for incoming messages globally to update badge
   useEffect(() => {
@@ -55,7 +70,21 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
     setUnreadMsgCount(0);
     setIsInboxOpen(true);
   };
-  
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchQuery(val);
+    if (onSearchQuery) {
+      onSearchQuery(val);
+    }
+  };
+
+  const closeSearch = () => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
+    if (onSearchQuery) onSearchQuery("");
+  };
+
   // Fetch alerts and calculate unread count
   const { alerts } = useAlerts();
   const unreadAlertsCount = alerts.filter((a) => !a.is_read).length;
@@ -74,31 +103,57 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   return (
     <div className="md:hidden">
 
-      {/* MOBILE TOP SLIM BAR: Search + 💬 Messages Button */}
+      {/* MOBILE TOP SLIM BAR: Interactive Search + 💬 Messages Button */}
       <nav
         className={`fixed top-0 left-0 right-0 z-40 bg-[#09090b]/85 backdrop-blur-xl border-b border-white/[0.06] px-3.5 py-2 flex items-center justify-between gap-3 transition-transform duration-300 ${!isVisible ? "-translate-y-full" : "translate-y-0"
           }`}
       >
-        <div className="flex-1">
-          <div className="flex items-center gap-2 w-full bg-[#121214] border border-white/10 rounded-full px-3 py-1.5 text-white/40 text-xs font-light">
-            <Search size={14} className="text-[#d4af37] shrink-0" />
-            <span className="truncate">Search archive insights...</span>
-          </div>
+        <div className="flex-1 flex items-center">
+          {isSearchOpen ? (
+            <div className="flex items-center gap-2 w-full bg-[#121214] border border-[#d4af37]/40 rounded-full px-3 py-1.5 text-white text-xs animate-in fade-in duration-200">
+              <Search size={14} className="text-[#d4af37] shrink-0" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search archive insights..."
+                className="w-full bg-transparent border-none outline-none text-white placeholder:text-white/30 text-xs"
+              />
+              <button
+                onClick={closeSearch}
+                className="text-white/50 hover:text-white cursor-pointer p-0.5"
+                aria-label="Close search"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              className="flex items-center gap-2.5 bg-[#121214] border border-white/10 hover:border-white/20 rounded-full px-3.5 py-1.5 text-white/50 hover:text-white text-xs font-light transition-all cursor-pointer"
+            >
+              <Search size={14} className="text-[#d4af37] shrink-0" />
+              <span>Search archive insights...</span>
+            </button>
+          )}
         </div>
 
         {/* 💬 Messages Inbox Button (TOP) */}
-        <button
-          onClick={handleOpenInbox}
-          className="relative flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.03] border border-white/10 text-white/80 cursor-pointer active:scale-95 transition-all shrink-0"
-          aria-label="Messages"
-        >
-          <MessageSquare size={16} className={unreadMsgCount > 0 ? "text-[#d4af37]" : ""} />
-          {unreadMsgCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md animate-pulse">
-              {unreadMsgCount}
-            </span>
-          )}
-        </button>
+        {!isSearchOpen && (
+          <button
+            onClick={handleOpenInbox}
+            className="relative flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.03] border border-white/10 text-white/80 cursor-pointer active:scale-95 transition-all shrink-0"
+            aria-label="Messages"
+          >
+            <MessageSquare size={16} className={unreadMsgCount > 0 ? "text-[#d4af37]" : ""} />
+            {unreadMsgCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md animate-pulse">
+                {unreadMsgCount}
+              </span>
+            )}
+          </button>
+        )}
       </nav>
 
       {/* MOBILE BOTTOM FLOATING DOCK: Home, Feed, Create, 🔔 Notifications, Profile */}

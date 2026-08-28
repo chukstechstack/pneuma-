@@ -37,12 +37,13 @@ export const TaskActionForm: React.FC<TaskActionFormProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between sm:justify-start sm:gap-8 pt-3 pb-2 sm:pb-0 border-t border-white/[0.04] mt-4 font-sans">
+      {/* 🌟 Changed justify-between to justify-start and added gap-7 for mobile alignment */}
+      <div className="flex items-center justify-start gap-7 sm:gap-8 pt-3 pb-2 sm:pb-0 border-t border-white/[0.04] mt-4 font-sans">
         
         {/* Like Button: Unfilled Red Outline -> Clicked Solid Red Fill */}
         <button
           onClick={onLike}
-          className={`flex items-center gap-2 py-1 px-2 sm:px-0 sm:py-0 transition-colors cursor-pointer group rounded-lg active:bg-white/5 ${
+          className={`flex items-center gap-2 py-1 px-0 transition-colors cursor-pointer group rounded-lg active:bg-white/5 ${
             isLiked ? "text-rose-500" : "text-rose-500/70 hover:text-rose-500"
           }`}
         >
@@ -59,7 +60,7 @@ export const TaskActionForm: React.FC<TaskActionFormProps> = ({
         {/* Comment Button: White icon & text */}
         <button
           onClick={onOpenDrawer}
-          className="flex items-center gap-2 py-1 px-2 sm:px-0 sm:py-0 transition-all duration-300 cursor-pointer group text-white/90 hover:text-white rounded-lg active:bg-white/5"
+          className="flex items-center gap-2 py-1 px-0 transition-all duration-300 cursor-pointer group text-white/90 hover:text-white rounded-lg active:bg-white/5"
         >
           <MessageCircle
             size={19}
@@ -72,7 +73,7 @@ export const TaskActionForm: React.FC<TaskActionFormProps> = ({
         {/* Share Button: Unfilled Green Outline -> Clicked Solid Green Fill */}
         <button
           onClick={onShare}
-          className={`flex items-center gap-2 py-1 px-2 sm:px-0 sm:py-0 transition-colors cursor-pointer group rounded-lg active:bg-white/5 ${
+          className={`flex items-center gap-2 py-1 px-0 transition-colors cursor-pointer group rounded-lg active:bg-white/5 ${
             isShared || copied ? "text-emerald-400" : "text-emerald-400/70 hover:text-emerald-400"
           }`}
         >
