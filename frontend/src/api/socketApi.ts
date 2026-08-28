@@ -11,15 +11,14 @@ declare global {
   }
 }
 
-// Use Vite's import.meta.env for production/local URL switching
-const SOCKET_URL = 
-  import.meta.env.VITE_SOCKET_URL || 
-  (import.meta.env.PROD ? "https://pneuma-frontend-oijl.onrender.com" : "http://localhost:4000");
 
+const SOCKET_URL =
+  import.meta.env.VITE_SOCKET_URL ||
+  (import.meta.env.PROD ? "https://pneuma-api-0bvr.onrender.com" : "http://localhost:4000");
 const socket = io(SOCKET_URL, {
   withCredentials: true,
   autoConnect: false,
-  transports: ['websocket']
+  transports: ['polling', 'websocket'] // Allow polling fallback
 });
 
 export default socket;

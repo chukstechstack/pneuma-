@@ -12,7 +12,7 @@ const TaskInput: React.FC<PatchInputProps> = ({
   isPending,
 }) => {
   return (
-    <div className="w-full">
+    <div className="w-full font-sans">
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ==================== TEXT INPUT SANCTUARY ==================== */}
         <textarea
@@ -21,7 +21,7 @@ const TaskInput: React.FC<PatchInputProps> = ({
           onChange={handleChange}
           placeholder="Share your journey with Christ, document a win, or map your insights..."
           rows={6}
-          className="w-full p-4 bg-black/60 border border-white/15 rounded-xl text-white placeholder-gray-500 text-sm sm:text-base leading-relaxed focus:outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all resize-none"
+          className="w-full p-4 bg-black/60 border border-white/15 rounded-xl text-white placeholder-gray-500 text-sm sm:text-base leading-relaxed font-sans focus:outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition-all resize-none"
           required
           disabled={isPending}
         />
@@ -31,7 +31,7 @@ const TaskInput: React.FC<PatchInputProps> = ({
 
         {/* ==================== ACTION HOVER CONTROL ROW ==================== */}
         <div className="flex items-center justify-between pt-4 border-t border-white/[0.06]">
-          <label className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.02] text-xs font-mono uppercase tracking-widest text-gray-300 hover:border-[#d4af37] hover:text-[#d4af37] transition-all cursor-pointer ${isPending ? "opacity-50 pointer-events-none" : ""}`}>
+          <label className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.02] text-xs font-medium text-gray-300 hover:border-[#d4af37] hover:text-[#d4af37] transition-all cursor-pointer ${isPending ? "opacity-50 pointer-events-none" : ""}`}>
             <input
               type="file"
               name="img"
@@ -41,18 +41,18 @@ const TaskInput: React.FC<PatchInputProps> = ({
               disabled={isPending}
             />
             <ImagePlus size={16} strokeWidth={1.5} />
-            <span>Image</span>
+            <span>Add Image</span>
           </label>
 
           <button 
             type="submit" 
-            className="border border-[#d4af37]/60 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37] hover:text-[#010102] transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.15)] flex items-center gap-2 rounded-xl disabled:opacity-50 disabled:pointer-events-none" 
+            className="border border-[#d4af37]/60 px-6 py-2.5 text-xs font-semibold text-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37] hover:text-[#010102] transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.15)] flex items-center gap-2 rounded-xl disabled:opacity-50 disabled:pointer-events-none" 
             disabled={isPending}
           >
             {isPending ? (
               <>
                 <Loader2 size={16} className="animate-spin" />
-                <span>Saving Changes...</span>
+                <span>Saving changes...</span>
               </>
             ) : (
               <>

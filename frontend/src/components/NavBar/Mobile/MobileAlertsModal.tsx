@@ -25,7 +25,7 @@ export const MobileAlertsModal: React.FC<MobileAlertsModalProps> = ({ isOpen, on
   const unreadCount = alerts.filter((a) => !a.is_read).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/80 backdrop-blur-md animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-black/80 backdrop-blur-md animate-in fade-in font-sans">
       <div 
         className="absolute inset-0" 
         onClick={onClose} 
@@ -35,12 +35,12 @@ export const MobileAlertsModal: React.FC<MobileAlertsModalProps> = ({ isOpen, on
         
         {/* Modal Header */}
         <div className="p-4 border-b border-white/[0.08] flex items-center justify-between bg-white/[0.01]">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <Sparkles size={16} className="text-[#d4af37]" />
-            <h3 className="font-serif font-bold text-xs uppercase tracking-wider text-white">
+            <h3 className="font-sans font-semibold text-xs text-white tracking-normal uppercase">
               Inner Circle Activity
             </h3>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/10 text-white/70 flex items-center gap-1.5">
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/10 text-white/80 flex items-center gap-1.5">
               {unreadCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />}
               {unreadCount} unread
             </span>
@@ -48,7 +48,7 @@ export const MobileAlertsModal: React.FC<MobileAlertsModalProps> = ({ isOpen, on
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white"
+            className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white cursor-pointer transition-colors"
           >
             <X size={16} />
           </button>
@@ -59,7 +59,7 @@ export const MobileAlertsModal: React.FC<MobileAlertsModalProps> = ({ isOpen, on
           {alerts.length === 0 ? (
             <div className="py-16 text-center">
               <Bell size={28} className="mx-auto text-white/20 mb-2" />
-              <p className="text-xs font-mono text-white/40">
+              <p className="text-xs font-normal text-white/40">
                 No activity from your connections yet.
               </p>
             </div>
@@ -68,32 +68,32 @@ export const MobileAlertsModal: React.FC<MobileAlertsModalProps> = ({ isOpen, on
               <div
                 key={alert.id}
                 onClick={() => handleAlertClick(alert)}
-                className={`p-4 rounded-2xl transition-colors flex items-start gap-3 my-1 active:bg-white/[0.05] ${
+                className={`p-3.5 rounded-2xl transition-colors flex items-start gap-3.5 my-1 active:bg-white/[0.05] cursor-pointer ${
                   !alert.is_read ? "bg-white/[0.03]" : "opacity-60"
                 }`}
               >
                 <img
                   src={alert.actor_avatar_url || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"}
                   alt={alert.actor_name}
-                  className="w-9 h-9 rounded-full object-cover border border-white/10 shrink-0 mt-0.5"
+                  className="w-10 h-10 rounded-full object-cover border border-white/10 shrink-0 mt-0.5 bg-black/40"
                 />
 
-                <div className="flex-1 flex flex-col gap-1">
+                <div className="flex-1 flex flex-col gap-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white">
+                    <span className="text-xs font-semibold text-white truncate">
                       {alert.actor_name}
                     </span>
-                    <span className="text-[9px] font-mono text-white/30">
+                    <span className="text-[10px] font-normal text-white/40 shrink-0">
                       {new Date(alert.created_at).toLocaleDateString()}
                     </span>
                   </div>
 
-                  <p className="text-xs text-gray-300 leading-snug line-clamp-2">
+                  <p className="text-xs text-gray-300 leading-snug line-clamp-2 font-normal">
                     Published a new reflection: <span className="italic text-white">"{alert.post_snippet || 'View post'}"</span>
                   </p>
                 </div>
 
-                {/* 👉 Red pulsing indicator dot for unread alerts */}
+                {/* Red pulsing indicator dot for unread alerts */}
                 {!alert.is_read && (
                   <span className="w-2 h-2 rounded-full bg-red-500 shrink-0 self-center animate-pulse" />
                 )}
