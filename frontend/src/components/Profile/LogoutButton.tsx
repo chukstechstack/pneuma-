@@ -4,8 +4,10 @@ import { LogOut, Loader2 } from "lucide-react";
 import api from "@/api/axios";
 import { supabase } from "../../api/supabaseClient";
 
+import { queryClient } from '@/api/queryClient';
+
 type LogoutButtonProps = {
-  className?: string; // Allows passing custom Tailwind classes if needed
+  className?: string;
 };
 
 export const LogoutButton: React.FC<LogoutButtonProps> = ({ className = "" }) => {
@@ -15,15 +17,24 @@ export const LogoutButton: React.FC<LogoutButtonProps> = ({ className = "" }) =>
   const handleLogout = async () => {
     try {
       setLoggingOut(true);
+
+      // 1. Call backend logout to destroy session & clear cookie
       await api.post("/auth/logout");
 
+      // 2. Sign out from Supabase if active
       await supabase.auth.signOut();
 
+      // 3. Clear local storage tokens/data
       localStorage.removeItem("token");
+
+      // 🌟 4. CRITICAL: Wipe out all React Query caches so no old user data remains in memory
+      queryClient.clear();
+
 
       navigate("/login", { replace: true });
     } catch (err) {
       console.error("Logout failed:", err);
+      queryClient.clear();
       navigate("/login", { replace: true });
     } finally {
       setLoggingOut(false);
