@@ -40,7 +40,6 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
     }
   };
 
-  // Dragging handlers for repositioning the photo
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDragging(true);
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -62,12 +61,12 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
     setIsDragging(false);
   };
 
-  // Generate cropped image file using an off-screen Canvas
+  // Generate cropped image file using an off-screen Canvas mapped to preview dimensions
   const handleConfirm = async () => {
     if (!selectedFile || !imageRef.current) return;
 
     const canvas = document.createElement("canvas");
-    const canvasSize = 400; // Output resolution
+    const canvasSize = 400; // Final output resolution
     canvas.width = canvasSize;
     canvas.height = canvasSize;
     const ctx = canvas.getContext("2d");
@@ -76,14 +75,41 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
 
     const img = imageRef.current;
     
-    // Clear & draw transformed image onto circular/square crop bounds
+    // Clear canvas
     ctx.clearRect(0, 0, canvasSize, canvasSize);
     ctx.save();
-    
-    // Translate and scale to match user's custom drag/zoom settings
-    ctx.translate(canvasSize / 2 + position.x, canvasSize / 2 + position.y);
+
+    // Get preview container bounding box to calculate exact visual scaling ratios
+    const previewContainer = imageRef.current.parentElement;
+    const containerSize = previewContainer ? previewContainer.clientWidth : 180;
+
+    // Ratio between output resolution and UI preview box size
+    const renderScale = canvasSize / containerSize;
+
+    // Translate to center of canvas, apply user's drag offset and zoom scale proportionally
+    ctx.translate(canvasSize / 2, canvasSize / 2);
     ctx.scale(scale, scale);
-    ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
+    ctx.translate(position.x * renderScale, position.y * renderScale);
+
+    // Draw image centered based on its natural aspect ratio filling the container
+    const naturalAspect = img.naturalWidth / img.naturalHeight;
+    let drawWidth = canvasSize;
+    let drawHeight = canvasSize;
+
+    if (naturalAspect > 1) {
+      drawWidth = canvasSize * naturalAspect;
+    } else {
+      drawHeight = canvasSize / naturalAspect;
+    }
+
+    ctx.drawImage(
+      img,
+      -drawWidth / 2,
+      -drawHeight / 2,
+      drawWidth,
+      drawHeight
+    );
+
     ctx.restore();
 
     canvas.toBlob(
@@ -112,10 +138,8 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-sans animate-in fade-in duration-200">
       
-      {/* Centered Modal Container for both mobile and desktop */}
       <div className="relative w-full max-w-xs sm:max-w-sm bg-[#121008] border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
         
-        {/* Close Button */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 p-2 text-white/50 hover:text-white rounded-full bg-white/5 transition-colors cursor-pointer"
@@ -130,7 +154,7 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           {selectedFile ? "Drag to reposition and use slider to zoom." : "Choose a new visual representation for your profile."}
         </p>
 
-        {/* Prominently Centered Cropper Circle Preview Box */}
+        {/* Cropper Circle Preview Box */}
         <div 
           className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-full overflow-hidden border-2 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.3)] mb-5 bg-black/60 cursor-grab active:cursor-grabbing select-none touch-none group mx-auto flex items-center justify-center"
           onMouseDown={handleMouseDown}
@@ -149,10 +173,9 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
               transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
               transition: isDragging ? "none" : "transform 0.1s ease-out",
             }}
-            className="w-full h-full object-contain pointer-events-none absolute inset-0 m-auto"
+            className="w-full h-full object-cover pointer-events-none absolute inset-0 m-auto"
           />
 
-          {/* Helper Grid overlay when dragging */}
           <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
 
           {!selectedFile && (
@@ -166,7 +189,7 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           )}
         </div>
 
-        {/* Zoom & Reset Controls (Visible only when file is selected) */}
+        {/* Zoom & Reset Controls */}
         {selectedFile && (
           <div className="w-full flex items-center justify-between px-2 mb-5 gap-3">
             <div className="flex items-center gap-2 flex-1">
@@ -191,7 +214,6 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           </div>
         )}
 
-        {/* Hidden File Input */}
         <input
           ref={fileInputRef}
           type="file"
@@ -200,7 +222,6 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           onChange={handleFileChange}
         />
 
-        {/* Action Buttons */}
         <div className="flex items-center gap-2.5 w-full">
           <button
             onClick={() => fileInputRef.current?.click()}

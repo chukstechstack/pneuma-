@@ -36,58 +36,55 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
       {/* Background Glow */}
       <div className="absolute top-0 right-0 w-36 h-36 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#d4af37]/15 via-transparent to-transparent blur-[40px] pointer-events-none" />
 
-      {/* Top Row: Compact Identity Section (Avatar + Name side by side) */}
-      <div className="flex items-start justify-between gap-2.5 relative z-10 min-w-0">
+      {/* Top Row: Avatar on left, Action Controls (Share/Settings) on right */}
+      <div className="flex items-center justify-between relative z-10 w-full">
         
-        <div className="flex items-center gap-3.5 sm:gap-5 min-w-0 flex-1">
-          {/* Clickable Avatar Container */}
-          <div
-            className="relative shrink-0 group cursor-pointer"
-            onClick={() => isOwner && setIsAvatarModalOpen(true)}
-          >
-            <img
-              src={profileAvatarUrl}
-              alt={typedProfile.full_name || "Sanctuary Citizen"}
-              className="w-15 h-15 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-[#d4af37]/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-transform group-hover:scale-[1.02]"
-            />
+        {/* Clickable Avatar Container */}
+        <div
+          className="relative shrink-0 group cursor-pointer"
+          onClick={() => isOwner && setIsAvatarModalOpen(true)}
+        >
+          <img
+            src={profileAvatarUrl}
+            alt={typedProfile.full_name || "Sanctuary Citizen"}
+            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover object-center border-2 border-[#d4af37]/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-transform group-hover:scale-[1.02]"
+          />
 
-            {isOwner && (
-              <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[#d4af37]">
-                <Camera size={16} />
-              </div>
-            )}
-
-            <div className="absolute bottom-0 right-0 p-0.5 sm:p-1 bg-[#010102] border border-[#d4af37]/40 rounded-full text-[#d4af37]">
-              <Shield size={10} className="sm:w-[12px] sm:h-[12px]" />
+          {isOwner && (
+            <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[#d4af37]">
+              <Camera size={18} />
             </div>
-          </div>
+          )}
 
-          {/* Name & Bio Area */}
-          <div className="space-y-1 min-w-0 flex-1">
-            {/* 🌟 Swapped font-serif to font-sans with a cleaner social profile weight */}
-            <h1 className="font-sans text-base sm:text-xl font-bold tracking-tight text-white leading-snug break-words">
-              {typedProfile.full_name || "Sanctuary Citizen"}
-            </h1>
-            <p className="text-gray-300 text-[11px] sm:text-xs font-sans leading-relaxed line-clamp-2">
-              {typedProfile.bio || "Building a legacy of faith, daily records, and spiritual growth."}
-            </p>
+          <div className="absolute bottom-0 right-0 p-1 bg-[#010102] border border-[#d4af37]/40 rounded-full text-[#d4af37]">
+            <Shield size={12} className="sm:w-[14px] sm:h-[14px]" />
           </div>
         </div>
 
         {/* Action Controls (Settings / Share in top right corner) */}
-        <div className="flex items-center gap-1.5 shrink-0 pt-0.5">
+        <div className="flex items-center gap-2 shrink-0 self-start">
           <ProfileShareButton profileUuid={typedProfile.uuid} />
           
           {isOwner && (
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="p-2 rounded-xl bg-white/[0.04] border border-white/10 hover:border-[#d4af37]/50 text-gray-300 hover:text-[#d4af37] transition-all cursor-pointer shadow-md backdrop-blur-md"
+              className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-[#d4af37]/50 text-gray-300 hover:text-[#d4af37] transition-all cursor-pointer shadow-md backdrop-blur-md"
               title="Account Settings"
             >
-              <Settings size={15} className="text-[#d4af37]" />
+              <Settings size={16} className="text-[#d4af37]" />
             </button>
           )}
         </div>
+      </div>
+
+      {/* Identity & Bio Stacked Below (Instagram / Twitter Style) */}
+      <div className="space-y-1.5 relative z-10 w-full text-left">
+        <h1 className="font-sans text-lg sm:text-xl font-bold tracking-tight text-white leading-snug break-words">
+          {typedProfile.full_name || "Sanctuary Citizen"}
+        </h1>
+        <p className="text-gray-300 text-xs sm:text-sm font-sans leading-relaxed break-words">
+          {typedProfile.bio || "Building a legacy of faith, daily records, and spiritual growth."}
+        </p>
       </div>
 
       {/* Bottom Bar: Engagement Buttons */}
