@@ -4,17 +4,17 @@ import { PNEUMA_IMAGES } from "../Assets/pneumaImages";
 
 const heroStory = [
   {
-    headingLines: ["THE WAR", "ZONES"],
+    headingLines: ["HUMMANITY"],
     caption:
       "Where bombs shatter communities, we refuse to look away. Bloodied soil and human collapse demand an immediate, unfiltered response. Silence is a betrayal.",
   },
   {
-    headingLines: ["BROKEN", "CUT OFF"],
+    headingLines: ["BROKEN", "WORLD"],
     caption:
       "The broken-hearted are sealed behind absolute darkness, choked by walls of conflict and cold institutional apathy. A profound silence spans across the divide.",
   },
   {
-    headingLines: ["PNEUMA", "ARRIVES"],
+    headingLines: ["KOINONIA"],
     caption:
       "Where mechanical systems collapse and human strength breaks down, the spirit moves. Establishing field bases, raising leaders, and breaking isolation instantly.",
   },
@@ -27,6 +27,13 @@ export const HeroSection: React.FC = () => {
   const heroImages = useMemo(() => PNEUMA_IMAGES.slice(0, 3), []);
 
   useEffect(() => {
+    // Check if device is mobile (less than 768px wide)
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      setActiveHeroImg(0); // Lock to first image on mobile
+      return;
+    }
+
     if (hasPlayedIntro) return;
 
     let step = 0;
@@ -49,13 +56,13 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       id="vanguard"
-      className="relative w-full h-[100dvh] overflow-hidden flex flex-col justify-end bg-zinc-900 transform-gpu"
+      className="relative w-full h-[100dvh] overflow-hidden flex flex-col justify-end bg-zinc-900"
     >
       {/* Background Images */}
       {heroImages.map((img, idx) => (
         <div
           key={img.id}
-          className={`absolute inset-0 transition-opacity duration-700 ease-in-out transform-gpu ${
+          className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
             activeHeroImg === idx
               ? "opacity-100 z-10"
               : "opacity-0 pointer-events-none z-0"
@@ -69,16 +76,16 @@ export const HeroSection: React.FC = () => {
             decoding="async"
             className="w-full h-full object-cover object-center brightness-[1.05]"
           />
-          {/* Subtle gradient at the bottom so headline and selectors stay readable */}
+          {/* Subtle gradient at the bottom so headlines stay readable */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
         </div>
       ))}
 
       {/* HERO CONTENT */}
-      <div className="relative w-full px-5 sm:px-8 md:px-24 z-20 flex flex-col lg:flex-row lg:items-end justify-between gap-4 md:gap-12 max-w-[1700px] mx-auto pb-10 md:pb-24 transform-gpu">
+      <div className="relative w-full px-5 sm:px-8 md:px-24 z-20 flex flex-col lg:flex-row lg:items-end justify-between gap-4 md:gap-12 max-w-[1700px] mx-auto pb-12 md:pb-24">
         
         <div className="space-y-2 md:space-y-6 max-w-4xl">
-          <h1 className="text-5xl sm:text-7xl md:text-[11rem] font-black tracking-tighter text-white uppercase leading-[0.9] md:leading-[0.82]">
+          <h1 className="text-4xl sm:text-7xl md:text-[11rem] font-black tracking-tight sm:tracking-tighter text-white uppercase leading-[1.05] sm:leading-[0.82]">
             {currentStory.headingLines[0]}
             <br />
             {currentStory.headingLines[1]}
@@ -86,13 +93,13 @@ export const HeroSection: React.FC = () => {
         </div>
 
         <div className="flex flex-col gap-3 md:gap-6 lg:w-[420px]">
-          {/* Caption: Hidden on mobile (sm:block), visible on tablets/desktops */}
+          {/* Caption: Hidden on mobile, visible on tablets/desktops */}
           <p className="hidden sm:block text-white font-sans font-medium text-sm md:text-lg border-l-4 border-rose-500 pl-4 md:pl-6 bg-black/80 backdrop-blur-md p-4 md:p-6 rounded-r-2xl border-y border-r border-white/20 shadow-md">
             {currentStory.caption}
           </p>
 
-          {/* Interactive Selector Pod */}
-          <div className="flex items-center gap-3 bg-black/80 backdrop-blur-md px-3.5 md:px-5 py-2.5 md:py-3 rounded-full border-2 border-emerald-500 w-fit shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+          {/* Interactive Selector Pod: Completely hidden on mobile to keep it clean */}
+          <div className="hidden sm:flex items-center gap-3 bg-black/80 backdrop-blur-md px-3.5 md:px-5 py-2.5 md:py-3 rounded-full border-2 border-emerald-500 w-fit shadow-[0_0_15px_rgba(16,185,129,0.2)]">
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-emerald-300 font-extrabold pr-1">
               <MousePointerClick size={14} className="text-emerald-400" />
               <span>Select:</span>

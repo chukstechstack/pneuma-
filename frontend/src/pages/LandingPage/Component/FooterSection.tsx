@@ -33,25 +33,23 @@ export const FooterSection: React.FC = () => {
   ];
 
   return (
-    <footer className="w-full bg-[#030305] text-white pt-20 pb-12 border-t border-white/10 font-mono relative overflow-hidden select-none">
+    <footer className="w-full bg-[#030305] text-white pt-16 md:pt-20 pb-10 md:pb-12 border-t border-white/10 font-mono relative overflow-hidden select-none">
 
       {/* 1. CRAZY GIANT SCROLLING MARQUEE HEADER */}
-      <div className="w-full border-b border-white/10 pb-8 overflow-hidden whitespace-nowrap opacity-90">
-        <div className="inline-block animate-marquee tracking-tighter font-black text-[14vw] leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-200 to-white">
+      <div className="w-full border-b border-white/10 pb-6 md:pb-8 overflow-hidden whitespace-nowrap opacity-90">
+        <div className="inline-block animate-marquee tracking-tighter font-black text-[12vw] sm:text-[14vw] leading-none uppercase text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-emerald-200 to-white">
           NO PERMISSION REQUIRED // DEFEND HUMANITY // DISPATCH NOW //
         </div>
       </div>
 
-      <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-16">
+      <div className="max-w-[1800px] mx-auto px-6 md:px-12 py-12 md:py-16">
 
         {/* 2. UNCONVENTIONAL ASYMMETRIC COMMAND SYSTEM */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
 
           {/* LEFT: MONOLITHIC FAQ MANIFEST (7 COLS) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="flex items-center gap-3 text-emerald-500 text-xs font-bold tracking-[0.3em] uppercase mb-8">
-              <Terminal size={16} /> [SYSTEM DECLASSIFIED MANIFEST]
-            </div>
+    
 
             <div className="space-y-3">
               {faqs.map((faq, idx) => {
@@ -60,27 +58,28 @@ export const FooterSection: React.FC = () => {
                   <div
                     key={idx}
                     onClick={() => setActiveFaq(isOpen ? null : idx)}
-                    className={`cursor-pointer transition-all duration-200 border-l-2 p-6 bg-[#07070c] ${isOpen
+                    className={`cursor-pointer transition-all duration-200 border-l-2 p-4 sm:p-6 bg-[#07070c] ${
+                      isOpen
                         ? "border-emerald-500 bg-emerald-950/10"
                         : "border-white/10 hover:border-white/40"
-                      }`}
+                    }`}
                   >
                     <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <span className="text-[10px] text-emerald-500 font-bold tracking-widest">
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <span className="text-[10px] text-emerald-500 font-bold tracking-widest shrink-0">
                           {faq.code}
                         </span>
-                        <h4 className="text-sm sm:text-base font-black tracking-wider text-white uppercase">
+                        <h4 className="text-xs sm:text-base font-black tracking-wider text-white uppercase">
                           {faq.question}
                         </h4>
                       </div>
-                      <div className="text-emerald-500">
+                      <div className="text-emerald-500 shrink-0">
                         {isOpen ? <Minus size={18} /> : <Plus size={18} />}
                       </div>
                     </div>
 
                     {isOpen && (
-                      <p className="mt-4 text-xs sm:text-sm font-sans text-gray-300 leading-relaxed pl-16 border-t border-white/5 pt-3">
+                      <p className="mt-4 text-xs sm:text-sm font-sans text-gray-300 leading-relaxed pl-0 sm:pl-12 border-t border-white/5 pt-3">
                         {faq.answer}
                       </p>
                     )}
@@ -91,9 +90,9 @@ export const FooterSection: React.FC = () => {
           </div>
 
           {/* RIGHT: MASSIVE TACTICAL DISPATCH CTA TERMINAL (5 COLS) */}
-          <div className="lg:col-span-5 bg-[#080a0f] border-2 border-emerald-500/40 p-8 sm:p-10 rounded-none relative flex flex-col justify-between min-h-[500px]">
+          <div className="lg:col-span-5 bg-[#080a0f] border-2 border-emerald-500/40 p-6 sm:p-10 rounded-none relative flex flex-col justify-between">
             {/* Top Status Lights */}
-            <div className="flex justify-between items-center border-b border-white/10 pb-6 mb-8">
+            <div className="flex justify-between items-center border-b border-white/10 pb-4 sm:pb-6 mb-6 sm:mb-8">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
               </div>
@@ -101,8 +100,8 @@ export const FooterSection: React.FC = () => {
             </div>
 
             {/* Core Direct Message */}
-            <div className="space-y-6">
-              <h3 className="text-4xl sm:text-6xl font-black text-white uppercase leading-[0.85] tracking-tighter">
+            <div className="space-y-4 sm:space-y-6">
+              <h3 className="text-3xl sm:text-6xl font-black text-white uppercase leading-[0.9] tracking-tighter">
                 OVERRIDE <br />
                 <span className="text-emerald-500">JOIN OUR COMMUNITY.</span>
               </h3>
@@ -111,14 +110,14 @@ export const FooterSection: React.FC = () => {
               </p>
             </div>
 
-            {/* Giant Action Button - Kept Red for urgent CTA visibility */}
-            <div className="mt-10 pt-6 border-t border-white/10">
+            {/* Giant Action Button */}
+            <div className="mt-8 sm:mt-10 pt-6 border-t border-white/10">
               <Link
                 to="/register"
-                className="w-full py-6 bg-red-600 hover:bg-red-500 text-white font-black text-sm tracking-[0.2em] uppercase flex items-center justify-between px-8 transition-colors duration-150"
+                className="w-full py-5 sm:py-6 bg-red-600 hover:bg-red-500 text-white font-black text-xs sm:text-sm tracking-[0.2em] uppercase flex items-center justify-between px-6 sm:px-8 transition-colors duration-150"
               >
-                <span>  Join us   </span>
-                <ArrowUpRight size={22} strokeWidth={3} />
+                <span>Join us</span>
+                <ArrowUpRight size={20} strokeWidth={3} />
               </Link>
             </div>
           </div>
@@ -126,7 +125,7 @@ export const FooterSection: React.FC = () => {
         </div>
 
         {/* 3. HARDWARE INDUSTRIAL DIRECTORY BAR */}
-        <div className="mt-24 pt-12 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-8 text-xs uppercase font-bold tracking-widest">
+        <div className="mt-16 md:mt-24 pt-10 md:pt-12 border-t border-white/10 grid grid-cols-2 md:grid-cols-4 gap-8 text-xs uppercase font-bold tracking-widest">
           <div>
             <span className="text-gray-600 block mb-3">// NAVIGATION</span>
             <ul className="space-y-2 text-gray-300">
@@ -152,7 +151,7 @@ export const FooterSection: React.FC = () => {
             </p>
           </div>
 
-          <div className="text-right flex flex-col justify-between">
+          <div className="text-left md:text-right flex flex-col justify-between gap-4 md:gap-0">
             <span className="text-emerald-500">// ALL SYSTEMS NOMINAL</span>
             <p className="text-gray-600 text-[10px]">
               &copy; {new Date().getFullYear()} PNEUMA PROTOCOL

@@ -51,7 +51,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           <span>PNEUMA COMMAND PROTOCOL</span>
           <div className="flex items-center gap-2 text-white/40">
             <ShieldAlert size={12} className="text-rose-500" />
-            <span>ENCRYPTED LINK</span>
+
           </div>
         </div>
       </div>
@@ -82,8 +82,8 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
 
         {/* Bottom Terminal Footer */}
         <div className="w-full max-w-md mx-auto mt-8 flex items-center justify-between text-[10px] font-mono text-gray-600 tracking-widest">
-          <span>SECURE_SESSION // v4.08</span>
-          <span className="text-rose-500/80 animate-pulse">● LIVE ENCRYPTION</span>
+          <span></span>
+          <span className="text-rose-500/80 animate-pulse">● </span>
         </div>
       </div>
 
