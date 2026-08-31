@@ -1,85 +1,68 @@
-# Pneuma 🕊️
-> **A Mission-Driven Platform for Faith-Based Testimonies**
+# 🕊️ Pneuma // Humanitarian Relief & Crisis Response Platform
+
+> **A mission-driven, decentralized web application engineered to bridge the gap between emergency aid, direct medical intervention, and neglected communities worldwide.**
 
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![NodeJS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![Sharp](https://img.shields.io/badge/Sharp-99CC00?style=for-the-badge&logo=sharp&logoColor=white)
 ![AWS CloudFront](https://img.shields.io/badge/AWS_CloudFront-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
-Pneuma: The Digital Journal for the Daily Walk
-
-Pneuma is a personal journal for believers to document their daily journey with God. It is not just for sharing testimonies, but for daily walk with God —the wins, the losses, the prayers, and the scriptural insights gained in the secret place.
-
-The Goal: To turn your daily walk into a library of wisdom that others can learn from, fostering a community of transparent, growing believers.
-
-🔗 **Live Demo:** https://pneuma-frontend-oijl.onrender.com 
-⚠️ **Project Status:** Active Development (V1 Prototype)
+🌐 **Live Demo:** [View Live Application](https://pneuma-frontend-oijl.onrender.com)  
+⚠️ **Project Status:** Active Production
 
 ---
 
-## 📖 Vision
-To bridge the gap between faith and technology by:
-- **Preserving Legacies:** Documenting personal journey as a lasting reminder of God's work.
-- **Building Community:** Enabling believers to encourage one another through shared experiences.
-- **Global Evangelism:** Providing a centralized, accessible platform for sharing the Gospel.
+## 📖 Vision & Core Mission
+
+Pneuma is built to strip away bureaucratic red tape, corporate indifference, and digital isolation. While modern systems often commodify crises into analytical reports, Pneuma establishes a **hospital without walls**—routing immediate surgery funding, emergency medical supplies, and human-to-human presence straight into war zones, rural collapses, and addiction-stricken sectors.
 
 ---
 
-## 🛠️ Technical Highlights
-While the UI is currently in a functional prototype stage, the core focus has been on robust **Backend Architecture**, **Performance**, and **Security**:
+## 🛠️ Technical Highlights & Architecture
 
-- **Secure Authentication:** Integrated **Passport.js** and **Google OAuth 2.0** to provide seamless, secure user onboarding.
-- **Relational Data Modeling:** Architected a **PostgreSQL** schema to handle complex relationships between users, testimonies, and community interactions.
-- **State Management:** Leveraging **React** to ensure an asynchronous, responsive "Create & Read" user experience.
-- **Security First:** Implemented environment variable protection and secure session management.
-- **Caching Layer:** Integrated **Redis** for high-performance server-side caching, reducing database load and improving API response times.
-- **Image Optimization:** Leveraging **Sharp** for server-side image processing and compression, ensuring fast media delivery.
-- **CDN & Asset Delivery:** Deployed **AWS CloudFront** as a CDN to serve static assets and media globally with low latency.
+Designed and engineered with meticulous attention to performance, asset optimization, and scalable backend infrastructure:
 
----
-
-## 🚀 Roadmap & Features
-
-### **Core Functionalities (Completed)**
-- [x] Full-Stack CRUD operations for Testimonies
-- [x] Secure Google Authentication (Passport.js)
-- [x] Relational Database Integration (PostgreSQL/Supabase)
-- [x] Redis Caching for optimized API performance
-- [x] Image Processing & Compression (Sharp)
-- [x] Global CDN Integration (AWS CloudFront)
-
-### **Next Sprint (In Progress)**
-- [ ] **Interaction Engine:** Implementing Likes and Comments system
-- [ ] **Stateless Auth:** Transitioning to **JWT** for API security
-- [ ] **Dashboard:** Personalized user profile management
-- [ ] **UI/UX Overhaul:** Implementing a polished, modern design for better accessibility
+- **Frontend Interface:** Built with **React** and **TypeScript**, styled via **Tailwind CSS** for a fluid, editorial, high-impact user experience across all viewports.
+- **Asset Optimization & Preloading:** Leverages custom image-caching pipelines and programmatic preloading (`preloadPriorityImages`) to eliminate layout shifts for critical above-the-fold relief assets.
+- **Relational Data Modeling:** Architected using **PostgreSQL** and **Supabase** to manage secure, complex data structures across intervention sectors.
+- **Performance & Caching:** Integrated **Redis** for high-performance server-side caching, dramatically reducing database load and optimizing API throughput.
+- **Global Asset Distribution:** Utilizes **AWS CloudFront** CDN and optimized media pipelines to serve high-resolution crisis documentation globally with minimal latency.
 
 ---
 
-## ⚙️ Tech Stack
+## 🚀 Key Modules & Sectors
 
-| Layer | Technology |
-|---|---|
-| Frontend | React |
-| Backend | Node.js |
-| Database | PostgreSQL |
-| Auth/Storage | Supabase |
-| Caching | Redis |
-| Image Processing | Sharp |
-| CDN | AWS CloudFront |
+* **Global Medical Vanguard & Triage:** Real-time tracking of active stabilization points and emergency relief grids.
+* **The Rescue & Outposts:** Documenting frontline operations where medical sanctuary is established in dark, isolated, or conflict-ridden environments.
+* **Immediate Intervention Systems:** Direct logistical tools for emergency surgery funding and grassroots community support.
+* **Behavioral & Community Support:** Infrastructure dedicated to breaking the cycle of isolation and addiction through unjudgmental human presence.
 
 ---
 
-### Planned Features
-- **Full Testimony Management:** CRUD (Create, Read, Update, Delete) capabilities for sharing stories.
-- **Community Interaction:** Engage with others through Likes and Comments.
-- **Secure Access:** Robust Registration/Login system including Google Authentication.
-- **Personalized Dashboard:** A custom space featuring user profiles, personal descriptions, and interest-based feed filtering.
-- **Private Connectivity:** An integrated chat-box for one-on-one encouragement and fellowship.
+## 📦 Getting Started Locally
 
----
+Clone the repository and run the application locally on your machine:
 
-# Built with passion by Chukwunyely Kingsley Emmanuel
+```bash
+# Clone the repository
+git clone [https://github.com/chukstechstack/pneuma-.git](https://github.com/chukstechstack/pneuma-.git)
+
+# Navigate into the directory
+cd pneuma
+
+# Install dependencies
+npm install
+
+# Start the local development server
+npm run dev
+
+📬 Connect & Collaborate
+Product Designer & Engineer: C.E Kingsley
+
+Email: chuks.teckstack@gmail.com
+
+GitHub: @chukstechstack
