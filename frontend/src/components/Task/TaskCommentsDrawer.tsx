@@ -79,7 +79,8 @@ export const TaskCommentsDrawer: React.FC<TaskCommentsDrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center font-sans">
+    // 🌟 Increased z-index to z-[100] so no nav or PC element can ever cover it
+    <div className="fixed inset-0 z-[100] flex items-end justify-center font-sans">
       {/* Immersive Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity duration-300"
@@ -122,21 +123,17 @@ export const TaskCommentsDrawer: React.FC<TaskCommentsDrawerProps> = ({
                 key={comment.id}
                 className="flex items-start gap-4 group relative"
               >
-                {/* 📱 Balanced TikTok Profile Avatar (w-14 h-14) */}
                 <img
                   src={comment.avatarUrl || fallbackAvatar}
                   alt={comment.authorName}
                   className="w-14 h-14 rounded-full object-cover bg-gray-200 shrink-0 mt-0.5 shadow-sm border border-gray-200"
                 />
 
-                {/* Comment Content Block */}
                 <div className="flex-1 flex flex-col pr-12">
-                  {/* 📱 Authentic TikTok Soft Author Name Color (text-gray-600, text-lg) */}
                   <span className="text-lg font-semibold text-gray-600 mb-1 tracking-tight">
                     {comment.authorName}
                   </span>
                   
-                  {/* Large, legible body text */}
                   <p className="text-xl text-gray-900 leading-relaxed font-normal whitespace-pre-wrap break-words">
                     {comment.content}
                   </p>
@@ -156,7 +153,6 @@ export const TaskCommentsDrawer: React.FC<TaskCommentsDrawerProps> = ({
                   </div>
                 </div>
 
-                {/* Right Side Like Button */}
                 <button className="absolute right-0 top-3 flex flex-col items-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer p-1">
                   <Heart size={20} strokeWidth={2} />
                   <span className="text-xs text-gray-400 font-medium mt-1">0</span>

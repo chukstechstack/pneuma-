@@ -49,8 +49,8 @@ const HomeFeed: React.FC = () => {
         </div>
       </div>
 
-      {/* Feed Container - Exact viewport matching snap scroll */}
-      <main className="h-[100dvh] sm:h-auto w-full overflow-y-scroll sm:overflow-visible snap-y sm:snap-none snap-mandatory scrollbar-none max-w-lg sm:max-w-xl mx-auto px-0 sm:px-4 pb-32 flex flex-col items-center gap-0 sm:gap-8 pt-16 sm:pt-4">
+      {/* Feed Container - Strict instant snap scroll with scroll-smooth */}
+      <main className="h-[100dvh] sm:h-auto w-full overflow-y-scroll sm:overflow-visible snap-y sm:snap-none snap-mandatory scroll-smooth scrollbar-none max-w-lg sm:max-w-xl mx-auto px-0 sm:px-4 pb-32 flex flex-col items-center gap-0 sm:gap-8 pt-16 sm:pt-4">
         {tasks.length === 0 ? (
           <div className="w-full h-full flex items-center justify-center px-4 py-20 snap-center">
             <div className="text-center py-12 px-6 rounded-2xl border border-white/10 bg-[#0f0f12] max-w-md">
