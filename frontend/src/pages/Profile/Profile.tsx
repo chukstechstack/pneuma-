@@ -51,8 +51,8 @@ const Profile = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white sm:bg-[#030305] text-[#161823] sm:text-white flex flex-col items-center justify-center p-6">
-        <Loader2 size={38} className="text-[#fe2c55] animate-spin mb-4" />
-        <p className="text-gray-500 sm:text-gray-400 font-mono tracking-widest text-xs uppercase">Loading Profile...</p>
+        <Loader2 size={32} className="text-[#fe2c55] animate-spin mb-3" />
+        <p className="text-gray-500 sm:text-gray-400 font-mono tracking-widest text-[10px] uppercase">Loading Profile...</p>
       </div>
     );
   }
@@ -60,10 +60,10 @@ const Profile = () => {
   if (isError || !typedProfile) {
     return (
       <div className="min-h-screen bg-white sm:bg-[#030305] text-[#161823] sm:text-white flex flex-col items-center justify-center p-6 text-center">
-        <p className="text-[#fe2c55] font-mono tracking-wider text-sm mb-4">Signal lost. Profile inaccessible.</p>
+        <p className="text-[#fe2c55] font-mono tracking-wider text-xs mb-4">Signal lost. Profile inaccessible.</p>
         <button
           onClick={() => navigate("/homefeed")}
-          className="border border-gray-200 sm:border-white/10 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-[#161823] sm:text-white bg-gray-100 sm:bg-white/10 hover:bg-[#fe2c55] hover:text-white transition-all rounded-full cursor-pointer shadow-sm"
+          className="border border-gray-200 sm:border-white/10 px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.15em] text-[#161823] sm:text-white bg-gray-100 sm:bg-white/10 hover:bg-[#fe2c55] hover:text-white transition-all rounded-full cursor-pointer shadow-sm"
         >
           Return to Feed
         </button>
@@ -75,16 +75,16 @@ const Profile = () => {
     <div className="min-h-screen bg-white sm:bg-[#030305] text-[#161823] sm:text-white font-sans selection:bg-[#fe2c55]/20 selection:text-[#fe2c55] overflow-x-hidden w-full max-w-[100vw]">
       <NavBar />
 
-      {/* Responsive Container: white background on mobile, deep black on PC with increased top padding to clear fixed navbar */}
-      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pt-6 sm:pt-28 pb-24 box-border relative">
+      {/* Responsive Container: slimmed spacing for mobile */}
+      <div className="w-full max-w-2xl mx-auto px-3 sm:px-6 pt-4 sm:pt-28 pb-20 box-border relative">
 
-        {/* Top-left Back Button (Adaptive positioning for mobile vs PC) */}
+        {/* Top-left Back Button */}
         <button
           onClick={() => navigate("/homefeed")}
-          className="absolute top-2 left-2 sm:top-24 sm:left-6 z-20 w-10 h-10 rounded-full bg-gray-100 sm:bg-[#121214] border border-gray-200 sm:border-white/10 flex items-center justify-center text-[#161823] sm:text-white/80 hover:bg-[#fe2c55] hover:text-white hover:border-transparent transition-all cursor-pointer shadow-sm active:scale-95"
+          className="absolute top-2 left-2 sm:top-24 sm:left-6 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gray-100 sm:bg-[#121214] border border-gray-200 sm:border-white/10 flex items-center justify-center text-[#161823] sm:text-white/80 hover:bg-[#fe2c55] hover:text-white hover:border-transparent transition-all cursor-pointer shadow-sm active:scale-95"
           aria-label="Back to Home"
         >
-          <ChevronLeft size={24} strokeWidth={2.5} />
+          <ChevronLeft size={21} strokeWidth={2.5} />
         </button>
 
         {/* Profile Header */}
@@ -100,7 +100,7 @@ const Profile = () => {
         />
 
         {/* Content Grid */}
-        <div className="w-full pt-4">
+        <div className="w-full pt-2">
           <ProfileJournal tasks={tasks} />
         </div>
 

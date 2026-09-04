@@ -114,26 +114,26 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-sm bg-[#ffffff] rounded-[32px] p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-xs sm:max-w-sm bg-[#ffffff] rounded-[24px] p-5 sm:p-6 shadow-2xl flex flex-col items-center text-center">
 
         <button
           onClick={handleClose}
-          className="absolute top-5 right-5 text-[#161823] hover:text-[#fe2c55] transition-colors cursor-pointer"
+          className="absolute top-4 right-4 text-[#161823] hover:text-[#fe2c55] transition-colors cursor-pointer"
         >
-          <X size={26} strokeWidth={2.5} />
+          <X size={22} strokeWidth={2.5} />
         </button>
 
-        <h3 className="font-black text-2xl sm:text-3xl text-[#161823] tracking-tight mb-2 mt-2">
+        <h3 className="font-black text-xl sm:text-2xl text-[#161823] tracking-tight mb-1 mt-1">
           {selectedFile ? "Position Avatar" : "Update Photo"}
         </h3>
-        <p className="text-gray-500 text-sm mb-7 max-w-[260px] leading-relaxed">
+        <p className="text-gray-500 text-xs sm:text-sm mb-5 max-w-[240px] leading-relaxed">
           {selectedFile ? "Drag to reposition, pinch or slide to zoom." : "Choose a striking photo for your profile."}
         </p>
 
-        {/* Cropper Viewport — no border, just shadow */}
+        {/* Cropper Viewport — downsized on mobile */}
         <div 
-          className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden shadow-lg mb-6 bg-gray-100 cursor-grab active:cursor-grabbing select-none touch-none group mx-auto flex items-center justify-center"
+          className="relative w-36 h-36 sm:w-48 sm:h-48 rounded-full overflow-hidden shadow-md mb-5 bg-gray-100 cursor-grab active:cursor-grabbing select-none touch-none group mx-auto flex items-center justify-center"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -156,18 +156,18 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           {!selectedFile && (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer text-white text-sm font-bold gap-2 z-10"
+              className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer text-white text-xs font-bold gap-1.5 z-10"
             >
-              <Upload size={28} className="text-white" />
+              <Upload size={24} className="text-white" />
               <span>Upload Image</span>
             </div>
           )}
         </div>
 
         {selectedFile && (
-          <div className="w-full flex items-center justify-between px-1 mb-7 gap-4">
-            <div className="flex items-center gap-3 flex-1">
-              <ZoomIn size={20} className="text-[#161823] shrink-0" />
+          <div className="w-full flex items-center justify-between px-1 mb-5 gap-3">
+            <div className="flex items-center gap-2.5 flex-1">
+              <ZoomIn size={18} className="text-[#161823] shrink-0" />
               <input
                 type="range"
                 min="1"
@@ -175,7 +175,7 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
                 step="0.05"
                 value={scale}
                 onChange={(e) => setScale(parseFloat(e.target.value))}
-                className="w-full accent-[#fe2c55] cursor-pointer h-2 bg-gray-200 rounded-lg"
+                className="w-full accent-[#fe2c55] cursor-pointer h-1.5 bg-gray-200 rounded-lg"
               />
             </div>
             <button
@@ -183,7 +183,7 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
               className="text-[#161823] hover:text-[#fe2c55] transition-colors cursor-pointer"
               title="Reset"
             >
-              <RotateCcw size={20} />
+              <RotateCcw size={18} />
             </button>
           </div>
         )}
@@ -196,10 +196,10 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           onChange={handleFileChange}
         />
 
-        <div className="flex items-center gap-3 w-full">
+        <div className="flex items-center gap-2.5 w-full">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex-1 py-3.5 rounded-full bg-gray-100 hover:bg-gray-200 text-sm font-black uppercase tracking-wide text-[#161823] transition-all cursor-pointer"
+            className="flex-1 py-3 rounded-full bg-gray-100 hover:bg-gray-200 text-xs sm:text-sm font-black uppercase tracking-wide text-[#161823] transition-all cursor-pointer"
           >
             {selectedFile ? "Change" : "Browse"}
           </button>
@@ -208,9 +208,9 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
             <button
               onClick={handleConfirm}
               disabled={isPending}
-              className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 rounded-full bg-[#fe2c55] text-white font-black text-sm uppercase tracking-wide shadow-md hover:bg-[#e0244b] transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-3 rounded-full bg-[#fe2c55] text-white font-black text-xs sm:text-sm uppercase tracking-wide shadow-md hover:bg-[#e0244b] transition-all cursor-pointer disabled:opacity-50"
             >
-              {isPending ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} strokeWidth={3} />}
+              {isPending ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} strokeWidth={3} />}
               <span>{isPending ? "Saving..." : "Apply"}</span>
             </button>
           )}

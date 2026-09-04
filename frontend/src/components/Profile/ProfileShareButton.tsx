@@ -23,14 +23,14 @@ export const ProfileShareButton: React.FC<ProfileShareButtonProps> = ({ profileU
       <button
         onClick={() => setIsModalOpen(true)}
         className={`inline-flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
-          copied ? "text-emerald-500" : "text-[#161823] hover:text-[#fe2c55]"
+          copied ? "text-emerald-500" : "text-[#161823] sm:text-white/80 hover:text-[#fe2c55] sm:hover:text-white"
         }`}
         title="Share Profile"
       >
         {copied ? (
-          <Check size={26} strokeWidth={2.5} />
+          <Check size={22} strokeWidth={2.5} />
         ) : (
-          <Share2 size={26} strokeWidth={2} />
+          <Share2 size={22} strokeWidth={2} />
         )}
       </button>
 
