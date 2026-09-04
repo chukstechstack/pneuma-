@@ -1,57 +1,48 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Home,
-  BookOpen,
+  Compass,
   Plus,
-  Bell,
+  MessageCircle,
   Search,
-  MessageSquare,
   X
 } from "lucide-react";
 import { MobileMessagesModal } from "../Mobile/MessagesModal";
-import { MobileAlertsModal } from "./MobileAlertsModal";
-import { useAlerts } from "@/hooks/useAlerts";
 import socket from "@/api/socketApi";
 
 interface MobileNavBarProps {
   isVisible: boolean;
+  forceHideNavBar?: boolean;
   userUuid: string | null;
   userAvatar?: string | null;
   pathname: string;
   onOpenCreate: () => void;
   onSelectConversation: (partnerUuid: string) => void;
-  onSearchQuery?: (query: string) => void; // Optional handler if you want to pass search value up
+  onSearchQuery?: (query: string) => void;
 }
 
 export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   isVisible,
+  forceHideNavBar = false,
   userUuid,
   userAvatar,
   pathname,
   onOpenCreate,
   onSelectConversation,
-  onSearchQuery
+  onSearchQuery,
 }) => {
   const [isInboxOpen, setIsInboxOpen] = useState(false);
-  const [isAlertsOpen, setIsAlertsOpen] = useState(false);
-  
-  // 🔍 Interactive Search State
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
-
-  // 🔴 Live unread message count state
   const [unreadMsgCount, setUnreadMsgCount] = useState<number>(0);
 
-  // Focus input automatically when search opens
-  useEffect(() => {
-    if (isSearchOpen && searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, [isSearchOpen]);
+  // 🌟 Check if current page is the profile page
+  const isProfilePage = pathname.includes("/profile") || (userUuid ? pathname.includes(`/feed/${userUuid}`) : false);
 
-  // Listen for incoming messages globally to update badge
+  // 🌟 Combine scroll visibility, force hide, and profile page auto-hide logic
+  const shouldHide = !isVisible || forceHideNavBar || isProfilePage;
+
   useEffect(() => {
     const handleGlobalIncomingMessage = (incoming: any) => {
       if (incoming.senderUuid !== userUuid) {
@@ -74,9 +65,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     setSearchQuery(val);
-    if (onSearchQuery) {
-      onSearchQuery(val);
-    }
+    if (onSearchQuery) onSearchQuery(val);
   };
 
   const closeSearch = () => {
@@ -85,135 +74,107 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
     if (onSearchQuery) onSearchQuery("");
   };
 
-  // Fetch alerts and calculate unread count
-  const { alerts } = useAlerts();
-  const unreadAlertsCount = alerts.filter((a) => !a.is_read).length;
-  const hasUnreadAlerts = unreadAlertsCount > 0;
-
   const isActive = (path: string) => pathname.startsWith(path);
 
   const getMobileLinkClass = (path: string) => `
-    flex flex-col items-center justify-center p-2 rounded-full transition-all duration-200
+    w-10 h-10 rounded-full flex items-center justify-center transition-all duration-150 shrink-0
     ${isActive(path)
-      ? "text-[#d4af37] bg-[#d4af37]/10"
-      : "text-white/40 hover:text-white/80"
+      ? "text-white font-bold scale-105 bg-white/10"
+      : "text-white/60 hover:text-white hover:bg-white/5"
     }
   `;
 
   return (
     <div className="md:hidden">
-
-      {/* MOBILE TOP SLIM BAR: Interactive Search + 💬 Messages Button */}
+      {/* TOP BAR — Automatically hides on profile page alongside bottom dock */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-40 bg-[#09090b]/85 backdrop-blur-xl border-b border-white/[0.06] px-3.5 py-2 flex items-center justify-between gap-3 transition-transform duration-300 ${!isVisible ? "-translate-y-full" : "translate-y-0"
+        className={`fixed top-0 left-0 right-0 z-40 px-5 py-3.5 flex items-center justify-between pointer-events-none transition-transform duration-300 ${shouldHide ? "-translate-y-full" : "translate-y-0"
           }`}
       >
-        <div className="flex-1 flex items-center">
+        <div className="pointer-events-auto">
+          <span className="text-white font-extrabold text-base tracking-widest drop-shadow-md"></span>
+        </div>
+
+        <div className="pointer-events-auto flex items-center">
           {isSearchOpen ? (
-            <div className="flex items-center gap-2 w-full bg-[#121214] border border-[#d4af37]/40 rounded-full px-3 py-1.5 text-white text-xs animate-in fade-in duration-200">
-              <Search size={14} className="text-[#d4af37] shrink-0" />
+            <div className="flex items-center gap-2 bg-[#121214] border border-white/15 rounded-full px-4 py-2 text-white text-xs shadow-xl w-[240px]">
+              <Search size={18} strokeWidth={3} className="text-white shrink-0" />
               <input
-                ref={searchInputRef}
+                autoFocus
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder="Search archive insights..."
-                className="w-full bg-transparent border-none outline-none text-white placeholder:text-white/30 text-xs"
+                placeholder="Search archive..."
+                className="w-full bg-transparent border-none outline-none text-white placeholder:text-white/40 text-xs font-medium"
               />
-              <button
-                onClick={closeSearch}
-                className="text-white/50 hover:text-white cursor-pointer p-0.5"
-                aria-label="Close search"
-              >
-                <X size={14} />
+              <button onClick={closeSearch} className="text-white/60 hover:text-white cursor-pointer p-0.5">
+                <X size={16} strokeWidth={3} />
               </button>
             </div>
           ) : (
             <button
               onClick={() => setIsSearchOpen(true)}
-              className="flex items-center gap-2.5 bg-[#121214] border border-white/10 hover:border-white/20 rounded-full px-3.5 py-1.5 text-white/50 hover:text-white text-xs font-light transition-all cursor-pointer"
+              className="w-10 h-10 rounded-full bg-black/50 border border-white/10 flex items-center justify-center text-white hover:text-white transition-all cursor-pointer active:scale-95"
+              aria-label="Open Search"
             >
-              <Search size={14} className="text-[#d4af37] shrink-0" />
-              <span>Search archive insights...</span>
+              <Search size={22} strokeWidth={3} />
             </button>
           )}
         </div>
-
-        {/* 💬 Messages Inbox Button (TOP) */}
-        {!isSearchOpen && (
-          <button
-            onClick={handleOpenInbox}
-            className="relative flex items-center justify-center w-9 h-9 rounded-full bg-white/[0.03] border border-white/10 text-white/80 cursor-pointer active:scale-95 transition-all shrink-0"
-            aria-label="Messages"
-          >
-            <MessageSquare size={16} className={unreadMsgCount > 0 ? "text-[#d4af37]" : ""} />
-            {unreadMsgCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[9px] font-bold px-1.5 py-0.2 rounded-full shadow-md animate-pulse">
-                {unreadMsgCount}
-              </span>
-            )}
-          </button>
-        )}
       </nav>
 
-      {/* MOBILE BOTTOM FLOATING DOCK: Home, Feed, Create, 🔔 Notifications, Profile */}
+      {/* BOTTOM DOCK */}
       <nav
-        className={`fixed bottom-4 left-3 right-3 z-40 bg-[#121214]/90 backdrop-blur-2xl border border-white/[0.08] rounded-full px-2.5 py-1.5 flex items-center justify-around shadow-[0_15px_35px_rgba(0,0,0,0.8)] transition-transform duration-300 ${!isVisible ? "translate-y-28" : "translate-y-0"
+        className={`fixed bottom-0 left-0 right-0 z-40 bg-[#09090b] border-t border-white/[0.08] px-2 pt-2 pb-6 flex items-center justify-around shadow-[0_-10px_30px_rgba(0,0,0,0.8)] transition-transform duration-300 ${shouldHide ? "translate-y-28" : "translate-y-0"
           }`}
       >
-        <Link to="/homefeed" className={getMobileLinkClass("/homefeed")}>
-          <Home size={19} strokeWidth={isActive("/homefeed") ? 2 : 1.5} />
+        <Link to="/homefeed" className={getMobileLinkClass("/homefeed")} aria-label="Home">
+          <Home size={28} strokeWidth={isActive("/homefeed") ? 2.75 : 2.25} />
         </Link>
 
-        <Link to={userUuid ? `/feed/${userUuid}` : "#"} className={getMobileLinkClass("/feed")}>
-          <BookOpen size={19} strokeWidth={isActive("/feed") ? 2 : 1.5} />
+        <Link to={userUuid ? `/feed/${userUuid}` : "#"} className={getMobileLinkClass("/feed")} aria-label="Journal">
+          <Compass size={28} strokeWidth={isActive("/feed") ? 3 : 2.25} />
         </Link>
 
-        {/* Floating Center Create Action Link */}
         <Link
           to="/createtask"
-          className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#d4af37] to-[#aa8c2c] text-black shadow-[0_0_15px_rgba(212,175,55,0.35)] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shrink-0 my-0.5"
+          className="relative group w-15 h-10 rounded-lg bg-white text-black flex items-center justify-center cursor-pointer shrink-0 active:scale-95 transition-all shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:bg-white/90"
+          aria-label="Create Dispatch"
         >
-          <Plus size={19} strokeWidth={2.5} />
+          <Plus size={24} strokeWidth={3.5} />
         </Link>
 
-        {/* 🔔 Notifications / Alerts Button */}
+
         <button
-          onClick={() => setIsAlertsOpen(true)}
-          className="relative flex items-center justify-center p-2 rounded-full text-white/40 hover:text-white/80 transition-all cursor-pointer"
-          aria-label="Alerts"
+          onClick={handleOpenInbox}
+          className={`relative w-10 h-10 rounded-full flex items-center justify-center transition-all cursor-pointer shrink-0 ${isInboxOpen ? "text-white font-bold scale-105 bg-white/10" : "text-white/60 hover:text-white hover:bg-white/5"
+            }`}
+          aria-label="Inbox"
         >
-          <Bell size={19} strokeWidth={1.5} className={hasUnreadAlerts ? "text-[#d4af37]" : ""} />
-          {hasUnreadAlerts && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500 ring-2 ring-[#121214] animate-pulse pointer-events-none" />
+          <MessageCircle size={28} strokeWidth={unreadMsgCount > 0 ? 3 : 2.25} className={unreadMsgCount > 0 ? "text-white" : ""} />
+          {unreadMsgCount > 0 && (
+            <span className="absolute top-0 right-0 bg-[#fe2c55] text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full shadow-md animate-pulse pointer-events-none">
+              {unreadMsgCount}
+            </span>
           )}
         </button>
 
-        {/* Profile / Journal Avatar Link */}
-        <Link to="/profile" className={getMobileLinkClass("/profile")}>
-          <div className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-[#d4af37]/60">
+        <Link to="/profile" className="w-10 h-10 flex items-center justify-center transition-all shrink-0 mr-[-18px]" aria-label="Profile">
+          <div className={`w-10 h-10 rounded-full overflow-hidden transition-all ${isActive("/profile") ? "ring-4 ring-white scale-105" : "ring-2 ring-white/60 opacity-80 hover:opacity-100"}`}>
             <img
               src={userAvatar || "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+24%2C+2026%2C+04_24_39+PM.jpg"}
               className="w-full h-full object-cover"
-              alt="Me Profile"
+              alt="Profile"
             />
           </div>
         </Link>
       </nav>
 
-      {/* 📱 Modular Mobile Messages Drawer Modal */}
       <MobileMessagesModal
         isOpen={isInboxOpen}
         onClose={() => setIsInboxOpen(false)}
         onSelectConversation={onSelectConversation}
       />
-
-      {/* 🔔 Modular Mobile Alerts Drawer Modal */}
-      <MobileAlertsModal
-        isOpen={isAlertsOpen}
-        onClose={() => setIsAlertsOpen(false)}
-      />
-
     </div>
   );
 };

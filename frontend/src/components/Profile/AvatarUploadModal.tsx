@@ -18,8 +18,6 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
 }) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  
-  // Cropping / Positioning states
   const [scale, setScale] = useState<number>(1);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -51,47 +49,34 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
     if (!isDragging) return;
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
-    setPosition({
-      x: clientX - dragStart.x,
-      y: clientY - dragStart.y,
-    });
+    setPosition({ x: clientX - dragStart.x, y: clientY - dragStart.y });
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
   };
 
-  // Generate cropped image file using an off-screen Canvas mapped to preview dimensions
   const handleConfirm = async () => {
     if (!selectedFile || !imageRef.current) return;
-
     const canvas = document.createElement("canvas");
-    const canvasSize = 400; // Final output resolution
+    const canvasSize = 400;
     canvas.width = canvasSize;
     canvas.height = canvasSize;
     const ctx = canvas.getContext("2d");
-
     if (!ctx) return;
 
     const img = imageRef.current;
-    
-    // Clear canvas
     ctx.clearRect(0, 0, canvasSize, canvasSize);
     ctx.save();
 
-    // Get preview container bounding box to calculate exact visual scaling ratios
     const previewContainer = imageRef.current.parentElement;
     const containerSize = previewContainer ? previewContainer.clientWidth : 180;
-
-    // Ratio between output resolution and UI preview box size
     const renderScale = canvasSize / containerSize;
 
-    // Translate to center of canvas, apply user's drag offset and zoom scale proportionally
     ctx.translate(canvasSize / 2, canvasSize / 2);
     ctx.scale(scale, scale);
     ctx.translate(position.x * renderScale, position.y * renderScale);
 
-    // Draw image centered based on its natural aspect ratio filling the container
     const naturalAspect = img.naturalWidth / img.naturalHeight;
     let drawWidth = canvasSize;
     let drawHeight = canvasSize;
@@ -102,14 +87,7 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
       drawHeight = canvasSize / naturalAspect;
     }
 
-    ctx.drawImage(
-      img,
-      -drawWidth / 2,
-      -drawHeight / 2,
-      drawWidth,
-      drawHeight
-    );
-
+    ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
     ctx.restore();
 
     canvas.toBlob(
@@ -136,27 +114,26 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md font-sans animate-in fade-in duration-200">
-      
-      <div className="relative w-full max-w-xs sm:max-w-sm bg-[#121008] border border-white/10 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-200">
-        
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="relative w-full max-w-sm bg-[#ffffff] rounded-[32px] p-6 sm:p-8 shadow-2xl flex flex-col items-center text-center">
+
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 p-2 text-white/50 hover:text-white rounded-full bg-white/5 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 text-[#161823] hover:text-[#fe2c55] transition-colors cursor-pointer"
         >
-          <X size={16} />
+          <X size={26} strokeWidth={2.5} />
         </button>
 
-        <h3 className="font-sans text-base sm:text-lg font-semibold text-white tracking-normal mb-1">
-          {selectedFile ? "Adjust Profile Photo" : "Update Profile Photo"}
+        <h3 className="font-black text-2xl sm:text-3xl text-[#161823] tracking-tight mb-2 mt-2">
+          {selectedFile ? "Position Avatar" : "Update Photo"}
         </h3>
-        <p className="text-gray-400 text-xs font-normal mb-5 max-w-[260px] leading-relaxed">
-          {selectedFile ? "Drag to reposition and use slider to zoom." : "Choose a new visual representation for your profile."}
+        <p className="text-gray-500 text-sm mb-7 max-w-[260px] leading-relaxed">
+          {selectedFile ? "Drag to reposition, pinch or slide to zoom." : "Choose a striking photo for your profile."}
         </p>
 
-        {/* Cropper Circle Preview Box */}
+        {/* Cropper Viewport — no border, just shadow */}
         <div 
-          className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-full overflow-hidden border-2 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.3)] mb-5 bg-black/60 cursor-grab active:cursor-grabbing select-none touch-none group mx-auto flex items-center justify-center"
+          className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full overflow-hidden shadow-lg mb-6 bg-gray-100 cursor-grab active:cursor-grabbing select-none touch-none group mx-auto flex items-center justify-center"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -168,7 +145,7 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           <img
             ref={imageRef}
             src={previewUrl || currentAvatarUrl}
-            alt="Avatar Preview Cropper"
+            alt="Preview"
             style={{
               transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
               transition: isDragging ? "none" : "transform 0.1s ease-out",
@@ -176,24 +153,21 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
             className="w-full h-full object-cover pointer-events-none absolute inset-0 m-auto"
           />
 
-          <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none"></div>
-
           {!selectedFile && (
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer text-white text-xs font-medium gap-1 z-10"
+              className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer text-white text-sm font-bold gap-2 z-10"
             >
-              <Upload size={18} className="text-[#d4af37]" />
-              <span>Select Image</span>
+              <Upload size={28} className="text-white" />
+              <span>Upload Image</span>
             </div>
           )}
         </div>
 
-        {/* Zoom & Reset Controls */}
         {selectedFile && (
-          <div className="w-full flex items-center justify-between px-2 mb-5 gap-3">
-            <div className="flex items-center gap-2 flex-1">
-              <ZoomIn size={14} className="text-white/40 shrink-0" />
+          <div className="w-full flex items-center justify-between px-1 mb-7 gap-4">
+            <div className="flex items-center gap-3 flex-1">
+              <ZoomIn size={20} className="text-[#161823] shrink-0" />
               <input
                 type="range"
                 min="1"
@@ -201,15 +175,15 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
                 step="0.05"
                 value={scale}
                 onChange={(e) => setScale(parseFloat(e.target.value))}
-                className="w-full accent-[#d4af37] cursor-pointer h-1 bg-white/20 rounded-lg"
+                className="w-full accent-[#fe2c55] cursor-pointer h-2 bg-gray-200 rounded-lg"
               />
             </div>
             <button
               onClick={() => { setScale(1); setPosition({ x: 0, y: 0 }); }}
-              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors text-xs flex items-center gap-1 cursor-pointer"
-              title="Reset position"
+              className="text-[#161823] hover:text-[#fe2c55] transition-colors cursor-pointer"
+              title="Reset"
             >
-              <RotateCcw size={13} />
+              <RotateCcw size={20} />
             </button>
           </div>
         )}
@@ -222,31 +196,22 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
           onChange={handleFileChange}
         />
 
-        <div className="flex items-center gap-2.5 w-full">
+        <div className="flex items-center gap-3 w-full">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex-1 py-2.5 rounded-xl border border-white/15 bg-white/[0.03] hover:bg-white/[0.08] text-xs font-medium text-white transition-all cursor-pointer"
+            className="flex-1 py-3.5 rounded-full bg-gray-100 hover:bg-gray-200 text-sm font-black uppercase tracking-wide text-[#161823] transition-all cursor-pointer"
           >
-            {selectedFile ? "Choose Another" : "Browse Gallery"}
+            {selectedFile ? "Change" : "Browse"}
           </button>
 
           {selectedFile && (
             <button
               onClick={handleConfirm}
               disabled={isPending}
-              className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#d4af37] to-[#aa8c2c] text-black font-semibold text-xs shadow-lg hover:opacity-95 transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-2 py-3.5 rounded-full bg-[#fe2c55] text-white font-black text-sm uppercase tracking-wide shadow-md hover:bg-[#e0244b] transition-all cursor-pointer disabled:opacity-50"
             >
-              {isPending ? (
-                <>
-                  <Loader2 size={14} className="animate-spin" />
-                  <span>Saving...</span>
-                </>
-              ) : (
-                <>
-                  <Check size={15} strokeWidth={2.5} />
-                  <span>Crop & Save</span>
-                </>
-              )}
+              {isPending ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} strokeWidth={3} />}
+              <span>{isPending ? "Saving..." : "Apply"}</span>
             </button>
           )}
         </div>
@@ -255,3 +220,5 @@ export const AvatarUploadModal: React.FC<AvatarUploadModalProps> = ({
     </div>
   );
 };
+
+export default AvatarUploadModal;

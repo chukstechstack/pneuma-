@@ -18,7 +18,6 @@ import { AuthenticatedGuard } from "@/components/AuthenticateGuard/Authenticated
 import { LoadingScreen } from "./pages/LandingPage/Component/LoadingScreen";
 
 const App = () => {
-  // Always true on initial mount or refresh so it repeats every time
   const [isLoading, setIsLoading] = useState(true);
 
   const handleLoadingComplete = () => {
@@ -26,16 +25,14 @@ const App = () => {
   };
 
   return (
-    <div className="bg-[#030305] min-h-screen text-white relative selection:bg-emerald-500 selection:text-black">
-      {/* Cinematic Loading Overlay */}
+    // 🌟 Changed from h-screen overflow-hidden to min-h-screen w-full so the page can scroll normally
+    <div className="min-h-screen w-full text-white relative selection:bg-emerald-500 selection:text-black bg-[#070709]">
       {isLoading && <LoadingScreen onComplete={handleLoadingComplete} />}
 
-      {/* Main App Content Router */}
-      <div className={`transition-opacity duration-500 ease-out ${isLoading ? "opacity-0 h-screen overflow-hidden" : "opacity-100"}`}>
+      <div className={`min-h-screen w-full transition-opacity duration-500 ease-out ${isLoading ? "opacity-0 pointer-events-none" : "opacity-100"}`}>
         <SocketWatcher />
         <Router>
           <Routes>
-            {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotpassword" element={<ForgotPassword />} />
@@ -43,7 +40,6 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/termspage" element={<TermsPage />} />
 
-            {/* Protected Routes */}
             <Route element={<AuthenticatedGuard><Outlet /></AuthenticatedGuard>}>
               <Route path="/homefeed" element={<HomeFeed />} />
               <Route path="/createtask" element={<CreateTask />} />

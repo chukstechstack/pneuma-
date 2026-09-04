@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { TaskHeader } from "./TaskHeader";
 import { TaskBody } from "./TaskBody/TaskBody";
 import { ActionContainer } from "./TaskAction/ActionContainer";
+import { TaskCommentsDrawer } from "./TaskCommentsDrawer";
 import { TaskItem } from "@shared/types";
 
 interface TaskProps {
@@ -10,7 +11,8 @@ interface TaskProps {
   isOwner: boolean;
   onDelete: () => void;
   onEdit: (uuid: string) => void;
-  handle_Like_Reply_Share_Interaction?: (uuid: string, action: string) => void;
+  isCommentsOpen: boolean;
+  onToggleComments: (isOpen: boolean) => void;
 }
 
 const fallbackAvatar =
@@ -22,23 +24,52 @@ const Task: React.FC<TaskProps> = ({
   isOwner,
   onDelete,
   onEdit,
+  isCommentsOpen,
+  onToggleComments,
 }) => {
   const {
     uuid,
     author_name,
     author_profile_uuid,
-    is_connected, // 👈 Updated from relation_status to match the backend query
+    is_connected,
     created_at,
     content,
     img,
     author_avatar_url
   } = task;
 
+  useEffect(() => {
+    const metaTheme = document.getElementById("theme-color-meta");
+    if (!metaTheme) return;
+    if (!img) {
+      metaTheme.setAttribute("content", "#070709");
+      return;
+    }
+    const imageElement = new Image();
+    imageElement.crossOrigin = "anonymous";
+    imageElement.src = img;
+    imageElement.onload = () => {
+      try {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context) return;
+        canvas.width = 1;
+        canvas.height = 1;
+        context.drawImage(imageElement, 0, 0, 1, 1);
+        const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+        const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+        metaTheme.setAttribute("content", hex);
+      } catch {
+        metaTheme.setAttribute("content", "#070709");
+      }
+    };
+  }, [img]);
+
   const taskHeaderInfo = {
     uuid,
     author_name,
     author_profile_uuid,
-    is_connected: typeof is_connected === 'boolean' ? is_connected : undefined, // 👈 Passed down to TaskHeader so it knows whether to show "Connected" or "Connect"
+    is_connected: typeof is_connected === 'boolean' ? is_connected : undefined,
     author_avatar_url: typeof author_avatar_url === 'string' ? author_avatar_url : null,
     created_at:
       created_at instanceof Date
@@ -47,22 +78,66 @@ const Task: React.FC<TaskProps> = ({
   };
 
   return (
-    <article className="bg-transparent sm:bg-[#0e0e10] sm:border sm:border-white/[0.04] transition-all duration-300 sm:rounded-3xl p-0 sm:p-7 mb-10 sm:shadow-xl overflow-hidden">
-      <div className="px-5 sm:px-0">
-        <TaskHeader
-          task={taskHeaderInfo}
-          isOwner={isOwner}
-          currentUserUuid={currentUserUuid || ""}
-          onEdit={onEdit}
-          deleteTask={onDelete}
-          fallbackUserAvatar={fallbackAvatar}
-        />
+    <>
+      <article className="w-full flex items-center justify-center bg-transparent relative overflow-visible">
 
-        <TaskBody content={content} img={img} />
+        {/* Card Container */}
+        <div className="relative w-full sm:max-w-lg lg:max-w-xl h-[78vh] sm:h-[82vh] lg:h-[85vh] overflow-visible rounded-none sm:rounded-2xl shadow-2xl bg-[#070709] flex flex-col justify-end border border-transparent sm:border-white/[0.08]">
+          
+          {/* Background Media Image wrapper */}
+          <div className="absolute inset-0 overflow-hidden rounded-none sm:rounded-2xl z-0 pointer-events-none">
+            {img ? (
+              <div className="absolute inset-0 flex items-center justify-center bg-[#070709]">
+                <img
+                  src={img}
+                  alt="Dispatch media"
+                  className="w-full h-full object-contain pointer-events-auto"
+                />
+              </div>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-white/30 text-xs italic bg-[#0e0e12]">
+                [Text Dispatch Card]
+              </div>
+            )}
+            {/* Smooth Bottom Gradient Fade */}
+            <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#070709] via-[#070709]/90 to-transparent backdrop-blur-[1px] pointer-events-none" />
+          </div>
 
-        <ActionContainer uuid={uuid} />
-      </div>
-    </article>
+          {/* Action Buttons (Likes, comments, etc.) safely on the bottom right */}
+          <div className="absolute right-3 sm:right-0 bottom-24 sm:bottom-15 z-30 pointer-events-auto">
+            <ActionContainer
+              uuid={uuid}
+              onOpenComments={() => onToggleComments(true)}
+            />
+          </div>
+
+          {/* Profile Header & Caption Content */}
+          <div className="relative z-20 px-4 pt-6 pb-4 sm:px-6 sm:pb-6 flex flex-col gap-2 pointer-events-auto mt-auto">
+            <TaskHeader
+              task={taskHeaderInfo}
+              isOwner={isOwner}
+              currentUserUuid={currentUserUuid || ""}
+              onEdit={onEdit}
+              deleteTask={onDelete}
+              fallbackUserAvatar={fallbackAvatar}
+            />
+
+            {content && (
+              <div className="pr-4">
+                <TaskBody content={content} img={null} />
+              </div>
+            )}
+          </div>
+
+        </div>
+      </article>
+
+      <TaskCommentsDrawer
+        uuid={uuid}
+        isOpen={isCommentsOpen}
+        onClose={() => onToggleComments(false)}
+      />
+    </>
   );
 };
 

@@ -3,6 +3,7 @@ import NavBar from "@/pages/NavBar/NavBar";
 import { useJournalData } from "@/pages/JournalFeed/useJournalData";
 import { JournalTask } from "@/pages/JournalFeed/Page.types";
 import { FullPageLoader } from "@/components/Loaders/FullPageLoader";
+import { ChevronLeft } from "lucide-react";
 
 // Import Modular Sections
 import { JournalHeader } from "./Feed/FeedHeader";
@@ -38,7 +39,17 @@ const JournalPage = (): React.ReactElement => {
       <NavBar />
       
       {/* Mobile-optimized spacing and padding */}
-      <div className="max-w-6xl mx-auto px-3.5 sm:px-6 pt-24 sm:pt-28 pb-16 sm:pb-20">
+      <div className="max-w-6xl mx-auto px-3.5 sm:px-6 pt-20 sm:pt-28 pb-16 sm:pb-20 relative">
+        
+        {/* 🌟 Top-left Back Button to Home */}
+        <button
+          onClick={() => navigate("/homefeed")}
+          className="absolute top-4 left-3.5 sm:left-6 z-20 w-10 h-10 rounded-full bg-[#121214] border border-white/10 flex items-center justify-center text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer shadow-md active:scale-95"
+          aria-label="Back to Home"
+        >
+          <ChevronLeft size={24} strokeWidth={2.5} />
+        </button>
+
         <main className="w-full flex flex-col gap-6">
           
           {/* 1. Header Banner Section */}

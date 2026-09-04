@@ -76,6 +76,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             value={url}
             className="w-full bg-transparent text-xs sm:text-sm text-gray-300 px-3 focus:outline-none font-sans truncate"
           />
+          
           <button
             onClick={handleCopy}
             className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-xs font-sans font-semibold tracking-wide transition-all cursor-pointer shrink-0 ${

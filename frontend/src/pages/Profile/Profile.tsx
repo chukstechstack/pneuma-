@@ -5,10 +5,10 @@ import { AvatarUploadModal } from "../../components/Profile/AvatarUploadModal";
 import { useUpdateAvatar } from "@/hooks/useUpdateAvatar";
 import { useProfileData } from "@pages/Profile/useProfileData";
 import NavBar from "@/pages/NavBar/NavBar";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft } from "lucide-react";
 import { ProfileHeader } from "../../components/Profile/ProfileHeader";
 import { ConnectionDrawer } from "@/components/Profile/ConnectionDrawer";
-import { SettingsDrawer } from "../../components/Profile/SettingsDrawer";
+import { SettingsDrawer } from "@/components/Profile/SettingsDrawer";
 
 const Profile = () => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
@@ -25,7 +25,6 @@ const Profile = () => {
     navigate,
   } = useProfileData();
 
-  // 📦 Extract profile info, journal tasks, ownership, and the real database connection status
   const profile = data?.profile;
   const tasks = data?.tasks || [];
   const isOwner = data?.isOwner ?? false;
@@ -51,20 +50,20 @@ const Profile = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#010102] text-white flex flex-col items-center justify-center p-6">
-        <Loader2 size={36} className="text-[#d4af37] animate-spin mb-4" />
-        <p className="text-gray-400 font-mono tracking-widest text-xs sm:text-sm text-center">Reflecting on profile journal...</p>
+      <div className="min-h-screen bg-white sm:bg-[#030305] text-[#161823] sm:text-white flex flex-col items-center justify-center p-6">
+        <Loader2 size={38} className="text-[#fe2c55] animate-spin mb-4" />
+        <p className="text-gray-500 sm:text-gray-400 font-mono tracking-widest text-xs uppercase">Loading Profile...</p>
       </div>
     );
   }
 
   if (isError || !typedProfile) {
     return (
-      <div className="min-h-screen bg-[#010102] text-white flex flex-col items-center justify-center p-6 text-center">
-        <p className="text-red-400 font-mono tracking-widest text-xs sm:text-sm mb-4">Error loading profile data.</p>
+      <div className="min-h-screen bg-white sm:bg-[#030305] text-[#161823] sm:text-white flex flex-col items-center justify-center p-6 text-center">
+        <p className="text-[#fe2c55] font-mono tracking-wider text-sm mb-4">Signal lost. Profile inaccessible.</p>
         <button
           onClick={() => navigate("/homefeed")}
-          className="border border-[#d4af37]/60 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37] hover:text-[#010102] transition-all rounded-xl cursor-pointer"
+          className="border border-gray-200 sm:border-white/10 px-6 py-3 text-xs font-bold uppercase tracking-[0.2em] text-[#161823] sm:text-white bg-gray-100 sm:bg-white/10 hover:bg-[#fe2c55] hover:text-white transition-all rounded-full cursor-pointer shadow-sm"
         >
           Return to Feed
         </button>
@@ -73,38 +72,45 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#010102] text-white font-sans selection:bg-[#d4af37]/30 selection:text-[#d4af37] overflow-x-hidden w-full max-w-[100vw]">
+    <div className="min-h-screen bg-white sm:bg-[#030305] text-[#161823] sm:text-white font-sans selection:bg-[#fe2c55]/20 selection:text-[#fe2c55] overflow-x-hidden w-full max-w-[100vw]">
       <NavBar />
 
-      <div className="w-full max-w-4xl mx-auto px-3 sm:px-6 pt-20 sm:pt-28 pb-20 space-y-6 sm:space-y-8 box-border">
+      {/* Responsive Container: white background on mobile, deep black on PC with increased top padding to clear fixed navbar */}
+      <div className="w-full max-w-3xl mx-auto px-4 sm:px-6 pt-6 sm:pt-28 pb-24 box-border relative">
 
-        {/* 🌟 Centralized Profile Header Component */}
-        <div className="w-full overflow-hidden">
-          <ProfileHeader
-            typedProfile={typedProfile}
-            isOwner={isOwner}
-            isConnected={isConnected}
-            profileAvatarUrl={profileAvatarUrl}
-            setIsAvatarModalOpen={setIsAvatarModalOpen}
-            setIsMessageOpen={setIsMessageOpen}
-            setIsDockOpen={setIsDockOpen}
-            setIsSettingsOpen={setIsSettingsOpen}
-          />
-        </div>
+        {/* Top-left Back Button (Adaptive positioning for mobile vs PC) */}
+        <button
+          onClick={() => navigate("/homefeed")}
+          className="absolute top-2 left-2 sm:top-24 sm:left-6 z-20 w-10 h-10 rounded-full bg-gray-100 sm:bg-[#121214] border border-gray-200 sm:border-white/10 flex items-center justify-center text-[#161823] sm:text-white/80 hover:bg-[#fe2c55] hover:text-white hover:border-transparent transition-all cursor-pointer shadow-sm active:scale-95"
+          aria-label="Back to Home"
+        >
+          <ChevronLeft size={24} strokeWidth={2.5} />
+        </button>
 
-        {/* Profile Journal Scrolls */}
-        <div className="w-full overflow-hidden">
+        {/* Profile Header */}
+        <ProfileHeader
+          typedProfile={typedProfile}
+          isOwner={isOwner}
+          isConnected={isConnected}
+          profileAvatarUrl={profileAvatarUrl}
+          setIsAvatarModalOpen={setIsAvatarModalOpen}
+          setIsMessageOpen={setIsMessageOpen}
+          setIsDockOpen={setIsDockOpen}
+          setIsSettingsOpen={setIsSettingsOpen}
+        />
+
+        {/* Content Grid */}
+        <div className="w-full pt-4">
           <ProfileJournal tasks={tasks} />
         </div>
 
-        {/* Connection Drawer */}
+        {/* Drawers & Modals */}
         <ConnectionDrawer
           isOpen={isDockOpen}
           onClose={() => setIsDockOpen(false)}
           targetProfileUuid={typedProfile.uuid}
         />
 
-        {/* Message Inbox Dock / Drawer */}
         <MessageInboxDock
           isOpen={isMessageOpen}
           onClose={() => setIsMessageOpen(false)}
@@ -113,7 +119,6 @@ const Profile = () => {
           targetAvatarUrl={profileAvatarUrl}
         />
 
-        {/* Avatar Preview & Confirmation Modal */}
         <AvatarUploadModal
           isOpen={isAvatarModalOpen}
           onClose={() => setIsAvatarModalOpen(false)}
@@ -122,7 +127,6 @@ const Profile = () => {
           isPending={isUpdatingAvatar}
         />
 
-        {/* Render Settings Drawer Modal */}
         <SettingsDrawer
           isOpen={isSettingsOpen}
           onClose={() => setIsSettingsOpen(false)}

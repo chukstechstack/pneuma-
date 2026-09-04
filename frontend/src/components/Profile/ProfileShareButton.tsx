@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Share2 } from "lucide-react";
+import { Share2, Check } from "lucide-react";
 import { ShareModal } from "@/components/Task/TaskAction/ShareModal";
 
 interface ProfileShareButtonProps {
@@ -20,19 +20,18 @@ export const ProfileShareButton: React.FC<ProfileShareButtonProps> = ({ profileU
 
   return (
     <>
-      <button 
+      <button
         onClick={() => setIsModalOpen(true)}
-        className={`inline-flex items-center justify-center gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all shadow-md cursor-pointer text-xs font-mono uppercase tracking-wider shrink-0 ${
-          copied 
-            ? "border-emerald-500 text-emerald-400 bg-emerald-500/10" 
-            : "border-white/15 bg-white/[0.03] hover:border-[#d4af37] text-gray-200 hover:text-[#d4af37]"
+        className={`inline-flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
+          copied ? "text-emerald-500" : "text-[#161823] hover:text-[#fe2c55]"
         }`}
         title="Share Profile"
       >
-        <Share2 size={14} className="sm:w-[15px] sm:h-[15px]" />
-        <span className="text-[10px] sm:text-xs">
-          {copied ? "Copied!" : "Share"}
-        </span>
+        {copied ? (
+          <Check size={26} strokeWidth={2.5} />
+        ) : (
+          <Share2 size={26} strokeWidth={2} />
+        )}
       </button>
 
       <ShareModal

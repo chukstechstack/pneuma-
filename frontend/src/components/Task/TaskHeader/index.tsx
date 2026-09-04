@@ -30,11 +30,11 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
   const { uuid, author_name, author_profile_uuid, is_connected = false, created_at, author_avatar_url } = task;
 
   return (
-    // Reduced spacing and forced a crisp height to mimic the Instagram post header
-    <div className="flex items-center justify-between gap-2 h-14 pb-3 mb-1 border-b border-white/[0.02] relative">
-      <div className="flex items-center gap-2.5">
-        {/* Instagram style avatar usually has tighter padding/margins */}
-        <div className="flex-shrink-0 scale-95 origin-left">
+    <div className="flex items-center justify-between gap-3 pt-1 pb-0.5 w-full relative">
+      <div className="flex items-center gap-3.5 flex-1 min-w-0 pr-8">
+        
+        {/* Creator Avatar directly rendered so it respects its true large size */}
+        <div className="flex-shrink-0 flex items-center">
           <TaskAuthorAvatar
             authorProfileUuid={author_profile_uuid}
             authorAvatarUrl={author_avatar_url}
@@ -42,19 +42,19 @@ export const TaskHeader: React.FC<TaskHeaderProps> = ({
           />
         </div>
         
-        {/* Metabar handles the bold username and subtle inline timestamp */}
-        <TaskAuthorMeta
-          authorProfileUuid={author_profile_uuid}
-          authorName={author_name}
-          currentUserUuid={currentUserUuid}
-          isConnected={is_connected}
-          createdAt={created_at}
-        />
+        {/* Author Metadata (Username, Timestamp) */}
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
+          <TaskAuthorMeta
+            authorProfileUuid={author_profile_uuid}
+            authorName={author_name}
+            createdAt={created_at}
+          />
+        </div>
       </div>
 
+      {/* Owner Actions Menu (Edit / Delete) - Positioned safely on the right */}
       {isOwner && (
-        // Adjusted padding to sit perfectly flush against the right edge of the card container
-        <div className="-mr-2 flex items-center justify-center text-white/80 hover:text-white transition-colors">
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center text-white/60 hover:text-white transition-all p-1.5 rounded-full bg-black/20 backdrop-blur-md hover:bg-white/10">
           <TaskActionsMenu
             taskUuid={uuid}
             onEdit={onEdit}

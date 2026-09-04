@@ -7,7 +7,12 @@ import { MobileNavBar } from "@components/NavBar/Mobile/MobileNavBar";
 import { DesktopNavBar } from "@/components/NavBar/Desktop/DesktopNavBar";
 import { ChatDock } from "@/pages/NavBar/ChatDock";
 
-const NavBar: React.FC = () => {
+// 🌟 1. Define the prop interface to accept forceHideNavBar
+interface NavBarProps {
+  forceHideNavBar?: boolean;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ forceHideNavBar = false }) => {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -17,7 +22,6 @@ const NavBar: React.FC = () => {
 
   const { userUuid } = useAuthStore();
 
-  // 👉 Matches the query key and endpoint structure used in your profile page
   const { data: profileData } = useQuery({
     queryKey: ["profileFeed", "me"],
     queryFn: async () => {
@@ -53,6 +57,7 @@ const NavBar: React.FC = () => {
     <>
       <MobileNavBar
         isVisible={isVisible}
+        forceHideNavBar={forceHideNavBar} 
         userUuid={userUuid ?? null}
         userAvatar={userAvatar}
         pathname={location.pathname}
@@ -64,7 +69,7 @@ const NavBar: React.FC = () => {
 
       <DesktopNavBar
         userUuid={userUuid ?? null}
-        userAvatar={userAvatar} // 👉 Live connected to the shared cache!
+        userAvatar={userAvatar}
         pathname={location.pathname}
         onOpenCreate={() => setIsCreateOpen(true)}
         onSelectConversation={(partnerUuid) => {

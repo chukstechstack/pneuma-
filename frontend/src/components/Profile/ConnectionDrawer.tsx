@@ -19,67 +19,62 @@ export const ConnectionDrawer: React.FC<ConnectionDrawerProps> = ({
   const { data: myConnections = [], isLoading, isError } = useConnections(targetProfileUuid);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="w-full max-w-lg bg-[#09090b] border border-white/[0.12] rounded-3xl p-6 sm:p-8 relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[#ffffff] rounded-[32px] p-6 sm:p-8 relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
         
-        {/* Header Block */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/[0.08] mb-6">
-          <div className="flex items-center gap-3">
-            <Users size={20} className="text-red-500" />
-            <div className="flex items-center gap-2">
-              <h3 className="font-serif text-xl font-bold uppercase tracking-wider text-white">
-                Connections
-              </h3>
-              {/* Connection Count Badge */}
-              <span className="px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-mono">
-                {myConnections.length}
-              </span>
-            </div>
+        {/* Header */}
+        <div className="flex items-center justify-between pb-5 mb-5 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <h3 className="font-black text-xl sm:text-2xl tracking-tight text-[#161823]">
+              Connections
+            </h3>
+            <span className="text-lg font-bold text-gray-400">
+              {myConnections.length}
+            </span>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 rounded-full border border-white/10 text-gray-400 hover:text-white hover:border-red-500 transition-all cursor-pointer"
+            className="text-[#161823] hover:text-[#fe2c55] transition-colors cursor-pointer"
           >
-            <X size={18} />
+            <X size={24} strokeWidth={2.5} />
           </button>
         </div>
 
-        {/* Scrolling List Frame */}
-        <div className="max-h-[60vh] overflow-y-auto space-y-3 pr-2">
+        {/* List */}
+        <div className="max-h-[55vh] overflow-y-auto space-y-1 pr-1">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-10">
-              <Loader2 size={24} className="text-red-500 animate-spin mb-2" />
-              <p className="text-gray-400 text-xs font-mono">Loading connections...</p>
+            <div className="flex flex-col items-center justify-center py-12">
+              <Loader2 size={28} className="text-[#fe2c55] animate-spin mb-2" />
+              <p className="text-gray-400 text-sm font-medium">Syncing network...</p>
             </div>
           ) : isError ? (
-            <p className="text-center py-10 text-red-400 text-sm font-mono">
+            <p className="text-center py-10 text-[#fe2c55] text-sm font-medium">
               Failed to load connections.
             </p>
           ) : myConnections.length === 0 ? (
-            <p className="text-center py-10 text-gray-400 text-sm font-mono">
-              No connections found in this inner circle yet.
+            <p className="text-center py-12 text-gray-400 text-sm font-medium">
+              No connections yet.
             </p>
           ) : (
             myConnections.map((connectedUser: any) => (
-              <div 
-                key={connectedUser.uuid} 
-                className="flex items-center justify-between p-3.5 rounded-2xl border border-white/[0.06] bg-white/[0.02] hover:border-red-500/40 transition-all"
+              <Link
+                key={connectedUser.uuid}
+                to={`/profile/${connectedUser.uuid}`}
+                onClick={onClose}
+                className="flex items-center gap-3.5 py-3 group w-full"
               >
-                <Link 
-                  to={`/profile/${connectedUser.uuid}`} 
-                  onClick={onClose} 
-                  className="flex items-center gap-3.5 group"
-                >
-                  <img
-                    src={connectedUser.avatar_url || "https://unsplash.com"}
-                    className="w-11 h-11 rounded-full object-cover border border-red-500/30 group-hover:border-red-500 transition-colors"
-                    alt={connectedUser.full_name}
-                  />
-                  <span className="text-sm font-semibold text-white group-hover:text-red-400 transition-colors">
+                <img
+                  src={connectedUser.avatar_url || "https://unsplash.com"}
+                  className="w-14 h-14 rounded-full object-cover shadow-sm shrink-0"
+                  alt={connectedUser.full_name}
+                />
+                <div className="min-w-0">
+                  <span className="text-base font-bold text-[#161823] group-hover:text-[#fe2c55] transition-colors block truncate">
                     {connectedUser.full_name}
                   </span>
-                </Link>
-              </div>
+                  <span className="text-sm text-gray-400 font-medium">Member</span>
+                </div>
+              </Link>
             ))
           )}
         </div>

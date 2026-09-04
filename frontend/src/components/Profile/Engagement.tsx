@@ -26,7 +26,6 @@ export const ProfileEngagement = ({
 
   const handleConnectClick = () => {
     if (isPending) return;
-    
     if (onToggleConnect) {
       onToggleConnect(targetProfileUuid);
     } else {
@@ -34,33 +33,32 @@ export const ProfileEngagement = ({
     }
   };
 
-  // If viewing your own profile, we don't need connect/message buttons in the footer
   if (isOwner) {
     return null; 
   }
 
   return (
-    <div className="flex items-center gap-2.5 w-full">
+    <div className="flex items-center gap-3 w-full pt-4">
       {/* Connect Button */}
       <button
         disabled={isPending}
         onClick={handleConnectClick}
-        className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-mono uppercase tracking-wider transition-all cursor-pointer shadow-sm disabled:opacity-50 ${
+        className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full border text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-sm disabled:opacity-50 ${
           isConnected
-            ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10 hover:border-red-500/40 hover:text-red-400 hover:bg-red-500/10" 
-            : "border-[#d4af37]/50 text-[#d4af37] bg-[#d4af37]/10 hover:bg-[#d4af37] hover:text-[#010102]" 
+            ? "border-emerald-500 text-emerald-600 bg-emerald-50 hover:border-[#fe2c55] hover:text-[#fe2c55]" 
+            : "border-transparent text-white bg-[#fe2c55] hover:bg-[#e0244b] shadow-md" 
         }`}
       >
         {isPending ? (
-          <Loader2 size={15} className="animate-spin" />
+          <Loader2 size={16} className="animate-spin" />
         ) : isConnected ? (
           <>
-            <UserCheck size={15} />
+            <UserCheck size={16} />
             <span>Connected</span>
           </>
         ) : (
           <>
-            <UserPlus size={15} />
+            <UserPlus size={16} />
             <span>Connect</span>
           </>
         )}
@@ -69,9 +67,9 @@ export const ProfileEngagement = ({
       {/* Message Button */}
       <button 
         onClick={onMessageClick} 
-        className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/[0.04] text-gray-200 hover:border-red-500 hover:text-red-400 text-xs font-mono uppercase tracking-wider transition-all cursor-pointer shadow-sm"
+        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-gray-200 bg-gray-50 text-[#161823] hover:border-[#fe2c55] hover:text-[#fe2c55] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer shadow-sm"
       >
-        <MessageSquare size={15} />
+        <MessageSquare size={16} />
         <span>Message</span>
       </button>
     </div>

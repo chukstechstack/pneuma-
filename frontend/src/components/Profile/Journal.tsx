@@ -29,44 +29,44 @@ const ProfileJournal: React.FC<ProfileJournalProps> = ({ tasks }) => {
         </div>
 
         {tasks.length === 0 ? (
-          // 🌟 Completely removed the box, background, and border—just clean text
           <div className="py-6 text-center">
             <p className="text-gray-500 text-xs sm:text-sm font-mono tracking-wider">
               No record
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {tasks.slice(0, 5).map((task) => {
+          // 🌟 TikTok-style 3-column grid, tight gap, taller aspect cards
+          <div className="grid grid-cols-3 gap-0.5 sm:gap-1">
+            {tasks.map((task) => {
               const { uuid, content, created_at, img } = task;
               return (
                 <div
                   key={uuid}
                   onClick={() => setSelectedTask(task)}
-                  className="group relative h-60 sm:h-72 rounded-2xl overflow-hidden border border-white/10 bg-[#09090b] cursor-pointer shadow-lg hover:border-[#d4af37] transition-all duration-300 transform hover:-translate-y-1"
+                  className="group relative aspect-[9/16] overflow-hidden bg-[#09090b] cursor-pointer transition-all duration-300"
                 >
                   {img ? (
                     <img
                       src={img}
                       alt="journal"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90"
                     />
                   ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#121008] to-[#010102] p-4 flex items-center justify-center text-center">
-                      <BookOpen size={24} className="text-[#d4af37]/40" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#121008] to-[#010102] p-2 flex items-center justify-center text-center">
+                      <BookOpen size={20} className="text-[#d4af37]/40" />
                     </div>
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-                  <div className="absolute inset-0 p-4 flex flex-col justify-between z-10">
+                  <div className="absolute inset-0 p-2 flex flex-col justify-between z-10">
                     <div className="flex justify-end">
-                      <span className="px-2 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-mono text-[#d4af37]">
+                      <span className="px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-mono text-[#d4af37]">
                         {formatDate(created_at)}
                       </span>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-gray-200 line-clamp-3 font-medium group-hover:text-white transition-colors">
+                    <p className="text-[11px] sm:text-xs text-gray-200 line-clamp-2 font-medium group-hover:text-white transition-colors">
                       {content}
                     </p>
                   </div>
@@ -76,7 +76,6 @@ const ProfileJournal: React.FC<ProfileJournalProps> = ({ tasks }) => {
           </div>
         )}
 
-        {/* Clean Extracted Full Screen Modal Component */}
         <ProfileJournalModal
           task={selectedTask}
           onClose={() => setSelectedTask(null)}

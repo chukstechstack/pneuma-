@@ -31,92 +31,84 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   setIsDockOpen,
   setIsSettingsOpen,
 }) => {
-  // Fetch connections count for the inline name badge
   const { data: myConnections = [] } = useConnections(typedProfile.uuid);
 
   return (
-    <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#09090b] via-[#121008] to-[#010102] border border-white/[0.08] relative overflow-hidden shadow-2xl flex flex-col gap-4 w-full box-border">
+    <div className="relative w-full flex flex-col items-center text-center gap-3 sm:gap-4 py-2 font-[system-ui,-apple-system,BlinkMacSystemFont,'Segoe_UI',Roboto,Helvetica,Arial,sans-serif]">
 
-      {/* Background Glow */}
-      <div className="absolute top-0 right-0 w-36 h-36 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#d4af37]/15 via-transparent to-transparent blur-[40px] pointer-events-none" />
-
-      {/* Top Row: Avatar on left, Action Controls (Share/Settings) on right */}
-      <div className="flex items-center justify-between relative z-10 w-full">
-
-        {/* Clickable Avatar Container */}
-        <div
-          className="relative shrink-0 group cursor-pointer"
-          onClick={() => isOwner && setIsAvatarModalOpen(true)}
-        >
-          <img
-            src={profileAvatarUrl}
-            alt={typedProfile.full_name || "Sanctuary Citizen"}
-            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover object-center border-2 border-[#d4af37]/50 shadow-[0_0_15px_rgba(212,175,55,0.2)] transition-transform group-hover:scale-[1.02]"
-          />
-
-          {isOwner && (
-            <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[#d4af37]">
-              <Camera size={18} />
-            </div>
-          )}
-
-          <div className="absolute bottom-0 right-0 p-1 bg-[#010102] border border-[#d4af37]/40 rounded-full text-[#d4af37]">
-            <Shield size={12} className="sm:w-[14px] sm:h-[14px]" />
-          </div>
-        </div>
-
-        {/* Action Controls (Settings / Share in top right corner) */}
-        <div className="flex items-center gap-2 shrink-0 self-start">
-          <ProfileShareButton profileUuid={typedProfile.uuid} />
-
-          {isOwner && (
-            <button
-              onClick={() => setIsSettingsOpen(true)}
-              className="p-2.5 rounded-xl bg-white/[0.04] border border-white/10 hover:border-[#d4af37]/50 text-gray-300 hover:text-[#d4af37] transition-all cursor-pointer shadow-md backdrop-blur-md"
-              title="Account Settings"
-            >
-              <Settings size={16} className="text-[#d4af37]" />
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Identity, Inline Connections Badge & Bio Stacked */}
-      <div className="space-y-1.5 relative z-10 w-full text-left">
-        <div className="flex flex-wrap items-center gap-2.5">
-          <h1 className="font-sans text-lg sm:text-xl font-bold tracking-tight text-white leading-snug break-words">
-            {typedProfile.full_name || "Sanctuary Citizen"}
-          </h1>
-
-          {/* Inline Connections / Inner Circle Count Badge */}
+      {/* Top-right floating controls */}
+      <div className="absolute top-0 right-0 flex items-center gap-3 z-10">
+        <ProfileShareButton profileUuid={typedProfile.uuid} />
+        {isOwner && (
           <button
-            onClick={() => setIsDockOpen(true)}
-            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-white/15 bg-white/[0.03] hover:border-red-500/50 text-gray-300 hover:text-red-400 transition-all cursor-pointer text-xs font-mono"
-            title="View Connections"
+            onClick={() => setIsSettingsOpen(true)}
+            className="text-[#121212] sm:text-white/80 hover:text-[#fe2c55] sm:hover:text-white transition-colors cursor-pointer"
+            title="Account Settings"
           >
-            <Users size={12} className="text-[#d4af37]" />
-            <span>{myConnections.length}</span>
+            <Settings size={26} strokeWidth={2} />
           </button>
-        </div>
-
-        <p className="text-gray-300 text-xs sm:text-sm font-sans leading-relaxed break-words">
-          {typedProfile.bio || "Building a legacy of faith, daily records, and spiritual growth."}
-        </p>
+        )}
       </div>
 
-      {/* Bottom Bar: Clean Action Buttons (Connect / Message) */}
-      <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between relative z-10 w-full">
-        <div className="w-full flex items-center gap-2">
-          <ProfileEngagement
-            isOwner={isOwner}
-            isConnected={isConnected}
-            targetProfileUuid={typedProfile.uuid}
-            targetFullName={typedProfile.full_name || "Sanctuary Citizen"}
-            targetAvatarUrl={profileAvatarUrl}
-            onMessageClick={() => setIsMessageOpen(true)}
-            onOpenInnerCircle={() => setIsDockOpen(true)}
-          />
+      {/* Avatar — slightly bigger, stronger shadow */}
+      <div
+        className="relative group cursor-pointer mt-2"
+        onClick={() => isOwner && setIsAvatarModalOpen(true)}
+      >
+        <img
+          src={profileAvatarUrl}
+          alt={typedProfile.full_name || "Sanctuary Citizen"}
+          className="w-32 h-32 sm:w-36 sm:h-36 rounded-full object-cover object-center shadow-lg transition-transform group-hover:scale-[1.02]"
+        />
+
+        {isOwner && (
+          <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+            <Camera size={22} className="text-white" />
+          </div>
+        )}
+
+        <div className="absolute bottom-1 right-1 p-1.5 bg-white rounded-full text-[#fe2c55] shadow-md">
+          <Shield size={14} />
         </div>
+      </div>
+
+      {/* Name — dark on mobile, white on PC */}
+      <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-[#121212] sm:text-white leading-[1.05] break-words px-4">
+        {typedProfile.full_name || "Sanctuary Citizen"}
+      </h1>
+
+      {/* Stats row — dark numbers/labels on mobile, white/light-gray on PC */}
+      <button
+        onClick={() => setIsDockOpen(true)}
+        className="flex items-center gap-6 cursor-pointer"
+        title="View Connections"
+      >
+        <div className="flex flex-col items-center">
+          <span className="text-3xl sm:text-4xl font-extrabold text-[#121212] sm:text-white leading-none tracking-tight">
+            {myConnections.length}
+          </span>
+          <span className="text-[11px] sm:text-xs text-gray-500 sm:text-gray-400 font-bold uppercase tracking-wider mt-1.5 flex items-center gap-1">
+            <Users size={12} /> Connections
+          </span>
+        </div>
+      </button>
+
+      {/* Bio — readable body weight */}
+      <p className="text-gray-600 sm:text-gray-300 text-base sm:text-lg leading-relaxed break-words max-w-md px-4 font-normal">
+        {typedProfile.bio || "Building a legacy of faith, daily records, and spiritual growth."}
+      </p>
+
+      {/* Action buttons */}
+      <div className="w-full max-w-xs pt-2">
+        <ProfileEngagement
+          isOwner={isOwner}
+          isConnected={isConnected}
+          targetProfileUuid={typedProfile.uuid}
+          targetFullName={typedProfile.full_name || "Sanctuary Citizen"}
+          targetAvatarUrl={profileAvatarUrl}
+          onMessageClick={() => setIsMessageOpen(true)}
+          onOpenInnerCircle={() => setIsDockOpen(true)}
+        />
       </div>
 
     </div>
