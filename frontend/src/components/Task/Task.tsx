@@ -79,8 +79,8 @@ const Task: React.FC<TaskProps> = ({
             <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#070709] via-[#070709]/95 to-transparent pointer-events-none" />
           </div>
 
-          {/* Action Buttons: Shifted flush to the right edge (right-2 sm:right-4) and moved down (bottom-6 sm:bottom-8) */}
-          <div className="absolute right-2 sm:right-4 bottom-16 sm:bottom-20 z-30 pointer-events-auto">
+          {/* Action Buttons: Moved further down */}
+          <div className="absolute right-2 sm:right-4 bottom-2 sm:bottom-2 z-30 pointer-events-auto">
             <ActionContainer
               uuid={uuid}
               onOpenComments={() => onToggleComments(true)}
