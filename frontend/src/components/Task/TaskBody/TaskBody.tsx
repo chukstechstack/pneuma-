@@ -14,8 +14,8 @@ export const TaskBody: React.FC<TaskBodyProps> = ({ content }) => {
   if (!safeContent) return null;
 
   return (
-    <div className="flex flex-col w-full font-sans bg-transparent">
-      <div className="text-white/95 text-base sm:text-lg font-normal leading-snug tracking-normal drop-shadow-[0_1px_4px_rgba(0,0,0,0.9)]">
+    <div className="flex flex-col w-full font-sans bg-transparent transform-gpu">
+      <div className="text-white/95 text-base sm:text-lg font-normal leading-snug tracking-normal">
         <p className={`m-0 ${!isExpanded ? "line-clamp-2" : ""}`}>
           {safeContent}
         </p>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/api/axios.js";
@@ -7,7 +7,6 @@ import { MobileNavBar } from "@components/NavBar/Mobile/MobileNavBar";
 import { DesktopNavBar } from "@/components/NavBar/Desktop/DesktopNavBar";
 import { ChatDock } from "@/pages/NavBar/ChatDock";
 
-// 🌟 1. Define the prop interface to accept forceHideNavBar
 interface NavBarProps {
   forceHideNavBar?: boolean;
 }
@@ -15,12 +14,14 @@ interface NavBarProps {
 const NavBar: React.FC<NavBarProps> = ({ forceHideNavBar = false }) => {
   const location = useLocation();
   const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-
   const [activeChatTargetUuid, setActiveChatTargetUuid] = useState<string | null>(null);
 
   const { userUuid } = useAuthStore();
+
+  // Use refs to track scroll positions without triggering React re-renders inside the listener
+  const lastScrollYRef = useRef(0);
+  const tickingRef = useRef(false);
 
   const { data: profileData } = useQuery({
     queryKey: ["profileFeed", "me"],
@@ -29,7 +30,7 @@ const NavBar: React.FC<NavBarProps> = ({ forceHideNavBar = false }) => {
       return res.data;
     },
     enabled: !!userUuid,
-    staleTime: 2 * 60 * 1000,
+    staleTime: 5 * 60 * 1000, // Extended stale time to prevent background thrashing
     refetchOnWindowFocus: false,
   });
 
@@ -38,20 +39,30 @@ const NavBar: React.FC<NavBarProps> = ({ forceHideNavBar = false }) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
+      const lastScrollY = lastScrollYRef.current;
       const scrollDifference = Math.abs(currentScrollY - lastScrollY);
 
-      if (currentScrollY < 20) {
-        setIsVisible(true);
-      } else if (scrollDifference > 8) {
-        setIsVisible(currentScrollY <= lastScrollY);
-      }
+      if (!tickingRef.current) {
+        window.requestAnimationFrame(() => {
+          if (currentScrollY < 20) {
+            setIsVisible(true);
+          } else if (scrollDifference > 8) {
+            const shouldBeVisible = currentScrollY <= lastScrollY;
+            // Only update state if the visibility status actually changes to prevent layout thrashing
+            setIsVisible((prev) => (prev !== shouldBeVisible ? shouldBeVisible : prev));
+          }
 
-      setLastScrollY(currentScrollY);
+          lastScrollYRef.current = currentScrollY;
+          tickingRef.current = false;
+        });
+
+        tickingRef.current = true;
+      }
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  }, []);
 
   return (
     <>

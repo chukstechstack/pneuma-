@@ -28,7 +28,7 @@ const HomeFeed: React.FC = () => {
   if (isLoading && tasks.length === 0) {
     return (
       <div className="min-h-screen bg-[#070709] flex items-center justify-center px-4">
-        <div className="text-white animate-pulse font-mono text-xs tracking-[0.25em] text-center font-bold">
+        <div className="text-white font-mono text-xs tracking-[0.25em] text-center font-bold">
           ENTERING PNEUMA...
         </div>
       </div>
@@ -36,31 +36,24 @@ const HomeFeed: React.FC = () => {
   }
 
   return (
-    // 🌟 Removed strict viewport trapping classes so the browser can scroll naturally
-    <div className="w-full min-h-screen text-white font-sans selection:bg-white/25 relative bg-[#070709]">
-      
-      {/* Subtle background glow for desktop */}
-      <div className="absolute inset-0 pointer-events-none hidden sm:block overflow-hidden z-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[rgba(120,119,198,0.08)] blur-[120px] rounded-full" />
-      </div>
-
+    <div className="w-full h-screen sm:min-h-screen text-white font-sans bg-[#070709] overflow-hidden sm:overflow-y-auto">
       <NavBarTyped
         currentUserUuid={userUuid}
         forceHideNavBar={!!activeCommentTaskUuid}
       />
 
       {/* New Posts Banner */}
-      <div className="sticky top-16 sm:top-20 z-40 flex justify-center px-4 pointer-events-none mb-6 pt-4">
+      <div className="fixed sm:sticky top-16 sm:top-20 z-40 flex justify-center w-full px-4 pointer-events-none pt-4">
         <div className="pointer-events-auto w-full max-w-lg flex justify-center">
           <NewPostsBanner />
         </div>
       </div>
 
-      {/* Feed Container - Natural document flow layout */}
-      <main className="relative z-10 max-w-lg sm:max-w-xl mx-auto px-0 sm:px-4 pb-32 flex flex-col items-center gap-8">
+      {/* Feed Container - TikTok-style snap scroll on mobile, natural document flow on desktop */}
+      <main className="h-full sm:h-auto w-full overflow-y-scroll sm:overflow-visible snap-y sm:snap-none snap-mandatory scrollbar-none max-w-lg sm:max-w-xl mx-auto px-0 sm:px-4 pb-32 flex flex-col items-center gap-0 sm:gap-8 pt-16 sm:pt-4">
         {tasks.length === 0 ? (
-          <div className="w-full flex items-center justify-center px-4 py-20">
-            <div className="text-center py-12 px-6 rounded-2xl border border-white/[0.08] bg-[#0f0f12]/85 backdrop-blur-xl max-w-md shadow-2xl">
+          <div className="w-full h-full flex items-center justify-center px-4 py-20 snap-center">
+            <div className="text-center py-12 px-6 rounded-2xl border border-white/10 bg-[#0f0f12] max-w-md">
               <p className="text-gray-400 text-sm leading-relaxed font-medium">
                 Your feed is currently quiet. Follow global dispatches or share what's happening around you.
               </p>
@@ -72,7 +65,7 @@ const HomeFeed: React.FC = () => {
             return (
               <div
                 key={taskUuid}
-                className="w-full flex flex-col items-center"
+                className="w-full h-full sm:h-auto snap-start flex items-center justify-center transform-gpu shrink-0"
               >
                 <Task
                   task={task}
@@ -91,10 +84,9 @@ const HomeFeed: React.FC = () => {
         )}
 
         {/* Infinite Scroll Trigger */}
-        <div ref={ref} className="h-20 w-full flex items-center justify-center bg-transparent">
+        <div ref={ref} className="h-32 sm:h-20 w-full flex items-center justify-center bg-transparent snap-center shrink-0">
           {isFetchingNextPage && (
-            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white text-xs font-bold tracking-widest animate-pulse shadow-2xl backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+            <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/10 border border-white/20 text-white text-xs font-bold tracking-widest">
               Loading dispatches...
             </div>
           )}

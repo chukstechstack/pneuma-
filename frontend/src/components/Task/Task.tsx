@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { TaskHeader } from "./TaskHeader";
 import { TaskBody } from "./TaskBody/TaskBody";
 import { ActionContainer } from "./TaskAction/ActionContainer";
@@ -38,33 +38,6 @@ const Task: React.FC<TaskProps> = ({
     author_avatar_url
   } = task;
 
-  useEffect(() => {
-    const metaTheme = document.getElementById("theme-color-meta");
-    if (!metaTheme) return;
-    if (!img) {
-      metaTheme.setAttribute("content", "#070709");
-      return;
-    }
-    const imageElement = new Image();
-    imageElement.crossOrigin = "anonymous";
-    imageElement.src = img;
-    imageElement.onload = () => {
-      try {
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        if (!context) return;
-        canvas.width = 1;
-        canvas.height = 1;
-        context.drawImage(imageElement, 0, 0, 1, 1);
-        const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
-        const hex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-        metaTheme.setAttribute("content", hex);
-      } catch {
-        metaTheme.setAttribute("content", "#070709");
-      }
-    };
-  }, [img]);
-
   const taskHeaderInfo = {
     uuid,
     author_name,
@@ -81,8 +54,8 @@ const Task: React.FC<TaskProps> = ({
     <>
       <article className="w-full flex items-center justify-center bg-transparent relative overflow-visible">
 
-        {/* Card Container */}
-        <div className="relative w-full sm:max-w-lg lg:max-w-xl h-[78vh] sm:h-[82vh] lg:h-[85vh] overflow-visible rounded-none sm:rounded-2xl shadow-2xl bg-[#070709] flex flex-col justify-end border border-transparent sm:border-white/[0.08]">
+        {/* Card Container with hardware-acceleration hint */}
+        <div className="relative w-full sm:max-w-lg lg:max-w-xl h-[78vh] sm:h-[82vh] lg:h-[85vh] overflow-visible rounded-none sm:rounded-2xl shadow-2xl bg-[#070709] flex flex-col justify-end border border-transparent sm:border-white/[0.08] transform-gpu">
           
           {/* Background Media Image wrapper */}
           <div className="absolute inset-0 overflow-hidden rounded-none sm:rounded-2xl z-0 pointer-events-none">
@@ -91,6 +64,8 @@ const Task: React.FC<TaskProps> = ({
                 <img
                   src={img}
                   alt="Dispatch media"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-contain pointer-events-auto"
                 />
               </div>
@@ -99,12 +74,13 @@ const Task: React.FC<TaskProps> = ({
                 [Text Dispatch Card]
               </div>
             )}
+            
             {/* Smooth Bottom Gradient Fade */}
-            <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#070709] via-[#070709]/90 to-transparent backdrop-blur-[1px] pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#070709] via-[#070709]/95 to-transparent pointer-events-none" />
           </div>
 
-          {/* Action Buttons (Likes, comments, etc.) safely on the bottom right */}
-          <div className="absolute right-3 sm:right-0 bottom-24 sm:bottom-15 z-30 pointer-events-auto">
+          {/* Action Buttons: Shifted flush to the right edge (right-2 sm:right-4) and moved down (bottom-6 sm:bottom-8) */}
+          <div className="absolute right-2 sm:right-4 bottom-16 sm:bottom-20 z-30 pointer-events-auto">
             <ActionContainer
               uuid={uuid}
               onOpenComments={() => onToggleComments(true)}
@@ -112,7 +88,7 @@ const Task: React.FC<TaskProps> = ({
           </div>
 
           {/* Profile Header & Caption Content */}
-          <div className="relative z-20 px-4 pt-6 pb-4 sm:px-6 sm:pb-6 flex flex-col gap-2 pointer-events-auto mt-auto">
+          <div className="relative z-20 px-4 pt-6 pb-4 sm:px-6 sm:pb-6 flex flex-col gap-2 pointer-events-auto mt-auto pr-16 sm:pr-20">
             <TaskHeader
               task={taskHeaderInfo}
               isOwner={isOwner}
@@ -123,7 +99,7 @@ const Task: React.FC<TaskProps> = ({
             />
 
             {content && (
-              <div className="pr-4">
+              <div className="pr-2">
                 <TaskBody content={content} img={null} />
               </div>
             )}
