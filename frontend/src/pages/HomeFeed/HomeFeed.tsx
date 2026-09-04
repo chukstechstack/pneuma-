@@ -27,7 +27,7 @@ const HomeFeed: React.FC = () => {
 
   if (isLoading && tasks.length === 0) {
     return (
-      <div className="min-h-screen bg-[#070709] flex items-center justify-center px-4">
+      <div className="min-h-[100dvh] bg-[#070709] flex items-center justify-center px-4">
         <div className="text-white font-mono text-xs tracking-[0.25em] text-center font-bold">
           ENTERING PNEUMA...
         </div>
@@ -36,7 +36,7 @@ const HomeFeed: React.FC = () => {
   }
 
   return (
-    <div className="w-full h-screen sm:min-h-screen text-white font-sans bg-[#070709] overflow-hidden sm:overflow-y-auto">
+    <div className="w-full h-[100dvh] sm:min-h-screen text-white font-sans bg-[#070709] overflow-hidden sm:overflow-y-auto relative">
       <NavBarTyped
         currentUserUuid={userUuid}
         forceHideNavBar={!!activeCommentTaskUuid}
@@ -49,8 +49,8 @@ const HomeFeed: React.FC = () => {
         </div>
       </div>
 
-      {/* Feed Container - TikTok-style snap scroll on mobile, natural document flow on desktop */}
-      <main className="h-full sm:h-auto w-full overflow-y-scroll sm:overflow-visible snap-y sm:snap-none snap-mandatory scrollbar-none max-w-lg sm:max-w-xl mx-auto px-0 sm:px-4 pb-32 flex flex-col items-center gap-0 sm:gap-8 pt-16 sm:pt-4">
+      {/* Feed Container - Exact viewport matching snap scroll */}
+      <main className="h-[100dvh] sm:h-auto w-full overflow-y-scroll sm:overflow-visible snap-y sm:snap-none snap-mandatory scrollbar-none max-w-lg sm:max-w-xl mx-auto px-0 sm:px-4 pb-32 flex flex-col items-center gap-0 sm:gap-8 pt-16 sm:pt-4">
         {tasks.length === 0 ? (
           <div className="w-full h-full flex items-center justify-center px-4 py-20 snap-center">
             <div className="text-center py-12 px-6 rounded-2xl border border-white/10 bg-[#0f0f12] max-w-md">
@@ -65,7 +65,7 @@ const HomeFeed: React.FC = () => {
             return (
               <div
                 key={taskUuid}
-                className="w-full h-full sm:h-auto snap-start flex items-center justify-center transform-gpu shrink-0"
+                className="w-full h-[100dvh] sm:h-auto snap-start flex items-center justify-center transform-gpu shrink-0"
               >
                 <Task
                   task={task}

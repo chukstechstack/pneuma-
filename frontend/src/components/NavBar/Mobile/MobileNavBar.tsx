@@ -123,24 +123,25 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
 
       {/* BOTTOM DOCK */}
       <nav
-        className={`fixed bottom-0 left-0 right-0 z-40 bg-[#09090b] border-t border-white/10 px-2 pt-2 pb-6 flex items-center justify-around transform-gpu transition-transform duration-300 ${
+        className={`fixed bottom-0 left-0 right-0 z-40 bg-[#09090b] border-t border-white/10 px-4 pt-2 pb-5 flex items-center justify-around transform-gpu transition-transform duration-300 ${
           shouldHide ? "translate-y-28" : "translate-y-0"
         }`}
       >
         <Link to="/homefeed" className={getMobileLinkClass("/homefeed")} aria-label="Home">
-          <Home size={28} strokeWidth={isActive("/homefeed") ? 2.75 : 2.25} />
+          <Home size={26} strokeWidth={isActive("/homefeed") ? 2.75 : 2.25} />
         </Link>
 
         <Link to={userUuid ? `/feed/${userUuid}` : "#"} className={getMobileLinkClass("/feed")} aria-label="Journal">
-          <Compass size={28} strokeWidth={isActive("/feed") ? 3 : 2.25} />
+          <Compass size={26} strokeWidth={isActive("/feed") ? 3 : 2.25} />
         </Link>
 
+        {/* TikTok-style Center Create Button */}
         <Link
           to="/createtask"
-          className="relative group w-15 h-10 rounded-lg bg-white text-black flex items-center justify-center cursor-pointer shrink-0 active:scale-95 transition-colors shadow-md hover:bg-white/90"
+          className="relative w-11 h-8 rounded-xl bg-white text-black flex items-center justify-center cursor-pointer shrink-0 active:scale-95 transition-all shadow-[0_0_12px_rgba(255,255,255,0.25)] hover:bg-white/90"
           aria-label="Create Dispatch"
         >
-          <Plus size={24} strokeWidth={3.5} />
+          <Plus size={22} strokeWidth={3.5} />
         </Link>
 
         <button
@@ -150,7 +151,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
           }`}
           aria-label="Inbox"
         >
-          <MessageCircle size={28} strokeWidth={unreadMsgCount > 0 ? 3 : 2.25} className={unreadMsgCount > 0 ? "text-white" : ""} />
+          <MessageCircle size={26} strokeWidth={unreadMsgCount > 0 ? 3 : 2.25} className={unreadMsgCount > 0 ? "text-white" : ""} />
           {unreadMsgCount > 0 && (
             <span className="absolute top-0 right-0 bg-[#fe2c55] text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full pointer-events-none">
               {unreadMsgCount}
@@ -158,8 +159,8 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
           )}
         </button>
 
-        <Link to="/profile" className="w-10 h-10 flex items-center justify-center transition-colors shrink-0 mr-[-18px]" aria-label="Profile">
-          <div className={`w-10 h-10 rounded-full overflow-hidden transition-all ${isActive("/profile") ? "ring-4 ring-white" : "ring-2 ring-white/60 opacity-80 hover:opacity-100"}`}>
+        <Link to="/profile" className="w-10 h-10 flex items-center justify-center transition-colors shrink-0" aria-label="Profile">
+          <div className={`w-9 h-9 rounded-full overflow-hidden transition-all ${isActive("/profile") ? "ring-2 ring-white" : "ring-1 ring-white/40 opacity-80 hover:opacity-100"}`}>
             <img
               src={userAvatar || "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+24%2C+2026%2C+04_24_39+PM.jpg"}
               className="w-full h-full object-cover"
