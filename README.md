@@ -12,7 +12,7 @@
 ![AWS CloudFront](https://img.shields.io/badge/AWS_CloudFront-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
 🌐 **Live Demo:** [View Live Application](https://pneuma-frontend-oijl.onrender.com)  
-⚠️ **Project Status:** Active Production
+
 
 ---
 
