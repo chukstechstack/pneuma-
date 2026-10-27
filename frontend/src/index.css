@@ -17,19 +17,11 @@
   animation-play-state: paused;
 }
 
-/* Global mobile performance & scroll smoothing */
+/* Global page defaults */
 html, body {
   background-color: #030305;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Stops rubber-band jitter on mobile touch screens */
-  overscroll-behavior-y: none; 
-}
-
-/* Force sections to render on the phone's hardware GPU instead of the CPU */
-section {
-  transform: translateZ(0);
-  backface-visibility: hidden;
 }
 
 /* Fix Chrome/Safari autofill white background flash */

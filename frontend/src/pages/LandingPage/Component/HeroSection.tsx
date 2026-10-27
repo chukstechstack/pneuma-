@@ -32,7 +32,7 @@ export const HeroSection: React.FC = () => {
   return (
     <section
       id="vanguard"
-      className="relative w-full h-[100dvh] overflow-hidden flex flex-col justify-end bg-zinc-900 select-none"
+      className="relative w-full h-[100svh] overflow-hidden flex flex-col justify-end bg-zinc-900 select-none"
     >
       {/* Single Image Render (Lightweight source swapping with zero lag) */}
       <div className="absolute inset-0 z-0">

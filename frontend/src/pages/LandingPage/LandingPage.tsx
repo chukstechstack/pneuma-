@@ -13,7 +13,7 @@ export const LandingPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
-    <div className="bg-[#030305] text-[#F4F4F5] font-mono selection:bg-rose-500/30 selection:text-white antialiased min-h-screen relative transform-gpu">
+    <div className="bg-[#030305] text-[#F4F4F5] font-mono selection:bg-rose-500/30 selection:text-white antialiased min-h-screen relative">
       {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
 
       {!isLoading && <Navigation />}
@@ -21,7 +21,7 @@ export const LandingPage: React.FC = () => {
       <HeroSection />
       <ChapterTwoSection />
 
-      <div className="relative z-40 bg-[#030305] rounded-t-[3rem] border-t border-white/10 transform-gpu will-change-transform">
+      <div className="relative z-40 bg-[#030305] rounded-t-[3rem] border-t border-white/10">
         <OutpostsSection />
         <WhoWeAre />
         <ProblemSection />
