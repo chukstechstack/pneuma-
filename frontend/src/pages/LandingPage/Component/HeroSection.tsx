@@ -77,11 +77,9 @@ export const HeroSection: React.FC = () => {
           {/* Tactical 3-Dot Switcher Bar with Clear Action Text */}
           <div className="flex items-center justify-between bg-black/90 px-5 py-3.5 rounded-xl border border-white/15 w-full">
             <div className="flex flex-col">
-              <span className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">
-                 DISPATCH_{currentStory.code}
-              </span>
+       
               <span className="text-[9px] font-mono text-emerald-400 tracking-wider uppercase animate-pulse">
-                [CLICK LED TO SWITCH]
+                CLICK LED TO SWITCH
               </span>
             </div>
 

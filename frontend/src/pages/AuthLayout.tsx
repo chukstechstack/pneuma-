@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { ShieldAlert, ArrowLeft } from "lucide-react";
 import doveLogoUrl from "@assets/pneuma.png";
+import authenticationImageUrl from "../assets/Auth/Authentication Image Aug 24, 2026, 06_04_42 PM.jpg";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -10,18 +11,16 @@ interface AuthLayoutProps {
 }
 
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
-  const earthAwsUrl = "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/Auth+Image/Authentication+Image+Aug+24%2C+2026%2C+06_04_42+PM.jpg";
-
   return (
     <div className="min-h-screen bg-[#030305] text-white font-sans selection:bg-rose-500/35 selection:text-rose-400 flex flex-col lg:flex-row overflow-x-hidden">
       
-      {/* LEFT PANEL: Cinematic AWS S3 Earth Feed & Seamless Blending */}
+      {/* LEFT PANEL: Cinematic Earth Feed & Seamless Blending */}
       <div className="lg:w-[50%] relative bg-[#010103] hidden lg:flex flex-col justify-between p-12 lg:p-16 overflow-hidden transform-gpu">
         
         {/* Absolute Background Earth Image with Left Focal Shift & Right Blend */}
         <div className="absolute inset-0 z-0 bg-[#010103]">
           <img
-            src={earthAwsUrl}
+            src={authenticationImageUrl}
             alt="Orbital Earth Recon"
             loading="eager"
             decoding="async"

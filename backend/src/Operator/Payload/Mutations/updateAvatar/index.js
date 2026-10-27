@@ -1,7 +1,8 @@
 import pool from "@Terminal/Supabase/supabaseConfig.js";
-import { processAndUploadAvatar, deleteAvatarFromS3 } from "./ImageService.ts.js";
+import { processAndUploadAvatar } from "./ImageService.ts.js";
 import { executeAvatarDatabaseTransactions } from "./Queries.js";
 import { invalidateAvatarCache } from "./Cache.js";
+import { deleteStoredImage } from "@Terminal/Supabase/imageStorage.js";
 export const updateAvatar = async (req, res, next) => {
     const user_uuid = req.user?.uuid;
     const user_id = req.user?.id;
@@ -39,7 +40,12 @@ export const updateAvatar = async (req, res, next) => {
             // Quietly swallow if client already broken
         }
         if (uploadedFileName) {
-            await deleteAvatarFromS3(uploadedFileName);
+            try {
+                await deleteStoredImage(uploadedFileName);
+            }
+            catch (cleanupError) {
+                console.error("Failed to clean up uploaded avatar after update failure:", cleanupError);
+            }
         }
         next(err);
     }

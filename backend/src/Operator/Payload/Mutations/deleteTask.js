@@ -1,7 +1,6 @@
-import s3 from "@Terminal/Aws/AwsS3ClientConfig.js";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import redisClient from "@Terminal/Redis/redisCreateClient.js";
 import pool from "@Terminal/Supabase/supabaseConfig.js";
+import { deleteStoredImage } from "@Terminal/Supabase/imageStorage.js";
 import { findTaskImageForCleanup, executeTaskDeletion } from "@Workshop/Payload/Mutations/deleteTaskService.js";
 export const deleteTask = async (req, res, next) => {
     const { uuid } = req.params;
@@ -27,22 +26,10 @@ export const deleteTask = async (req, res, next) => {
         const imgUrl = taskRecord.img;
         if (typeof imgUrl === "string" && imgUrl) {
             try {
-                const parsedUrl = new URL(imgUrl);
-                const filePath = parsedUrl.pathname.substring(1);
-                if (filePath) {
-                    s3.send(new DeleteObjectCommand({
-                        Bucket: process.env.AWS_BUCKET_NAME,
-                        Key: filePath
-                    })).then(() => console.log(`AWS S3 cleanup success: ${filePath}`))
-                        .catch((err) => {
-                        const errMsg = err instanceof Error ? err.message : String(err);
-                        console.error(`⚠️ S3 background cleanup failed for ${filePath}:`, errMsg);
-                    });
-                }
+                await deleteStoredImage(imgUrl);
             }
-            catch (urlError) {
-                const urlErrMsg = urlError instanceof Error ? urlError.message : String(urlError);
-                console.error("⚠️ Malformed image URL found during cleanup phase:", urlErrMsg);
+            catch (cleanupError) {
+                console.error("Failed to clean up deleted task image from Supabase Storage:", cleanupError);
             }
         }
         try {

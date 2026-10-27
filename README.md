@@ -9,7 +9,6 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![AWS CloudFront](https://img.shields.io/badge/AWS_CloudFront-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 
 🌐 **Live Demo:** [View Live Application](https://pneuma-frontend-oijl.onrender.com)  
 ⚠️ **Project Status:** Active Production
@@ -29,8 +28,8 @@ Designed and engineered with meticulous attention to performance, asset optimiza
 - **Frontend Interface:** Built with **React** and **TypeScript**, styled via **Tailwind CSS** for a fluid, editorial, high-impact user experience across all viewports.
 - **Asset Optimization & Preloading:** Leverages custom image-caching pipelines and programmatic preloading (`preloadPriorityImages`) to eliminate layout shifts for critical above-the-fold relief assets.
 - **Relational Data Modeling:** Architected using **PostgreSQL** and **Supabase** to manage secure, complex data structures across intervention sectors.
+- **Image Storage:** Converts uploaded task and profile images to WebP with **Sharp** and stores them in **Supabase Storage**. Configure `SUPABASE_STORAGE_BUCKET` on the backend to the name of a public Supabase Storage bucket.
 - **Performance & Caching:** Integrated **Redis** for high-performance server-side caching, dramatically reducing database load and optimizing API throughput.
-- **Global Asset Distribution:** Utilizes **AWS CloudFront** CDN and optimized media pipelines to serve high-resolution crisis documentation globally with minimal latency.
 
 ---
 

@@ -46,6 +46,8 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
 app.use("/auth", authRoute);
 app.use("/task", taskRoute);
 app.use((err, req, res, next) => {

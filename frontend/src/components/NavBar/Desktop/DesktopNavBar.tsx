@@ -6,6 +6,7 @@ import { DesktopMessagesDropdown } from "./MessagesDropdown";
 import { DesktopAlertsDropdown } from "./DesktopAlertsDropdown";
 import { useAlerts } from "@/hooks/useAlerts";
 import socket from "@/api/socketApi";
+import profilePlaceholderUrl from "../../../assets/Profile/Profile_Image.jpg";
 
 interface DesktopNavBarProps {
   userUuid: string | null;
@@ -153,7 +154,7 @@ export const DesktopNavBar: React.FC<DesktopNavBarProps> = ({
           <Link to="/profile" className={getLinkClasses("/profile")}>
             <div className="w-5 h-5 rounded-full overflow-hidden ring-1 ring-[#d4af37]/50">
               <img
-                src={userAvatar || "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+24%2C+2026%2C+04_24_39+PM.jpg"}
+                src={userAvatar || profilePlaceholderUrl}
                 className="w-full h-full object-cover"
                 alt="Profile"
               />

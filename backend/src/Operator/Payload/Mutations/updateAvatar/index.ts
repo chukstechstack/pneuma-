@@ -3,9 +3,10 @@ import type { Response, NextFunction } from "express";
 import type { PoolClient } from "pg";
 
 import type { AuthenticatedRequest, UpdateAvatarResponseData } from "./types.js";
-import { processAndUploadAvatar, deleteAvatarFromS3 } from "./ImageService.ts.js";
+import { processAndUploadAvatar } from "./ImageService.ts.js";
 import { executeAvatarDatabaseTransactions } from "./Queries.js";
 import { invalidateAvatarCache } from "./Cache.js";
+import { deleteStoredImage } from "@Terminal/Supabase/imageStorage.js";
 
 export const updateAvatar = async (
   req: AuthenticatedRequest,
@@ -62,7 +63,11 @@ export const updateAvatar = async (
     }
 
     if (uploadedFileName) {
-      await deleteAvatarFromS3(uploadedFileName);
+      try {
+        await deleteStoredImage(uploadedFileName);
+      } catch (cleanupError) {
+        console.error("Failed to clean up uploaded avatar after update failure:", cleanupError);
+      }
     }
 
     next(err);

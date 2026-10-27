@@ -7,7 +7,7 @@ import type { Server } from "socket.io";
 import type { AuthenticatedRequest, PatchTaskResponseData } from "./types.js";
 import { broadcastTaskUpdate } from "./patchTaskSocket.js";
 import { invalidatePatchCaches } from "./patchTaskCache.js";
-import { uploadAndOptimizeImage, deleteImageFromS3 } from "./imageService.js"; // 👈 Adjust path
+import { uploadAndOptimizeImage, deleteStoredImage } from "./imageService.js";
 
 export const patchTask = async (
   req: AuthenticatedRequest,
@@ -24,6 +24,7 @@ export const patchTask = async (
 
   let newUrl: string | null = null;
   let uploadedFileName: string | null = null;
+  let oldImgUrl: string | null | undefined;
   const dbClient: PoolClient = await pool.connect();
   const dbClientAsPool = dbClient as unknown as Pool;
 
@@ -33,17 +34,9 @@ export const patchTask = async (
     if (req.file) {
       // 1. Fetch and delete old image if it exists
       const oldImgRecord = await fetchOldTaskImage(uuid, user_id, dbClientAsPool);
-      const oldImgUrl = oldImgRecord?.img;
-      
-      if (oldImgUrl) {
-        try {
-          await deleteImageFromS3(oldImgUrl);
-        } catch {
-          // Silently ignore malformed old image URLs and push forward
-        }
-      }
+      oldImgUrl = oldImgRecord?.img;
 
-      // 2. Process and upload new image via utility
+      // Process and upload the new image before updating the task.
       const uploadResult = await uploadAndOptimizeImage(req.file.buffer, "tasks");
       newUrl = uploadResult.newUrl;
       uploadedFileName = uploadResult.uploadedFileName;
@@ -59,11 +52,25 @@ export const patchTask = async (
 
     if (!updatedRows) {
       await dbClient.query("ROLLBACK");
-      dbClient.release();
+      if (uploadedFileName) {
+        try {
+          await deleteStoredImage(uploadedFileName);
+        } catch (cleanupError) {
+          console.error("Failed to clean up task image after rejected update:", cleanupError);
+        }
+      }
       return res.status(400).json({ error: "No fields provided for update" });
     }
 
     await dbClient.query("COMMIT");
+
+    if (oldImgUrl) {
+      try {
+        await deleteStoredImage(oldImgUrl);
+      } catch (cleanupError) {
+        console.error("Failed to remove replaced task image from Supabase Storage:", cleanupError);
+      }
+    }
 
     // 🚀 Isolated Socket Broadcast
     const io: Server | undefined = req.app.get("socketio");
@@ -88,12 +95,12 @@ export const patchTask = async (
       console.error("Rollback failed:", rollbackErr);
     }
 
-    // Rollback newly uploaded S3 file if transaction failed
+    // Roll back the uploaded object if the database update fails.
     if (uploadedFileName) {
       try {
-        await deleteImageFromS3(uploadedFileName);
-      } catch (s3DeleteErr) {
-        console.error("Critical: Failed to clean up orphan S3 asset during rollback:", s3DeleteErr);
+        await deleteStoredImage(uploadedFileName);
+      } catch (cleanupError) {
+        console.error("Failed to clean up task image after update failure:", cleanupError);
       }
     }
 

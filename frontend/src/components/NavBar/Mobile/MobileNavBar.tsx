@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { MobileMessagesModal } from "../Mobile/MessagesModal";
 import socket from "@/api/socketApi";
+import profilePlaceholderUrl from "../../../assets/Profile/Profile_Image.jpg";
 
 interface MobileNavBarProps {
   isVisible: boolean;
@@ -162,7 +163,7 @@ export const MobileNavBar: React.FC<MobileNavBarProps> = ({
         <Link to="/profile" className="w-10 h-10 flex items-center justify-center transition-colors shrink-0" aria-label="Profile">
           <div className={`w-9 h-9 rounded-full overflow-hidden transition-all ${isActive("/profile") ? "ring-2 ring-white" : "ring-1 ring-white/40 opacity-80 hover:opacity-100"}`}>
             <img
-              src={userAvatar || "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+24%2C+2026%2C+04_24_39+PM.jpg"}
+              src={userAvatar || profilePlaceholderUrl}
               className="w-full h-full object-cover"
               alt="Profile"
             />

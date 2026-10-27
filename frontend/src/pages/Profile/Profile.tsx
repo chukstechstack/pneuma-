@@ -9,6 +9,7 @@ import { Loader2, ChevronLeft } from "lucide-react";
 import { ProfileHeader } from "../../components/Profile/ProfileHeader";
 import { ConnectionDrawer } from "@/components/Profile/ConnectionDrawer";
 import { SettingsDrawer } from "@/components/Profile/SettingsDrawer";
+import profilePlaceholderUrl from "../../assets/Profile/Profile_Image.jpg";
 
 const Profile = () => {
   const [isMessageOpen, setIsMessageOpen] = useState(false);
@@ -42,7 +43,7 @@ const Profile = () => {
 
   const profileAvatarUrl =
     typedProfile?.avatar_url ||
-    "https://pneuma-public-assets.s3.eu-north-1.amazonaws.com/ChatGPT+Image+Aug+24%2C+2026%2C+04_24_39+PM.jpg";
+    profilePlaceholderUrl;
 
   const handleAvatarUpload = async (file: File) => {
     await updateAvatar(file);

@@ -2,7 +2,7 @@ import TaskInputError from "@Toolkits/Input/taskInputError.js";
 import pool from "@Terminal/Supabase/supabaseConfig.js";
 // 2. Services & Utilities
 import { insertNewTask, fetchHydratedTaskById, createConnectionAlertsForTask } from "@/Workshop/Payload/Mutations/createTaskService.js";
-import { processAndUploadImage, deleteImageFromS3 } from "./imageUploadUtility.js";
+import { processAndUploadImage, deleteStoredImage } from "./imageUploadUtility.js";
 import { broadcastNewPost } from "./Socket.js";
 import { invalidateAllTaskCaches } from "./Cache.js";
 export const createTask = async (req, res, next) => {
@@ -20,7 +20,7 @@ export const createTask = async (req, res, next) => {
             throw new TaskInputError("Content is required");
         }
         await dbClient.query("BEGIN");
-        // 🖼️ Image processing & S3 upload via utility
+        // Convert images to WebP before saving them in Supabase Storage.
         if (req.file) {
             const uploadResult = await processAndUploadImage(req.file.buffer, "tasks");
             img_url = uploadResult.imgUrl;
@@ -55,7 +55,12 @@ export const createTask = async (req, res, next) => {
             // Quietly swallow if client was already broken
         }
         if (uploadedFileName) {
-            await deleteImageFromS3(uploadedFileName);
+            try {
+                await deleteStoredImage(uploadedFileName);
+            }
+            catch (cleanupError) {
+                console.error("Failed to clean up uploaded task image after create failure:", cleanupError);
+            }
         }
         next(err);
     }
