@@ -11,7 +11,7 @@
 ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
 
 🌐 **Live Demo:** [View Live Application](https://pneuma-frontend-oijl.onrender.com)  
-⚠️ **Project Status:** Active Production
+
 
 ---
 
